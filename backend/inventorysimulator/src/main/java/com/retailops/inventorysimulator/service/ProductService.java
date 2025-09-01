@@ -1,4 +1,6 @@
 package com.retailops.inventorysimulator.service;
 
-public class ProductService {
+import com.retailops.inventorysimulator.model.Product;
+
+public interface ProductService extends BaseService<Product, Long> {
 }
