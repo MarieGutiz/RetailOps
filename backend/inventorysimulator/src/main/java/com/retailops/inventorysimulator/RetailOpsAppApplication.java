@@ -14,7 +14,6 @@ public class RetailOpsAppApplication {
 		SpringApplication.run(RetailOpsAppApplication.class, args);
 
 	}
-
 	@Bean
 	public CommandLineRunner dataLoader(ProductRepository productRepo) {
 		return args -> {
