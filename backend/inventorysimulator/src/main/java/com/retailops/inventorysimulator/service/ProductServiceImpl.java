@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -32,5 +33,25 @@ public class ProductServiceImpl extends BaseServiceImpl<Product> implements Prod
         return productRepository.save(product);
     }
 
+    @Override
+    public void delete(Product item) {
+        productRepository.delete(item);
+    }
 
+    public void updateProduct(Product product) {
+         productRepository.save(product);
+    }
+
+    @Override
+    public Optional<Product> updateProduct(Long id, Product updatedProduct) {
+        return Optional.ofNullable(productRepository.findById(id)
+                .map(existing -> {
+                    existing.setName(updatedProduct.getName());
+                    existing.setCategory(updatedProduct.getCategory());
+                    existing.setUnitCost(updatedProduct.getUnitCost());
+                    existing.setUnitPrice(updatedProduct.getUnitPrice());
+                    return productRepository.save(existing);
+                })
+                .orElseThrow(() -> new NoSuchElementException("Product not found with id " + id)));
+    }
 }
