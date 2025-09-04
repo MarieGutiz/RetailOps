@@ -2,6 +2,7 @@ package com.retailops.inventorysimulator.controller;
 
 import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +31,13 @@ public class ProductController {
 
    //Persist a product
     @RequestMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
        return ResponseEntity.ok(productService.create(product));
     }
 
     //Put a product, return a 201?
     @PutMapping("/{id}")
-    public ResponseEntity<Optional<Product>> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<Optional<Product>> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
         return ResponseEntity.ok(productService.updateProduct(id, product));
     }
 
