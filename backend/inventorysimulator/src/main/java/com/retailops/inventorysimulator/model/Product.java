@@ -30,7 +30,6 @@ public class Product extends BaseModel{
     @Positive(message = "Unit cost must be greater than 0")
     private Double unitCost;
 
-    @Positive(message = "Unit price must be greater than 0")
     @AssertTrue(message = "Unit price must be greater than cost")
     private boolean isPriceValid() {
         return unitPrice != null && unitCost != null && unitPrice > unitCost;
