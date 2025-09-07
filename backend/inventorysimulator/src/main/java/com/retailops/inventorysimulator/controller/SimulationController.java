@@ -1,14 +1,14 @@
 package com.retailops.inventorysimulator.controller;
 
 
+import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.simulator.dto.ProfitRequest;
 import com.retailops.inventorysimulator.simulator.dto.ProfitResponse;
 import com.retailops.inventorysimulator.simulator.service.SimulationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/simulate")
@@ -22,4 +22,8 @@ public class SimulationController {
         return simulationService.calculateProfit(request);
     }
 
+    @GetMapping("/history")
+    public List<SimulationRun> getHistory(){
+        return  simulationService.getHistory();
+    }
 }
