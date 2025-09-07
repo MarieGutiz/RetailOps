@@ -11,4 +11,5 @@ public class ProfitResponse {
     private int stockQty;
     private int demand;
     private double profit;
+
 }
