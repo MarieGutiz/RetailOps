@@ -8,4 +8,5 @@ public class ProfitRequest {
     private int stockQty;
     private int demand;
     private boolean saveToHistory;
+    private String username;
 }
