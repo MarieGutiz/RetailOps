@@ -25,4 +25,6 @@ public class SimulationRun extends BaseModel{
     private double profit;
 
     private LocalDateTime runAt;
+
+    private String username;//Later: Replace with manytoone user entity
 }
