@@ -2,6 +2,7 @@ package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.repository.SimulationRepository;
+import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -51,13 +53,30 @@ public class SimulationRunImp extends BaseServiceImpl<SimulationRun> implements 
     }
 
     @Override
-    public Page<SimulationRun> getHistory(String username, int page, int size) {
+    public Page<SimulationRunDTO> getHistory(String username, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("runAt").descending());
 
+        Page<SimulationRun> runs;
         if (username != null && !username.isBlank()) {
-            return simulationRepository.findByUsername(username, pageable);
+            runs = simulationRepository.findByUsername(username, pageable);
+        } else {
+            runs = simulationRepository.findAll(pageable);
         }
-        return simulationRepository.findAll(pageable);
+
+        return runs.map(toSimulationRunDTO());
+    }
+
+    public Function<SimulationRun, SimulationRunDTO> toSimulationRunDTO() {
+        return  run -> new SimulationRunDTO(
+                run.getId(),
+                run.getSimulationType(),
+                run.getProductName(),
+                run.getStockQty(),
+                run.getDemand(),
+                run.getProfit(),
+                run.getRunAt(),
+                run.getUsername()
+        );
     }
 
 

@@ -7,17 +7,15 @@ import com.retailops.inventorysimulator.service.ProductService;
 import com.retailops.inventorysimulator.service.SimulationServiceModel;
 import com.retailops.inventorysimulator.simulator.dto.ProfitRequest;
 import com.retailops.inventorysimulator.simulator.dto.ProfitResponse;
+import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
 import com.retailops.inventorysimulator.util.SimulationType;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -52,11 +50,10 @@ public class SimulationService {
                                 profit);
     }
 
-//    public List<SimulationRun> getHistory(String username){
-//        return simulationServiceModel.getHistory(username);
-//    }
 
-    public Page<SimulationRun> getHistory(String username, int page, int size) {
+    public Page<SimulationRunDTO> getHistory(String username, int page, int size) {
          return simulationServiceModel.getHistory(username, page, size);
     }
+
+
 }
