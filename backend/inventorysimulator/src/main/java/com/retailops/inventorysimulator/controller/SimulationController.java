@@ -4,6 +4,7 @@ package com.retailops.inventorysimulator.controller;
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.simulator.dto.ProfitRequest;
 import com.retailops.inventorysimulator.simulator.dto.ProfitResponse;
+import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
 import com.retailops.inventorysimulator.simulator.service.SimulationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,9 +25,9 @@ public class SimulationController {
     }
 
     @GetMapping("/history")
-    public Page<SimulationRun> getHistory(@RequestParam(required = false) String user,
-                                                @RequestParam(defaultValue = "0") int page,
-                                                @RequestParam(defaultValue = "10") int size){
+    public Page<SimulationRunDTO> getHistory(@RequestParam(required = false) String user,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "10") int size){
         return  simulationService.getHistory(user, page, size);
     }
 }
