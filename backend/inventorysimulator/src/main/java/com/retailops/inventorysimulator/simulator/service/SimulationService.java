@@ -1,6 +1,7 @@
 package com.retailops.inventorysimulator.simulator.service;
 
 
+import com.retailops.inventorysimulator.exception.ProductNotFoundException;
 import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.service.ProductService;
@@ -14,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -25,29 +24,37 @@ public class SimulationService {
 
     //check calculation of profit
     public ProfitResponse calculateProfit(ProfitRequest request) {
-        Product product = productService.get(request.getProductId());
-        int sales = Math.min(request.getStockQty(), request.getDemand());
-        double revenue = sales * product.getUnitPrice();
-        double cost = request.getStockQty() * product.getUnitCost();
-        double profit = revenue - cost;
 
-        if(request.isSaveToHistory()){
+        Product product = productService.getProduct(request.productId())
+                .orElseThrow(() -> new ProductNotFoundException(request.productId()));
+
+        int stock = request.stockQtyOrDefault();
+        int demand = request.demandOrDefault();
+        int sales = Math.min(stock, demand);
+
+        double revenue = sales * product.getUnitPrice();
+        double cost = stock * product.getUnitCost();
+        double profit = Math.round((revenue - cost) * 100.0) / 100.0; // round to 2 decimals
+
+        if (request.saveToHistory()) {
             SimulationRun sim = SimulationRun.builder()
                     .productName(product.getName())
                     .simulationType(SimulationType.PROFIT)
-                    .stockQty(request.getStockQty())
-                    .demand(request.getDemand())
+                    .stockQty(stock)
+                    .demand(demand)
                     .profit(profit)
                     .runAt(LocalDateTime.now())
-                    .username(request.getUsername() != null ? request.getUsername() : "guess")
+                    .username(request.usernameOrDefault())
                     .build();
             simulationServiceModel.save(sim);
-
         }
-       return new ProfitResponse(product.getName(),
-                                request.getStockQty(),
-                                request.getDemand(),
-                                profit);
+
+        return new ProfitResponse(
+                product.getName(),
+                stock,
+                demand,
+                profit
+        );
     }
 
 

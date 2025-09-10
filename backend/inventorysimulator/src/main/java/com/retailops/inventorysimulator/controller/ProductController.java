@@ -35,7 +35,7 @@ public class ProductController {
        return ResponseEntity.ok(productService.create(product));
     }
 
-    //Put a product, return a 201?
+    //Put a product
     @PutMapping("/{id}")
     public ResponseEntity<Optional<Product>> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
         return ResponseEntity.ok(productService.updateProduct(id, product));

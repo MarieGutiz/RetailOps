@@ -1,5 +1,6 @@
 package com.retailops.inventorysimulator.service;
 
+import com.retailops.inventorysimulator.exception.ProductNotFoundException;
 import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,12 @@ public class ProductServiceImpl extends BaseServiceImpl<Product> implements Prod
                     existing.setUnitPrice(updatedProduct.getUnitPrice());
                     return productRepository.save(existing);
                 })
-                .orElseThrow(() -> new NoSuchElementException("Product not found with id " + id)));
+                .orElseThrow(() -> new ProductNotFoundException(id)));
+    }
+
+    @Override
+    public Optional<Product> getProduct(Long id) {
+        return Optional.of(productRepository.findById(id))
+                .orElseThrow(() ->  new ProductNotFoundException(id));
     }
 }

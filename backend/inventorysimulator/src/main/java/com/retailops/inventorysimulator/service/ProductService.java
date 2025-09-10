@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface ProductService extends BaseService<Product, Long> {
 
     Optional<Product> updateProduct(Long id, Product updatedProduct);
+
+    Optional<Product> getProduct(Long id);
 }
