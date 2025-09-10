@@ -16,9 +16,6 @@ import lombok.*;
 @ToString(callSuper = true)
 @Entity
 public class Product extends BaseModel{
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
 
     @NotBlank(message = "Product name is required")
     private String name;

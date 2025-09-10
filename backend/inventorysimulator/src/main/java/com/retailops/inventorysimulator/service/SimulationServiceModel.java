@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface SimulationServiceModel extends BaseService<SimulationRun, Long> {
@@ -18,4 +19,6 @@ public interface SimulationServiceModel extends BaseService<SimulationRun, Long>
     Page<SimulationRun> findByUsername(String username, Pageable pageable);
     public Page<SimulationRunDTO> getHistory(String username, int page, int size);
 //    List<SimulationRun> findByUsername(String username);
+
+
 }

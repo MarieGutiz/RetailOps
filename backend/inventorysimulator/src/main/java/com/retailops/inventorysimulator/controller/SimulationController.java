@@ -6,6 +6,7 @@ import com.retailops.inventorysimulator.simulator.dto.ProfitRequest;
 import com.retailops.inventorysimulator.simulator.dto.ProfitResponse;
 import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
 import com.retailops.inventorysimulator.simulator.service.SimulationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class SimulationController {
     private final SimulationService simulationService;
 
     @PostMapping("/profit")
-    public ProfitResponse simulateProfit(@RequestBody ProfitRequest request) {
+    public ProfitResponse simulateProfit(@Valid  @RequestBody ProfitRequest request) {
         return simulationService.calculateProfit(request);
     }
 
