@@ -14,7 +14,6 @@ public record ProfitRequest(@NotNull
                             @Digits(integer = 10, fraction = 0, message = "SKU product quantity must be an integer value")
                             BigDecimal stockQty,
 
-                            @NotNull
                             @Digits(integer = 10, fraction = 0, message = "Demand must be an integer value")
                             @Min(value = 0, message = "Demand must be >= 0")
                             BigDecimal demand,

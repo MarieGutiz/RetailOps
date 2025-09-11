@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class SimulationService {
+public class SimulationProfitService {
     final ProductService productService;
     final SimulationServiceModel simulationServiceModel;
 
