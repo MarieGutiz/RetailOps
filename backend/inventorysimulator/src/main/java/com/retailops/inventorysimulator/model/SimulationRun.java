@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @Entity
 public class SimulationRun extends BaseModel{
 
-    private SimulationType simulationType; // e.g., "PROFIT", "NEWSVENDOR", "EOQ"
+    private SimulationType simulationType; //save analogously e.g., "PROFIT", "NEWSVENDOR", "EOQ"
 
     private String productName;
 
-    private int stockQty;
-    private int demand;
-    private double profit;
+    private Integer stockQty;
+    private Integer demand;
+    private Double profit;
 
     private LocalDateTime runAt;
 

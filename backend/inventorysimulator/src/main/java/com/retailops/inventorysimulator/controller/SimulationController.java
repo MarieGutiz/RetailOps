@@ -1,24 +1,21 @@
 package com.retailops.inventorysimulator.controller;
 
 
-import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.simulator.dto.ProfitRequest;
 import com.retailops.inventorysimulator.simulator.dto.ProfitResponse;
 import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
-import com.retailops.inventorysimulator.simulator.service.SimulationService;
+import com.retailops.inventorysimulator.simulator.service.SimulationProfitService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/simulate")
 @RequiredArgsConstructor
 public class SimulationController {
 
-    private final SimulationService simulationService;
+    private final SimulationProfitService simulationService;
 
     @PostMapping("/profit")
     public ProfitResponse simulateProfit(@Valid  @RequestBody ProfitRequest request) {
