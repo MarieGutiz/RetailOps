@@ -1,9 +1,8 @@
 package com.retailops.inventorysimulator.controller;
 
 
-import com.retailops.inventorysimulator.simulator.dto.ProfitRequest;
-import com.retailops.inventorysimulator.simulator.dto.ProfitResponse;
-import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
+import com.retailops.inventorysimulator.simulator.dto.*;
+import com.retailops.inventorysimulator.simulator.service.NewsVendorSimulatorService;
 import com.retailops.inventorysimulator.simulator.service.SimulationProfitService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class SimulationController {
 
     private final SimulationProfitService simulationService;
+    private  final NewsVendorSimulatorService newsVendorSimulatorService;
 
     @PostMapping("/profit")
     public ProfitResponse simulateProfit(@Valid  @RequestBody ProfitRequest request) {
@@ -28,4 +28,10 @@ public class SimulationController {
                                              @RequestParam(defaultValue = "10") int size){
         return  simulationService.getHistory(user, page, size);
     }
+
+    @PostMapping("/newsvendor")
+    public NewsVendorResponse simulateNewsvendor(@Valid @RequestBody NewsVendorRequest request) {
+        return newsVendorSimulatorService.simulate(request);
+    }
+
 }

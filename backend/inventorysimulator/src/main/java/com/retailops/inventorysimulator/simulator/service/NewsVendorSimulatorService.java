@@ -15,9 +15,27 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
+/**
+ * Service class for managing the News Vendor idea.
+ *
+ * where:
+ * Cr= Critical Ratio
+ * Cs = Cost of shortage
+ * Ce = Cost of excess
+ * salvage value = Given by the ability to re-sale in case there are left overs
+ *
+ *
+ *
+ * Cs = price - cost
+ * Ce = cost - salvage value
+ * Cr = Cs /(Cs + Ce)
+ *
+ *
+ *
+ */
 @Service
 @RequiredArgsConstructor
-public class NewsVendorSimulator {
+public class NewsVendorSimulatorService {
     final ProductService productService;
     final SimulationServiceModel simulationServiceModel;
 
