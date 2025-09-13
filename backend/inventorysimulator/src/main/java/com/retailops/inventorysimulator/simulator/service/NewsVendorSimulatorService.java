@@ -16,18 +16,18 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 /**
- * Service class for managing the News Vendor idea.
+ * Service class for managing the News Vendor(behind the idea).
  *
  * where:
  * Cr= Critical Ratio
  * Cs = Cost of shortage
  * Ce = Cost of excess
- * salvage value = Given by the ability to re-sale in case there are left overs
+ * g = salvage value, given by the ability to re-sale in case there are left overs
  *
  *
  *
  * Cs = price - cost
- * Ce = cost - salvage value
+ * Ce = cost - g
  * Cr = Cs /(Cs + Ce)
  *
  *
