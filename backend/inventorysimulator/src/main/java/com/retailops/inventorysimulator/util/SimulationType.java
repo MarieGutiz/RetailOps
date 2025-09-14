@@ -8,7 +8,8 @@ public enum SimulationType {
 
     EOQ("EOQ"),
     PROFIT("PROFIT"),
-    NEWSVENDOR("NEWSVENDOR"),;
+    NEWSVENDOR("NEWSVENDOR"),
+    ABC("ABC ANALYSIS");
 
     private final String name;
 
