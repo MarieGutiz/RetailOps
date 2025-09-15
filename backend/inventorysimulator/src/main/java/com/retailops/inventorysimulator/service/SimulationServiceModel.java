@@ -2,6 +2,7 @@ package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
+import com.retailops.inventorysimulator.util.SimulationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,11 +15,16 @@ public interface SimulationServiceModel extends BaseService<SimulationRun, Long>
 
     void save(SimulationRun sim);
     List<SimulationRun> getHistory(String username);
+    List<SimulationRun> getHistoryByType(SimulationType type);
 
     //Create pagination
     Page<SimulationRun> findByUsername(String username, Pageable pageable);
     public Page<SimulationRunDTO> getHistory(String username, int page, int size);
-//    List<SimulationRun> findByUsername(String username);
+
+    //Add Filtering by Username + SimulationType
+    Page<SimulationRunDTO> getHistoryByType(SimulationType type, int page, int size);
+
+    Page<SimulationRunDTO> getHistoryByUserAndType(String username, SimulationType type, int page, int size);
 
 
 }

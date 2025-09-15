@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
@@ -59,8 +60,8 @@ public class NewsVendorSimulatorService {
             SimulationRun sim = SimulationRun.builder()
                     .productName(product.getName())
                     .simulationType(SimulationType.NEWSVENDOR)
-                    .stockQty(Qstar)
-                    .demand(request.meanDemand().intValue())
+                    .stockQty(BigInteger.valueOf(Qstar))
+                    .demand(request.meanDemand().toBigIntegerExact())
                     .profit(null) // not relevant here
                     .runAt(LocalDateTime.now())
                     .username(request.usernameOrDefault())
@@ -71,7 +72,7 @@ public class NewsVendorSimulatorService {
         return new NewsVendorResponse(
                 product.getName(),
                 criticalRatio,
-                Qstar
+                BigInteger.valueOf(Qstar)
         );
     }
 

@@ -2,6 +2,7 @@ package com.retailops.inventorysimulator.controller;
 
 
 import com.retailops.inventorysimulator.simulator.dto.*;
+import com.retailops.inventorysimulator.simulator.service.EoqService;
 import com.retailops.inventorysimulator.simulator.service.NewsVendorSimulatorService;
 import com.retailops.inventorysimulator.simulator.service.SimulationProfitService;
 import jakarta.validation.Valid;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class SimulationController {
 
     private final SimulationProfitService simulationService;
-    private  final NewsVendorSimulatorService newsVendorSimulatorService;
+    private final NewsVendorSimulatorService newsVendorSimulatorService;
+    private final EoqService eoqService;
 
     @PostMapping("/profit")
     public ProfitResponse simulateProfit(@Valid  @RequestBody ProfitRequest request) {
@@ -33,5 +35,10 @@ public class SimulationController {
     public NewsVendorResponse simulateNewsvendor(@Valid @RequestBody NewsVendorRequest request) {
         return newsVendorSimulatorService.simulate(request);
     }
+
+//    @PostMapping("/eoq")
+//    public EoqResponseDto simulateEOQ(@Valid @RequestBody EoqRequestDto requestDto) {
+//        return eoqService.runEoq(requestDto);
+//    }
 
 }

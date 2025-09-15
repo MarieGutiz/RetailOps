@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Service
@@ -28,8 +30,8 @@ public class SimulationProfitService {
         Product product = productService.getProduct(request.productId())
                 .orElseThrow(() -> new ProductNotFoundException(request.productId()));
 
-        int stock = request.stockQtyOrDefault();
-        int demand = request.demandOrDefault();
+        int stock = request.stockQtyOrDefault().intValueExact();
+        int demand = request.demandOrDefault().intValueExact();
         int sales = Math.min(stock, demand);
 
         double revenue = sales * product.getUnitPrice();
@@ -40,9 +42,9 @@ public class SimulationProfitService {
             SimulationRun sim = SimulationRun.builder()
                     .productName(product.getName())
                     .simulationType(SimulationType.PROFIT)
-                    .stockQty(stock)
-                    .demand(demand)
-                    .profit(profit)
+                    .stockQty(BigInteger.valueOf(stock))
+                    .demand(BigInteger.valueOf(demand))
+                    .profit(BigDecimal.valueOf(profit))
                     .runAt(LocalDateTime.now())
                     .username(request.usernameOrDefault())
                     .build();
@@ -51,9 +53,9 @@ public class SimulationProfitService {
 
         return new ProfitResponse(
                 product.getName(),
-                stock,
-                demand,
-                profit
+                BigInteger.valueOf(stock),
+                BigInteger.valueOf(demand),
+                BigDecimal.valueOf(profit)
         );
     }
 

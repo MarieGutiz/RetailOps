@@ -3,6 +3,7 @@ package com.retailops.inventorysimulator.service;
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.repository.SimulationRepository;
 import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
+import com.retailops.inventorysimulator.util.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,8 +43,12 @@ public class SimulationRunImp extends BaseServiceImpl<SimulationRun> implements 
             return simulationRepository.findByUsername(username);
 
         }
-
         return simulationRepository.findAll();
+    }
+
+    @Override
+    public List<SimulationRun> getHistoryByType(SimulationType type) {
+        return simulationRepository.findBySimulationType(type);
     }
 
 
@@ -63,6 +68,20 @@ public class SimulationRunImp extends BaseServiceImpl<SimulationRun> implements 
             runs = simulationRepository.findAll(pageable);
         }
 
+        return runs.map(toSimulationRunDTO());
+    }
+
+    @Override
+    public Page<SimulationRunDTO> getHistoryByType(SimulationType type, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("runAt").descending());
+        Page<SimulationRun> runs = simulationRepository.findBySimulationType(type, pageable);
+        return runs.map(toSimulationRunDTO());
+    }
+
+    @Override
+    public Page<SimulationRunDTO> getHistoryByUserAndType(String username, SimulationType type, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("runAt").descending());
+        Page<SimulationRun> runs = simulationRepository.findByUsernameAndSimulationType(username, type, pageable);
         return runs.map(toSimulationRunDTO());
     }
 
