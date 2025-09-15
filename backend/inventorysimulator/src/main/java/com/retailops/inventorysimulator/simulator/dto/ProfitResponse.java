@@ -4,12 +4,15 @@ package com.retailops.inventorysimulator.simulator.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 @Data
 @AllArgsConstructor
 public class ProfitResponse {
     private String product;
-    private int stockQty;
-    private int demand;
-    private double profit;
+    private BigInteger stockQty;
+    private BigInteger demand;
+    private BigDecimal profit;
 
 }

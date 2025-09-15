@@ -5,6 +5,8 @@ import com.retailops.inventorysimulator.util.SimulationType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Getter
@@ -23,14 +25,14 @@ public class SimulationRun extends BaseModel{
     private String productName;
 
     // Profit / Newsvendor
-    private Integer stockQty;
-    private Integer demand;
-    private Double profit;
+    private BigInteger stockQty;
+    private BigInteger demand;
+    private BigDecimal profit;
 
     // EOQ
-    private Double setupCost;
-    private Double holdingCost;
-    private Double eoq;
+    private BigDecimal setupCost;
+    private BigDecimal holdingCost;
+    private BigDecimal eoq;
 
     // ABC
     @Column(columnDefinition = "TEXT")

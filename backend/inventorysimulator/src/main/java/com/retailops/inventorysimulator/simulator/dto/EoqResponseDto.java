@@ -1,9 +1,13 @@
 package com.retailops.inventorysimulator.simulator.dto;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public record EoqResponseDto(
-        double demand,
-        double setupCost,
-        double holdingCost,
-        double eoq)
+        String product,
+        BigInteger demand,
+        BigDecimal setupCost,
+        BigDecimal holdingCost,
+        BigDecimal eoq)
 {
 }
