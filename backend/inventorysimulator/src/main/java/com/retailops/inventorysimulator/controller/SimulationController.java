@@ -36,9 +36,9 @@ public class SimulationController {
         return newsVendorSimulatorService.simulate(request);
     }
 
-//    @PostMapping("/eoq")
-//    public EoqResponseDto simulateEOQ(@Valid @RequestBody EoqRequestDto requestDto) {
-//        return eoqService.runEoq(requestDto);
-//    }
+    @PostMapping("/eoq")
+    public EoqResponseDto simulateEOQ(@Valid @RequestBody EoqRequestDto requestDto) {
+        return eoqService.runEoq(requestDto);
+    }
 
 }
