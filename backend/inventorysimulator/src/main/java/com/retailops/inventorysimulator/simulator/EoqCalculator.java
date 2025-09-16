@@ -1,3 +1,4 @@
+
 package com.retailops.inventorysimulator.simulator;
 
 import java.math.BigDecimal;
@@ -20,10 +21,9 @@ public class EoqCalculator {
                 .multiply(BigDecimal.valueOf(2), mc);
 
         // denominator = H
-        BigDecimal denominator = holdingCost;
 
         // fraction = numerator / denominator
-        BigDecimal fraction = numerator.divide(denominator, mc);
+        BigDecimal fraction = numerator.divide(holdingCost, mc);
 
         // EOQ = sqrt(fraction) using BigDecimal
         return bigSqrt(fraction, mc).setScale(2, RoundingMode.HALF_UP);
@@ -32,7 +32,7 @@ public class EoqCalculator {
     // Utility: sqrt for BigDecimal (Newton-Raphson)
     private static BigDecimal bigSqrt(BigDecimal value, MathContext mc) {
         BigDecimal x0 = BigDecimal.ZERO;
-        BigDecimal x1 = new BigDecimal(Math.sqrt(value.doubleValue())); // initial guess
+        BigDecimal x1 = BigDecimal.valueOf(Math.sqrt(value.doubleValue())); // initial guess
 
         while (!x0.equals(x1)) {
             x0 = x1;
