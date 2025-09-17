@@ -3,67 +3,83 @@ package com.retailops.inventorysimulator.simulator.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.model.SimulationRun;
+import com.retailops.inventorysimulator.repository.ABCResultRepository;
+import com.retailops.inventorysimulator.repository.SimulationRepository;
 import com.retailops.inventorysimulator.service.SimulationServiceModel;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcResultDto;
+import com.retailops.inventorysimulator.util.ABCCategoryType;
 import com.retailops.inventorysimulator.util.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class AbcService {
-    private final ObjectMapper objectMapper;
-    private final SimulationServiceModel simulationServiceModel;
 
-    public void runAbc(List<AbcItemDto> items, String username) {
-        // Sort items by sales value descending ??
-        items.sort(Comparator.comparingDouble(AbcItemDto::getSalesValue).reversed());
+    private final ABCResultRepository abcResultRepository;
+    private final SimulationRepository simulationRepository;
 
-        double totalSales = items.stream().mapToDouble(AbcItemDto::getSalesValue).sum();
-        double cumulative = 0;
+    public List<ABCResult> runAbc(List<AbcItemDto> items, String username) {
+        // Sort by sales value descending
+        items.sort(Comparator.comparing(AbcItemDto::getSalesValue).reversed());
 
-        List<AbcResultDto> results = new ArrayList<>();
+        BigDecimal totalSales = items.stream()
+                .map(AbcItemDto::getSalesValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        BigDecimal cumulative = BigDecimal.ZERO;
+        List<ABCResult> results = new ArrayList<>();
+
+        int rank = 1;
         for (AbcItemDto item : items) {
-            cumulative += item.getSalesValue();
-            double percentage = (cumulative / totalSales) * 100;
-            //Implement the power law
+            cumulative = cumulative.add(item.getSalesValue());
+            BigDecimal contribution = cumulative
+                    .divide(totalSales, 4, RoundingMode.HALF_UP)
+                    .multiply(BigDecimal.valueOf(100)); // %
 
-            String category;
-            if (percentage <= 20) {
-                category = "A";
-            } else if (percentage <= 50) {
-                category = "B";
+            ABCCategoryType category;
+            if (contribution.compareTo(BigDecimal.valueOf(80)) <= 0) {
+                category = ABCCategoryType.A;
+            } else if (contribution.compareTo(BigDecimal.valueOf(95)) <= 0) {
+                category = ABCCategoryType.B;
             } else {
-                category = "C";
+                category = ABCCategoryType.C;
             }
 
-            AbcResultDto result = new AbcResultDto();
+            ABCResult result = new ABCResult();
             result.setProductName(item.getProductName());
-            result.setSalesValue(item.getSalesValue());
-            result.setCategory(category);
+            result.setAbcClass(category);
+            result.setContributionPercentage(contribution);
+            result.setRank(rank++);
+            result.setUsername(username);
+            result.setAnalyzedAt(LocalDateTime.now());
+
             results.add(result);
         }
 
+        // Persist SimulationRun
         SimulationRun run = new SimulationRun();
         run.setSimulationType(SimulationType.ABC);
         run.setUsername(username);
         run.setRunAt(LocalDateTime.now());
+        simulationRepository.save(run);
 
-        try {
-            run.setAbcInputJson(objectMapper.writeValueAsString(items));
-            run.setAbcResultJson(objectMapper.writeValueAsString(results));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize ABC data", e);
+        // Link results to run
+        for (ABCResult result : results) {
+            result.setSimulationRun(run);
         }
+        abcResultRepository.saveAll(results);
 
-         simulationServiceModel.save(run);
+        return results;
     }
 }
