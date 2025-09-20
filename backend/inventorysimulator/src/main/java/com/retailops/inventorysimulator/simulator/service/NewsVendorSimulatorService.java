@@ -16,6 +16,8 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
+import static com.retailops.inventorysimulator.simulator.CriticalRatioCalculator.calculateCriticalRatio;
+
 /**
  * Service class for managing the News Vendor(behind the idea).
  *
@@ -44,14 +46,7 @@ public class NewsVendorSimulatorService {
         Product product = productService.getProduct(request.productId())
                 .orElseThrow(() -> new ProductNotFoundException(request.productId()));
 
-        // Costs
-        BigDecimal unitPrice = BigDecimal.valueOf(product.getUnitPrice());
-        BigDecimal unitCost = BigDecimal.valueOf(product.getUnitCost());
-
-        BigDecimal Cu = unitPrice.subtract(unitCost); // underage cost
-        BigDecimal Co = unitCost;                     // overage cost
-
-        BigDecimal criticalRatio = Cu.divide(Cu.add(Co), 4, RoundingMode.HALF_UP);
+        BigDecimal criticalRatio = calculateCriticalRatio(product);
 
         // For now: Optimal order quantity = mean demand rounded
         int Qstar = request.meanDemand().setScale(0, RoundingMode.HALF_UP).intValue();
