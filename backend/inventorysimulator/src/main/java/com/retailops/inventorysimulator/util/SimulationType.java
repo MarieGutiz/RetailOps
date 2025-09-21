@@ -9,7 +9,8 @@ public enum SimulationType {
     EOQ("EOQ"),
     PROFIT("PROFIT"),
     NEWSVENDOR("NEWSVENDOR"),
-    ABC("ABC ANALYSIS");
+    ABC_CLASSIC("ABC ANALYSIS"),
+    ABC_MULTI("ABC MULTIPLE"),;
 
     private final String name;
 

@@ -5,7 +5,10 @@ import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.repository.ABCResultRepository;
 import com.retailops.inventorysimulator.repository.SimulationRepository;
+import com.retailops.inventorysimulator.simulator.AbcAnalyzer;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
+import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
+import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerStrategy;
 import com.retailops.inventorysimulator.util.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.retailops.inventorysimulator.simulator.AbcAnalyzer.abcAnalyzer;
 
 @Service
 @RequiredArgsConstructor
@@ -21,23 +23,27 @@ public class AbcService {
 
     private final ABCResultRepository abcResultRepository;
     private final SimulationRepository simulationRepository;
+    private final List<AbcAnalyzerStrategy> analyzers;
 
-    public List<ABCResult> runAbc(List<AbcItemDto> items, String username) {
-        List<ABCResult> results = abcAnalyzer(items, username);
+    public List<ABCResult> runAbc(AbcRequestDto requestDto) {
+        AbcAnalyzerStrategy analyzer = analyzers.stream()
+                .filter(a -> a.getType().name().equalsIgnoreCase(requestDto.mode()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid mode"));
 
-        // Persist SimulationRun
+        List<ABCResult> results = analyzer.analyze(requestDto);
+
+        // persist run
         SimulationRun run = new SimulationRun();
-        run.setSimulationType(SimulationType.ABC);
-        run.setUsername(username);
+        run.setSimulationType(analyzer.getType());
+        run.setUsername(requestDto.username());
         run.setRunAt(LocalDateTime.now());
         simulationRepository.save(run);
 
-        // Link results to run
-        for (ABCResult result : results) {
-            result.setSimulationRun(run);
-        }
+        results.forEach(r -> r.setSimulationRun(run));
         abcResultRepository.saveAll(results);
 
         return results;
     }
 }
+
