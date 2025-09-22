@@ -21,6 +21,7 @@ import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.util.SimulationType;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import static com.retailops.inventorysimulator.simulator.AbcAnalyzer.getAbcResults;
 
+@Component
 public class AbcAnalyzerMulti implements AbcAnalyzerStrategy {
     @Override
     public List<ABCResult> analyze(AbcRequestDto requestDto) {
