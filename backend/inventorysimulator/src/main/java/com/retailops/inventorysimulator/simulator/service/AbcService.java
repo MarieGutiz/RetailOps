@@ -1,6 +1,8 @@
 package com.retailops.inventorysimulator.simulator.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.repository.ABCResultRepository;
@@ -24,10 +26,12 @@ public class AbcService {
     private final ABCResultRepository abcResultRepository;
     private final SimulationRepository simulationRepository;
     private final List<AbcAnalyzerStrategy> analyzers;
+    private final ObjectMapper objectMapper;
 
     public List<ABCResult> runAbc(AbcRequestDto requestDto) {
+        SimulationType type = requestDto.mode();
         AbcAnalyzerStrategy analyzer = analyzers.stream()
-                .filter(a -> a.getType().name().equalsIgnoreCase(requestDto.mode()))
+                .filter(a -> a.getType() == type)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Invalid mode"));
 
@@ -38,6 +42,16 @@ public class AbcService {
         run.setSimulationType(analyzer.getType());
         run.setUsername(requestDto.username());
         run.setRunAt(LocalDateTime.now());
+
+        try{
+            // Persist snapshot as JSON
+            run.setAbcInputJson(objectMapper.writeValueAsString(requestDto.items()));
+            run.setAbcResultJson(objectMapper.writeValueAsString(results));
+        }catch (JsonProcessingException e){
+            throw new RuntimeException("Failed to serialized JSON at ABC Snapshot "+e);
+
+        }
+
         simulationRepository.save(run);
 
         results.forEach(r -> r.setSimulationRun(run));

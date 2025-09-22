@@ -27,6 +27,7 @@ public class ABCResult extends BaseModel {
     @Column(precision = 19, scale = 4) // BigDecimal for money percentages
     private BigDecimal contributionPercentage; // e.g., 55.3000%
 
+    @Column(name = "`rank_position`")
     private int rank; // position in sorted list
 
     private String username; // optional, later link to User entity
