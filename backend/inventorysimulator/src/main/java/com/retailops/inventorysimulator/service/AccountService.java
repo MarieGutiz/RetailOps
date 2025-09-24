@@ -15,15 +15,13 @@
  *
  */
 
-package com.retailops.inventorysimulator.repository;
+package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.model.Account;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<Account, Long> {
-
+public interface AccountService extends BaseService<Account, Long> {
     Optional<Account> findByUsername(String username);
-
+    Account register(Account account);
 }
