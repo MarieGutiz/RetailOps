@@ -15,15 +15,7 @@
  *
  */
 
-package com.retailops.inventorysimulator.service;
+package com.retailops.inventorysimulator.security.dto;
 
-import com.retailops.inventorysimulator.model.Account;
-import com.retailops.inventorysimulator.security.dto.RegisterRequest;
-
-import java.util.Optional;
-
-public interface AccountService extends BaseService<Account, Long> {
-    Optional<Account> findByUsername(String username);
-//    Account register(Account account);
-    Account register(RegisterRequest request);
+public record LoginRequest(String username, String password) {
 }

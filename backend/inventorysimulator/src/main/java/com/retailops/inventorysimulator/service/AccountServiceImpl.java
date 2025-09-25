@@ -19,6 +19,7 @@ package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.repository.UserRepository;
+import com.retailops.inventorysimulator.security.dto.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,12 +46,26 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
                 .orElseThrow(() -> new UsernameNotFoundException("No account found for this username")));
     }
 
+//    @Override
+//    public Account register(Account account) {
+//        account.setPassword(encoder.encode(account.getPassword()));
+//        account.setRole("ROLE_USER");
+//        account.setRegistrationDate(LocalDate.now());
+//        return userRepository.save(account);
+//    }
+
     @Override
-    public Account register(Account account) {
-        account.setPassword(encoder.encode(account.getPassword()));
-        account.setRole("ROLE_USER");
+    public Account register(RegisterRequest request) {
+        Account account = new Account();
+        account.setUsername(request.username());
+        account.setPassword(encoder.encode(request.password())); // hash password
+        account.setName(request.name());
+        account.setRole(request.role());
+        account.setPosition(request.position());
         account.setRegistrationDate(LocalDate.now());
+
         return userRepository.save(account);
+
     }
 
 
