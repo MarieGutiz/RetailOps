@@ -58,6 +58,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                     .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .oauth2Login(oauth2 -> oauth2
+                    .defaultSuccessUrl("/auth/oauth2/success", true)
+            )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
 }

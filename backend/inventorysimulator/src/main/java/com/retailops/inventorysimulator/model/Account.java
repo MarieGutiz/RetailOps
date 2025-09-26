@@ -3,6 +3,8 @@ package com.retailops.inventorysimulator.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,6 +21,10 @@ public class Account extends BaseModel{
     private String name;
     private  String position;// A manager, a student
     private LocalDate registrationDate;
+
+    @Email
+    @Column(length = 50, nullable = false, unique = true)
+    private String email;
 
     @Column(unique = true, nullable = false)
     private String username;  // login credential
