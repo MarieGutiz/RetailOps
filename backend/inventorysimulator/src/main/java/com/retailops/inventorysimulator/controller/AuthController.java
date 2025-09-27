@@ -17,11 +17,14 @@
 
 package com.retailops.inventorysimulator.controller;
 
+import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
+import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.dto.LoginRequest;
 import com.retailops.inventorysimulator.security.dto.RegisterRequest;
 import com.retailops.inventorysimulator.security.jwt.JwtService;
 import com.retailops.inventorysimulator.service.AccountService;
+import com.retailops.inventorysimulator.service.CustomedUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,9 +46,9 @@ import java.util.Map;
 @Slf4j
 public class AuthController {
 
-    private final AuthenticationManager authManager;
     private final JwtService jwtService;
     private final AccountService accountService;
+    private final CustomedUserDetailsService userDetailsService;
 
     // --- Register endpoint ---
     @PostMapping("/register")
@@ -69,43 +72,24 @@ public class AuthController {
     }
 
     // --- Login endpoint ---
-    @PostMapping(value = "/login" , consumes = "application/json")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    @PostMapping(value = "/login", consumes = "application/json")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         log.info("[LOGIN] Request received for username: {}", request.username());
 
         try {
-            // Authenticate using Spring Security
-            Authentication auth = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.username(), request.password())
-            );
+            // Delegate authentication to service / search username and password
+            UserDetails userDetails = userDetailsService.authenticate(request);
 
-            log.info("[LOGIN] Authentication success object: {}", auth);
+            String token = jwtService.generateToken(userDetails);
+            String role = userDetails.getAuthorities().iterator().next().getAuthority();
 
-            if (auth.isAuthenticated()) {
-                UserDetails userDetails = (UserDetails) auth.getPrincipal();
-                String token = jwtService.generateToken(userDetails);
+            log.info("[LOGIN] Authentication success, token generated for user {}", userDetails.getUsername());
+            return ResponseEntity.ok(new AuthResponse(token, userDetails.getUsername(), role));
 
-                log.info("[LOGIN] Token generated for user {}: {}", userDetails.getUsername(), token);
-
-                // Return JSON with token
-                return ResponseEntity.ok(Map.of(
-                        "username", userDetails.getUsername(),
-                        "token", token,
-                        "roles", userDetails.getAuthorities().stream()
-                                .map(Object::toString)
-                                .toList()
-                ));
-            } else {
-                log.warn("[LOGIN] Invalid credentials for user: {}", request.username());
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
-                        "error", "Invalid login"
-                ));
-            }
-        } catch (Exception e) {
-            log.error("[LOGIN] Authentication failed for user {}: {}", request.username(), e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
-                    "error", "Login failed: " + e.getMessage()
-            ));
+        } catch (AuthException e) {
+            log.error("[LOGIN] Authentication failed for user {}: {}", request.username(), e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(null, null, null));
         }
     }
 }

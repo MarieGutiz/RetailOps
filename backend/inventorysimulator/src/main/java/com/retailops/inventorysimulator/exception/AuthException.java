@@ -15,7 +15,17 @@
  *
  */
 
-package com.retailops.inventorysimulator.security.dto;
+package com.retailops.inventorysimulator.exception;
 
-public record RegisterRequest(String username, String password, String name, String email,String role, String position) {
+import lombok.Getter;
+
+
+@Getter
+public class AuthException extends RuntimeException {
+    private final String username;
+
+    public AuthException(String username, String message) {
+        super(message);
+        this.username = username;
+    }
 }

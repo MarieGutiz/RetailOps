@@ -1,5 +1,6 @@
 package com.retailops.inventorysimulator.exception;
 
+import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,5 +62,12 @@ public class GlobalExceptionHandler {
     private void getErrorMap(Map<String, Object> body, HttpStatus status) {
         body.put("timestamp", LocalDateTime.now());
         body.put("status", status.value());
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<AuthResponse> handleAuthException(AuthException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(AuthResponse.failure("Auth failed for " + ex.getUsername() + ": " + ex.getMessage()));
     }
 }

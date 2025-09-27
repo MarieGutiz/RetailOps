@@ -17,5 +17,15 @@
 
 package com.retailops.inventorysimulator.security.dto;
 
-public record AuthResponse(String token) {
+public record AuthResponse( String token,
+                            String username,
+                            String role) {
+
+    public static AuthResponse success(String token, String username, String role){
+        return new AuthResponse(token,username,"");
+    }
+    public static AuthResponse failure(String err) {
+        return new AuthResponse(null, null, err);
+
+    }
 }

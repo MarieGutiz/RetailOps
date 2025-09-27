@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtService {
@@ -45,13 +47,9 @@ public class JwtService {
 
 
     public String generateToken(UserDetails user) {
-        return Jwts.builder()
-                .setSubject(user.getUsername())
-                .claim("role", user.getAuthorities().iterator().next().getAuthority())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getAuthorities().iterator().next().getAuthority());
+        return createToken(claims, user.getUsername());
     }
 
     public String extractUsername(String token) {
@@ -76,4 +74,28 @@ public class JwtService {
                 .getExpiration()
                 .before(new Date());
     }
+
+    public String generateToken(String email) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, email);
+    }
+
+    private String createToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+    public String extractRole(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
+    }
+
 }
