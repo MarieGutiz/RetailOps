@@ -17,8 +17,11 @@
 
 package com.retailops.inventorysimulator.controller;
 
+import com.retailops.inventorysimulator.security.dto.AuthResponse;
+import com.retailops.inventorysimulator.security.dto.LoginRequest;
 import com.retailops.inventorysimulator.security.jwt.JwtAuthFilter;
 import com.retailops.inventorysimulator.security.jwt.JwtService;
+import com.retailops.inventorysimulator.service.CustomedUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -33,17 +36,20 @@ import java.util.Map;
 @RequestMapping("/auth/oauth2")
 @RequiredArgsConstructor
 public class OAuth2Controller {
-    private  final JwtService jwtAuthFilter;
+    private final JwtService jwtAuthFilter;
+    private final CustomedUserDetailsService userDetailsService;
 
     @GetMapping("/success")
     public ResponseEntity<?> success(Authentication authentication) {
-        UserDetails user = (UserDetails) authentication.getPrincipal();
-        String token = jwtAuthFilter.generateToken(user);
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 
-        return ResponseEntity.ok(Map.of(
-                "message", "Google login successful",
-                "token", token
-        ));
+        // Only check DB existence, no password needed
+        UserDetails userDetails = userDetailsService.authenticateOAuth2(username);
+
+        String token = jwtAuthFilter.generateToken(userDetails);
+        String role = userDetails.getAuthorities().iterator().next().getAuthority();
+
+        return ResponseEntity.ok(new AuthResponse(token, username, role));
     }
 
 }

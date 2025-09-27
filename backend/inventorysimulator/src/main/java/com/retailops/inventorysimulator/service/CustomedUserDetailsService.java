@@ -17,13 +17,16 @@
 
 package com.retailops.inventorysimulator.service;
 
+import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.repository.UserRepository;
+import com.retailops.inventorysimulator.security.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +34,7 @@ import org.springframework.stereotype.Service;
 public class CustomedUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -42,4 +46,36 @@ public class CustomedUserDetailsService implements UserDetailsService {
                 .roles(user.getRole())
                 .build();
     }
+
+    //Check user's info in the db
+    // Standard username/password login
+    public UserDetails authenticate(LoginRequest request) {
+        Account account = getAccount(request.username());
+
+        if (!encoder.matches(request.password(), account.getPassword())) {
+            throw new AuthException(request.username(), "Invalid password");
+        }
+
+        return buildUserDetails(account);
+    }
+
+    private Account getAccount(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new AuthException(username, "User not found"));
+    }
+
+    // OAuth2 login: just check DB and return UserDetails
+    public UserDetails authenticateOAuth2(String username) {
+        Account account = getAccount(username);
+
+        return buildUserDetails(account);
+    }
+
+    private UserDetails buildUserDetails(Account account) {
+        return User.withUsername(account.getUsername())
+                .password(account.getPassword())
+                .roles(account.getRole())
+                .build();
+    }
+
 }

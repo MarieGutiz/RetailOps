@@ -60,6 +60,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
         account.setUsername(request.username());
         account.setPassword(encoder.encode(request.password())); // hash password
         account.setName(request.name());
+        account.setEmail(request.email());
         account.setRole(request.role());
         account.setPosition(request.position());
         account.setRegistrationDate(LocalDate.now());

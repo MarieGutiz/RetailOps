@@ -47,8 +47,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .orElseGet(() -> {
                     Account newAcc = new Account();
                     newAcc.setUsername(email);
+                    newAcc.setEmail(email);
                     newAcc.setName(oauthUser.getAttribute("name"));
-                    newAcc.setRole("USER");
+                    newAcc.setRole("USER_GOOGLE");
                     newAcc.setRegistrationDate(LocalDate.now());
                     return userRepository.save(newAcc);
                 });
