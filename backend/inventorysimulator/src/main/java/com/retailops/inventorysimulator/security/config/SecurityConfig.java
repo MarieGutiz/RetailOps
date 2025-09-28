@@ -17,6 +17,8 @@
 
 package com.retailops.inventorysimulator.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.jwt.JwtAuthFilter;
 import com.retailops.inventorysimulator.security.jwt.JwtService;
 import com.retailops.inventorysimulator.service.CustomOAuth2UserService;
@@ -32,6 +34,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -41,7 +44,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig  {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtAuthFilter jwtAuthFilter;
-    private final JwtService jwtService;
+    private  final AuthResponseService authResponseService;
+   // private final JwtService jwtService;
 
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -61,24 +65,19 @@ public class SecurityConfig  {
                         .requestMatchers("/auth/**", "/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))//change to stateless
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo ->
-                                userInfo.userService(customOAuth2UserService)
-                        )
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler((request, response, authentication) -> {
-                            // Extract email (Google usually returns it here)
-                            String email = authentication.getName();
+                            String username = authentication.getName(); // email
+                            AuthResponse authResponse =
+                                    authResponseService.buildResponse(username, authentication.getAuthorities());
 
-                            // Generate JWT
-                            String token = jwtService.generateToken(email);
-
-                            // Return JSON token
                             response.setContentType("application/json");
-                            response.getWriter().write("{\"token\": \"" + token + "\"}");
+                            new ObjectMapper().writeValue(response.getWriter(), authResponse);
                         })
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
