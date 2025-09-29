@@ -20,21 +20,16 @@ package com.retailops.inventorysimulator.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.jwt.JwtAuthFilter;
-import com.retailops.inventorysimulator.security.jwt.JwtService;
-import com.retailops.inventorysimulator.service.CustomOAuth2UserService;
-import com.retailops.inventorysimulator.service.CustomedUserDetailsService;
+import com.retailops.inventorysimulator.service.CustomOidcUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -42,9 +37,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig  {
-    private final CustomOAuth2UserService customOAuth2UserService;
+//    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtAuthFilter jwtAuthFilter;
     private  final AuthResponseService authResponseService;
+    private  final CustomOidcUserService customOidcUserService;
    // private final JwtService jwtService;
 
 //    @Bean
@@ -67,17 +63,17 @@ public class SecurityConfig  {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))//change to stateless
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
                         .successHandler((request, response, authentication) -> {
-                            String username = authentication.getName(); // email
+                            String email = authentication.getName(); // now it's the email
                             AuthResponse authResponse =
-                                    authResponseService.buildResponse(username, authentication.getAuthorities());
+                                    authResponseService.buildResponse(email, authentication.getAuthorities());
 
                             response.setContentType("application/json");
                             new ObjectMapper().writeValue(response.getWriter(), authResponse);
                         })
                 )
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
