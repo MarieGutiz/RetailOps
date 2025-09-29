@@ -19,20 +19,13 @@ package com.retailops.inventorysimulator.controller;
 
 import com.retailops.inventorysimulator.security.config.AuthResponseService;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
-import com.retailops.inventorysimulator.security.dto.LoginRequest;
-import com.retailops.inventorysimulator.security.jwt.JwtAuthFilter;
-import com.retailops.inventorysimulator.security.jwt.JwtService;
-import com.retailops.inventorysimulator.service.CustomedUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth/oauth2")

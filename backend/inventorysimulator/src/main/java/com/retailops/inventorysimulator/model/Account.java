@@ -1,10 +1,8 @@
 package com.retailops.inventorysimulator.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.retailops.inventorysimulator.util.AuthProviderType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -33,5 +31,9 @@ public class Account extends BaseModel{
     private String password;  // will be hashed with BCrypt
 
     private String role; // e.g. ROLE_USER, ROLE_ADMIN
+
+    @Enumerated(EnumType.STRING)
+    private AuthProviderType provider;
+
 
 }
