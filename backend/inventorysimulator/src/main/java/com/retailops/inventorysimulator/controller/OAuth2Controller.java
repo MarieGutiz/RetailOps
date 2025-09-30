@@ -19,19 +19,19 @@ package com.retailops.inventorysimulator.controller;
 
 import com.retailops.inventorysimulator.security.config.AuthResponseService;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
+import com.retailops.inventorysimulator.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth/oauth2")
 @RequiredArgsConstructor
 public class OAuth2Controller {
-//    private final JwtService jwtAuthFilter;
+    private final JwtService jwtAuthFilter;
 //    private final CustomedUserDetailsService userDetailsService;
     private final AuthResponseService authResponseService;
 
@@ -51,12 +51,28 @@ public class OAuth2Controller {
 //        return ResponseEntity.ok(new AuthResponse(token, username, role));
 //    }
 
+//    @GetMapping("/success")
+//    public ResponseEntity<AuthResponse> success(@RequestParam String token, Authentication authentication) {
+//        if (authentication == null) {
+//            throw new RuntimeException("Unsuccessful! Authentication is null — OAuth2 login not completed");
+//        }
+//        String username = authentication.getName();
+//        String role = authentication.getAuthorities().iterator().next().getAuthority();
+//
+//        return ResponseEntity.ok(new AuthResponse(token, username, role));
+//    }
+
     @GetMapping("/success")
-    public ResponseEntity<AuthResponse> success(@RequestParam String token, Authentication authentication) {
+    public ResponseEntity<AuthResponse> success(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.badRequest().body(AuthResponse.failure("Authentication is null"));
+        }
+
         String username = authentication.getName();
         String role = authentication.getAuthorities().iterator().next().getAuthority();
+        String token = jwtAuthFilter.generateToken(username, role);
 
-        return ResponseEntity.ok(new AuthResponse(token, username, role));
+        return ResponseEntity.ok(AuthResponse.success(token, username, role));
     }
 
 }
