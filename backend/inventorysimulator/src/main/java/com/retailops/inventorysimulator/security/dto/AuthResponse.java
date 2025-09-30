@@ -17,15 +17,21 @@
 
 package com.retailops.inventorysimulator.security.dto;
 
-public record AuthResponse( String token,
-                            String username,
-                            String role) {
+public record AuthResponse(
+        String token,
+        String username,
+        String role
+     //   String error // optional, only used on failure
+) {
 
-    public static AuthResponse success(String token, String username, String role){
-        return new AuthResponse(token,username,"");
-    }
-    public static AuthResponse failure(String err) {
-        return new AuthResponse(null, null, err);
+        // Success factory
+        public static AuthResponse success(String token, String username, String role){
+            return new AuthResponse(token, username, role);
+        }
 
-    }
+        // Failure factory
+        public static AuthResponse failure(String err) {
+            return new AuthResponse(null, null, null);
+        }
 }
+

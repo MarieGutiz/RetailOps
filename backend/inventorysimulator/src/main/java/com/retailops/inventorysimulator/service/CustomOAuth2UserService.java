@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -45,30 +46,45 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        // Use Spring’s default implementation
         DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        System.out.println("OAuth2User attributes: " + oAuth2User.getAttributes());
-        log.info("[LOGIN] OAuth2User attributes:: {}", oAuth2User.getAttributes());
+        log.info("[LOGIN][GitHub] OAuth2User attributes: {}", oAuth2User.getAttributes());
 
-        String email = oAuth2User.getAttribute("email"); // must exist
+        // Try email first, fallback to GitHub "login" if email is private
+        String email = oAuth2User.getAttribute("email");
+        if (email == null) {
+            // Construct a dummy email to satisfy @Email
+            String login = oAuth2User.getAttribute("login");
+            email = login + "@github.local";
+        }
 
-        Account account = userRepository.findByUsername(email)
-                .orElseGet(() -> {
-                    Account newAcc = new Account();
-                    newAcc.setUsername(email);
-                    newAcc.setEmail(email);
-                    newAcc.setName(oAuth2User.getAttribute("name"));
-                    newAcc.setRole("USER_GOOGLE");
-                    newAcc.setProvider(AuthProviderType.GOOGLE);
-                    newAcc.setRegistrationDate(LocalDate.now());
-                    return userRepository.save(newAcc);
-                });
+        String name = oAuth2User.getAttribute("name");
+        if (name == null) {
+            name = oAuth2User.getAttribute("login");
+        }
 
+        // Save user if not exists
+        String finalEmail = email;
+        String finalName = name;
+        userRepository.findByUsername(email).orElseGet(() -> {
+            Account newAcc = new Account();
+            newAcc.setUsername(finalEmail);
+            newAcc.setEmail(finalEmail);
+            newAcc.setName(finalName);
+            newAcc.setPassword(UUID.randomUUID().toString()); // random pwd, since OAuth2 login
+            newAcc.setRole("USER_GITHUB");
+            newAcc.setProvider(AuthProviderType.GITHUB);
+            newAcc.setRegistrationDate(LocalDate.now());
+            return userRepository.save(newAcc);
+        });
+
+        // Build Spring Security user
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(account.getRole())),
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 oAuth2User.getAttributes(),
-                "email"
+                "id" // because in application.properties you set: provider.github.user-name-attribute=id
         );
     }
 }

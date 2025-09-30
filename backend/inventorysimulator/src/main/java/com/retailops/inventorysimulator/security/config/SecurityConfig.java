@@ -20,6 +20,7 @@ package com.retailops.inventorysimulator.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.jwt.JwtAuthFilter;
+import com.retailops.inventorysimulator.service.CustomOAuth2UserService;
 import com.retailops.inventorysimulator.service.CustomOidcUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -39,8 +42,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig  {
 //    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtAuthFilter jwtAuthFilter;
-    private  final AuthResponseService authResponseService;
-    private  final CustomOidcUserService customOidcUserService;
+    private final AuthResponseService authResponseService;
+    private final CustomOidcUserService customOidcUserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
    // private final JwtService jwtService;
 
 //    @Bean
@@ -62,10 +66,40 @@ public class SecurityConfig  {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))//change to stateless
+//                .oauth2Login(oauth2 -> oauth2
+//                        .userInfoEndpoint(userInfo -> userInfo
+//                                .oidcUserService(customOidcUserService)   // Google
+//                                .userService(customOAuth2UserService)    // GitHub
+//                        )
+//                        .successHandler((request, response, authentication) -> {
+//                            String email = authentication.getName(); // now it's the email
+//                            AuthResponse authResponse =
+//                                    authResponseService.buildResponse(email, authentication.getAuthorities());
+//
+//                            response.setContentType("application/json");
+//                            new ObjectMapper().writeValue(response.getWriter(), authResponse);
+//                        })
+//                )
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .oidcUserService(customOidcUserService)   // Google
+                                .userService(customOAuth2UserService)    // GitHub
+                        )
                         .successHandler((request, response, authentication) -> {
-                            String email = authentication.getName(); // now it's the email
+                            String email;
+                            Object principal = authentication.getPrincipal();
+
+                            if (principal instanceof OidcUser oidcUser) {
+                                // Google
+                                email = oidcUser.getEmail();
+                            } else if (principal instanceof OAuth2User oauth2User) {
+                                // GitHub
+                                email = (String) oauth2User.getAttributes().getOrDefault("email",
+                                        oauth2User.getAttributes().get("login"));
+                            } else {
+                                email = authentication.getName();
+                            }
+
                             AuthResponse authResponse =
                                     authResponseService.buildResponse(email, authentication.getAuthorities());
 
@@ -73,6 +107,7 @@ public class SecurityConfig  {
                             new ObjectMapper().writeValue(response.getWriter(), authResponse);
                         })
                 )
+
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
