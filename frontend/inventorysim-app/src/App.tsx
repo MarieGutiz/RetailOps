@@ -1,10 +1,10 @@
 import './App.css'
 import { BrowserRouter } from 'react-router-dom';
-import Approutes from './routes/Approutes';
+import AppRoutes from './routes/AppRoutes';
 
 export const App = () => (
   <BrowserRouter>
-    <Approutes />
+    <AppRoutes />
   </BrowserRouter>
 );
 
