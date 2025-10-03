@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@tailwind utilities;
 
 @custom-variant dark (&:is(.dark *));
 
@@ -181,4 +181,15 @@ button:focus-visible {
 
   }
 
+}
+
+
+@layer base {
+  body {
+    @apply min-h-screen bg-white;
+  }
+
+  body.auth-body {
+    @apply bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500;
+  }
 }
