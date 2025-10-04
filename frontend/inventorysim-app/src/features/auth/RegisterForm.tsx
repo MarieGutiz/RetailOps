@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/Button"
 import { Link } from "react-router-dom"
 import Positions from "./ui/Positions"
 import SocialBtns from "./ui/SocialBtns"
-import { Divide } from "lucide-react"
 import Divider from "./ui/Divider"
 
 const RegisterForm = () => {
