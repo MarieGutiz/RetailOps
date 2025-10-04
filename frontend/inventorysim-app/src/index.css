@@ -183,7 +183,6 @@ button:focus-visible {
 
 }
 
-
 @layer base {
   body {
     @apply min-h-screen bg-white;

@@ -1,8 +1,7 @@
-import React from 'react'
-
+import Plaisio from '@/features/dashboard/Plaisio'
 const Dashboard = () => {
   return (
-    <div>Dashboard</div>
+    <><Plaisio /></>
   )
 }
 
