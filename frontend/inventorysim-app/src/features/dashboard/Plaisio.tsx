@@ -1,6 +1,6 @@
-import { AppSidebar } from '@/components/app-sidebar'
-import { SectionCards } from '@/components/section-cards'
-import { SiteHeader } from '@/components/site-header'
+import { AppSidebar } from '@/components/dashboard-resources/app-sidebar'
+import { SectionCards } from '@/components/dashboard-resources/section-cards'
+import { SiteHeader } from '@/components/dashboard-resources/site-header'
 
 import React from 'react'
 import {
