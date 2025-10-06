@@ -1,8 +1,9 @@
 export interface Account {
-  id: number;
+  id?: number;
   fullname: string;
   email: string;
   username?: string;
+  password: string;
   role?: string;
   position?: string;
 }

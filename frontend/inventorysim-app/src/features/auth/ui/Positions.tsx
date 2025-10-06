@@ -11,8 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const Positions = () => {
-   const [position, setPosition] = React.useState("Student")
+const Positions = ({ position, setPosition }: { position: string; setPosition: React.Dispatch<React.SetStateAction<string>> }) => {
+   
    React.useEffect(() => {
      console.log("Selected position:", position)
    }, [position]);

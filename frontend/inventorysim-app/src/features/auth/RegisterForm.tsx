@@ -6,8 +6,20 @@ import { Link } from "react-router-dom"
 import Positions from "./ui/Positions"
 import SocialBtns from "./ui/SocialBtns"
 import Divider from "./ui/Divider"
+import {  useAuth } from "@/hooks/useAuth"
+import FormError from "./ui/FormError"
+import { Controller } from "react-hook-form"
 
 const RegisterForm = () => {
+  const {RegisterFormValidation, handleRegister, loading, error} = useAuth();
+
+  // const [position, setPosition] = React.useState("Student")
+
+  const onSubmit = RegisterFormValidation.handleSubmit(async (data) => {
+    console.log("Form data submitted:", data);
+    await handleRegister(data);
+  });
+  
   return (
     <div className="p-6">
       {/* Header */}
@@ -23,7 +35,7 @@ const RegisterForm = () => {
       </div>
 
       {/* Form */}
-      <div className="mt-10 mx-auto w-full max-w-md">
+      <form onSubmit={onSubmit} className="mt-10 mx-auto w-full max-w-md" >
         <Card className="p-6">
           <CardHeader>
             <CardTitle className="text-xl">Join RetailOps</CardTitle>
@@ -33,13 +45,17 @@ const RegisterForm = () => {
           <CardContent className="space-y-4">
             {/* Name */}
             <div className="space-y-2">
-              <Label htmlFor="name" className="block text-left">Full Name</Label>
+              <Label htmlFor="fullname" className="block text-left">Full Name</Label>
               <Input
-                id="name"
+                id="fullname"
                 type="text"
-                placeholder="John Doe"
+                 {...RegisterFormValidation.register("fullname")}
+                placeholder="Dexter Newte"
                 required
               />
+              {RegisterFormValidation.formState.errors.fullname && (
+                <FormError message={RegisterFormValidation.formState.errors.fullname.message ?? "Invalid name"} />
+              )}
             </div>
 
             {/* Email */}
@@ -48,9 +64,13 @@ const RegisterForm = () => {
               <Input
                 id="email"
                 type="email"
+                {...RegisterFormValidation.register("email")}
                 placeholder="you@example.com"
                 required
               />
+              {RegisterFormValidation.formState.errors.email && (
+                <FormError message={RegisterFormValidation.formState.errors.email.message ?? "Invalid email"} />
+              )}
             </div>
 
             {/* Password */}
@@ -59,9 +79,13 @@ const RegisterForm = () => {
               <Input
                 id="password"
                 type="password"
+                {...RegisterFormValidation.register("password")}
                 placeholder="••••••••"
                 required
               />
+              {RegisterFormValidation.formState.errors.password && (
+                <FormError message={RegisterFormValidation.formState.errors.password.message ?? "Invalid password"} />
+              )}
             </div>
 
             {/* Confirm Password */}
@@ -70,25 +94,38 @@ const RegisterForm = () => {
               <Input
                 id="confirm-password"
                 type="password"
+                {...RegisterFormValidation.register("confirmPassword")}
                 placeholder="••••••••"
                 required
               />
+              {RegisterFormValidation.formState.errors.confirmPassword && (
+                <FormError message={RegisterFormValidation.formState.errors.confirmPassword.message?.toString() ?? "Passwords do not match"} />
+              )}
             </div>
             {/* Insert position */}
             <div className="flex items-center gap-2">
             <Label htmlFor="position" className="text-sm font-medium text-left">
                 Position:
             </Label>
-            <Positions />
-            </div>
+            <Controller
+              name="position"
+              control={RegisterFormValidation.control}
+              rules={{ required: "Position is required" }}
+              render={({ field }) => (
+                <Positions position={field.value} setPosition={field.onChange} />
+              )}
+            />
 
+            </div>
+            {/* Show form error if any */}
+            {error && <FormError message={error} />}
             {/* Register Button */}
             <Button
               type="submit"
               className="w-full bg-indigo-500 text-white hover:bg-indigo-600"
               style={{backgroundColor: '#4F46E5', color: 'white'}}
             >
-              Create Account
+                {loading ? "Registering..." : "Create Account"}
             </Button>
 
             {/* Divider */}
@@ -110,7 +147,7 @@ const RegisterForm = () => {
             </p>
           </CardFooter>
         </Card>
-      </div>
+      </form>
     </div>
   )
 }
