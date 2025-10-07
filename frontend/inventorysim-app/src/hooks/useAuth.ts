@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
-import { set, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import type { Account } from "@/types/accounts";
 import authService from "@/services/auth/authService";
+import type { Account } from "@/types/accounts";
 
+// Define your registration schema
 export const registerShape = z
   .object({
     fullname: z.string().min(2, "Full name must be at least 2 characters"),
@@ -19,6 +20,7 @@ export const registerShape = z
     message: "Passwords do not match",
   });
 
+// Hook
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,15 +35,16 @@ export const useAuth = () => {
       role: "USER",
       position: "Student",
     },
+    mode: "onBlur",
   });
 
+  // Handle registration (just logs for now)
   const handleRegister = async (data: z.infer<typeof registerShape>) => {
     setLoading(true);
     setError(null);
 
     try {
-      console.log("Registering user:", data);
-
+      console.log("Registering user (mock):", data);
       const account: Account = {
         fullname: data.fullname,
         email: data.email,
@@ -50,7 +53,10 @@ export const useAuth = () => {
         position: data.position,
       };
 
+      // Here you would normally call your auth service
       await authService.register(account);
+
+      // Reset form
       RegisterFormValidation.reset();
     } catch (err) {
       setError("Registration failed. Please try again.");
