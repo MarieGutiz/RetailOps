@@ -11,17 +11,16 @@ import FormError from "./ui/FormError"
 import { Controller } from "react-hook-form"
 
 const RegisterForm = () => {
-  const {RegisterFormValidation, handleRegister, loading, error} = useAuth();
-
-  // const [position, setPosition] = React.useState("Student")
+   const { RegisterFormValidation, handleRegister, loading, error} = useAuth();
 
   const onSubmit = RegisterFormValidation.handleSubmit(async (data) => {
-    console.log("Form data submitted:", data);
-    await handleRegister(data);
+    console.log(" Valid form data:", data);
+    await handleRegister(data); // still just logs
   });
-  
+
   return (
-    <div className="p-6">
+    <>
+   <div className="p-6">
       {/* Header */}
       <div className="mx-auto w-full max-w-md">
         <img
@@ -66,6 +65,7 @@ const RegisterForm = () => {
                 type="email"
                 {...RegisterFormValidation.register("email")}
                 placeholder="you@example.com"
+                autoComplete="email"
                 required
               />
               {RegisterFormValidation.formState.errors.email && (
@@ -81,6 +81,7 @@ const RegisterForm = () => {
                 type="password"
                 {...RegisterFormValidation.register("password")}
                 placeholder="••••••••"
+                autoComplete="new-password"
                 required
               />
               {RegisterFormValidation.formState.errors.password && (
@@ -96,6 +97,7 @@ const RegisterForm = () => {
                 type="password"
                 {...RegisterFormValidation.register("confirmPassword")}
                 placeholder="••••••••"
+                autoComplete="new-password"
                 required
               />
               {RegisterFormValidation.formState.errors.confirmPassword && (
@@ -149,6 +151,7 @@ const RegisterForm = () => {
         </Card>
       </form>
     </div>
+   </>
   )
 }
 

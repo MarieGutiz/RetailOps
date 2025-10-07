@@ -4,6 +4,6 @@ export interface Account {
   email: string;
   username?: string;
   password: string;
-  role?: string;
-  position?: string;
+  role: string | 'USER';
+  position: string;
 }
