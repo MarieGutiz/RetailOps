@@ -5,8 +5,19 @@ import { Button } from "@/components/ui/Button"
 import { Link } from "react-router-dom"
 import SocialBtns from "./ui/SocialBtns"
 import Divider from "./ui/Divider"
+import { useAuth } from "@/hooks/useAuth"
+import FormError from "./ui/FormError"
 
 const LoginForm = () => {
+  const {loginFormValidation, handleLogin, loading, error} = useAuth();
+
+  const onSubmit = loginFormValidation.handleSubmit(async (data) => {
+    const response = await handleLogin(data);
+    if (response) {
+      console.log("Login successful:", response);
+    }
+  });
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -22,7 +33,7 @@ const LoginForm = () => {
       </div>
 
       {/* Form */}
-      <div className="mt-10 mx-auto w-full max-w-md">
+      <form onSubmit={onSubmit} className="mt-10 mx-auto w-full max-w-md">
         <Card className="p-6">
           <CardHeader>
             <CardTitle className="text-xl">Welcome to RetailOps</CardTitle>
@@ -38,7 +49,12 @@ const LoginForm = () => {
                 type="email"
                 placeholder="you@example.com"
                 required
+                autoComplete="email"
+                {...loginFormValidation.register("email")}
               />
+              {loginFormValidation.formState.errors.email && (
+                <FormError message={loginFormValidation.formState.errors.email.message?.toString() ?? "Invalid email address"} />
+              )}
             </div>
 
             {/* Password */}
@@ -56,13 +72,19 @@ const LoginForm = () => {
                 id="password"
                 type="password"
                 placeholder="••••••••"
+                autoComplete="new-password"
                 required
+                {...loginFormValidation.register("password")}
               />
+               {loginFormValidation.formState.errors.password && (
+                <FormError message={loginFormValidation.formState.errors.password.message?.toString() ?? "Invalid password"} />
+              )}
             </div>
-
+            {error && <FormError message={error} />}
             {/* Sign in */}
-            <Button type="submit" className="w-full" style={{backgroundColor: '#4F46E5', color: 'white'}}>
-              Sign in
+            <Button type="submit" 
+            className="w-full" style={{backgroundColor: '#4F46E5', color: 'white'}}>
+               {loading ? "Logging in..." : "Sign in"}
             </Button>
 
             {/* Divider */}
@@ -84,7 +106,7 @@ const LoginForm = () => {
             </p>
           </CardFooter>
         </Card>
-      </div>
+    </form>
     </div>
   )
 }

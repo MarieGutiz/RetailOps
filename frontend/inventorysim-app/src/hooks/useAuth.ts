@@ -5,7 +5,7 @@ import { useState } from "react";
 import authService from "@/services/auth/authService";
 import type { Account } from "@/types/accounts";
 
-// Define your registration schema
+// Define registration schema
 export const registerShape = z
   .object({
     fullname: z.string().min(2, "Full name must be at least 2 characters"),
@@ -18,6 +18,14 @@ export const registerShape = z
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
     message: "Passwords do not match",
+  });
+
+
+  //Define the login schema
+const loginShape = z
+  .object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
   });
 
 // Hook
@@ -38,7 +46,7 @@ export const useAuth = () => {
     mode: "onBlur",
   });
 
-  // Handle registration (just logs for now)
+  // Handle registration 
   const handleRegister = async (data: z.infer<typeof registerShape>) => {
     setLoading(true);
     setError(null);
@@ -58,6 +66,9 @@ export const useAuth = () => {
 
       // Reset form
       RegisterFormValidation.reset();
+      setLoading(false);
+      
+
     } catch (err) {
       setError("Registration failed. Please try again.");
     } finally {
@@ -65,5 +76,34 @@ export const useAuth = () => {
     }
   };
 
-  return { RegisterFormValidation, handleRegister, loading, error };
+  const loginFormValidation = useForm({
+    resolver: zodResolver(loginShape),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onBlur",
+  });
+
+  const handleLogin = async (data: z.infer<typeof loginShape>) =>{
+    setLoading(true);
+    setError(null);
+    try{
+     
+      const response =await authService.login(data.email, data.password);
+      localStorage.setItem("token", response.token);
+      console.log("Logging in user (mock):", response);
+      
+      setLoading(false);
+      return response;
+
+    }catch(err:any){
+      setError("Login failed. Please try again." + err.message);
+      setLoading(false);
+      return null;
+    }
+  }
+
+
+  return { RegisterFormValidation, handleRegister, loading, error, loginFormValidation, handleLogin };
 };
