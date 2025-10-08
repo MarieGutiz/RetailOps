@@ -18,13 +18,14 @@ import java.time.LocalDate;
 public class Account extends BaseModel{
     private String name;
     private  String position;// A manager, a student
+
     private LocalDate registrationDate;
 
     @Email
     @Column(length = 50, nullable = false, unique = true)
     private String email;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = true)
     private String username;  // login credential
 
     @Column(nullable = false)
