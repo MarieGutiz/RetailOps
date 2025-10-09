@@ -17,6 +17,7 @@
 
 package com.retailops.inventorysimulator.service;
 
+import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.repository.UserRepository;
 import com.retailops.inventorysimulator.security.dto.RegisterRequest;
@@ -61,6 +62,12 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 
         return userRepository.save(account);
 
+    }
+
+    @Override
+    public Optional<Account> findByEmail(String email) {
+        return Optional.of(userRepository.findByEmail(email))
+                .orElseThrow(() -> new AuthException(email, "No account found for this email address"));
     }
 
 

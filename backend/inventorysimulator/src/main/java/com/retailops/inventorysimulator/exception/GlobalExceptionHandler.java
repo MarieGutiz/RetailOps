@@ -68,6 +68,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<AuthResponse> handleAuthException(AuthException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(AuthResponse.failure("Auth failed for " + ex.getUsername() + ": " + ex.getMessage()));
+                .body(AuthResponse.failure("Auth failed for " + ex.getEmail() + ": " + ex.getMessage()));
     }
 }

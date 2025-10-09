@@ -17,8 +17,11 @@
 
 package com.retailops.inventorysimulator.security.config;
 
+import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.jwt.JwtService;
+import com.retailops.inventorysimulator.service.AccountService;
+import com.retailops.inventorysimulator.service.CustomedUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -29,10 +32,20 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class AuthResponseService {
     private final JwtService jwtService;
+    private final CustomedUserDetailsService userDetailsService;
 
     public AuthResponse buildResponse(String username, Collection<? extends GrantedAuthority> authorities) {
         String token = jwtService.generateToken(username);
         String role = authorities.iterator().next().getAuthority(); // pick first role
-        return new AuthResponse(token, username, role);
+
+        Account account = userDetailsService.authenticateOAuth2(username);
+
+        return new AuthResponse(token,
+                account.getEmail(),
+                account.getUsername(),
+                account.getName(),
+                role);
+
+        //accountService.findByEmail()
     }
 }

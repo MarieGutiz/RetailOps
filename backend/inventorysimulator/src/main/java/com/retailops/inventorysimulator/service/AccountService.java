@@ -26,4 +26,5 @@ public interface AccountService extends BaseService<Account, Long> {
     Optional<Account> findByUsername(String username);
 //    Account register(Account account);
     Account register(RegisterRequest request);
+    Optional<Account> findByEmail(String email);
 }

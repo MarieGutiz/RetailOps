@@ -20,6 +20,7 @@ package com.retailops.inventorysimulator.service;
 import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.repository.UserRepository;
+import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -39,7 +40,7 @@ public class CustomedUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account user = userRepository.findByUsername(username).
-                orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                orElseThrow(() -> new UsernameNotFoundException("User not found, load by username: " + username));
 
         return User.withUsername(user.getUsername())
                 .password(user.getPassword())
@@ -50,32 +51,49 @@ public class CustomedUserDetailsService implements UserDetailsService {
     //Check user's info in the db
     // Standard username/password login
     public UserDetails authenticate(LoginRequest request) {
-        Account account = getAccount(request.username());
+        Account account = getAccountByEmailOrUsername(request);
 
         if (!encoder.matches(request.password(), account.getPassword())) {
-            throw new AuthException(request.username(), "Invalid password");
+            throw new AuthException(account.getUsername(), "Invalid password");
         }
 
         return buildUserDetails(account);
     }
 
-    private Account getAccount(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new AuthException(username, "User not found"));
+    private Account getAccountByEmailOrUsername(LoginRequest request) {
+        Account account;
+
+        account = userRepository.findByEmail(request.identifier())
+                .orElseGet(() -> userRepository.findByUsername(request.identifier())
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found nor email: " + request.identifier())));
+
+        return account;
     }
 
     // OAuth2 login: just check DB and return UserDetails
-    public UserDetails authenticateOAuth2(String username) {
-        Account account = getAccount(username);
+    public Account authenticateOAuth2(String usernameOrEmail) {
 
-        return buildUserDetails(account);
+        return userRepository.findByUsername(usernameOrEmail)
+                .or(() -> userRepository.findByEmail(usernameOrEmail))
+                .orElseThrow(() -> new AuthException(usernameOrEmail, "User not found "+usernameOrEmail));
     }
 
     private UserDetails buildUserDetails(Account account) {
         return User.withUsername(account.getUsername())
+//                .username(account.getEmail())
                 .password(account.getPassword())
                 .roles(account.getRole())
                 .build();
+    }
+
+    public AuthResponse response(String token, String role,LoginRequest request){
+        Account account = this.getAccountByEmailOrUsername(request);
+        return AuthResponse.success(
+                token,
+                account.getEmail(),
+                account.getUsername(),
+                account.getName(),
+                role);
     }
 
 }
