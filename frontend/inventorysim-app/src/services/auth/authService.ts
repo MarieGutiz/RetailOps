@@ -2,6 +2,11 @@ import type { Account } from "@/types/accounts";
 import api from "../api";
 
 
+export interface Credentials {
+  identifier: string;
+  password: string;
+}
+
 const authService = {
   register: async (account: Account) => {
     // auto-generate username from name (e.g., "Mariela Gutierrez" → "mariela.gutierrez")
@@ -18,8 +23,8 @@ const authService = {
 
     return response.data;
   },
-  login: async (username: string, password: string) => {
-    const response = await api.post("/auth/login", { username, password });
+  login: async (credentials: Credentials) => {
+    const response = await api.post("/auth/login", credentials);
     return response.data;
   }
 };
