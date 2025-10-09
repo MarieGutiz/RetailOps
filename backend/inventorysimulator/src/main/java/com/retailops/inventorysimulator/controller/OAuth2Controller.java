@@ -17,9 +17,11 @@
 
 package com.retailops.inventorysimulator.controller;
 
+import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.security.config.AuthResponseService;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.jwt.JwtService;
+import com.retailops.inventorysimulator.service.CustomedUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -32,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OAuth2Controller {
     private final JwtService jwtAuthFilter;
-//    private final CustomedUserDetailsService userDetailsService;
+    private final CustomedUserDetailsService userDetailsService;
     private final AuthResponseService authResponseService;
 
 //    @GetMapping("/success")
@@ -68,11 +70,26 @@ public class OAuth2Controller {
             return ResponseEntity.badRequest().body(AuthResponse.failure("Authentication is null"));
         }
 
-        String username = authentication.getName();
-        String role = authentication.getAuthorities().iterator().next().getAuthority();
-        String token = jwtAuthFilter.generateToken(username, role);
+        String usernameOrEmail = authentication.getName();
 
-        return ResponseEntity.ok(AuthResponse.success(token, username, role));
+        // Look up the account using either email or username
+        Account account = userDetailsService.authenticateOAuth2(usernameOrEmail);
+        // Role (e.g. ROLE_USER)
+        String role = authentication.getAuthorities().iterator().next().getAuthority();
+
+        // Generate JWT token
+        String token = jwtAuthFilter.generateToken(account.getUsername(), role);
+
+        // Return all the account info
+        return ResponseEntity.ok(
+                AuthResponse.success(
+                        token,
+                        account.getEmail(),
+                        account.getUsername(),
+                        account.getName(),
+                        account.getRole()
+                )
+        );
     }
 
 }

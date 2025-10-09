@@ -74,7 +74,8 @@ public class AuthController {
     // --- Login endpoint ---
     @PostMapping(value = "/login", consumes = "application/json")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        log.info("[LOGIN] Request received for username: {}", request.username());
+       log.info("[LOGIN] Request received for email: {}", request.identifier());
+
 
         try {
             // Delegate authentication to service / search username and password
@@ -83,13 +84,15 @@ public class AuthController {
             String token = jwtService.generateToken(userDetails);
             String role = userDetails.getAuthorities().iterator().next().getAuthority();
 
+            AuthResponse response = userDetailsService.response(token, role, request);
+
             log.info("[LOGIN] Authentication success, token generated for user {}", userDetails.getUsername());
-            return ResponseEntity.ok(new AuthResponse(token, userDetails.getUsername(), role));
+            return ResponseEntity.ok(response);
 
         } catch (AuthException e) {
-            log.error("[LOGIN] Authentication failed for user {}: {}", request.username(), e.getMessage());
+            //log.error("[LOGIN] Authentication failed for user {}: {}", request.email(), e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthResponse(null, null, null));
+                    .body(new AuthResponse(null, null, null, null, null));
         }
     }
 }

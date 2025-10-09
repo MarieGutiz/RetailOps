@@ -22,10 +22,10 @@ import lombok.Getter;
 
 @Getter
 public class AuthException extends RuntimeException {
-    private final String username;
+    private final String email;
 
-    public AuthException(String username, String message) {
+    public AuthException(String email, String message) {
         super(message);
-        this.username = username;
+        this.email = email;
     }
 }

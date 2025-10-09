@@ -17,5 +17,5 @@
 
 package com.retailops.inventorysimulator.security.dto;
 
-public record LoginRequest(String username, String password) {
+public record LoginRequest(String identifier, String password) {
 }

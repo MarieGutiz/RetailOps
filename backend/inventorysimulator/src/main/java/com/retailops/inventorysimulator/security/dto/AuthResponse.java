@@ -19,19 +19,21 @@ package com.retailops.inventorysimulator.security.dto;
 
 public record AuthResponse(
         String token,
+        String email,
         String username,
+        String name,
         String role
      //   String error // optional, only used on failure
 ) {
 
         // Success factory
-        public static AuthResponse success(String token, String username, String role){
-            return new AuthResponse(token, username, role);
+        public static AuthResponse success(String token, String email, String username, String name, String role){
+            return new AuthResponse(token, email, username, name, role);
         }
 
         // Failure factory
         public static AuthResponse failure(String err) {
-            return new AuthResponse(null, null, null);
+            return new AuthResponse(null, null, null, null, null);
         }
 }
 
