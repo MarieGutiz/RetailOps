@@ -12,6 +12,7 @@ const LoginForm = () => {
   const {loginFormValidation, handleLogin, loading, error} = useAuth();
 
   const onSubmit = loginFormValidation.handleSubmit(async (data) => {
+    console.log("Valid form data:", data);
     const response = await handleLogin(data);
     if (response) {
       console.log("Login successful:", response);

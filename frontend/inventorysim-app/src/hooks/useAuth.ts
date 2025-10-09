@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import authService from "@/services/auth/authService";
+import authService, { type Credentials } from "@/services/auth/authService";
 import type { Account } from "@/types/accounts";
 
 // Define registration schema
@@ -89,8 +89,11 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
     try{
-     
-      const response =await authService.login(data.email, data.password);
+      const credentials: Credentials = {
+        identifier: data.email,
+        password: data.password
+      };
+      const response =await authService.login(credentials);
       localStorage.setItem("token", response.token);
       console.log("Logging in user (mock):", response);
       
