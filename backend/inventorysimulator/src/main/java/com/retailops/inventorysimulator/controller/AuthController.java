@@ -92,7 +92,7 @@ public class AuthController {
         } catch (AuthException e) {
             //log.error("[LOGIN] Authentication failed for user {}: {}", request.email(), e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthResponse(null, null, null, null, null));
+                    .body(new AuthResponse(null, null, null, null,null, null));
         }
     }
 }

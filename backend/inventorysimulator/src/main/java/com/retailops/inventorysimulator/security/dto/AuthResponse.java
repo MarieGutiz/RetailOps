@@ -20,6 +20,7 @@ package com.retailops.inventorysimulator.security.dto;
 public record AuthResponse(
         String token,
         String email,
+        Long id,
         String username,
         String name,
         String role
@@ -27,13 +28,13 @@ public record AuthResponse(
 ) {
 
         // Success factory
-        public static AuthResponse success(String token, String email, String username, String name, String role){
-            return new AuthResponse(token, email, username, name, role);
+        public static AuthResponse success(String token, String email, Long id, String username, String name, String role){
+            return new AuthResponse(token, email,id, username, name, role);
         }
 
         // Failure factory
         public static AuthResponse failure(String err) {
-            return new AuthResponse(null, null, null, null, null);
+            return new AuthResponse(null, null, null, null, null, null);
         }
 }
 

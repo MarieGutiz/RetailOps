@@ -42,6 +42,7 @@ public class AuthResponseService {
 
         return new AuthResponse(token,
                 account.getEmail(),
+                account.getId(),
                 account.getUsername(),
                 account.getName(),
                 role);

@@ -85,6 +85,7 @@ public class OAuth2Controller {
                 AuthResponse.success(
                         token,
                         account.getEmail(),
+                        account.getId(),
                         account.getUsername(),
                         account.getName(),
                         account.getRole()
