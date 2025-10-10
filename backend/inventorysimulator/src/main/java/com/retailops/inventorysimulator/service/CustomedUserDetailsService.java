@@ -91,6 +91,7 @@ public class CustomedUserDetailsService implements UserDetailsService {
         return AuthResponse.success(
                 token,
                 account.getEmail(),
+                account.getId(),
                 account.getUsername(),
                 account.getName(),
                 role);
