@@ -84,11 +84,12 @@ public class OAuth2Controller {
         return ResponseEntity.ok(
                 AuthResponse.success(
                         token,
-                        account.getEmail(),
                         account.getId(),
+                        account.getEmail(),
                         account.getUsername(),
                         account.getName(),
-                        account.getRole()
+                        account.getRole(),
+                        account.getPosition()
                 )
         );
     }

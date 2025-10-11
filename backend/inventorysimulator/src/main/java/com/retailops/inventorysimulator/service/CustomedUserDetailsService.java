@@ -90,11 +90,12 @@ public class CustomedUserDetailsService implements UserDetailsService {
         Account account = this.getAccountByEmailOrUsername(request);
         return AuthResponse.success(
                 token,
-                account.getEmail(),
                 account.getId(),
+                account.getEmail(),
                 account.getUsername(),
                 account.getName(),
-                role);
+                role,
+                account.getPosition());
     }
 
 }
