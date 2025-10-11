@@ -41,11 +41,12 @@ public class AuthResponseService {
         Account account = userDetailsService.authenticateOAuth2(username);
 
         return new AuthResponse(token,
-                account.getEmail(),
                 account.getId(),
+                account.getEmail(),
                 account.getUsername(),
                 account.getName(),
-                role);
+                role,
+                account.getPosition());
 
         //accountService.findByEmail()
     }
