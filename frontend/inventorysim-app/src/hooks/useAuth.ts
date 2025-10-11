@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import authService, { type Credentials } from "@/services/auth/authService";
 import type { Account } from "@/types/accounts";
+import { saveToStorage } from "@/utils/storage";
 
 // Define registration schema
 export const registerShape = z
@@ -93,8 +94,12 @@ export const useAuth = () => {
         identifier: data.email,
         password: data.password
       };
-      const response =await authService.login(credentials);
-      localStorage.setItem("token", response.token);
+      const response = await authService.login(credentials);
+      const {token, id, email, username, name, role} = response;
+
+
+      saveToStorage.setItem("token", token);
+      saveToStorage.setItem("user",JSON.stringify({id, email, username, name, role}));
       console.log("Logging in user (mock):", response);
       
       setLoading(false);

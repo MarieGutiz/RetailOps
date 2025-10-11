@@ -25,6 +25,7 @@ const authService = {
   },
   login: async (credentials: Credentials) => {
     const response = await api.post("/auth/login", credentials);
+    
     return response.data;
   }
 };

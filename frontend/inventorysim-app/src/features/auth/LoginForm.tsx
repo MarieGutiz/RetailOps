@@ -2,20 +2,24 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import SocialBtns from "./ui/SocialBtns"
 import Divider from "./ui/Divider"
 import { useAuth } from "@/hooks/useAuth"
 import FormError from "./ui/FormError"
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const {loginFormValidation, handleLogin, loading, error} = useAuth();
+
 
   const onSubmit = loginFormValidation.handleSubmit(async (data) => {
     console.log("Valid form data:", data);
     const response = await handleLogin(data);
+   
     if (response) {
       console.log("Login successful:", response);
+      navigate(`/profile/${response.id}`);
     }
   });
 

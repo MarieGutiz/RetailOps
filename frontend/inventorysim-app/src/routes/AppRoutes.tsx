@@ -5,17 +5,35 @@ import Home from '../pages/Home'
 import RegisterForm from '@/features/auth/RegisterForm'
 import Dashboard from '@/pages/Dashboard'
 import AnimatedLogo from '@/features/animation/AnimatedLogo'
-import SplashScreen from '@/pages/SplashScreen'
+import ProfilePage from '@/features/auth/profile/[id]'
+import ProtectedRoute from './ProtectedRoute '
 
 const Approutes = () => {
   return (
-    <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterForm />} />   
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path='/splash' element={<AnimatedLogo />} />
-        
+     <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<RegisterForm />} />
+      <Route path="/splash" element={<AnimatedLogo />} />
+
+      {/* Protected Routes */}
+      <Route
+        path="/profile/:id"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   
   )
