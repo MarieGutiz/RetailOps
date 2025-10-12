@@ -21,7 +21,7 @@ const authService = {
       role,
     });
 
-    return response.data;
+    return response;
   },
   login: async (credentials: Credentials) => {
     const response = await api.post("/auth/login", credentials);

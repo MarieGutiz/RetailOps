@@ -19,7 +19,9 @@ const LoginForm = () => {
    
     if (response) {
       console.log("Login successful:", response);
-      navigate(`/profile/${response.id}`);
+      //navigate(`/profile/${response.id}`);
+      navigate(`/profile/user=${response.id}`);
+
     }
   });
 
