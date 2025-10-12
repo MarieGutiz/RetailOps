@@ -2,20 +2,31 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Positions from "./ui/Positions"
 import SocialBtns from "./ui/SocialBtns"
 import Divider from "./ui/Divider"
 import {  useAuth } from "@/hooks/useAuth"
 import FormError from "./ui/FormError"
 import { Controller } from "react-hook-form"
+import toast from "react-hot-toast";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
    const { RegisterFormValidation, handleRegister, loading, error} = useAuth();
 
   const onSubmit = RegisterFormValidation.handleSubmit(async (data) => {
     console.log(" Valid form data:", data);
-    await handleRegister(data); // still just logs
+    const response = await handleRegister(data);
+    console.log("Response "+response);
+    
+    if (response?.success) {
+    toast.success("Registration successful! Redirecting to login...");
+    setTimeout(() => navigate("/login"), 2000);
+    } else {
+      toast.error("Registration failed. Please try again.");
+    }
+   
   });
 
   return (

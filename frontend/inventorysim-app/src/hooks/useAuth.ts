@@ -48,34 +48,46 @@ export const useAuth = () => {
   });
 
   // Handle registration 
-  const handleRegister = async (data: z.infer<typeof registerShape>) => {
-    setLoading(true);
-    setError(null);
+const handleRegister = async (data: z.infer<typeof registerShape>) => {
+  setLoading(true);
+  setError(null);
 
-    try {
-      console.log("Registering user (mock):", data);
-      const account: Account = {
-        fullname: data.fullname,
-        email: data.email,
-        password: data.password,
-        role: data.role,
-        position: data.position,
-      };
+  try {
+    console.log("Registering user:", data);
+    const account: Account = {
+      fullname: data.fullname,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+      position: data.position,
+    };
 
-      // Here you would normally call your auth service
-      await authService.register(account);
+    const response = await authService.register(account);
 
-      // Reset form
-      RegisterFormValidation.reset();
-      setLoading(false);
-      
+    // Assume success if the API returned a 201 or 200 status, or if response.data exists
+    const success =
+      response?.status === 200 ||
+      response?.status === 201 ||
+      response?.data 
 
-    } catch (err) {
+     console.log("success "+success);
+
+    if (success) {
+      return { success: true, data: response?.data || null };
+    } else {
       setError("Registration failed. Please try again.");
-    } finally {
-      setLoading(false);
+      return { success: false };
     }
-  };
+  } catch (err) {
+    console.error("Registration error:", err);
+    setError("Registration failed. Please try again.");
+    return { success: false };
+  } finally {
+    setLoading(false);
+     // Reset form
+    RegisterFormValidation.reset();
+  }
+};
 
   const loginFormValidation = useForm({
     resolver: zodResolver(loginShape),

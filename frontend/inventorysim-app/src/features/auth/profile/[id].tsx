@@ -1,5 +1,5 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 interface ProfilePageProps {
    id: string;
@@ -11,7 +11,8 @@ interface ProfilePageProps {
 }
 
 const ProfilePage = () => {
-  const {id} = useParams<{id: string}>();
+  const {id} = useParams<{id: string}>();  
+
   const userData = JSON.parse(localStorage.getItem("user") || "{}");
   const user: ProfilePageProps | null = userData ? userData : null;
   if (!userData) {
