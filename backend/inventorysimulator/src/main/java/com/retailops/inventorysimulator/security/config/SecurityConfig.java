@@ -42,9 +42,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig  {
 //    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtAuthFilter jwtAuthFilter;
-    private final AuthResponseService authResponseService;
+//    private final AuthResponseService authResponseService;
     private final CustomOidcUserService customOidcUserService;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
    // private final JwtService jwtService;
 
 //    @Bean
@@ -85,27 +86,30 @@ public class SecurityConfig  {
                                 .oidcUserService(customOidcUserService)   // Google
                                 .userService(customOAuth2UserService)    // GitHub
                         )
-                        .successHandler((request, response, authentication) -> {
-                            String email;
-                            Object principal = authentication.getPrincipal();
+                        .successHandler(
+//                                (request, response, authentication) -> {
+//                            String email;
+//                            Object principal = authentication.getPrincipal();
+//
+//                            if (principal instanceof OidcUser oidcUser) {
+//                                // Google
+//                                email = oidcUser.getEmail();
+//                            } else if (principal instanceof OAuth2User oauth2User) {
+//                                // GitHub
+//                                email = (String) oauth2User.getAttributes().getOrDefault("email",
+//                                        oauth2User.getAttributes().get("login"));
+//                            } else {
+//                                email = authentication.getName();
+//                            }
+//
+//                            AuthResponse authResponse =
+//                                    authResponseService.buildResponse(email, authentication.getAuthorities());
+//
+//                            response.setContentType("application/json");
+//                            new ObjectMapper().writeValue(response.getWriter(), authResponse);
 
-                            if (principal instanceof OidcUser oidcUser) {
-                                // Google
-                                email = oidcUser.getEmail();
-                            } else if (principal instanceof OAuth2User oauth2User) {
-                                // GitHub
-                                email = (String) oauth2User.getAttributes().getOrDefault("email",
-                                        oauth2User.getAttributes().get("login"));
-                            } else {
-                                email = authentication.getName();
-                            }
-
-                            AuthResponse authResponse =
-                                    authResponseService.buildResponse(email, authentication.getAuthorities());
-
-                            response.setContentType("application/json");
-                            new ObjectMapper().writeValue(response.getWriter(), authResponse);
-                        })
+                                oAuth2SuccessHandler
+                        )
                 )
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
