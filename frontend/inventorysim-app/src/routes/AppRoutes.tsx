@@ -7,19 +7,23 @@ import Dashboard from '@/pages/Dashboard'
 import AnimatedLogo from '@/features/animation/AnimatedLogo'
 import ProfilePage from '@/features/auth/profile/[id]'
 import ProtectedRoute from './ProtectedRoute '
+import ErrorPage from '@/pages/ErrorPage'
+import OAuth2RedirectHandler from '@/pages/OAuth2RedirectHandler'
 
 const Approutes = () => {
   return (
-     <Routes>
+    <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/splash" element={<AnimatedLogo />} />
+      <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
+      <Route path="*" element={<ErrorPage />} />
 
       {/* Protected Routes */}
       <Route
-        path="/profile/user=:userId"
+        path="/profile/user/:userId"
         element={
           <ProtectedRoute>
             <ProfilePage />
@@ -34,8 +38,7 @@ const Approutes = () => {
           </ProtectedRoute>
         }
       />
-    </Routes>
-  
+    </Routes>  
   )
 }
 
