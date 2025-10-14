@@ -1,5 +1,6 @@
 import type { Account } from "@/types/accounts";
 import api from "../api";
+import { saveToStorage } from "@/utils/storage";
 
 
 export interface Credentials {
@@ -27,7 +28,25 @@ const authService = {
     const response = await api.post("/auth/login", credentials);
     
     return response.data;
-  }
+  },
+  loginWithGoogle: () => {
+    window.location.href = `${api.defaults.baseURL}/oauth2/authorization/google`;
+  },
+
+  loginWithGitHub: () => {
+    window.location.href = `${api.defaults.baseURL}/oauth2/authorization/github`;
+  },
+
+  saveAuthData: (token: string, user: any) => {
+    saveToStorage.setItem("token", token);
+    saveToStorage.setItem("user", JSON.stringify(user));
+  },
+
+  logout: () => {
+    saveToStorage.removeItem("token");
+    saveToStorage.removeItem("user");
+    window.location.href = "/login";
+  },
 };
 
 export default authService;

@@ -1,24 +1,50 @@
-import { isTokenValid } from '@/utils/auth';
-import { saveToStorage } from '@/utils/storage';
-import { type JSX } from 'react'
-import { Navigate } from 'react-router-dom';
+
+import ErrorPage from "@/pages/ErrorPage";
+import type { JSX } from "react";
+import { jwtDecode } from "jwt-decode";
+
 
 interface ProtectedRouteProps {
-    children:  JSX.Element | JSX.Element[]; 
+  children: JSX.Element;
+  allowedRoles?: string[];
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-    // const token = localStorage.getItem('token');
-    const  token = saveToStorage.getItem('token');
-
-    if(!token || isTokenValid(token) === false) {
-    // remove stale data
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    return <Navigate to="/" replace />;
+const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
+  const storedUser = localStorage.getItem("user");
+  if (!storedUser) {
+    return <ErrorPage code={401} message="You need to log in to access this page." />;
   }
 
-  return children;
-}
+  let user;
+  try {
+    user = JSON.parse(storedUser);
+  } catch {
+    return <ErrorPage code={500} message="Invalid user data format." />;
+  }
+
+  const token = user.token;
+  if (!token) {
+    return <ErrorPage code={401} message="Missing authentication token." />;
+  }
+
+  try {
+    const decoded: any = jwtDecode(token);
+    const now = Date.now() / 1000;
+    if (decoded.exp && decoded.exp < now) {
+      localStorage.removeItem("user");
+      return <ErrorPage code={401} message="Your session has expired. Please log in again." />;
+    }
+
+    if (allowedRoles && !allowedRoles.includes(user.role)) {
+      return <ErrorPage code={403} message="You don’t have permission to view this page." />;
+    }
+
+    return children;
+  } catch (err) {
+    return <ErrorPage code={500} message="Error decoding authentication token." />;
+  }
+};
 
 export default ProtectedRoute;
+
+

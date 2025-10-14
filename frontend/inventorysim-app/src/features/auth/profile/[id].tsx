@@ -11,13 +11,13 @@ interface ProfilePageProps {
 }
 
 const ProfilePage = () => {
-  const {id} = useParams<{id: string}>();  
 
   const userData = JSON.parse(localStorage.getItem("user") || "{}");
   const user: ProfilePageProps | null = userData ? userData : null;
   if (!userData) {
     return <div>No user data available...</div>;
   }
+  console.log("User profile storage"+ user)
 
   return (
       <div className="flex justify-center items-center h-screen">
@@ -27,7 +27,7 @@ const ProfilePage = () => {
           <CardDescription>Email: {user?.email}</CardDescription>
           <CardDescription>Username: {user?.username}</CardDescription>
           <CardDescription>Position: {user?.position}</CardDescription>
-          <CardDescription>ID: {id}</CardDescription>
+          <CardDescription>ID: {user?.id}</CardDescription>
         </CardHeader>
       </Card>
     </div>
