@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import authService, { type Credentials } from "@/services/auth/authService";
 import type { Account } from "@/types/accounts";
-import { saveToStorage } from "@/utils/storage";
 
 // Define registration schema
 export const registerShape = z
@@ -107,11 +106,13 @@ const handleRegister = async (data: z.infer<typeof registerShape>) => {
         password: data.password
       };
       const response = await authService.login(credentials);
-      const {token, id, email, username, name, role} = response;
+      const {token, id, email, username, name, role, position} = response;
+      const user = {id, email, username, name, role, position}
 
+      authService.saveAuthData(token, user);
 
-      saveToStorage.setItem("token", token);
-      saveToStorage.setItem("user",JSON.stringify({id, email, username, name, role}));
+      // saveToStorage.setItem("token", token);
+      // saveToStorage.setItem("user",JSON.stringify({id, email, username, name, role, position}));
       console.log("Logging in user (mock):", response);
       
       setLoading(false);
@@ -122,8 +123,46 @@ const handleRegister = async (data: z.infer<typeof registerShape>) => {
       setLoading(false);
       return null;
     }
+  };
+
+  const handleLoginWithGoogle = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      authService.loginWithGoogle();
+    } catch (err) {
+      setError("Google login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLoginWithGithub = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      authService.loginWithGitHub();
+    } catch (err) {
+      setError("GitHub login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () =>{
+    authService.logout();
   }
+  
 
 
-  return { RegisterFormValidation, handleRegister, loading, error, loginFormValidation, handleLogin };
+  return { 
+    RegisterFormValidation,
+    handleRegister,
+    loading,
+    error,
+    loginFormValidation,
+    handleLogin,
+    handleLoginWithGoogle,
+    handleLoginWithGithub,
+    handleLogout};
 };

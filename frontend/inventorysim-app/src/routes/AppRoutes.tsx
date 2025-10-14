@@ -19,7 +19,7 @@ const Approutes = () => {
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/splash" element={<AnimatedLogo />} />
       <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
-      <Route path="*" element={<ErrorPage />} />
+      <Route path="*" element={<ErrorPage code={404}/>} />
 
       {/* Protected Routes */}
       <Route
@@ -33,7 +33,7 @@ const Approutes = () => {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["ROLE_USER", "ROLE_ADMIN"]}>
             <Dashboard />
           </ProtectedRoute>
         }
