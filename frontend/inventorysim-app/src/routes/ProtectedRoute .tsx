@@ -2,6 +2,7 @@
 import ErrorPage from "@/pages/ErrorPage";
 import type { JSX } from "react";
 import { jwtDecode } from "jwt-decode";
+import { saveToStorage } from "@/utils/storage";
 
 
 interface ProtectedRouteProps {
@@ -10,7 +11,8 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
-  const storedUser = localStorage.getItem("user");
+  const storedUser = saveToStorage.getItem("user");
+  console.log("stored user in protected route "+ storedUser);
   if (!storedUser) {
     return <ErrorPage code={401} message="You need to log in to access this page." />;
   }
@@ -22,7 +24,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     return <ErrorPage code={500} message="Invalid user data format." />;
   }
 
-  const token = user.token;
+  const token = saveToStorage.getItem("token")
   if (!token) {
     return <ErrorPage code={401} message="Missing authentication token." />;
   }
@@ -31,7 +33,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     const decoded: any = jwtDecode(token);
     const now = Date.now() / 1000;
     if (decoded.exp && decoded.exp < now) {
-      localStorage.removeItem("user");
+      saveToStorage.removeItem("user");
       return <ErrorPage code={401} message="Your session has expired. Please log in again." />;
     }
 

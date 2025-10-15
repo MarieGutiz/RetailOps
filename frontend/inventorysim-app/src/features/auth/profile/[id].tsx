@@ -1,5 +1,4 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useParams, useLocation } from "react-router-dom";
 
 interface ProfilePageProps {
    id: string;
@@ -26,7 +25,7 @@ const ProfilePage = () => {
           <CardTitle className="text-xl">Hello, {user?.name}</CardTitle>
           <CardDescription>Email: {user?.email}</CardDescription>
           <CardDescription>Username: {user?.username}</CardDescription>
-          <CardDescription>Position: {user?.position}</CardDescription>
+          <CardDescription>Position: {user?.position || "Student"}</CardDescription>
           <CardDescription>ID: {user?.id}</CardDescription>
         </CardHeader>
       </Card>
