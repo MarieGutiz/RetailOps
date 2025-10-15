@@ -3,11 +3,13 @@ import api from "../api";
 import { saveToStorage } from "@/utils/storage";
 
 
+
 export interface Credentials {
   identifier: string;
   password: string;
 }
 
+const BASE_BACKEND_URL = api.defaults.baseURL?.replace("/api", "");
 const authService = {
   register: async (account: Account) => {
     // auto-generate username from name (e.g., "Mariela Gutierrez" → "mariela.gutierrez")
@@ -30,11 +32,11 @@ const authService = {
     return response.data;
   },
   loginWithGoogle: () => {
-    window.location.href = `${api.defaults.baseURL}/oauth2/authorization/google`;
+     window.location.href = `${BASE_BACKEND_URL}/oauth2/authorization/google`;
   },
 
   loginWithGitHub: () => {
-    window.location.href = `${api.defaults.baseURL}/oauth2/authorization/github`;
+     window.location.href = `${BASE_BACKEND_URL}/oauth2/authorization/github`;
   },
 
   saveAuthData: (token: string, user: any) => {
