@@ -24,6 +24,9 @@ public class Product extends BaseModel{
     @Column(length = 80, nullable = false)
     private String category;
 
+    @Column(length = 150, nullable = true)
+    private String description;
+
     @Positive(message = "Unit cost must be greater than 0")
     private Double unitCost;
 

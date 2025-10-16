@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth/oauth2")
+@RequestMapping("/api/auth/oauth2")
 @RequiredArgsConstructor
 public class OAuth2Controller {
     private final JwtService jwtAuthFilter;
