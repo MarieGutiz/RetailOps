@@ -61,4 +61,12 @@ public class ProductServiceImpl extends BaseServiceImpl<Product> implements Prod
         return Optional.of(productRepository.findById(id))
                 .orElseThrow(() ->  new ProductNotFoundException(id));
     }
+
+    @Override
+    public List<Product> saveAll(List<Product> products) {
+        List<Product> validProducts = products.stream()
+                .filter(p -> p.getDescription() != null && p.getUnitPrice() != null)
+                .toList();
+        return productRepository.saveAll(validProducts);
+    }
 }

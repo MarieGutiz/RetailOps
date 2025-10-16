@@ -47,5 +47,9 @@ public class ProductController {
        productService.deleteById(id);
     }
 
-
+   //Accept bulk of products
+   @PostMapping("/bulk")
+   public List<Product> createProducts(@RequestBody List<Product> products) {
+       return productService.saveAll(products);
+   }
 }
