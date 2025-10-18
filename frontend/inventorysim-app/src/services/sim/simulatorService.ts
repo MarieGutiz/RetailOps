@@ -1,4 +1,4 @@
-import type { ABCResult } from "@/types";
+import type { ABCResult } from "@/types/sim";
 import type { Product } from "@/types/products";
 import api from "../api";
 
