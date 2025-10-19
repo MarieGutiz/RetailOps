@@ -1,5 +1,6 @@
 import { Box, Card, Flex, Avatar, Text, Link } from '@radix-ui/themes'
 import { Button } from '../components/ui/Button'
+import ProductForm from '@/components/forms/ProductForm'
 
 const Home = () => {
   return (
@@ -25,13 +26,17 @@ const Home = () => {
         <Text as="div" size="2" color="gray">
           Welcome to Inventory Simulator
 		  <Link href="/login">
-	       <Button>Login</Button>
+	       <Button className='color:black'>Login</Button>
 	   </Link>
         </Text>
       </Box>
 		</Flex>
 
 	</Card>
+	 <Card>
+		 <Text>Check product store</Text>
+		<ProductForm />
+	 </Card>
 </Box>
 
     </>
