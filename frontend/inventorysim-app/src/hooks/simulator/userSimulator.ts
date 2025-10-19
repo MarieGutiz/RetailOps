@@ -13,7 +13,7 @@ export function useSimulator() {
       const res = await api.post<ABCResult>("/api/simulator/abc", products);
       return res.data;
     } else {
-      return runABCAnalysis(products);
+      return runABCAnalysis(products);//work
     }
   }
 

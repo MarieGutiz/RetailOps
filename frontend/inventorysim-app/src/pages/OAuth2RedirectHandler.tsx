@@ -1,12 +1,15 @@
 import authService from '@/services/auth/authService';
+import { useProductStore } from '@/store/useProductStore';
 import  { useEffect, useState } from 'react'
-import toast from 'react-hot-toast';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const OAuth2RedirectHandler = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  //sync products to backend after login
+   const setAuthenticated = useProductStore((s) => s.setAuthenticated);
+  const syncToBackend = useProductStore((s) => s.syncToBackend);
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -21,6 +24,9 @@ const OAuth2RedirectHandler = () => {
       const user = { id, email, username, name, role, position };
       authService.saveAuthData(token, user);
       //toast.success("Login successful. Redirecting...");
+
+       setAuthenticated(true);
+       syncToBackend(); // send local guest products to backend
       
       // Navigate after storage is guaranteed
       navigate(`/profile/user/${id}`, { replace: true });
