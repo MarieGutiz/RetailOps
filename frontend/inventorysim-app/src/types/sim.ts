@@ -9,3 +9,7 @@ export interface ABCResult {
     totalValue: number;
   };
 }
+export interface ABCData{
+  product: Product;
+  quantity: number;
+}

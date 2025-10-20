@@ -4,6 +4,8 @@ import { saveToStorage } from "@/utils/storage";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import {persist, createJSONStorage} from "zustand/middleware"
+import { mountStoreDevtool } from 'simple-zustand-devtools';
+
 
 interface ProductState {
   products: Product[];
@@ -73,3 +75,7 @@ export const useProductStore = create<ProductState>()(
     }
     )
 );
+
+if (import.meta.env.MODE === "development") {
+  mountStoreDevtool("ProductStore", useProductStore);
+}
