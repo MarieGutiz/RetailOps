@@ -1,9 +1,20 @@
+import { runABCAnalysis } from '@/services/sim/runABCAnalysis';
 import  { useProductStore } from '@/store/useProductStore';
+import type { ABCData } from '@/types/sim';
 
 const ProductForm = () => {
   const addProduct = useProductStore((state) => state.addProduct);
   const products = useProductStore((state) => state.products);
 
+  const data: ABCData[] = [
+   { product: { name: "Product A", unitPrice: 10, unitCost:2 }, quantity: 200 },
+  { product: { name: "Product B", unitPrice: 5, unitCost: 1 }, quantity: 500 },
+  { product: { name: "Product C", unitPrice: 50 , unitCost: 10}, quantity: 20 },
+];
+
+const result = runABCAnalysis(data);
+console.log(result.categoryA);
+console.log("Total items "+result.summary?.totalItems + " and total values "+ result.summary?.totalValue);
   const handleAdd = () => {
     const newProduct = {
       id: Date.now(), // unique ID based on timestamp
