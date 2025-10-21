@@ -13,3 +13,16 @@ export interface ABCData{
   product: Product;
   quantity: number;
 }
+
+// For backend DTO compatibility
+export interface AbcItemDto {
+  productName: string;
+  salesValue: number;
+  demandFrequency: number;
+}
+
+export interface AbcRequestDto {
+  items: AbcItemDto[];
+  username?: string;
+  mode?: 'classic' | 'multi';
+}
