@@ -1,6 +1,6 @@
 import { runABCAnalysis } from '@/services/sim/runABCAnalysis';
 import  { useProductStore } from '@/store/useProductStore';
-import type { ABCData } from '@/types/sim';
+import type { ABCData } from '@/types/abc';
 
 const ProductForm = () => {
   const addProduct = useProductStore((state) => state.addProduct);

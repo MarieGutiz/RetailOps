@@ -1,4 +1,4 @@
-import type { ABCData, ABCResult } from "@/types/sim";
+import type { ABCData, ABCResult } from "@/types/abc";
 
 /**
  * Calculates ABC analysis based on total value = price * quantity

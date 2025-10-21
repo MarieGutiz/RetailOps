@@ -17,6 +17,10 @@ const Approutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterForm />} />
+      <Route
+        path="/dashboard"
+        element={<Dashboard />}
+      />
       <Route path="/splash" element={<AnimatedLogo />} />
       <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
       <Route path="*" element={<ErrorPage code={404}/>} />
@@ -30,14 +34,14 @@ const Approutes = () => {
           </ProtectedRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/dashboard"
         element={
           <ProtectedRoute allowedRoles={["ROLE_USER", "ROLE_ADMIN"]}>
             <Dashboard />
           </ProtectedRoute>
         }
-      />
+      /> */}
     </Routes>  
   )
 }
