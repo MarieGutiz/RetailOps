@@ -1,4 +1,4 @@
-import api from "@/services/api";
+import api from "@/services/api/api";
 import type { AbcRequestDto, ABCResult } from "@/types/abc";
 
 export const analyzeABC = async (data: AbcRequestDto): Promise<ABCResult[]> => {

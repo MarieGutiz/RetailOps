@@ -1,5 +1,5 @@
 import type { Account } from "@/types/accounts";
-import api from "../api";
+import api from "../api/api";
 import { saveToStorage } from "@/utils/storage";
 
 
