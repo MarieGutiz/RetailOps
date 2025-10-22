@@ -33,5 +33,24 @@ export const saveToStorage =  {
             // Fallback logic (e.g., use in-memory storage)
            delete (window as any)._inMemoryStorage[key];
         }
-     }
+     },
+     
+    // Helper to get username directly
+    getUsername: (): string | null => {
+        const user = saveToStorage.getUser();
+        return user?.username || null;
+    },
+     //  Helper to get user data safely
+    getUser: (): any | null => {
+        const userStr = saveToStorage.getItem("user");
+        if (!userStr) return null;
+        try {
+        return JSON.parse(userStr);
+        } catch (err) {
+        console.error("Failed to parse user from storage", err);
+        return null;
+        }
+    },
+
+    
     }

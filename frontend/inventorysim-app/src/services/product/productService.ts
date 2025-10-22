@@ -1,5 +1,5 @@
 import type { Product } from "@/types/products";
-import api from "../api";
+import api from "../api/api";
 
 const productService = {
    getProducts: async (token:string) => {

@@ -1,4 +1,4 @@
-import api from "@/services/api";
+import api from "@/services/api/api";
 import type { Product } from "@/types/products";
 import { saveToStorage } from "@/utils/storage";
 import toast from "react-hot-toast";
