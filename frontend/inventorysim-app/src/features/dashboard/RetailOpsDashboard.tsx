@@ -19,17 +19,18 @@ import {
   FileTextIcon,
   UsersIcon,
   MenuIcon,
+  SearchIcon,
+  UserCircleIcon,
 } from "lucide-react"
-
 import clsx from "clsx"
-// --Nav Items---
-// --- Define navigation items ---
+
+// --- Navigation items ---
 const navItems = [
   { title: "Dashboard", id: "dashboard", icon: LayoutDashboardIcon },
   { title: "Inventory", id: "inventory", icon: ClipboardListIcon },
   { title: "Analytics", id: "analytics", icon: BarChartIcon },
   { title: "Reports", id: "reports", icon: FileTextIcon },
-  { title: "Share", id: "share", icon: UsersIcon },
+  { title: "Team", id: "team", icon: UsersIcon },
 ]
 
 // --- Sidebar Component ---
@@ -93,16 +94,41 @@ const AppSidebar = ({
   )
 }
 
-// --- Header Component ---
-const SiteHeader = () => (
-  <header className="flex items-center justify-between p-4 border-b bg-background sticky top-0 z-10">
-    <h1 className="text-xl font-bold">RetailOps Simulator</h1>
-    <div className="flex items-center gap-2">
-      <button className="btn">Add Product</button>
-      <button className="btn">Refresh</button>
+// --- Top Header (Right Area) ---
+const TopHeader = () => {
+  return (
+    <div className="flex items-center justify-between h-14 px-6 border-b bg-white shadow-sm sticky top-0 z-10">
+      {/* Left section: search or scenario selector */}
+      <div className="flex items-center gap-3">
+        <div className="relative">
+          <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search or select case..."
+            className="pl-8 pr-3 py-2 rounded-md border border-gray-300 focus:ring focus:ring-blue-100 w-64"
+          />
+        </div>
+      </div>
+
+      {/* Right section: auth / user controls */}
+      <div className="flex items-center gap-3">
+        <button className="text-sm text-gray-700 hover:underline">
+          Sign Up
+        </button>
+        <UserCircleIcon className="h-6 w-6 text-gray-700" />
+      </div>
     </div>
-  </header>
-)
+  )
+}
+
+// --- Main Content Container ---
+const MainContent = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="p-6 overflow-y-auto h-[calc(100vh-3.5rem)] bg-gray-50">
+      {children}
+    </div>
+  )
+}
 export const RetailOpsDashboard = () => {
   const [isCollapsed, setIsCollapsed] = React.useState(false)
   const [activePage, setActivePage] = React.useState("dashboard")
@@ -112,7 +138,6 @@ export const RetailOpsDashboard = () => {
       style={
         {
           "--sidebar-width": isCollapsed ? "5rem" : "16rem",
-          "--header-height": "4rem",
         } as React.CSSProperties
       }
     >
@@ -122,9 +147,9 @@ export const RetailOpsDashboard = () => {
         activePage={activePage}
         setActivePage={setActivePage}
       />
-      <SidebarInset className="transition-all duration-300 p-4">
-        <SiteHeader />
-        <div className="mt-4">
+      <SidebarInset className="transition-all duration-300 flex flex-col h-screen" style={{width:"100%"}}>
+        <TopHeader />
+        <MainContent>
           {activePage === "dashboard" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 border rounded-md bg-white shadow-sm">
@@ -153,19 +178,7 @@ export const RetailOpsDashboard = () => {
               Analytics & Charts Page
             </div>
           )}
-
-          {activePage === "reports" && (
-            <div className="p-4 border rounded-md bg-white shadow-sm">
-              Reports Page
-            </div>
-          )}
-
-          {activePage === "team" && (
-            <div className="p-4 border rounded-md bg-white shadow-sm">
-              Team Management Page
-            </div>
-          )}
-        </div>
+        </MainContent>
       </SidebarInset>
     </SidebarProvider>
   )
