@@ -1,39 +1,25 @@
 import { useIsMobile } from '@/hooks/use-mobile'
-import React from 'react'
+import React, { createContext, useContext, useMemo } from 'react'
 import { PrimeLayoutController } from '../PrimeLayoutController'
 
 type PrimeLayoutProviderProps = {
-  defaultSidebarOpen?: boolean
+  controller?: PrimeLayoutController
   children: React.ReactNode
 }
 
-export function PrimeLayoutProvider({
-  defaultSidebarOpen = true,
-  children,
-}: PrimeLayoutProviderProps) {
-  const isMobile = useIsMobile()
-  const controller = React.useMemo(
-    () => new PrimeLayoutController(defaultSidebarOpen),
-    [defaultSidebarOpen]
-  )
-  controller.setIsMobile(isMobile)
+const PrimeLayoutContext = createContext<PrimeLayoutController | null>(null)
 
-  // Keyboard shortcut
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        event.key === PrimeLayoutController.SIDEBAR_KEYBOARD_SHORTCUT &&
-        (event.metaKey || event.ctrlKey)
-      ) {
-        event.preventDefault()
-        controller.toggleSidebar()
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [controller])
+export const usePrimeLayout = () => {
+  const ctx = useContext(PrimeLayoutContext)
+  if (!ctx) throw new Error("usePrimeLayout must be used within PrimeLayoutProvider")
+  return ctx
+}
 
+export function PrimeLayoutProvider({ controller, children }: PrimeLayoutProviderProps) {
+  const layout = useMemo(() => controller ?? new PrimeLayoutController(), [controller])
   return (
-    <div></div>
+    <PrimeLayoutContext.Provider value={layout}>
+      {children}
+    </PrimeLayoutContext.Provider>
   )
 }
