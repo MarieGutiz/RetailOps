@@ -1,25 +1,27 @@
-"use client";
-export class PrimeLayoutController {
-    // Constants
-  static SIDEBAR_WIDTH = "13rem"
-  static SIDEBAR_WIDTH_MOBILE = "18rem"
-  static SIDEBAR_KEYBOARD_SHORTCUT = "b"
+"use client"
+import type React from "react"
 
-  // Configurable properties
+export class PrimeLayoutController {
+  // 🔹 Constants
+  static readonly SIDEBAR_WIDTH = 13 // rem
+  static readonly SIDEBAR_WIDTH_MOBILE = 18 // rem
+  static readonly SIDEBAR_KEYBOARD_SHORTCUT = "b"
+
+  // 🔹 Configurable properties
   open: boolean
   side: "left" | "right"
   sidebarWidth: number
   collapsedWidth: number
 
-  // State
+  // 🔹 Internal state
   private openMobile: boolean
   private isMobile: boolean
 
   constructor({
     open = true,
     side = "left",
-    sidebarWidth = 25,
-    collapsedWidth = 6,
+    sidebarWidth = PrimeLayoutController.SIDEBAR_WIDTH,
+    collapsedWidth = 4,
   }: {
     open?: boolean
     side?: "left" | "right"
@@ -29,16 +31,17 @@ export class PrimeLayoutController {
     this.open = open
     this.openMobile = false
     this.isMobile = false
-
     this.side = side
     this.sidebarWidth = sidebarWidth
     this.collapsedWidth = collapsedWidth
   }
 
+  // 🔹 Device helpers
   setIsMobile(isMobile: boolean) {
     this.isMobile = isMobile
   }
 
+  // 🔹 Sidebar actions
   toggleSidebar() {
     if (this.isMobile) {
       this.openMobile = !this.openMobile
@@ -47,6 +50,23 @@ export class PrimeLayoutController {
     }
   }
 
+  openSidebar() {
+    if (this.isMobile) {
+      this.openMobile = true
+    } else {
+      this.open = true
+    }
+  }
+
+  closeSidebar() {
+    if (this.isMobile) {
+      this.openMobile = false
+    } else {
+      this.open = false
+    }
+  }
+
+  // 🔹 Accessors
   getSidebarState() {
     return {
       open: this.open,
@@ -56,21 +76,35 @@ export class PrimeLayoutController {
     }
   }
 
-  toggle() {
-    this.open = !this.open
-  }
-
+  // 🔹 Derived styles
   getSidebarStyle(): React.CSSProperties {
+    const width = this.open ? this.sidebarWidth : this.collapsedWidth
     return {
-      flexBasis: `${this.open ? this.sidebarWidth : this.collapsedWidth}%`,
+      flexBasis: `${width}rem`,
       transition: "flex-basis 0.25s ease-in-out",
+      order: this.side === "left" ? 0 : 1,
     }
   }
 
   getMainStyle(): React.CSSProperties {
+    const sidebarWidth = this.open ? this.sidebarWidth : this.collapsedWidth
+    const marginProp = this.side === "left" ? "marginLeft" : "marginRight"
+
     return {
-      flexBasis: `${this.open ? 100 - this.sidebarWidth : 100 - this.collapsedWidth}%`,
-      transition: "flex-basis 0.25s ease-in-out",
+      flex: 1,
+      transition: "margin 0.25s ease-in-out",
+      [marginProp]: `${sidebarWidth}rem`,
     }
+  }
+
+  // 🔹 Utility methods
+  isOpen() {
+    return this.isMobile ? this.openMobile : this.open
+  }
+
+  reset() {
+    this.open = true
+    this.openMobile = false
+    this.isMobile = false
   }
 }
