@@ -1,7 +1,5 @@
 "use client"
 
-import * as React from "react"
-import { useIsMobile } from "@/hooks/use-mobile"
 import { PrimeLayoutProvider } from "./components/PrimeLayoutProvider"
 import { PrimeLayoutController } from "./PrimeLayoutController"
 import PrimeLayout from "./components/PrimeLayout"

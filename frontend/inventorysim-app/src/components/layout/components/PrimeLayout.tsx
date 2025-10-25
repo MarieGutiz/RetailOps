@@ -20,7 +20,7 @@ const PrimeLayout = ({sidebar, children}:
               variant="ghost"
               size="icon"
               className="self-end m-2"
-              onClick={() => layout.toggle()}
+              onClick={() => layout.closeSidebar()}
             >
               {layout.open ? "⇤" : "⇥"}
             </Button>
@@ -48,7 +48,7 @@ const PrimeLayout = ({sidebar, children}:
               variant="ghost"
               size="icon"
               className="self-start m-2"
-              onClick={() => layout.toggle()}
+              onClick={() => layout.closeSidebar()}
             >
               {layout.open ? "⇥" : "⇤"}
             </Button>

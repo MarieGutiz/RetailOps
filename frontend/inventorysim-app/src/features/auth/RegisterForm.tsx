@@ -35,7 +35,7 @@ const RegisterForm = () => {
       {/* Header */}
       <div className="mx-auto w-full max-w-md">
         <img
-          src="src/assets/range.jpg"
+          src="src/assets/range_no_bck.jpg"
           alt="RetailOps"
           className="mx-auto h-12 w-auto"
         />
