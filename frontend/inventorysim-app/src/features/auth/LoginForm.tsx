@@ -7,6 +7,7 @@ import SocialBtns from "./ui/SocialBtns"
 import Divider from "./ui/Divider"
 import { useAuth } from "@/hooks/useAuth"
 import FormError from "./ui/FormError"
+import Top from "./ui/Top"
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -28,16 +29,7 @@ const LoginForm = () => {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="mx-auto w-full max-w-md ">
-        <img
-          src="src/assets/range_no_bck.jpg"
-          alt="RetailOps"
-          className="mx-auto h-12 w-auto"
-        />
-        <h2 className="mt-8 text-center text-3xl font-bold tracking-tight text-blue-950">
-          Sign in to your account
-        </h2>
-      </div>
+      <Top text="Sign in to your account" />
 
       {/* Form */}
       <form onSubmit={onSubmit} className="mt-10 mx-auto w-full max-w-md">

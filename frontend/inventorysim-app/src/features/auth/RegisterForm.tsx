@@ -10,6 +10,7 @@ import {  useAuth } from "@/hooks/useAuth"
 import FormError from "./ui/FormError"
 import { Controller } from "react-hook-form"
 import toast from "react-hot-toast";
+import Top from "./ui/Top"
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -33,16 +34,7 @@ const RegisterForm = () => {
     <>
    <div className="p-6">
       {/* Header */}
-      <div className="mx-auto w-full max-w-md">
-        <img
-          src="src/assets/range_no_bck.jpg"
-          alt="RetailOps"
-          className="mx-auto h-12 w-auto"
-        />
-        <h2 className="mt-8 text-center text-3xl font-bold tracking-tight text-blue-950">
-          Create your account
-        </h2>
-      </div>
+      <Top text="Create your account" />
 
       {/* Form */}
       <form onSubmit={onSubmit} className="mt-10 mx-auto w-full max-w-md" >

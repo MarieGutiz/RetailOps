@@ -1,6 +1,5 @@
-import { AppLayout } from '@/components/layout/prime'
-import Plaisio from '@/features/dashboard/Plaisio'
-import { RetailOpsDashboard } from '@/features/dashboard/RetailOpsDashboard'
+import { AppLayout } from "@/components/layout/Prime"
+
 const Dashboard = () => {
   return (
     // <><RetailOpsDashboard /></>
