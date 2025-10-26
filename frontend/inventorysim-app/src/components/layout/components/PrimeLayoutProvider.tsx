@@ -3,7 +3,8 @@
 import React, { createContext, useContext, useMemo, useEffect } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { PrimeLayoutController } from "../PrimeLayoutController"
+import { PrimeLayoutController } from "../controllers/PrimeLayoutController"
+import PrimeMenu from "./PrimeMenu"
 
 type PrimeLayoutProviderProps = {
   controller?: PrimeLayoutController
@@ -34,6 +35,7 @@ export function PrimeLayoutProvider({ controller, children }: PrimeLayoutProvide
   return (
     <PrimeLayoutContext.Provider value={layout}>
       <SidebarProvider style={layout.getSidebarStyle()}>
+          <PrimeMenu variant="inset" />
         <SidebarInset style={layout.getMainStyle()}>
           {children}
         </SidebarInset>
