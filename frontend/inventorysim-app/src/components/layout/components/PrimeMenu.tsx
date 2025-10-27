@@ -13,6 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 
 const data = {
@@ -134,8 +135,9 @@ const data = {
 
 const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
+        <SidebarTrigger className="-ml-1" />
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -145,7 +147,7 @@ const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
               <a href="#">
                 <ArrowUpCircleIcon className="h-5 w-5" />
                 <span className="text-base font-semibold">RetailOps Sim</span>
-              </a>
+              </a>              
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

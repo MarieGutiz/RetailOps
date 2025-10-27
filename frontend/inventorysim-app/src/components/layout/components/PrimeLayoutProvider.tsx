@@ -36,7 +36,7 @@ export function PrimeLayoutProvider({ controller, children }: PrimeLayoutProvide
     <PrimeLayoutContext.Provider value={layout}>
       <SidebarProvider style={layout.getSidebarStyle()}>
           <PrimeMenu variant="inset" />
-        <SidebarInset style={layout.getMainStyle()}>
+        <SidebarInset >
           {children}
         </SidebarInset>
       </SidebarProvider>
