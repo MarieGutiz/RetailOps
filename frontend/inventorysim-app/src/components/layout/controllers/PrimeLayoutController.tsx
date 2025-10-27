@@ -12,6 +12,7 @@ export class PrimeLayoutController {
   side: "left" | "right"
   sidebarWidth: number
   collapsedWidth: number
+  variant?:"sidebar" | "floating" | "inset"
 
   // 🔹 Internal state
   private openMobile: boolean
@@ -22,11 +23,13 @@ export class PrimeLayoutController {
     side = "left",
     sidebarWidth = PrimeLayoutController.SIDEBAR_WIDTH,
     collapsedWidth = 4,
+    variant = "sidebar"
   }: {
     open?: boolean
     side?: "left" | "right"
     sidebarWidth?: number
     collapsedWidth?: number
+    variant?: "sidebar" | "floating" | "inset" //for styling purposes
   } = {}) {
     this.open = open
     this.openMobile = false
@@ -34,6 +37,7 @@ export class PrimeLayoutController {
     this.side = side
     this.sidebarWidth = sidebarWidth
     this.collapsedWidth = collapsedWidth
+    this.variant = variant
   }
 
   // 🔹 Device helpers
@@ -95,6 +99,9 @@ export class PrimeLayoutController {
       transition: "margin 0.25s ease-in-out",
       [marginProp]: `${sidebarWidth}rem`,
     }
+  }
+  getVariant(){
+    return this.variant
   }
 
   // 🔹 Utility methods

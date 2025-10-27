@@ -1,23 +1,27 @@
-"use client"
 
-import { PrimeLayoutProvider } from "./components/PrimeLayoutProvider"
+import  { PrimeLayoutProvider } from "./components/PrimeLayoutProvider"
 import { PrimeLayoutController } from "./controllers/PrimeLayoutController"
-
 
 const controller = new PrimeLayoutController({ //verify options
   open: true,
-  side: "left", // try "left" or "right"
+  side: "right", // try "left" or "right"
   sidebarWidth: 16,
   collapsedWidth: 6,
+  variant: "inset" // try "sidebar", "floating" or "inset"
 })
 
-export function AppLayout() {
-   return (
-     <PrimeLayoutProvider controller={controller}>
+
+const Prime = () => {
+  return (
+    <PrimeLayoutProvider controller={controller}>
       <main>
         <h1>Dashboard</h1>
+        
       </main>
     </PrimeLayoutProvider>
-  
+
   )
 }
+
+
+export default Prime

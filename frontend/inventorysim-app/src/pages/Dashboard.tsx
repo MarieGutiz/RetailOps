@@ -1,9 +1,10 @@
-import { AppLayout } from "@/components/layout/Prime"
+import Prime from "@/components/layout/prime"
+
 
 const Dashboard = () => {
   return (
     // <><RetailOpsDashboard /></>
-    <AppLayout />
+    <><Prime /></>
   )
 }
 
