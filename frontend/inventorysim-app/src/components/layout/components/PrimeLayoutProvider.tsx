@@ -1,17 +1,11 @@
 "use client"
 
-import React, { createContext, useContext, useMemo, useEffect } from "react"
+import React, { createContext, useContext, useMemo, useEffect, useSyncExternalStore } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { PrimeLayoutController } from "../controllers/PrimeLayoutController"
 import PrimeMenu from "./PrimeMenu"
 
-type PrimeLayoutProviderProps = {
-  controller?: PrimeLayoutController
-  children: React.ReactNode
-}
-
-/** Context gives access to the PrimeLayoutController instance anywhere */
 const PrimeLayoutContext = createContext<PrimeLayoutController | null>(null)
 
 export function usePrimeLayout() {
@@ -20,25 +14,36 @@ export function usePrimeLayout() {
   return ctx
 }
 
-/** Provider that wires your layout controller + Shadcn sidebar system */
-export function PrimeLayoutProvider({ controller, children }: PrimeLayoutProviderProps) {
+/** Provider that bridges your class controller and the SidebarProvider (clean + logical) */
+export function PrimeLayoutProvider({
+  controller,
+  children,
+}: {
+  controller?: PrimeLayoutController
+  children: React.ReactNode
+}) {
   const isMobile = useIsMobile()
 
-  // ensure we reuse the same controller across renders
+  // always use same instance
   const layout = useMemo(() => controller ?? new PrimeLayoutController(), [controller])
 
-  // keep controller updated with current mobile state
+  // React reactivity through `useSyncExternalStore`
+  const open = useSyncExternalStore(
+    (listener) => layout.subscribe(listener),
+    () => layout.open
+  )
+
   useEffect(() => {
     layout.setIsMobile(isMobile)
   }, [layout, isMobile])
 
   return (
     <PrimeLayoutContext.Provider value={layout}>
-      <SidebarProvider style={layout.getSidebarStyle()}>
-          <PrimeMenu variant="inset" />
-        <SidebarInset >
-          {children}
-        </SidebarInset>
+      <SidebarProvider open={open}
+      onOpenChange={(v) => layout.setOpen(v)}
+      style={layout.getSidebarStyle()}>
+        <PrimeMenu variant={layout.variant} side={layout.side} />
+        <SidebarInset>{children}</SidebarInset>
       </SidebarProvider>
     </PrimeLayoutContext.Provider>
   )
