@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { PrimeLayoutController } from "../controllers/PrimeLayoutController"
 import PrimeMenu from "./PrimeMenu"
+import SidebarResizer from "./SidebarResizer"
 
 const PrimeLayoutContext = createContext<PrimeLayoutController | null>(null)
 
@@ -43,6 +44,7 @@ export function PrimeLayoutProvider({
       onOpenChange={(v) => layout.setOpen(v)}
       style={layout.getSidebarStyle()}>
         <PrimeMenu variant={layout.variant} side={layout.side} />
+         {!layout.isMobile && layout.draggable && <SidebarResizer />}
         <SidebarInset>{children}</SidebarInset>
       </SidebarProvider>
     </PrimeLayoutContext.Provider>

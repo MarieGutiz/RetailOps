@@ -135,6 +135,7 @@ const data = {
 
 const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
   return (
+    <div className= "left-100">
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarTrigger className="-ml-1" />
@@ -161,6 +162,7 @@ const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
+    </div>
   )
 }
 
