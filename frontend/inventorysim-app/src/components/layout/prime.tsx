@@ -1,4 +1,5 @@
 
+import MenuDirection from "./components/MenuDirection"
 import PinButton from "./components/PinButton"
 import  { PrimeLayoutProvider } from "./components/PrimeLayoutProvider"
 import ToggleSidebarButton from "./components/ToggleSidebarButton"
@@ -21,6 +22,7 @@ const Prime = () => {
         <h1>Dashboard</h1>
         <ToggleSidebarButton />
         <PinButton />
+        <MenuDirection />
         
       </main>
     </PrimeLayoutProvider>
