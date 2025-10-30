@@ -1,8 +1,8 @@
-import { usePrimeLayoutStore } from '../hooks/usePrimeLayoutStore'
+import { usePrimeLayoutStore } from '../hooks/usePrimeLayout'
 import { usePrimeLayout } from './PrimeLayoutProvider'
 
 const PinButton = () => {
-   const pinned = usePrimeLayoutStore((layout) => layout.pinned)
+  const pinned = usePrimeLayoutStore((layout) => layout.pinned)
   const layout = usePrimeLayout()
 
   if (layout.isMobile) return null

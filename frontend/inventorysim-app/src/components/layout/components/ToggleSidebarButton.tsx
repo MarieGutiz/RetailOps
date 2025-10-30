@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { usePrimeLayout } from './PrimeLayoutProvider'
-import { usePrimeLayoutStore } from '../hooks/usePrimeLayoutStore'
+import { usePrimeLayoutStore } from '../hooks/usePrimeLayout'
 
 const ToggleSidebarButton = () => {
   // const layout = usePrimeLayout()

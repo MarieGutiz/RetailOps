@@ -1,24 +1,20 @@
 import React from 'react'
 import { usePrimeLayout } from './PrimeLayoutProvider'
 
-const SidebarResizer = () => {
-   const layout = usePrimeLayout()
+const SidebarResizer:React.FC = () => {
+  const layout = usePrimeLayout()
 
   const isDragging = React.useSyncExternalStore(
     (listener) => layout.subscribe(listener),
     () => layout.isDragging
   )
 
-  // Derived active state
   const canDrag = !layout.isMobile && layout.draggable && !layout.pinned
 
   React.useEffect(() => {
     if (!isDragging) return
 
-    const handleMouseMove = (e: MouseEvent) => {
-      layout.updateWidth(e.movementX)
-    }
-
+    const handleMouseMove = (e: MouseEvent) => layout.updateWidth(e.movementX)
     const handleMouseUp = () => {
       layout.stopDrag()
       document.removeEventListener("mousemove", handleMouseMove)
@@ -47,8 +43,8 @@ const SidebarResizer = () => {
         left: layout.side === "right" ? 0 : "auto",
         width: "4px",
         cursor: "col-resize",
-        background: isDragging ? "rgba(0,0,0,0.1)" : "transparent",
-        transition: "background 0.2s",
+        background: isDragging ? "rgba(0,0,0,0.15)" : "transparent",
+        zIndex: 50,
       }}
     />
   )

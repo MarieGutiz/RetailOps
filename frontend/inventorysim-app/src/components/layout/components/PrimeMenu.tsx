@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import SidebarResizer from './SidebarResizer'
 
 const data = {
   user: {
@@ -135,7 +136,7 @@ const data = {
 
 const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
   return (
-    <div className= "left-100">
+    <div style={{ position: "absolute", left:100, top:50 }}>
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarTrigger className="-ml-1" />
@@ -162,6 +163,7 @@ const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
+     <SidebarResizer />
     </div>
   )
 }
