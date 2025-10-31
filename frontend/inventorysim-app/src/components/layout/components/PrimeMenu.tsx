@@ -3,8 +3,8 @@ import { NavMain } from '@/components/dashboard-resources/nav-main'
 import { NavSecondary } from '@/components/dashboard-resources/nav-secondary'
 import { NavUser } from '@/components/dashboard-resources/nav-user'
 
-import { LayoutDashboardIcon, ListIcon, BarChartIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, FileCodeIcon, SettingsIcon, HelpCircleIcon, SearchIcon, DatabaseIcon, ClipboardListIcon, FileIcon, ArrowUpCircleIcon } from 'lucide-react'
-import React from 'react'
+import { ArrowUpCircleIcon, Settings } from 'lucide-react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Sidebar,
   SidebarContent,
@@ -16,127 +16,60 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import SidebarResizer from './SidebarResizer'
+import { data_menu } from '../context/menu_'
+import { usePrimeLayout } from './PrimeLayoutProvider'
 
-const data = {
-  user: {
-    name: "RetailOps Manager",
-    email: "m@example.com",
-    avatar: "src/assets/range.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: LayoutDashboardIcon,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: BarChartIcon,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: FolderIcon,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: UsersIcon,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: FileCodeIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: HelpCircleIcon,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: ClipboardListIcon,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: FileIcon,
-    },
-  ],
-}
+
 
 const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
+
+  const layout = usePrimeLayout()
+  const ref = useRef<HTMLDivElement>(null)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+
+  const { x, y } = layout.position
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (layout.pinned) return // no dragging when pinned
+    layout.startDrag()
+    setOffset({
+      x: e.clientX - layout.position.x,
+      y: e.clientY - layout.position.y,
+    })
+  }
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!layout.isDragging) return
+    layout.setPosition(e.clientX - offset.x, e.clientY - offset.y)
+  }
+
+  const handleMouseUp = () => {
+    layout.stopDrag()
+  }
+
+  useEffect(() => {
+    if (layout.isDragging) {
+      document.addEventListener("mousemove", handleMouseMove)
+      document.addEventListener("mouseup", handleMouseUp)
+    }
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove)
+      document.removeEventListener("mouseup", handleMouseUp)
+    }
+  }, [layout.isDragging, offset])
+  
   return (
-    <div style={{ position: "absolute", left:100, top:50 }}>
+   <div
+      ref={ref}
+      onMouseDown={handleMouseDown}
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        cursor: layout.pinned ? "default" : "move",
+        transition: layout.isDragging ? "none" : "transform 0.2s ease",
+      }}
+    >
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarTrigger className="-ml-1" />
@@ -147,7 +80,7 @@ const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <ArrowUpCircleIcon className="h-5 w-5" />
+                <Settings className="h-5 w-5" />
                 <span className="text-base font-semibold">RetailOps Sim</span>
               </a>              
             </SidebarMenuButton>
@@ -155,15 +88,14 @@ const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={data_menu.navMain} />
+        <NavDocuments items={data_menu.documents} />
+        <NavSecondary items={data_menu.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={data_menu.user} />
       </SidebarFooter>
     </Sidebar>
-     <SidebarResizer />
     </div>
   )
 }
