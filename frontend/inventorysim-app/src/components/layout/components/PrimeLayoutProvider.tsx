@@ -1,10 +1,11 @@
 "use client"
 
-import React, { createContext, useContext, useMemo, useEffect, useSyncExternalStore } from "react"
+import React, { createContext, useContext, useMemo, useEffect } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { PrimeLayoutController } from "../controllers/PrimeLayoutController"
 import PrimeMenu from "./PrimeMenu"
+import { usePrimeLayoutStore } from "../hooks/usePrimeLayout"
 
 const PrimeLayoutContext = createContext<PrimeLayoutController | null>(null)
 
@@ -23,49 +24,32 @@ export function PrimeLayoutProvider({
   children: React.ReactNode
 }) {
   const isMobile = useIsMobile()
-
-  // always use same instance
   const layout = useMemo(() => controller ?? new PrimeLayoutController(), [controller])
 
-  // React reactivity through `useSyncExternalStore`
-  const open = useSyncExternalStore(
-    (listener) => layout.subscribe(listener),
-    () => layout.open
-  )
-
-//   const state = useSyncExternalStore(//apply this
-//   (listener) => layout.subscribe(listener),
-//   () => ({
-//     open: layout.open,
-//     side: layout.side,
-//     variant: layout.variant,
-//   })
-// )
-
-
-const side = useSyncExternalStore(
-  (listener) => layout.subscribe(listener),
-  () => layout.side
-)
-// const variant = useSyncExternalStore(
-//   (listener) => layout.subscribe(listener),
-//   () => layout.variant
-// )
-
-
-//extend hook to set side
   useEffect(() => {
     layout.setIsMobile(isMobile)
   }, [layout, isMobile])
 
   return (
     <PrimeLayoutContext.Provider value={layout}>
-      <SidebarProvider open={open}
-      onOpenChange={(v) => layout.setOpen(v)}
-      style={layout.getSidebarStyle()}>
-        <PrimeMenu variant={layout.variant} side={side} />
-        <SidebarInset>{children}</SidebarInset>
-      </SidebarProvider>
+      <PrimeLayoutContent>{children}</PrimeLayoutContent>
     </PrimeLayoutContext.Provider>
+  )
+}
+
+function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
+  const layout = usePrimeLayout()
+  const open = usePrimeLayoutStore(l => l.open)
+  const side = usePrimeLayoutStore(l => l.side)
+
+  return (
+    <SidebarProvider
+      open={open}
+      onOpenChange={(v) => layout.setOpen(v)}
+      style={layout.getSidebarStyle()}
+    >
+      <PrimeMenu variant={layout.variant} side={side} />
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
   )
 }
