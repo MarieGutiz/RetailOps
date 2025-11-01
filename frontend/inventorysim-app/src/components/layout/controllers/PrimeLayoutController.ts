@@ -15,7 +15,7 @@ export class PrimeLayoutController {
   minWidth = 6
   maxWidth = 28
   width = this.sidebarWidth
-  position = { x: 1500, y: 50 } // initial absolute position
+  position = { x: 0, y: 0 } // initial absolute position
    // existing code...
   setPosition(x: number, y: number) {
     this.position = { x, y }
