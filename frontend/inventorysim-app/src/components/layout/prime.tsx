@@ -1,4 +1,5 @@
 
+import TopHeader from "./components/headers/TopHeader"
 import MenuDirection from "./components/MenuDirection"
 import PinButton from "./components/PinButton"
 import  { PrimeLayoutProvider } from "./components/PrimeLayoutProvider"
@@ -10,7 +11,7 @@ const controller = new PrimeLayoutController({ //verify options
   side: "left", // try "left" or "right"
   sidebarWidth: 16,
   collapsedWidth: 6,
-  variant: "floating", // try "sidebar", "floating" or "inset"
+  variant: "inset", // try "sidebar", "floating" or "inset"
   draggable: true,  
 })
 
@@ -19,6 +20,7 @@ const Prime = () => {
   return (
     <PrimeLayoutProvider controller={controller}>
       <main>
+        <TopHeader />
         <h1>Dashboard</h1>
         <ToggleSidebarButton />
         <PinButton />
