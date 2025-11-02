@@ -45,6 +45,9 @@ export class PrimeLayoutController {
 
   toggle() {
     this.open = !this.open
+    console.log("Sidebar open:", this.open)
+    console.log("Menu direction:", this.getMenuDirection())
+    console.log("variant:", this.getVariant())
     this.notify()
   }
 
@@ -103,4 +106,11 @@ export class PrimeLayoutController {
     this.side = this.side === "left" ? "right" : "left";
     this.notify();
   }
+
+  //set z-index
+  getZIndex() {
+    return this.pinned ? 99 : 1000;
+  }
+
+  
 }

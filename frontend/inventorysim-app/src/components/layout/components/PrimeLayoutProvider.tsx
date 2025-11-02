@@ -41,6 +41,22 @@ function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
   const layout = usePrimeLayout()
   const open = usePrimeLayoutStore(l => l.open)
   const side = usePrimeLayoutStore(l => l.side)
+  const variant = layout.getVariant()
+
+  // // Only offset main content (SidebarInset) based on open/collapsed + side
+  // const sidebarWidth = open ? layout.sidebarWidth : layout.collapsedWidth
+  // const contentOffset: React.CSSProperties =
+  //   variant === "floating"
+  //     ? {} // floating overlays → no margin
+  //     : side === "left"
+  //     ? { marginLeft: `${sidebarWidth}rem`, transition: "margin 0.25s ease" }
+  //     : { marginRight: `${sidebarWidth}rem`, transition: "margin 0.25s ease" }
+
+  // // Sidebar style: only set position + width if needed, don't override internal DOM
+  // const sidebarStyle: React.CSSProperties = {
+  //   ...layout.getSidebarStyle(),
+  //   [side]: 0, // keep pinned/fixed on left or right
+  // }
 
   return (
     <SidebarProvider
@@ -48,8 +64,9 @@ function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
       onOpenChange={(v) => layout.setOpen(v)}
       style={layout.getSidebarStyle()}
     >
-      <PrimeMenu variant={layout.variant} side={side} />
-      <SidebarInset>{children}</SidebarInset>
+      <PrimeMenu variant={variant} side={side} />
+        <SidebarInset>{children}</SidebarInset>
+      
     </SidebarProvider>
-  )
+    )
 }
