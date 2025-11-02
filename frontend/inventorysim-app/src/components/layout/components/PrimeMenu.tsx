@@ -51,9 +51,40 @@ const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
     if (!pinned) controls.start(e)
   }
 
+  if (pinned) {
+    return (
+      <Sidebar collapsible="icon" {...props}>
+        <SidebarHeader style={{ cursor: "default", userSelect: "none" }}>
+          <SidebarTrigger className="-ml-1" />
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+                <a href="#">
+                  <Settings className="h-5 w-5" />
+                  <span className="text-base font-semibold">RetailOps Sim</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+
+        <SidebarContent>
+          <NavMain items={data_menu.navMain} />
+          <NavDocuments items={data_menu.documents} />
+          <NavSecondary items={data_menu.navSecondary} className="mt-auto" />
+        </SidebarContent>
+
+        <SidebarFooter>
+          <NavUser user={data_menu.user} />
+        </SidebarFooter>
+      </Sidebar>
+    )
+  }
+
+  //  Unpinned: floating and draggable
   return (
     <motion.div
-      drag={!pinned}
+      drag
       dragListener={false}
       dragControls={controls}
       dragMomentum={false}
@@ -62,8 +93,8 @@ const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
         x,
         y,
         position: "fixed",
-        zIndex: pinned ? 999 : 1000,  // <-- now reacts to store
-        cursor: pinned ? "default" : "move", // <-- now reacts to store
+        zIndex: 1000,
+        cursor: "move",
       }}
       initial={{ x: layout.position.x || 10, y: layout.position.y || 50 }}
     >
@@ -71,7 +102,7 @@ const primeMenu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
         <SidebarHeader
           onPointerDown={startDrag}
           style={{
-            cursor: pinned ? "default" : "move",
+            cursor: "move",
             userSelect: "none",
           }}
         >
