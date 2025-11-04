@@ -3,7 +3,7 @@ import type React from "react"
 import { PrimeLayoutDragController } from "./PrimeLayoutDragController";
 
 export class PrimeLayoutController {
-    open = true;
+  open = true;
   side: "left" | "right" = "left";
   sidebarWidth = 16;
   collapsedWidth = 6;
@@ -39,7 +39,7 @@ export class PrimeLayoutController {
   private notify() {
     this.listeners.forEach((fn) => fn());
   }
-
+  //Set collapse/expand state
   toggle() {
     this.open = !this.open;
     this.notify();
@@ -55,32 +55,10 @@ export class PrimeLayoutController {
     this.notify();
   }
 
+// Pin or unpin the sidebar
   togglePin() {
     this.pinned = !this.pinned;
     this.draggable = !this.pinned;
-    this.notify();
-  }
-
-  // Drag methods
-  startDrag() {
-    if (this.isMobile || this.pinned) return;
-    this.isDragging = true;
-    this.notify();
-  }
-
-  stopDrag() {
-    this.isDragging = false;
-    this.notify();
-  }
-
-  updateWidth(deltaX: number) {
-    if (this.isMobile || this.pinned) return;
-    const newWidth = Math.min(
-      Math.max(this.width + deltaX / 16, this.minWidth),
-      this.maxWidth
-    );
-    this.width = newWidth;
-    this.sidebarWidth = newWidth;
     this.notify();
   }
 
@@ -96,16 +74,18 @@ export class PrimeLayoutController {
     return this.variant;
   }
 
-  getMenuDirection() {
-    return this.side;
-  }
-
+  // getMenuDirection() {
+  //   return this.side;
+  // }
+ 
+  // Toggle sidebar side
   toggleSide() {
     this.side = this.side === "left" ? "right" : "left";
     this.dragController.toggleSide();
     this.notify();
   }
 
+  // Dragging controls
   resetPosition() {
     this.dragController.reset();
   }
