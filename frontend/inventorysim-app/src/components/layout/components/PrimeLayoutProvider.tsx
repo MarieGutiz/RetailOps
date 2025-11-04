@@ -40,8 +40,8 @@ export function PrimeLayoutProvider({
 function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
   const layout = usePrimeLayout()
   const open = usePrimeLayoutStore(l => l.open)
-  const side = usePrimeLayoutStore(l => l.side)
-  const variant = layout.getVariant()
+  // const side = usePrimeLayoutStore(l => l.side)
+  // const variant = layout.getVariant()
 
   return (
     <SidebarProvider
@@ -49,7 +49,7 @@ function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
       onOpenChange={(v) => layout.setOpen(v)}
       style={layout.getSidebarStyle()}
     >
-      <PrimeMenu variant={variant} side={side} />
+      <PrimeMenu controller={layout} />
         <SidebarInset>{children}</SidebarInset>
       
     </SidebarProvider>
