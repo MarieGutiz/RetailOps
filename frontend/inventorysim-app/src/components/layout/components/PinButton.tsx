@@ -7,7 +7,7 @@ const PinButton = () => {
 
   if (layout.isMobile) return null
 
-  console.log("Render PinButton: pinned =", pinned)
+  // console.log("Render PinButton: pinned =", pinned)
 
   return (
     <button

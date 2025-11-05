@@ -50,4 +50,17 @@ export class PrimeLayoutDragController {
       newSide === "left" ? 0 : this.viewportWidth - this.sidebarWidth;
     animate(this.x, target, { type: "spring", stiffness: 120, damping: 20 });
   }
+
+    setInitialPosition() {
+    if (!this.x) return;
+    const start =
+      this.side === "left"
+        ? 0
+        : this.viewportWidth - this.sidebarWidth;
+    this.x.set(start);
+  }
+
+  setSidebarWidth(remValue: number) {
+    this.sidebarWidth = remValue * 16; // convert rem → px
+   }
 }

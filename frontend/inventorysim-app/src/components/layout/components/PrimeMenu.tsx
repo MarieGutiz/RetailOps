@@ -24,10 +24,10 @@ const PrimeMenu = ({
     return <Menu variant={variant} side={side} />;
   }
 
-  // Unpinned: floating and draggable
+  // Unpinned: floating and draggable : problematic without variant
   return (
     <DraggableSidebar controller={activeController}>
-      <Menu variant={variant} side={side} />
+      <Menu variant={variant} side={side} /> 
     </DraggableSidebar>
   );
 };
