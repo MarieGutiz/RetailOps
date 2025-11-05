@@ -6,7 +6,7 @@ const MenuDirection = () => {
    const direction = usePrimeLayoutStore((layout) => layout.side)
    const layout = usePrimeLayoutStore((layout) => layout)
 
-   console.log("Render MenuDirection: side =", direction, "layout =", layout)
+  //  console.log("Render MenuDirection: side =", direction, "layout =", layout)
 
   return (
    <Button onClick={() => layout.toggleSide()}>
