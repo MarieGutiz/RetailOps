@@ -1,4 +1,4 @@
-import { LayoutDashboardIcon, BarChartIcon, UsersIcon, CameraIcon, FileTextIcon, FileCodeIcon, SettingsIcon, HelpCircleIcon, SearchIcon, DatabaseIcon, ClipboardListIcon, FileIcon } from "lucide-react";
+import { LayoutDashboardIcon, ClipboardListIcon, PlayCircleIcon, BarChartIcon, FileTextIcon, LayersIcon, UsersIcon, DatabaseIcon, CalculatorIcon, ActivityIcon, ScaleIcon, SettingsIcon, SearchIcon, CommandIcon, HelpCircleIcon, FileIcon, NotebookIcon } from "lucide-react";
 
 export const data_menu = {
   user: {
@@ -20,6 +20,12 @@ export const data_menu = {
       icon: ClipboardListIcon,
     },
     {
+      title: "Simulations",
+      id: "simulations",
+      url: "#",
+      icon: PlayCircleIcon,
+    },
+    {
       title: "Analytics",
       url: "#",
       icon: BarChartIcon,
@@ -31,7 +37,13 @@ export const data_menu = {
       icon: FileTextIcon,
     },
     {
-      title: "Share",
+      title: "Scenarios",
+      id: "scenarios",
+      url: "#",
+      icon: LayersIcon,
+    },
+    {
+      title: "Collaboration",
       id: "team",
       url: "#",
       icon: UsersIcon,
@@ -39,50 +51,38 @@ export const data_menu = {
   ],
   navClouds: [
     {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
+      title: "Product Library",
+      icon: DatabaseIcon,
       url: "#",
       items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
+        { title: "All Products", url: "#" },
+        { title: "Add New", url: "#" },
+        { title: "Categories", url: "#" },
       ],
     },
     {
-      title: "Proposal",
-      icon: FileTextIcon,
+      title: "EOQ Model",
+      icon: CalculatorIcon,
       url: "#",
       items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
+        { title: "Run EOQ", url: "#" },
+        { title: "Compare Scenarios", url: "#" },
       ],
     },
     {
-      title: "Prompts",
-      icon: FileCodeIcon,
+      title: "Newsvendor Model",
+      icon: ActivityIcon,
       url: "#",
       items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
+        { title: "Run Simulation", url: "#" },
+        { title: "Demand Variability", url: "#" },
       ],
+    },
+    {
+      title: "Critical Ratio",
+      icon: ScaleIcon,
+      url: "#",
+      items: [{ title: "Calculate", url: "#" }],
     },
   ],
   navSecondary: [
@@ -92,27 +92,36 @@ export const data_menu = {
       icon: SettingsIcon,
     },
     {
-      title: "Get Help",
-      url: "#",
-      icon: HelpCircleIcon,
-    },
-    {
       title: "Search",
       url: "#",
       icon: SearchIcon,
     },
+    {
+      title: "Keyboard Shortcuts",
+      url: "#",
+      icon: CommandIcon,
+    },
+    {
+      title: "Get Help",
+      url: "#",
+      icon: HelpCircleIcon,
+    },
   ],
   documents: [
     {
-      name: "Data Library",
+      name: "Data Product Library",
       url: "#",
       icon: DatabaseIcon,
     },
-
     {
       name: "Word Assistant",
       url: "#",
       icon: FileIcon,
     },
+    {
+      name: "Simulation Notes",
+      url: "#",
+      icon: NotebookIcon,
+    },
   ],
-}
+};

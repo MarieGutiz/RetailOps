@@ -16,6 +16,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { data_menu } from '../../context/menu_'
+import NavMenuRoot from './Nav-Menu'
 
 const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
   return (
@@ -35,7 +36,7 @@ const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
         </SidebarHeader>
 
         <SidebarContent>
-          <NavMain items={data_menu.navMain} />
+          <NavMenuRoot items={data_menu.navMain} />
           <NavDocuments items={data_menu.documents} />
           <NavSecondary items={data_menu.navSecondary} className="mt-auto" />
         </SidebarContent>
