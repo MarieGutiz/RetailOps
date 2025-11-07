@@ -1,6 +1,4 @@
-import { NavDocuments } from '@/components/dashboard-resources/nav-documents'
-import { NavMain } from '@/components/dashboard-resources/nav-main'
-import { NavSecondary } from '@/components/dashboard-resources/nav-secondary'
+
 import { NavUser } from '@/components/dashboard-resources/nav-user'
 
 import { Settings } from 'lucide-react'
@@ -19,6 +17,7 @@ import { data_menu } from '../../context/menu_'
 import NavMenuRoot from './Nav-Menu'
 
 const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
+
   return (
     <Sidebar collapsible="icon" {...props}>
         <SidebarHeader style={{ cursor: "default", userSelect: "none" }}>
@@ -37,8 +36,8 @@ const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
 
         <SidebarContent>
           <NavMenuRoot items={data_menu.navMain} />
-          <NavDocuments items={data_menu.documents} />
-          <NavSecondary items={data_menu.navSecondary} className="mt-auto" />
+          {/* <NavDocuments items={data_menu.documents} />
+          <NavSecondary items={data_menu.navSecondary} className="mt-auto" /> */}
         </SidebarContent>
 
         <SidebarFooter>
