@@ -16,16 +16,20 @@ export class PrimeLayoutController {
   // width = this.sidebarWidth;
   position = { x: 0, y: 0 }; // initial absolute position
 
-  // new drag handler instance
-  dragController = new PrimeLayoutDragController({
-    side: this.side,
-    sidebarWidth: this.sidebarWidth * 16, // convert rem → px
-  });
+   dragController: PrimeLayoutDragController;
 
   private listeners = new Set<() => void>();
 
   constructor(init?: Partial<PrimeLayoutController>) {
     Object.assign(this, init);
+
+    // initialize without width awareness
+    this.dragController = new PrimeLayoutDragController({
+      side: this.side
+    });
+
+    // now sync the current width state properly
+    this.syncDragController();
   }
 
   // Subscribe system
@@ -37,30 +41,39 @@ export class PrimeLayoutController {
   private notify() {
     this.listeners.forEach((fn) => fn());
   }
+
+
+
   //Set collapse/expand state
+  
+  private get currentWidthRem() {
+    return this.open ? this.sidebarWidth : this.collapsedWidth;
+  }
+
+  private syncDragController() {
+    this.dragController.setSide(this.side);
+    this.dragController.setSidebarWidth(this.currentWidthRem);
+  }
+
+  // collapse / expand
   toggle() {
-    this.open = !this.open;
-    // Update sidebar width and notify drag controller
-    this.setOpen(this.open);
-    this.notify();
+    this.setOpen(!this.open);
   }
 
   setOpen(open: boolean) {
     this.open = open;
 
-    // Update sidebar width and notify drag controller
-    const newWidth = open ? this.sidebarWidth : this.collapsedWidth;
-    console.log("Setting sidebar width to:", newWidth);
-    this.dragController.setSidebarWidth(newWidth);
+    // sync sidebar width
+    this.syncDragController();
+
+    // realign if collapsing
+    if (!open) {
+      this.dragController.reset();
+    }
 
     this.notify();
-
-    //Reset 
-    if (!open) {
-     this.dragController.reset(); // ensure it aligns again
-}
-
   }
+
 
   setIsMobile(isMobile: boolean) {
     this.isMobile = isMobile;
@@ -72,11 +85,12 @@ export class PrimeLayoutController {
     this.pinned = !this.pinned;
     this.draggable = !this.pinned;
 
-    // When becoming unpinned, ensure correct initial position
     if (!this.pinned) {
       this.onUnpin();
     }
 
+    // Always sync when pinning state changes
+    this.syncDragController();
     this.notify();
   }
 
@@ -92,10 +106,6 @@ export class PrimeLayoutController {
     return this.variant;
   }
 
-  // getMenuDirection() {
-  //   return this.side;
-  // }
- 
   // Toggle sidebar side
   toggleSide() {
     this.side = this.side === "left" ? "right" : "left";
@@ -117,10 +127,8 @@ export class PrimeLayoutController {
 
   onUnpin() {
   // Make sure dragController knows about the current side + width
-    this.dragController.setSide(this.side);
-    this.dragController.sidebarWidth = this.sidebarWidth * 16; // rem → px
-
-    // Make sure it's visually placed at correct side before showing
+ // Make sure controller knows about side + current width
+    this.syncDragController();
     this.dragController.setInitialPosition?.();
   }
   
