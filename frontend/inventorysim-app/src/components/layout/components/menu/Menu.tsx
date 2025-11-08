@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/sidebar"
 import { data_menu } from '../../context/menu_'
 import NavMenuRoot from './Nav-Menu'
+import ToggleGroupDemo from './controls/SidebarControls'
+import { Separator } from '@radix-ui/react-dropdown-menu'
 
 const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
 
@@ -29,7 +31,10 @@ const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
                   <Settings className="h-5 w-5" />
                   <span className="text-base font-semibold">RetailOps Sim</span>
                 </a>
+               
               </SidebarMenuButton>
+              <Separator />
+               <ToggleGroupDemo/>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>

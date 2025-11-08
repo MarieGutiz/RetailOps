@@ -15,7 +15,7 @@ import { usePrimeLayout } from "../PrimeLayoutProvider";
 const NavMenuRoot = ({ items }: {
   items: { title: string; id?: string; url: string; icon?: any }[];
 }) => {
-  const layout = usePrimeLayout(); // always defined
+   const layout = usePrimeLayout(); // always defined
     const pinned = usePrimeLayoutStore(l => l.pinned);
     const side = usePrimeLayoutStore(l => l.side);
     const collapsed = usePrimeLayoutStore(l => l.open)

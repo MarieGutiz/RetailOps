@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+/* --- Java/IDE-style Sidebar Buttons --- */
+.sidebar-btn {
+  @apply h-8 w-8 flex items-center justify-center rounded-md border
+    border-gray-500/40 bg-gradient-to-b from-gray-100/60 to-gray-300/30
+    shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_1px_2px_rgba(0,0,0,0.2)]
+    hover:from-gray-50 hover:to-gray-200/50
+    transition-all duration-200 ease-out
+    text-gray-700 dark:text-gray-200;
+}
+
+.sidebar-btn.active {
+  @apply bg-gradient-to-b from-blue-500/70 to-blue-700/70 border-blue-600/60
+    shadow-[inset_0_2px_2px_rgba(255,255,255,0.3),0_1px_3px_rgba(0,0,0,0.4)]
+    text-white;
+}
+
+.sidebar-btn:active {
+  @apply scale-95 shadow-inner;
+}
+
+/* Optional glow effect */
+.sidebar-btn:hover {
+  box-shadow: 0 0 6px rgba(0, 128, 255, 0.4);
+}
