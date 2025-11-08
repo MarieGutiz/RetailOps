@@ -1,8 +1,19 @@
 // SidebarControls.tsx
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight } from "lucide-react";
+import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight, Bold, Italic, Underline } from "lucide-react";
 import {  ToggleGroup,
   ToggleGroupItem,} from "@/components/ui/toggle-group";
+import "@/styles/SidebarControls.css";
+
+
+interface SidebarControlsProps {
+  pinned: boolean;
+  collapsed: boolean;
+  side: "left" | "right";
+  onTogglePin: () => void;
+  onToggleCollapse: () => void;
+  onToggleSide: () => void;
+}
 
 export const SidebarControls = ({
   pinned,
@@ -11,16 +22,7 @@ export const SidebarControls = ({
   onTogglePin,
   onToggleCollapse,
   onToggleSide,
-}: {
-  pinned: boolean;
-  collapsed: boolean;
-  side: "left" | "right";
-  onTogglePin: () => void;
-  onToggleCollapse: () => void;
-  onToggleSide: () => void;
-}) => {
-
-  console.log("pinned at sidebarctrls "+pinned);
+}: SidebarControlsProps) => {
   return (
     <TooltipProvider>
       <div
@@ -30,35 +32,34 @@ export const SidebarControls = ({
       >
         <ToggleGroup
           type="single"
-          value={pinned ? "pinned" : collapsed ? "collapse" : side}
           className={`flex ${collapsed ? "flex-row gap-1" : "flex-col gap-1"}`}
         >
-          {/* Drag Button */}
+          {/* --- DRAG / PIN --- */}
           <Tooltip>
             <TooltipTrigger asChild>
               <ToggleGroupItem
                 value="pinned"
                 onClick={onTogglePin}
-                className={`h-8 w-8 ${pinned ? "bg-primary/20" : ""}`}
+                className={`sidebar-btn ${pinned ? "active" : ""}`}
               >
-                <Move className="h-2 w-2" />
+                <Move className="h-3.5 w-3.5" />
               </ToggleGroupItem>
             </TooltipTrigger>
             <TooltipContent>Enable/Disable Dragging</TooltipContent>
           </Tooltip>
 
-          {/* Collapse Button */}
+          {/* --- COLLAPSE --- */}
           <Tooltip>
             <TooltipTrigger asChild>
               <ToggleGroupItem
                 value="collapse"
                 onClick={onToggleCollapse}
-                className={`h-8 w-8 ${collapsed ? "bg-primary/20" : ""}`}
+                className={`sidebar-btn ${collapsed ? "active" : ""}`}
               >
                 {collapsed ? (
-                  <PanelRight className="h-2 w-2" />
+                  <PanelRight className="h-3.5 w-3.5" />
                 ) : (
-                  <PanelLeft className="h-2 w-2" />
+                  <PanelLeft className="h-3.5 w-3.5" />
                 )}
               </ToggleGroupItem>
             </TooltipTrigger>
@@ -67,23 +68,23 @@ export const SidebarControls = ({
             </TooltipContent>
           </Tooltip>
 
-          {/* Switch Side Button */}
+          {/* --- SWITCH SIDE --- */}
           <Tooltip>
             <TooltipTrigger asChild>
               <ToggleGroupItem
                 value="side"
                 onClick={onToggleSide}
-                className="h-8 w-8"
+                className="sidebar-btn"
               >
                 {side === "left" ? (
-                  <ChevronRight className="h-2 w-2" />
+                  <ChevronRight className="h-3.5 w-3.5" />
                 ) : (
-                  <ChevronLeft className="h-2 w-2" />
+                  <ChevronLeft className="h-3.5 w-3.5" />
                 )}
               </ToggleGroupItem>
             </TooltipTrigger>
             <TooltipContent>
-              {`Move Sidebar to ${side === "left" ? "Right" : "Left"} side`}
+              Move Sidebar to {side === "left" ? "Right" : "Left"} side
             </TooltipContent>
           </Tooltip>
         </ToggleGroup>
@@ -94,3 +95,21 @@ export const SidebarControls = ({
 
 
 
+
+const ToggleGroupDemo = () => {
+  return (
+    <ToggleGroup type="multiple" variant="outline">
+      <ToggleGroupItem value="bold" aria-label="Toggle bold">
+        <Bold className="h-4 w-4" />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="italic" aria-label="Toggle italic">
+        <Italic className="h-4 w-4" />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
+        <Underline className="h-4 w-4" />
+      </ToggleGroupItem>
+    </ToggleGroup>
+  )
+}
+
+export default ToggleGroupDemo
