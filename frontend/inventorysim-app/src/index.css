@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @tailwind utilities;
 
+@import "./styles/SidebarControls.css";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -49,8 +49,8 @@ export function DraggableSidebar({
   };
 }, [controller, x]);
 
-  console.log("Rendering DraggableSidebar with width:", width);
-  console.log("Controller toggle:", controller.sidebarWidth);
+  // console.log("Rendering DraggableSidebar with width:", width);
+  // console.log("Controller toggle:", controller.sidebarWidth);
 
   return (
     <motion.div

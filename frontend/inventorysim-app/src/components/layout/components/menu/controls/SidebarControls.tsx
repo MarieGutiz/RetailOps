@@ -3,7 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight, Bold, Italic, Underline } from "lucide-react";
 import {  ToggleGroup,
   ToggleGroupItem,} from "@/components/ui/toggle-group";
-import "@/styles/SidebarControls.css";
+// import "@/styles/SidebarControls.css";
 
 
 interface SidebarControlsProps {
@@ -23,6 +23,7 @@ export const SidebarControls = ({
   onToggleCollapse,
   onToggleSide,
 }: SidebarControlsProps) => {
+  console.log("Rendering SidebarControls - pinned:", pinned, "collapsed:", collapsed, "side:", side);
   return (
     <TooltipProvider>
       <div
@@ -93,23 +94,3 @@ export const SidebarControls = ({
   );
 };
 
-
-
-
-const ToggleGroupDemo = () => {
-  return (
-    <ToggleGroup type="multiple" variant="outline">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <Bold className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <Italic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <Underline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-
-export default ToggleGroupDemo
