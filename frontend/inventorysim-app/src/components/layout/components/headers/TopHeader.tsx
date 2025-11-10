@@ -1,6 +1,7 @@
 import { SearchIcon, UserCircleIcon } from 'lucide-react'
 
 const TopHeader = () => {
+ 
   return (
     <div className="flex items-center justify-between h-10 px-6 border-b bg-white shadow-sm sticky top-0 z-10">
       {/* Left section: search or scenario selector */}
