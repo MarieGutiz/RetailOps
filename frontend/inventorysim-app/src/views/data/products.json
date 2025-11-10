@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Potato Chips",
+    "category": "Snacks",
+    "description": "Crispy salted potato chips in a 50g bag.",
+    "unitCost": 0.5,
+    "unitPrice": 1.2
+  },
+  {
+    "id": 2,
+    "name": "Cola Drink",
+    "category": "Beverages",
+    "description": "Refreshing carbonated soft drink, 330ml can.",
+    "unitCost": 0.4,
+    "unitPrice": 1.0
+  },
+  {
+    "id": 3,
+    "name": "Chocolate Bar",
+    "category": "Confectionery",
+    "description": "Milk chocolate bar, 45g.",
+    "unitCost": 0.8,
+    "unitPrice": 1.5
+  }
+]
