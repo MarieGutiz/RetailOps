@@ -3,7 +3,7 @@ import { SearchIcon, UserCircleIcon } from 'lucide-react'
 const TopHeader = () => {
  
   return (
-    <div className="flex items-center justify-between h-10 px-6 border-b bg-white shadow-sm sticky top-0 z-10">
+    <div className="flex items-center justify-between h-10 px-6 border-b bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
       {/* Left section: search or scenario selector */}
       <div className="flex items-center gap-3">
         <div className="relative">
@@ -23,7 +23,7 @@ const TopHeader = () => {
         </button>
         <UserCircleIcon className="h-5 w-5 text-gray-700" />
       </div>
-    </div>
+  </div>
   )
 }
 
