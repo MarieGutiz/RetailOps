@@ -40,17 +40,29 @@ export function PrimeLayoutProvider({
 function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
   const layout = usePrimeLayout()
   const open = usePrimeLayoutStore(l => l.open)
+  const pinned = usePrimeLayoutStore(l => l.pinned);
   // const side = usePrimeLayoutStore(l => l.side)
   // const variant = layout.getVariant()
+
+    const effectiveSidebarWidth = layout.pinned
+  ? layout.open 
+    ? layout.sidebarWidth 
+    : layout.collapsedWidth
+  : layout.dragController.sidebarWidth;
 
   return (
     <SidebarProvider
       open={open}
       onOpenChange={(v) => layout.setOpen(v)}
-      style={layout.getSidebarStyle()}
+      style={{
+        ...layout.getSidebarStyle(),
+        // "--sidebar-width": `${effectiveSidebarWidth}px`, // dynamic width
+      }as React.CSSProperties
+    
+    }
     >
       <PrimeMenu controller={layout} />
-        <SidebarInset>{children}</SidebarInset>
+        <SidebarInset className="flex flex-1 pt-10">{children}</SidebarInset>
       
     </SidebarProvider>
     )

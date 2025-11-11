@@ -16,23 +16,16 @@ const controller = new PrimeLayoutController({ //verify options
 
 const Prime = () => {
   return (
+    <>   
     <PrimeLayoutProvider controller={controller}>
-      {/* <main>
+      <main>
         <TopHeader />
-        <h1>Dashboard</h1>
-        <ProductLibraryView />
-        
-      </main> */}
-      <TopHeader />
-
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <ProductLibraryView />
-            </div>
-          </div>
-        </div>
+        <ProductLibraryView/>
+      </main>
+      
     </PrimeLayoutProvider>
+    </>
+    
 
   )
 }

@@ -1,7 +1,6 @@
 
 import { NavUser } from '@/components/dashboard-resources/nav-user'
 
-import { Settings } from 'lucide-react'
 import React from 'react'
 import {
   Sidebar,
@@ -9,7 +8,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
