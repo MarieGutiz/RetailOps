@@ -8,8 +8,7 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuItem,
-  SidebarTrigger,
+  SidebarMenuItem
 } from "@/components/ui/sidebar"
 import { data_menu } from '../../context/menu_'
 import NavMenuRoot from './Nav-Menu'
@@ -19,9 +18,8 @@ import SidebarHeaderBrand from './controls/SidebarHeaderBrand '
 const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar className="flex flex-1 pt-11" collapsible="icon" {...props}>
         <SidebarHeader style={{ cursor: "default", userSelect: "none" }}>
-          <SidebarTrigger className="-ml-1" />
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarHeaderBrand />
