@@ -35,10 +35,10 @@ const Prime = () => {
             onUserCaseChange={(value) => console.log("Selected user case:", value)}
             actions={
               <>
-                <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                <button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
                   Simulate
                 </button>
-                <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded hover:bg-gray-300">
+                <button className="toolbar-element jbtn-flat-btn toolbar-element-md">
                   Helpers
                 </button>
               </>

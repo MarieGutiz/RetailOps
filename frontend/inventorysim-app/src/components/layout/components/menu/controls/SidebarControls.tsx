@@ -1,9 +1,8 @@
 // SidebarControls.tsx
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight, Bold, Italic, Underline } from "lucide-react";
+import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight } from "lucide-react";
 import {  ToggleGroup,
   ToggleGroupItem,} from "@/components/ui/toggle-group";
-// import "@/styles/SidebarControls.css";
 
 
 interface SidebarControlsProps {
