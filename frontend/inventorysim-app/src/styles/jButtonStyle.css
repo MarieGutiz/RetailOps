@@ -1,0 +1,171 @@
+/* Base toolbar element */
+.toolbar-element {
+  @apply flex items-center justify-center rounded-md border
+    border-gray-500/30
+    text-gray-700 dark:text-gray-200
+    font-sans font-medium
+    transition-all duration-200 ease-out
+    select-none;
+  height: 2rem;       /* unified height */
+  line-height: 1.5rem;/* vertical text alignment */
+  background: linear-gradient(to bottom, #f3f3f3 0%, #e0e0e0 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.dark .toolbar-element {
+  background: linear-gradient(to bottom, #2c2c2c 0%, #1f1f1f 100%);
+}
+
+/* Hover effect */
+.toolbar-element:hover {
+  background: linear-gradient(to bottom, #e8e8e8 0%, #d6d6d6 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1),
+              0 0 4px rgba(0,128,255,0.3);
+}
+
+/* Active / selected */
+.toolbar-element.active {
+  background: linear-gradient(to bottom, #4a90e2 0%, #3570b0 100%);
+  border-color: #2c69c3;
+  color: white;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.2),
+              0 0 8px rgba(0,128,255,0.5);
+}
+
+/* Click feedback */
+.toolbar-element:active {
+  @apply scale-95 shadow-inner;
+}
+
+/* Button-specific padding */
+.jbtn-flat-btn {
+  padding: 0 0.75rem; /* horizontal padding */
+}
+
+/* Combo box-specific padding */
+.jcombo-box {
+  padding: 0 0.5rem;
+  appearance: none;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.jcombo-box:focus,
+.jcombo-box:active {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74,144,226,0.3);
+}
+
+.jcombo-box:focus-visible {
+  background: linear-gradient(to bottom, #f0f8ff 0%, #dcefff 100%);
+}
+
+.jcombo-box::-ms-expand { display: none; } /* IE/Edge */
+.jcombo-box::after {
+  content: '▾';
+  position: absolute;
+  right: 0.5rem;
+  pointer-events: none;
+  color: inherit;
+}
+
+/* Style the <option> elements (some browsers support this partially) */
+.jcombo-box option {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.dark .jcombo-box option {
+  background-color: #1f1f1f;
+  color: #ddd;
+}
+
+/* Responsive sizes */
+.toolbar-element-sm { font-size: 0.75rem; height: 1.75rem; line-height: 1.5rem; }
+.toolbar-element-md { font-size: 0.875rem; height: 2rem; line-height: 1.5rem; }
+.toolbar-element-lg { font-size: 1rem; height: 2.5rem; line-height: 2rem; }
+
+
+/* =======================
+   Java Pane Typography (Enhanced)
+   ======================= */
+
+/* Base heading look — consistent family + slight glow */
+/* === Base Heading Style === */
+.j-heading {
+  @apply font-sans font-semibold tracking-tight;
+  color: #1a1a1a; /* deep neutral for light mode */
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.dark .j-heading {
+  color: #e4e9f2; /* soft white-blue for dark mode */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* === Hierarchy === */
+
+/* Main module or section title */
+.j-h1 {
+  @apply leading-tight;
+  font-size: 2.1rem; /* manually set for precision */
+  color: #234078; /* IntelliJ blue */
+}
+
+.dark .j-h1 {
+  color: #70a6ff; /* softer electric blue */
+}
+
+/* Subsection title */
+.j-h2 {
+  @apply leading-snug;
+  font-size: 1.75rem;
+  color: #2f3b52; /* slightly cooler gray-blue */
+}
+
+.dark .j-h2 {
+  color: #a8c3ff;
+}
+
+/* Minor heading */
+.j-h3 {
+  @apply leading-snug;
+  font-size: 1.45rem;
+  color: #3d475c;
+}
+
+.dark .j-h3 {
+  color: #b0c5e2;
+}
+
+/* Subtitle / description text */
+.j-subtitle {
+  @apply text-[0.8rem] leading-relaxed;
+  color: #5f6b7a;
+}
+
+.dark .j-subtitle {
+  color: #9aa7c2;
+}
+
+/* Section label or category (small caps style) */
+.j-accent {
+  @apply uppercase tracking-wide text-xs;
+  color: #6b7280; /* gray-500 */
+  letter-spacing: 0.06em;
+}
+
+.dark .j-accent {
+  color: #a0aec0;
+}
+
+/* Optional underline for panel-like titles */
+.j-panel-title {
+  @apply pb-1 mb-1 border-b border-gray-300 dark:border-gray-700;
+  color: #234078;
+}
+
+.dark .j-panel-title {
+  color: #70a6ff;
+}

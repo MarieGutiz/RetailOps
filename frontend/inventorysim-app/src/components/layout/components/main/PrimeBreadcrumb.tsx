@@ -1,21 +1,31 @@
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
+import React from 'react';
 
 
-const PrimeBreadcrumb = ({trail}:{trail: {label: string, path?: string}[]}) => {
+const PrimeBreadcrumb = ({
+  trail,
+}: {
+  trail: { label: string; path?: string }[];
+}) => {
   return (
     <Breadcrumb className="mb-3">
       <BreadcrumbList>
         {trail.map((item, index) => (
-          <BreadcrumbItem key={index}>
-            <BreadcrumbLink href={item.path || "#"} className="text-primary/80 hover:underline">
-              {item.label}
-            </BreadcrumbLink>
+          <React.Fragment key={index}>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                href={item.path || "#"}
+                className="text-primary/80 hover:underline"
+              >
+                {item.label}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
             {index < trail.length - 1 && <BreadcrumbSeparator />}
-          </BreadcrumbItem>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
-}
+  );
+};
 
 export default PrimeBreadcrumb

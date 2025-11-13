@@ -36,7 +36,7 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
           {userCases.length > 0 && (
             <select
               onChange={(e) => onUserCaseChange?.(e.target.value)}
-              className="border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring focus:ring-primary/30"
+              className="jcombo-box"
             >
               {userCases.map((uc, idx) => (
                 <option key={idx} value={uc}>{uc}</option>

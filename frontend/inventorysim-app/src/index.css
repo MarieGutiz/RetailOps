@@ -2,6 +2,7 @@
 @tailwind utilities;
 
 @import "./styles/SidebarControls.css";
+@import "./styles/jButtonStyle.css";
 
 @custom-variant dark (&:is(.dark *));
 
