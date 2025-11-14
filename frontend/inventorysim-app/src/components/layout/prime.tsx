@@ -1,9 +1,12 @@
 
 import ProductLibraryView from "@/views/ProductLibraryView"
 import TopHeader from "./components/headers/TopHeader"
-import  { PrimeLayoutProvider } from "./components/PrimeLayoutProvider"
+import  { PrimeLayoutProvider, usePrimeLayout } from "./components/PrimeLayoutProvider"
 import { PrimeLayoutController } from "./controllers/PrimeLayoutController"
 import ModuleContainer from "./components/main/ModuleContainer"
+import GlobalHeader from "./components/headers/GlobalHeader"
+import { usePrimeLayoutStore } from "./hooks/usePrimeLayout"
+import PrimeContent from "./components/main/PrimeContent "
 
 const controller = new PrimeLayoutController({ //verify options
   open: true,
@@ -16,36 +19,17 @@ const controller = new PrimeLayoutController({ //verify options
 
 
 const Prime = () => {
+
   return (
+    
     <>   
     <PrimeLayoutProvider controller={controller}>
       <main>
         {/* Top Header */}
         <TopHeader />
-        {/* Main display */}
-        <ModuleContainer
-            title="Product Library"
-            subtitle="Manage your products efficiently"
-            breadcrumbTrail={[
-              { label: "Home", path: "/" },
-              { label: "Dashboard", path: "/dashboard" },
-              { label: "Product Library" },
-            ]}
-            userCases={["Scenario A", "Scenario B", "Scenario C"]}
-            onUserCaseChange={(value) => console.log("Selected user case:", value)}
-            actions={
-              <>
-                <button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
-                  Simulate
-                </button>
-                <button className="toolbar-element jbtn-flat-btn toolbar-element-md">
-                  Helpers
-                </button>
-              </>
-            }
-          >
-            <ProductLibraryView />
-          </ModuleContainer>
+        {/* Global Header and module container */}
+        <PrimeContent />
+        
       </main>
       
     </PrimeLayoutProvider>
