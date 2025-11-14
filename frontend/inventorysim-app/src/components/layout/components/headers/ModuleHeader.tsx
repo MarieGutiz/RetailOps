@@ -4,57 +4,53 @@ import PrimeBreadcrumb from "../main/PrimeBreadcrumb";
 interface ModuleContainerProps {
   title: string
   subtitle?: string
-  breadcrumbTrail: { label: string; path?: string }[]
+  breadcrumbTrail?: { label: string; path?: string }[]
   userCases?: string[]
   onUserCaseChange?: (value: string) => void
   actions?: ReactNode
-  children: ReactNode
 }
 
 
 const ModuleHeader:React.FC<ModuleContainerProps>= ({
-     title,
-  subtitle,
-  breadcrumbTrail,
-  userCases = [],
-  onUserCaseChange,
-  actions,
-  children,
+      title,
+      subtitle,
+      breadcrumbTrail,
+      userCases = [],
+      onUserCaseChange,
+      actions,
 }: ModuleContainerProps) => {
   return (
-    <div className="flex flex-col w-full p-6 space-y-4">
-      {/* Header Row */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <>
+       <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
-          {subtitle && (
-            <p className="text-sm text-gray-500">{subtitle}</p>
-          )}
+          <h1 className="j-heading j-h1">{title}</h1>
+          {subtitle && <p className="text-gray-600 text-sm">{subtitle}</p>}
         </div>
 
-        <div className="flex items-center gap-2">
-          {userCases.length > 0 && (
+        <div className="flex items-center space-x-2">
+          {userCases && userCases.length > 0 && (
             <select
+              className="toolbar-element jcombo-box toolbar-element-md"
               onChange={(e) => onUserCaseChange?.(e.target.value)}
-              className="jcombo-box"
             >
-              {userCases.map((uc, idx) => (
-                <option key={idx} value={uc}>{uc}</option>
+              {userCases.map((uc, i) => (
+                <option key={i} value={uc}>
+                  {uc}
+                </option>
               ))}
             </select>
           )}
-          {actions}
+          {actions && actions}
         </div>
       </div>
 
-      {/* Breadcrumb */}
-      <PrimeBreadcrumb trail={breadcrumbTrail} />
-
-      <hr className="border-gray-200" />
-
-      {/* Main Module Content */}
-      <div className="flex-1">{children}</div>
-    </div>
+      {/* Breadcrumb below header */}
+      {breadcrumbTrail && breadcrumbTrail.length > 0 && (
+        <div className="mb-4">
+          <PrimeBreadcrumb trail={breadcrumbTrail} />
+        </div>
+      )}
+    </>
   );
 }
 
