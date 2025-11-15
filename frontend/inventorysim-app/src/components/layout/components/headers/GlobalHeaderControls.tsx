@@ -13,10 +13,8 @@ interface GlobalHeaderControlsProps {
 }
 
 const GlobalHeaderControls = ({
-    pinned,
     collapsed,
     side,
-    onTogglePin,
     onToggleCollapse,
     onToggleSide,}: GlobalHeaderControlsProps) => {
     return (
@@ -24,17 +22,6 @@ const GlobalHeaderControls = ({
       <div className="flex items-center gap-2">
        <ToggleGroup
           type="single" className="gap-1">
-
-
-        {/* PIN / DRAG ENABLE */}
-        <HeaderToggleButton
-          value="pinned"
-          active={pinned}
-          onClick={onTogglePin}
-          tooltip="Enable/Disable Dragging"
-        >
-          <Move className="h-4 w-4" />
-        </HeaderToggleButton>
 
         {/* COLLAPSE */}
         <HeaderToggleButton

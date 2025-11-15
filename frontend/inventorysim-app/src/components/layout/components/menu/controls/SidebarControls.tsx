@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight } from "lucide-react";
 import {  ToggleGroup,
   ToggleGroupItem,} from "@/components/ui/toggle-group";
+import HeaderToggleButton from "../../headers/HeaderToggleButton";
 
 
 interface SidebarControlsProps {
@@ -35,58 +36,43 @@ export const SidebarControls = ({
           className={`flex ${collapsed ? "flex-row gap-1" : "flex-col gap-1"}`}
         >
           {/* --- DRAG / PIN --- */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ToggleGroupItem
-                value="pinned"
-                onClick={onTogglePin}
-                className={`sidebar-btn ${pinned ? "active" : ""}`}
-              >
-                <Move className="h-3.5 w-3.5" />
-              </ToggleGroupItem>
-            </TooltipTrigger>
-            <TooltipContent>Enable/Disable Dragging</TooltipContent>
-          </Tooltip>
+
+        <HeaderToggleButton
+          value="pinned"
+          active={pinned}
+          onClick={onTogglePin}
+          tooltip="Enable/Disable Dragging"
+        >
+          <Move className="h-3.5 w-3.5" />
+        </HeaderToggleButton>
 
           {/* --- COLLAPSE --- */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ToggleGroupItem
-                value="collapse"
-                onClick={onToggleCollapse}
-                className={`sidebar-btn ${collapsed ? "active" : ""}`}
-              >
-                {collapsed ? (
-                  <PanelRight className="h-3.5 w-3.5" />
-                ) : (
-                  <PanelLeft className="h-3.5 w-3.5" />
-                )}
-              </ToggleGroupItem>
-            </TooltipTrigger>
-            <TooltipContent>
-              {collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-            </TooltipContent>
-          </Tooltip>
+
+          <HeaderToggleButton
+          value="collapsed"
+          active={collapsed}
+          onClick={onToggleCollapse}
+          tooltip={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        >
+          {collapsed ? <PanelRight className="h-3.5 w-3.5" /> : <PanelLeft className="h-3.5 w-3.5" />}
+        </HeaderToggleButton>
+
 
           {/* --- SWITCH SIDE --- */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ToggleGroupItem
-                value="side"
-                onClick={onToggleSide}
-                className="sidebar-btn"
-              >
-                {side === "left" ? (
-                  <ChevronRight className="h-3.5 w-3.5" />
-                ) : (
-                  <ChevronLeft className="h-3.5 w-3.5" />
-                )}
-              </ToggleGroupItem>
-            </TooltipTrigger>
-            <TooltipContent>
-              Move Sidebar to {side === "left" ? "Right" : "Left"} side
-            </TooltipContent>
-          </Tooltip>
+
+           <HeaderToggleButton
+          value="side"
+          active={false}
+          onClick={onToggleSide}
+          tooltip={`Move Sidebar to ${side === "left" ? "Right" : "Left"} side`}
+        >
+          {side === "left" ? (
+            <ChevronRight className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronLeft className="h-3.5 w-3.5" />
+          )}
+        </HeaderToggleButton> 
+
         </ToggleGroup>
       </div>
     </TooltipProvider>

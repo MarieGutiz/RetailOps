@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import type { Product } from "@/types/products";
 import { useState, useEffect } from "react";
+import { Label } from "@/components/ui/label"
 
 const ProductLibraryView = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -70,7 +71,7 @@ const ProductLibraryView = () => {
 
           <Dialog>
             <DialogTrigger asChild>
-              <Button>Add Product</Button>
+              <Button className="toolbar-element jbtn-flat-btn toolbar-element-md active">Add Product</Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
@@ -93,20 +94,24 @@ const ProductLibraryView = () => {
                   onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                 />
                 <div className="flex gap-2">
+                  <Label htmlFor="unitcost">Unit Cost:</Label>
                   <Input
+                    id="unitcost"
                     type="number"
                     placeholder="Unit Cost"
                     value={newProduct.unitCost}
                     onChange={(e) => setNewProduct({ ...newProduct, unitCost: Number(e.target.value) })}
                   />
+                  <Label htmlFor="unitprice">Unit Price:</Label>
                   <Input
+                    id="unitprice"
                     type="number"
                     placeholder="Unit Price"
                     value={newProduct.unitPrice}
                     onChange={(e) => setNewProduct({ ...newProduct, unitPrice: Number(e.target.value) })}
                   />
                 </div>
-                <Button onClick={handleAddProduct}>Save Product</Button>
+                <Button className="toolbar-element jbtn-flat-btn toolbar-element-md active" onClick={handleAddProduct}>Save Product</Button>
               </div>
             </DialogContent>
           </Dialog>
