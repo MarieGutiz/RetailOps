@@ -1,16 +1,9 @@
 import PrimeBreadcrumb from "@/components/layout/components/main/PrimeBreadcrumb";
 import  { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import AddProduct from "./inventory/forms/AddProduct";
 import { useProductStore } from "@/store/useProductStore";
 import { useInitProductData } from "@/store/inventory/initProductData";
+import ProductTable from "./inventory/ProductTable";
 
 const ProductLibraryView = () => {
 useInitProductData(); // loads JSON placeholder if empty
@@ -36,7 +29,8 @@ useInitProductData(); // loads JSON placeholder if empty
   </CardHeader>
 
         <CardContent>
-          <Table>
+          <ProductTable data={products} />
+          {/* <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
@@ -59,7 +53,7 @@ useInitProductData(); // loads JSON placeholder if empty
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </Table> */}
         </CardContent>
       </Card>
     </div>

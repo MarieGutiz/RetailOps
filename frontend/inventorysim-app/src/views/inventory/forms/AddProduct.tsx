@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/Button";
 import { Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger, } from "@/components/ui/dialog";
@@ -26,9 +27,9 @@ const { newProduct, setNewProduct, handleAdd } = useProducts();
           <DialogTitle className="text-center text-xl font-semibold">
             Add New Product
           </DialogTitle>
-          <p className="text-sm text-muted-foreground text-center">
-            Fill the details below to add a new product.
-          </p>
+           <DialogDescription>
+            Fill out the fields to create a new product.
+          </DialogDescription>         
         </DialogHeader>
 
         {/* FORM BODY */}
