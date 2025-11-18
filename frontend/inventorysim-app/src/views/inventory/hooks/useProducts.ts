@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useProductStore } from "@/store/useProductStore";
 import { toast } from "sonner";
+import type { Product } from "@/types/products";
 
 export const useProducts = () => {
   const addProduct = useProductStore((s) => s.addProduct);
-  const [newProduct, setNewProduct] = useState({
+  const [newProduct, setNewProduct] = useState<Product>({
     name: "",
     category: "",
     description: "",

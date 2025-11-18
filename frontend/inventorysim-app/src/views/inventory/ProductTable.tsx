@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
 import type { Product, ProductZ } from "@/types/products";
+import RowActions from "./forms/RowActions";
 
 const ProductTable = ({ data }: { data: Product[] }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -99,15 +100,31 @@ const ProductTable = ({ data }: { data: Product[] }) => {
             "-"
           ),
       },
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => <RowActions product={row.original} />,
+        enableSorting: false,
+        enableHiding: false,
+      }
+
     ],
     [] // ← columns never recreate
   );
 
+
+
   // TABLE INSTANCE
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 3,
+    });
   const table = useReactTable({
     data: filteredData,
     columns,
-    state: { sorting },
+    state: { sorting , pagination },
+    onPaginationChange: setPagination,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -128,7 +145,7 @@ const ProductTable = ({ data }: { data: Product[] }) => {
 
       {/* Table */}
       <div className="rounded-md border">
-        <Table>
+        <Table className="table-grid">
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id}>

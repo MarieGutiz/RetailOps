@@ -1,0 +1,12 @@
+.table-grid td,
+.table-grid th {
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.table-grid {
+  border-collapse: collapse;
+}
+
+.table-grid tr:hover {
+  background: rgba(0,0,0,0.02);
+}
