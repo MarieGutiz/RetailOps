@@ -22,6 +22,8 @@ import { Input } from "@/components/ui/Input";
 
 import type { Product, ProductZ } from "@/types/products";
 import RowActions from "./forms/RowActions";
+import SortableHeader from "./forms/SortableHeader";
+
 
 const ProductTable = ({ data }: { data: Product[] }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -35,82 +37,57 @@ const ProductTable = ({ data }: { data: Product[] }) => {
   }, [data, search]);
 
   // MEMOIZED COLUMNS (MOST IMPORTANT!)
-  const columns = useMemo<ColumnDef<ProductZ>[]>(
-    () => [
-      {
-        accessorKey: "name",
-        header: ({ column }) => (
-          <button
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
-          >
-            Name {column.getIsSorted() === "asc" ? "↑" : "↓"}
-          </button>
+const columns = useMemo<ColumnDef<ProductZ>[]>(
+  () => [
+    {
+       accessorKey: "name",
+         header: ({ column }) => (
+          <SortableHeader column={column} label="Name" />
+      ),
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => row.original.category || "-",
+    },
+    {
+      accessorKey: "unitCost",
+      header: ({ column }) => (
+        <SortableHeader column={column} label="Cost" />
         ),
-      },
-      {
-        accessorKey: "category",
-        header: "Category",
-        cell: ({ row }) => row.original.category || "-",
-      },
-      {
-        accessorKey: "unitPrice",
-        header: ({ column }) => (
-          <button
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
-          >
-            Price{" "}
-            {column.getIsSorted()
-              ? column.getIsSorted() === "asc"
-                ? "↑"
-                : "↓"
-              : ""}
-          </button>
+      cell: ({ row }) => (
+        <span data-type="number">${row.original.unitCost.toFixed(2)}</span>
+      ),
+    },
+    {
+      accessorKey: "unitPrice",
+       header: ({ column }) => (
+       <SortableHeader column={column} label="Price" />
+      ),
+      cell: ({ row }) => (
+        <span data-type="number">${row.original.unitPrice.toFixed(2)}</span>
+      ),
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) =>
+        row.original.description ? (
+          <span className="text-gray-600">{row.original.description}</span>
+        ) : (
+          "-"
         ),
-        cell: ({ row }) => `$${row.original.unitPrice.toFixed(2)}`,
-      },
-      {
-        accessorKey: "unitCost",
-        header: ({ column }) => (
-          <button
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
-          >
-            Cost{" "}
-            {column.getIsSorted()
-              ? column.getIsSorted() === "asc"
-                ? "↑"
-                : "↓"
-              : ""}
-          </button>
-        ),
-        cell: ({ row }) => `$${row.original.unitCost.toFixed(2)}`,
-      },
-      {
-        accessorKey: "description",
-        header: "Description",
-        cell: ({ row }) =>
-          row.original.description ? (
-            <span className="text-gray-600">{row.original.description}</span>
-          ) : (
-            "-"
-          ),
-      },
-      {
-        id: "actions",
-        header: "",
-        cell: ({ row }) => <RowActions product={row.original} />,
-        enableSorting: false,
-        enableHiding: false,
-      }
-
-    ],
-    [] // ← columns never recreate
-  );
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => <RowActions product={row.original} />,
+      enableSorting: false,
+      enableHiding: false,
+    },
+  ],
+  []
+);
 
 
 

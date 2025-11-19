@@ -7,8 +7,7 @@ import { Dialog,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger, } from "@/components/ui/dialog";
+  DialogTitle, } from "@/components/ui/dialog";
 import { MoreHorizontal } from "lucide-react"
 import { useState } from "react"
 import ProductDialog from "./ProductDialog";
@@ -83,21 +82,21 @@ const RowActions = ({product}: {product: Product}) => {
           </DialogHeader>
 
           <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
+          <DialogClose asChild>
+            <button className="toolbar-element jbtn-flat-btn jbtn-success">Cancel</button>
+          </DialogClose>
 
-            <Button
-              variant="destructive"
-              onClick={() => {
-                removeProduct(product.name);
-                setDeleteOpen(false);
-                toast.success("Product deleted.");
-              }}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
+          <button
+            className="toolbar-element jbtn-flat-btn jbtn-success jbtn-danger"
+            onClick={() => {
+              removeProduct(product.name);
+              setDeleteOpen(false);
+              toast.success("Product deleted.");
+            }}
+          >
+            Delete
+          </button>
+        </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
