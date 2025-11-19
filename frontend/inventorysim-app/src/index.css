@@ -3,6 +3,7 @@
 
 @import "./styles/SidebarControls.css";
 @import "./styles/jButtonStyle.css";
+@import "./styles/jDialog.css";
 @import "./styles/TableStyle.css";
 
 @custom-variant dark (&:is(.dark *));

@@ -169,3 +169,56 @@
 .dark .j-panel-title {
   color: #70a6ff;
 }
+
+
+/* =======================
+   Java Button Specific Styles
+   ======================= */
+/* Primary action button */
+ .jbtn-success {
+    background: linear-gradient(to bottom, #4caf50 0%, #3d8b40 100%);
+    border-color: #3d8b40;
+    color: white;
+  }
+
+  .jbtn-success:hover {
+    background: linear-gradient(to bottom, #5ec461 0%, #46a34a 100%);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.15),
+                0 0 6px rgba(76, 175, 80, 0.5);
+  }
+
+  .jbtn-success:active {
+    @apply scale-95 shadow-inner;
+  }
+
+  .jbtn-danger {
+    background: linear-gradient(to bottom, #e24a4a 0%, #b03535 100%);
+    border-color: #a82828;
+    color: white;
+  }
+
+  .jbtn-danger:hover {
+    background: linear-gradient(to bottom, #ee5c5c 0%, #c84040 100%);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.15),
+                0 0 6px rgba(226, 74, 74, 0.5);
+  }
+
+  .jbtn-danger:active {
+    @apply scale-95 shadow-inner;
+  }
+
+  .jbtn-warning { 
+    background: linear-gradient(to bottom, #f0ad4e 0%, #d4882a 100%);
+    border-color: #c67622;
+    color: white;
+  }
+
+  .jbtn-warning:hover {
+    background: linear-gradient(to bottom, #f2b95c 0%, #db9a2e 100%);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.15),
+                0 0 6px rgba(240, 173, 78, 0.5);
+  }
+
+  .jbtn-warning:active {
+    @apply scale-95 shadow-inner;
+  }

@@ -1,12 +1,45 @@
-.table-grid td,
-.table-grid th {
-  border: 1px solid rgba(0,0,0,0.1);
+/* Table borders */
+.table-grid th,
+.table-grid td {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 1rem;
 }
 
+/* Collapse borders */
 .table-grid {
   border-collapse: collapse;
+  width: 100%;
 }
 
+/* Center headers */
+.table-grid th {
+  text-align: center;
+  font-weight: 600;
+  color: #1f2937; /* Tailwind gray-800 */
+  background-color: #f9fafb; /* Tailwind gray-50 */
+}
+
+/* Right-align numbers for cost/price columns */
+.table-grid td[data-type="number"] {
+  text-align: right;
+}
+
+/* Alternating row colors */
+.table-grid tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Row hover effect */
 .table-grid tr:hover {
-  background: rgba(0,0,0,0.02);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Sortable header hover effect */
+.table-grid th button:hover {
+  font-weight: 700;
+}
+/* Sorted column indicator */
+.table-grid th button.sorted {
+  color: #ffffff;
+  border-color: chartreuse;
 }
