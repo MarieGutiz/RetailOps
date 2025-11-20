@@ -72,31 +72,35 @@ const RowActions = ({product}: {product: Product}) => {
 
       {/* DELETE CONFIRMATION */}
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="j-dialog sm:max-w-[400px]">
+
           <DialogHeader>
-            <DialogTitle>Delete Product</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="j-dialog-title">Delete Product</DialogTitle>
+            <DialogDescription className="j-dialog-description py-4">
               Are you sure you want to delete <b>{product.name}</b>?  
               This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
 
           <DialogFooter>
-          <DialogClose asChild>
-            <button className="toolbar-element jbtn-flat-btn jbtn-success">Cancel</button>
-          </DialogClose>
+            <DialogClose asChild>
+              <button className="toolbar-element jbtn-flat-btn jbtn-success">
+                Cancel
+              </button>
+            </DialogClose>
 
-          <button
-            className="toolbar-element jbtn-flat-btn jbtn-success jbtn-danger"
-            onClick={() => {
-              removeProduct(product.name);
-              setDeleteOpen(false);
-              toast.success("Product deleted.");
-            }}
-          >
-            Delete
-          </button>
-        </DialogFooter>
+            <button
+              className="toolbar-element jbtn-flat-btn jbtn-danger"
+              onClick={() => {
+                removeProduct(product.name);
+                setDeleteOpen(false);
+                toast.success("Product deleted.");
+              }}
+            >
+              Delete
+            </button>
+          </DialogFooter>
+
         </DialogContent>
       </Dialog>
     </>

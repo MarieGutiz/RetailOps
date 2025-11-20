@@ -32,7 +32,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
          onUserCaseChange={onUserCaseChange}
          actions={actions}
        />
-      {/* Module content */}
+      {/* Module content - mount it here */}
       <main className="flex-1 bg-white rounded-lg shadow p-4 min-h-[400px]">
         {children}
       </main>

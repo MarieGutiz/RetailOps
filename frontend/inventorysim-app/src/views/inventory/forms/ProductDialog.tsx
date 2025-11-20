@@ -27,94 +27,105 @@ const ProductDialog = ({
   onSubmit,
 }: ProductDialogProps) => {
   return (
-     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md rounded-xl">
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl font-semibold">
-            {mode === "add" ? "Add New Product" : "Edit Product"}
-          </DialogTitle>
-          <DialogDescription>
-            {mode === "add"
-              ? "Fill out the fields to create a new product."
-              : "Update the product details."}
-          </DialogDescription>
-        </DialogHeader>
+    <Dialog open={open} onOpenChange={onOpenChange} >
+    <DialogContent className="j-dialog max-w-md">
+      <DialogHeader>
+        <DialogTitle className="j-dialog-title text-center">
+          {mode === "add" ? "Add New Product" : "Edit Product"}
+        </DialogTitle>
 
-        <div className="space-y-4 py-2">
-          <div className="space-y-1">
-            <Label>Name</Label>
-            <Input
-              placeholder="Product name"
-              value={product.name}
-              onChange={(e) => onChange({ ...product, name: e.target.value })}
-            />
-          </div>
+        <DialogDescription className="j-dialog-description text-center">
+          {mode === "add"
+            ? "Fill out the fields to create a new product."
+            : "Update the product details."}
+        </DialogDescription>
+      </DialogHeader>
 
-          <div className="space-y-1">
-            <Label>Category</Label>
-            <Input
-              placeholder="Category"
-              value={product.category}
-              onChange={(e) => onChange({ ...product, category: e.target.value })}
-            />
-          </div>
+      <div className="space-y-4 py-2">
+        {/* Name */}
+        <div className="j-dialog-field">
+          <Label className="j-dialog-label">Name</Label>
+          <Input
+            placeholder="Product name"
+            value={product.name}
+            onChange={(e) => onChange({ ...product, name: e.target.value })}
+          />
+        </div>
 
-          <div className="space-y-1">
-            <Label>Description</Label>
+        {/* Category */}
+        <div className="j-dialog-field">
+          <Label className="j-dialog-label">Category</Label>
+          <Input
+            placeholder="Category"
+            value={product.category}
+            onChange={(e) => onChange({ ...product, category: e.target.value })}
+          />
+        </div>
+
+        {/* Description */}
+        <div className="j-dialog-field">
+          <Label className="j-dialog-label">Description</Label>
+          <Input
+            placeholder="Short description"
+            value={product.description}
+            onChange={(e) =>
+              onChange({ ...product, description: e.target.value })
+            }
+          />
+        </div>
+
+        {/* Prices */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="j-dialog-field">
+            <Label htmlFor="unitcost" className="j-dialog-label">
+              Unit Cost
+            </Label>
             <Input
-              placeholder="Short description"
-              value={product.description}
+              id="unitcost"
+              type="number"
+              placeholder="0.00"
+              value={product.unitCost}
               onChange={(e) =>
-                onChange({ ...product, description: e.target.value })
+                onChange({
+                  ...product,
+                  unitCost: Number(e.target.value),
+                })
               }
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="unitcost">Unit Cost</Label>
-              <Input
-                id="unitcost"
-                type="number"
-                placeholder="0.00"
-                value={product.unitCost}
-                onChange={(e) =>
-                  onChange({
-                    ...product,
-                    unitCost: Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="unitprice">Unit Price</Label>
-              <Input
-                id="unitprice"
-                type="number"
-                placeholder="0.00"
-                value={product.unitPrice}
-                onChange={(e) =>
-                  onChange({
-                    ...product,
-                    unitPrice: Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-center">
-            <Button
-              className="toolbar-element jbtn-flat-btn toolbar-element-md active mt-2"
-              onClick={() => onSubmit(product)}
-            >
-              {mode === "add" ? "Save Product" : "Save Changes"}
-            </Button>
+          <div className="j-dialog-field">
+            <Label htmlFor="unitprice" className="j-dialog-label">
+              Unit Price
+            </Label>
+            <Input
+              id="unitprice"
+              type="number"
+              placeholder="0.00"
+              value={product.unitPrice}
+              onChange={(e) =>
+                onChange({
+                  ...product,
+                  unitPrice: Number(e.target.value),
+                })
+              }
+            />
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+
+        {/* Action Button */}
+        <div className="flex justify-center pt-2">
+          <Button
+            className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+            onClick={() => onSubmit(product)}
+          >
+            {mode === "add" ? "Save Product" : "Save Changes"}
+          </Button>
+        </div>
+      </div>
+    </DialogContent>
+</Dialog>
+
   )
 }
 
