@@ -21,7 +21,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
   children,
 }) => {
    return (
-    <div className="flex-1 flex flex-col p-6 bg-gray-50 min-h-full">
+    <div  className="flex-1 flex flex-col px-3 py-4 sm:p-6 bg-gray-50 min-h-full">
       {/* Header row: title left, controls right */}
 
        <ModuleHeader 

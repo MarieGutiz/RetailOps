@@ -6,10 +6,10 @@
     font-sans font-medium
     transition-all duration-200 ease-out
     select-none;
-  height: 2rem;       /* unified height */
-  line-height: 1.5rem;/* vertical text alignment */
-  background: linear-gradient(to bottom, #f3f3f3 0%, #e0e0e0 100%);
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    height: 2rem;       /* unified height */
+    line-height: 1.5rem;/* vertical text alignment */
+    background: linear-gradient(to bottom, #f3f3f3 0%, #e0e0e0 100%);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .dark .toolbar-element {
@@ -141,7 +141,7 @@
 
 /* Subtitle / description text */
 .j-subtitle {
-  @apply text-[0.8rem] leading-relaxed;
+  @apply text-[0.6rem] leading-relaxed;
   color: #5f6b7a;
 }
 
@@ -170,6 +170,50 @@
   color: #70a6ff;
 }
 
+
+/* Style font size */
+
+/* === Main Title (H1) === */
+.j-h1 {
+  @apply leading-tight font-semibold;
+  color: #234078;
+}
+
+/* responsive sizes */
+.j-h1 {
+  font-size: 1.25rem;   /* mobile */
+}
+
+@media (min-width: 640px) { /* sm */
+  .j-h1 { font-size: 1.5rem; }
+}
+
+@media (min-width: 768px) { /* md */
+  .j-h1 { font-size: 2rem; }
+}
+
+@media (min-width: 1024px) { /* lg */
+  .j-h1 { font-size: 2rem; }
+}
+
+/* subtitle */
+.j-subtitle {
+  @apply leading-relaxed;
+  color: #5f6b7a;
+  font-size: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .j-subtitle { font-size: 0.85rem; }
+}
+
+@media (min-width: 768px) {
+  .j-subtitle { font-size: 1rem; }
+}
+
+@media (min-width: 1024px) {
+  .j-subtitle { font-size: 1rem; }
+}
 
 /* =======================
    Java Button Specific Styles
@@ -222,3 +266,67 @@
   .jbtn-warning:active {
     @apply scale-95 shadow-inner;
   }
+
+  /* For small displays */
+
+  /* ====================================================================
+   RESPONSIVE TOOLBAR ELEMENT SIZES (mobile → tablet → desktop)
+   ==================================================================== */
+
+/* ---------- MOBILE (default) ---------- */
+.toolbar-element {
+  height: 1.75rem;
+  font-size: 0.75rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.jcombo-box {
+  padding: 0 0.4rem;
+  font-size: 0.75rem;
+}
+
+/* ---------- SMALL SCREENS ≥ 640px ---------- */
+@media (min-width: 640px) {
+  .toolbar-element {
+    height: 2rem;           /* medium */
+    font-size: 0.875rem;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+
+  .jcombo-box {
+    padding: 0 0.55rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ---------- MEDIUM SCREENS ≥ 768px ---------- */
+@media (min-width: 768px) {
+  .toolbar-element {
+    height: 2.25rem;        /* larger for desktop */
+    font-size: 0.9rem;
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+  }
+
+  .jcombo-box {
+    padding: 0 0.65rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ---------- LARGE SCREENS ≥ 1024px (your current style) ---------- */
+@media (min-width: 1024px) {
+  .toolbar-element {
+    height: 2rem;       /* unified height */
+    line-height: 1.5rem;/* vertical text alignment */
+    background: linear-gradient(to bottom, #f3f3f3 0%, #e0e0e0 100%);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  }
+
+  .jcombo-box {
+    padding: 0 0.75rem;
+    
+  }
+}

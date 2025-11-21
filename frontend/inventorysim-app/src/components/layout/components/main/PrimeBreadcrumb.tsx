@@ -8,7 +8,7 @@ const PrimeBreadcrumb = ({
   trail: { label: string; path?: string }[];
 }) => {
   return (
-    <Breadcrumb className="mb-3">
+    <Breadcrumb className="mb-3 text-xs sm:text-sm md:text-base">
       <BreadcrumbList>
         {trail.map((item, index) => (
           <React.Fragment key={index}>
@@ -20,11 +20,14 @@ const PrimeBreadcrumb = ({
                 {item.label}
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {index < trail.length - 1 && <BreadcrumbSeparator />}
+
+            {index < trail.length - 1 && (
+              <BreadcrumbSeparator className="mx-1 sm:mx-2" />
+            )}
           </React.Fragment>
         ))}
       </BreadcrumbList>
-    </Breadcrumb>
+</Breadcrumb>
   );
 };
 
