@@ -330,3 +330,31 @@
     
   }
 }
+
+
+/* ==========================================
+   UNIVERSAL ACTIONS ROW (for simulator header)
+   ========================================== */
+
+.j-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;      /* mobile */
+  align-items: center;
+  gap: 0.5rem;                  /* 2 = 8px, consistent gap */
+  width: 100%;
+}
+
+/* ≥ 640px */
+@media (min-width: 640px) {
+  .j-actions-row {
+    justify-content: flex-end;  /* desktop/tablet */
+  }
+}
+
+/* ≥ 1024px */
+@media (min-width: 1024px) {
+  .j-actions-row {
+    gap: 0.6rem;                /* slightly more breathing room */
+  }
+}

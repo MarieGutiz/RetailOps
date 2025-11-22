@@ -44,6 +44,9 @@ const PrimeContent  = () => {
                 <button className="toolbar-element jbtn-flat-btn toolbar-element-md">
                   Helpers
                 </button>
+                 <button className="toolbar-element jbtn-flat-btn toolbar-element-md">
+                  Helpers
+                </button>
               </>
             }
           >

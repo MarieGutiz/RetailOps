@@ -121,8 +121,8 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
       </div>
 
       {/* Table */}
-      <div className="rounded-md border">
-        <Table className="table-grid">
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="table-grid min-w-[600px]">
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id}>
