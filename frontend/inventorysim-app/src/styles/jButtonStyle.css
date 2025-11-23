@@ -189,11 +189,11 @@
 }
 
 @media (min-width: 768px) { /* md */
-  .j-h1 { font-size: 2rem; }
+  .j-h1 { font-size: 1.7rem; }
 }
 
 @media (min-width: 1024px) { /* lg */
-  .j-h1 { font-size: 2rem; }
+  .j-h1 { font-size: 1.8rem; }
 }
 
 /* subtitle */
@@ -208,11 +208,11 @@
 }
 
 @media (min-width: 768px) {
-  .j-subtitle { font-size: 1rem; }
+  .j-subtitle { font-size: 0.9rem; }
 }
 
 @media (min-width: 1024px) {
-  .j-subtitle { font-size: 1rem; }
+  .j-subtitle { font-size: 0.9rem; }
 }
 
 /* =======================
@@ -357,4 +357,39 @@
   .j-actions-row {
     gap: 0.6rem;                /* slightly more breathing room */
   }
+}
+
+/* Make Select caret icon white when the trigger has .active */
+.toolbar-element.active svg {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+}
+
+
+/*Small search btn*/
+
+.jbtn-warning-sm {  
+  background: linear-gradient(to bottom, #f0ad4e 0%, #d4882a 100%);
+  border: 1px solid #c67622;
+  color: white;
+  transition: all 0.2s ease-out;
+}
+
+.jbtn-warning-sm:hover {
+  background: linear-gradient(to bottom, #f2b95c 0%, #db9a2e 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15),
+              0 0 4px rgba(240, 173, 78, 0.4);
+}
+
+
+/* Make any SVG inside fully white and visible */
+.jbtn-warning-sm svg {
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  width: 16px;  /* optional: standard small icon size */
+  height: 16px;
+  display: block;
 }
