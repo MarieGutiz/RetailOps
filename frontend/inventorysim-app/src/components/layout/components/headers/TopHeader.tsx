@@ -5,75 +5,82 @@ export default function TopHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
   
   return (
-    <div  className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between
-               h-10 px-3 sm:px-5 border-b bg-white shadow-sm"
+   <div
+  className="fixed top-0 left-0 right-0 z-50 h-10 px-3 sm:px-5
+             flex items-center justify-between
+             bg-[#001e2b] border-b shadow-sm"
+>
+  {/* ------------ LEFT SECTION ------------ */}
+  <div className="flex items-center gap-1 sm:gap-2 flex-none">
+
+    {/* MOBILE SEARCH ICON */}
+    {!searchOpen && (
+      <button
+      className="sm:hidden p-1.5 flex items-center justify-center 
+             jbtn-warning-sm rounded-md text-white"
+      onClick={() => setSearchOpen(true)}
     >
-    {/* ---------------- LEFT SECTION ---------------- */}
-    <div className="flex items-center flex-1 gap-2">
+      <Search className="h-4 w-4" />
+    </button>
+    )}
 
-      {/* MOBILE: SEARCH ICON */}
-      {!searchOpen && (
+    {/* MOBILE EXPANDED SEARCH */}
+    {searchOpen && (
+      <div className="relative sm:hidden">
+        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+
+        <input
+          type="text"
+          placeholder="Search..."
+          className="pl-7 pr-8 py-[5px] rounded-md
+                     bg-white/90 border border-gray-300
+                     text-gray-800 placeholder:text-gray-500
+                     focus:ring-2 focus:ring-blue-400
+                     w-[180px] text-sm transition-all"
+          autoFocus
+        />
+
         <button
-          className="sm:hidden p-1.5 rounded-md hover:bg-gray-100"
-          onClick={() => setSearchOpen(true)}
+          className="absolute right-0 top-1/2 -translate-y-1/2 p-1
+                    jbtn-warning-sm rounded-md"
+          onClick={() => setSearchOpen(false)}
         >
-          <Search className="h-4 w-4 text-gray-700" />
+          <X className="h-4 w-4" />
         </button>
-      )}
+      </div>
+    )}
 
-      {/* MOBILE: EXPANDED SEARCH */}
-      {searchOpen && (
-        <div className="relative sm:hidden flex-1">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+    {/* DESKTOP SEARCH */}
+    <div className="hidden sm:flex">
+      <div className="relative w-[220px]">
+        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
 
-          <input
-            type="text"
-            placeholder="Search..."
-            className="pl-7 pr-3 py-1 w-full rounded-lg border border-gray-200
-                       focus:ring-1 focus:ring-blue-300 text-sm"
-            autoFocus
-          />
-
-          {/* Slim Close Button */}
-          <button
-            className="absolute right-0 top-1/2 -translate-y-1/2 px-2 py-[1px]
-                       flex items-center justify-center border-l border-gray-200
-                       hover:bg-gray-100 rounded-r-lg"
-            onClick={() => setSearchOpen(false)}
-          >
-            <X className="h-4 w-4 text-gray-500" />
-          </button>
-        </div>
-      )}
-
-      {/* DESKTOP/TABLET SEARCH */}
-      <div className="hidden sm:flex flex-1 max-w-sm">
-        <div className="relative w-full">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-
-          <input
-            type="text"
-            placeholder="Search or select case..."
-            className="pl-7 pr-3 py-[5px] rounded-lg border border-gray-200
-                       focus:ring-1 focus:ring-blue-300 text-sm w-full"
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Search or select case..."
+          className="pl-7 pr-3 py-[5px] rounded-md
+                     bg-white/90 border border-gray-300
+                     text-gray-800 placeholder:text-gray-500
+                     focus:ring-2 focus:ring-blue-400
+                     w-full text-sm transition-all"
+        />
       </div>
     </div>
-
-    {/* ---------------- RIGHT SECTION ---------------- */}
-    <div className="flex items-center gap-1.5 whitespace-nowrap mr-2 sm:mr-0">
-        {/* SIGN UP (hidden on mobile) */}
-        <div className="hidden sm:inline-block">
-        <button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
-          Sign Up
-        </button>
-      </div>
-
-        {/* User Icon */}
-        <UserCircle className="h-4 w-4 text-gray-700 hover:text-blue-600 transition-colors" />
-      </div>
   </div>
+
+  {/* ------------ RIGHT SECTION ------------ */}
+  <div className="flex items-center gap-2 flex-none">
+
+    <div className="hidden sm:block">
+      <button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
+        Sign Up
+      </button>
+    </div>
+
+    <UserCircle className="h-4 w-4 text-gray-200 hover:text-blue-300 transition-colors" />
+  </div>
+</div>
+
 
   );
 }

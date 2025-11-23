@@ -12,10 +12,10 @@ const GlobalHeader = ({
   }
    }) => {
   return (
-    <header className="w-full h-14 bg-white border-b shadow-sm flex items-center justify-between px-4">
+    <header className="w-full h-14 bg-[#e8f3f6] border-b shadow-sm flex items-center justify-between px-4">
       
       {/* Left side: In what module? */}
-      <div className="text-lg font-semibold">
+      <div className="text-lg font-semibold text-[#0b3c4c]">
         Dashboard
       </div>
 

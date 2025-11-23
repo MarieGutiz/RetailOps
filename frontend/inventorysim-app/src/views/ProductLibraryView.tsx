@@ -20,13 +20,13 @@ useInitProductData(); // loads JSON placeholder if empty
 
       <Card className="shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
-    <div>
-      <CardTitle className="text-xl font-semibold">Product Library</CardTitle>
-      <p className="text-sm text-muted-foreground">Manage your product catalog</p>
-    </div>
-    <AddProduct />
-    
-  </CardHeader>
+          <div>
+            <CardTitle className="j-heading j-h1  sm: text-left text-2x">Product Library</CardTitle>
+            <p className="j-heading j-subtitle text-base font-normal sm:text-left">Manage your product catalog</p>
+          </div>
+          <AddProduct />
+          
+        </CardHeader>
 
         <CardContent>
           <ProductTable data={products} />
