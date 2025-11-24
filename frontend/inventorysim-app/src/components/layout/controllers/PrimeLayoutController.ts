@@ -9,6 +9,8 @@ export class PrimeLayoutController {
   collapsedWidth = 6;
   variant: "sidebar" | "floating" | "inset" = "sidebar";
   isMobile = false;
+  openMobile = false; // whether the mobile sidebar is open
+
 
   pinned = true;
   draggable = true;
@@ -74,10 +76,21 @@ export class PrimeLayoutController {
     this.notify();
   }
 
-
   setIsMobile(isMobile: boolean) {
     this.isMobile = isMobile;
     this.notify();
+  }
+
+  // -----------------------------
+  // MOBILE METHODS
+  // -----------------------------
+  setOpenMobile(open: boolean) {
+    this.openMobile = open;
+    this.notify();
+  }
+
+  toggleMobile() {
+    this.setOpenMobile(!this.openMobile);
   }
 
 // Pin or unpin the sidebar
