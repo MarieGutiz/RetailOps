@@ -25,7 +25,7 @@ export function PrimeLayoutProvider({
 }) {
   const isMobile = useIsMobile()
   const layout = useMemo(() => controller ?? new PrimeLayoutController(), [controller])
-
+ 
   useEffect(() => {
     layout.setIsMobile(isMobile)
   }, [layout, isMobile])
@@ -41,13 +41,23 @@ function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
   const layout = usePrimeLayout()
   const open = usePrimeLayoutStore(l => l.open)
   const pinned = usePrimeLayoutStore(l => l.pinned);
+  const openMobile = usePrimeLayoutStore((l) => l.openMobile);
+  const setOpenMobile = usePrimeLayoutStore((l) => l.setOpenMobile);
+
   // const side = usePrimeLayoutStore(l => l.side)
   // const variant = layout.getVariant()
+  console.log("Rendering PrimeLayoutContent with open:", layout.isMobile);
 
   return (
     <SidebarProvider
-      open={open}
-      onOpenChange={(v) => layout.setOpen(v)}
+      open={layout.isMobile ? openMobile : open}
+      onOpenChange={(v) => {
+        if (layout.isMobile) {
+          setOpenMobile(v);
+        } else {
+          layout.setOpen(v);
+        }
+      }}
       style={{
         ...layout.getSidebarStyle(),
       }as React.CSSProperties
