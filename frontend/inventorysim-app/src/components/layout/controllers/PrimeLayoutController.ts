@@ -35,10 +35,13 @@ export class PrimeLayoutController {
   }
 
   // Subscribe system
-  subscribe(listener: () => void) {
-    this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
-  }
+ subscribe(listener: () => void): () => void {
+  this.listeners.add(listener);
+  return () => {
+    this.listeners.delete(listener); // just call it, ignore the boolean
+  };
+}
+
 
   private notify() {
     this.listeners.forEach((fn) => fn());
@@ -77,15 +80,16 @@ export class PrimeLayoutController {
   }
 
   setIsMobile(isMobile: boolean) {
-    this.isMobile = isMobile;
-    this.notify();
-  }
+  this.isMobile = isMobile;
+  this.notify();
+}
 
   // -----------------------------
   // MOBILE METHODS
   // -----------------------------
   setOpenMobile(open: boolean) {
     this.openMobile = open;
+    console.log("Mobile sidebar open state set to in controller:", open);
     this.notify();
   }
 

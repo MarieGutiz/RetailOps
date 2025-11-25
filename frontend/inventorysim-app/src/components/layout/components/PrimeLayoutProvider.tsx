@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useMemo, useEffect } from "react"
+import React, { createContext, useContext, useMemo, useEffect, useState } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { PrimeLayoutController } from "../controllers/PrimeLayoutController"
@@ -25,38 +25,33 @@ export function PrimeLayoutProvider({
 }) {
   const isMobile = useIsMobile()
   const layout = useMemo(() => controller ?? new PrimeLayoutController(), [controller])
- 
+   // Sync isMobile in controller
   useEffect(() => {
     layout.setIsMobile(isMobile)
   }, [layout, isMobile])
 
+
   return (
     <PrimeLayoutContext.Provider value={layout}>
-      <PrimeLayoutContent>{children}</PrimeLayoutContent>
+      <PrimeLayoutContent >
+        {children}</PrimeLayoutContent>
     </PrimeLayoutContext.Provider>
   )
 }
 
 function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
-  const layout = usePrimeLayout()
-  const open = usePrimeLayoutStore(l => l.open)
-  const pinned = usePrimeLayoutStore(l => l.pinned);
-  const openMobile = usePrimeLayoutStore((l) => l.openMobile);
-  const setOpenMobile = usePrimeLayoutStore((l) => l.setOpenMobile);
+   const layout = usePrimeLayout()
 
-  // const side = usePrimeLayoutStore(l => l.side)
-  // const variant = layout.getVariant()
-  console.log("Rendering PrimeLayoutContent with open:", layout.isMobile);
+  const open = usePrimeLayoutStore(l => l.open)
+  const pinned = usePrimeLayoutStore(l => l.pinned)
+  const openMobile = usePrimeLayoutStore(l => l.openMobile)
 
   return (
     <SidebarProvider
       open={layout.isMobile ? openMobile : open}
       onOpenChange={(v) => {
-        if (layout.isMobile) {
-          setOpenMobile(v);
-        } else {
-          layout.setOpen(v);
-        }
+        if (layout.isMobile) layout.setOpenMobile(v)
+        else layout.setOpen(v)
       }}
       style={{
         ...layout.getSidebarStyle(),
