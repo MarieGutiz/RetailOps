@@ -1,5 +1,5 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, PanelLeft, PanelRight } from "lucide-react";
 import HeaderToggleButton from "./HeaderToggleButton";
 import { ToggleGroup } from "@/components/ui/toggle-group";
 import MobileSidebarButton from "../menu/controls/MobileSidebarButton";

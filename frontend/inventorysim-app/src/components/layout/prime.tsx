@@ -11,6 +11,7 @@ const controller = new PrimeLayoutController({ //verify options
   collapsedWidth: 3,
   variant: "floating", // try "sidebar", "floating" or "inset"
   draggable: true,  
+  
 })
 
 
