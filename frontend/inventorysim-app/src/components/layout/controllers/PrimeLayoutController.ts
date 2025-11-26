@@ -148,5 +148,24 @@ export class PrimeLayoutController {
     this.syncDragController();
     this.dragController.setInitialPosition?.();
   }
+
+  //Reset my providever to initial state
+
+  resetDesktopState() {
+    console.log("Resetting desktop state to defaults.");
+    this.isMobile = false;
+    this.openMobile = false;
+
+    // Restore defaults
+    this.open = true;
+    this.side = "left";
+    this.pinned = true;
+    this.draggable = true;
+
+    this.syncDragController();
+    this.dragController.reset?.();
+
+    this.notify();
+}
   
 }
