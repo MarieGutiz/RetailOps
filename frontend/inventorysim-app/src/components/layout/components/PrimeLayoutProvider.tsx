@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useMemo, useEffect, useState } from "react"
+import React, { createContext, useContext, useMemo, useEffect } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { PrimeLayoutController } from "../controllers/PrimeLayoutController"
@@ -23,13 +23,24 @@ export function PrimeLayoutProvider({
   controller?: PrimeLayoutController
   children: React.ReactNode
 }) {
-  const isMobile = useIsMobile()
-  const layout = useMemo(() => controller ?? new PrimeLayoutController(), [controller])
-   // Sync isMobile in controller
-  useEffect(() => {
-    layout.setIsMobile(isMobile)
-  }, [layout, isMobile])
+    const isMobile = useIsMobile();
 
+    const layout = useMemo(
+      () => controller ?? new PrimeLayoutController(),
+      [controller]
+    );
+
+    /**  Sync mobile/desktop mode + reset desktop state */
+    useEffect(() => {
+      layout.setIsMobile(isMobile);
+
+      if (!isMobile) {
+        // SAFELY RESTORE DESKTOP BEHAVIOR HERE
+        layout.resetDesktopState();
+        // layout.setOpen(false); // open sidebar on desktop by default
+      }
+
+    }, [layout, isMobile]);
 
   return (
     <PrimeLayoutContext.Provider value={layout}>
@@ -48,7 +59,7 @@ function PrimeLayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider
-      open={layout.isMobile ? openMobile : open}
+      open={open}
       onOpenChange={(v) => {
         if (layout.isMobile) layout.setOpenMobile(v)
         else layout.setOpen(v)
