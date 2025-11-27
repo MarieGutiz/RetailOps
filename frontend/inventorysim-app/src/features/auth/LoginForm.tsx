@@ -8,6 +8,8 @@ import Divider from "./ui/Divider"
 import { useAuth } from "@/hooks/useAuth"
 import FormError from "./ui/FormError"
 import Top from "./ui/Top"
+import { useProductStore } from "@/store/useProductStore"
+import { saveToStorage } from "@/utils/storage"
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -21,7 +23,11 @@ const LoginForm = () => {
     if (response) {
       console.log("Login successful:", response);
       //navigate(`/profile/${response.id}`);
-      navigate(`/profile/user/${response.id}`);
+      //Redirect to user's dashboard <--
+       saveToStorage.setUser(response);
+       useProductStore.getState().setAuthenticated(true);  // <--- IMPORTANT
+        navigate("/dashboard");
+      //navigate(`/profile/user/${response.id}`);
 
     }
   });
