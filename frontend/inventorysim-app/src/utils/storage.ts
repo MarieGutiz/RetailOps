@@ -35,6 +35,20 @@ export const saveToStorage =  {
         }
      },
      
+    /** Save a full user object safely */
+    setUser: (user: any) => {
+        try {
+            saveToStorage.setItem("user", JSON.stringify(user));
+        } catch (err) {
+            console.error("Failed to save user:", err);
+        }
+    },
+
+    /** Remove both user + token */
+    clearUser: () => {
+        saveToStorage.removeItem("user");
+        saveToStorage.removeItem("token");
+    },
     // Helper to get username directly
     getUsername: (): string | null => {
         const user = saveToStorage.getUser();

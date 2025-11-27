@@ -1,16 +1,18 @@
 import type { Account } from "@/types/accounts";
 import api from "../api/api";
 import { saveToStorage } from "@/utils/storage";
-
+import { useProductStore } from "@/store/useProductStore";
+import { useNavigate } from "react-router-dom";
 
 
 export interface Credentials {
   identifier: string;
   password: string;
 }
-
+// const navigate = useNavigate();
 const BASE_BACKEND_URL = api.defaults.baseURL?.replace("/api", "");
 const authService = {
+  
   register: async (account: Account) => {
     // auto-generate username from name (e.g., "Mariela Gutierrez" → "mariela.gutierrez")
     const username = account.username || account.fullname.toLowerCase().replace(/\s+/g, ".");
@@ -45,8 +47,8 @@ const authService = {
   },
 
   logout: () => {
-    saveToStorage.removeItem("token");
-    saveToStorage.removeItem("user");
+    saveToStorage.clearUser();
+    useProductStore.getState().setAuthenticated(false);
     window.location.href = "/login";
   },
 };

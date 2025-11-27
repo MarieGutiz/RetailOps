@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Search, X, UserCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-export default function TopHeader() {
+export default function TopHeader({isAuth, username}: {isAuth?: boolean, username?: string}) {
   const [searchOpen, setSearchOpen] = useState(false);
+  const navigate = useNavigate();
   
   return (
    <div
@@ -70,12 +72,19 @@ export default function TopHeader() {
 
   {/* ------------ RIGHT SECTION ------------ */}
   <div className="flex items-center gap-2 flex-none">
-
-    <div className="hidden sm:block">
-      <button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
+    {isAuth ? ( <>
+    <div className="flex items-center gap-2">
+        <span className="text-gray-200">Hello, {username}</span></div> </>
+      ):<>
+      <div className="hidden sm:block">
+      <button className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+      onClick={() => {navigate('/register')}}>
         Sign Up
       </button>
     </div>
+      
+      </>}
+    
 
     <UserCircle className="h-4 w-4 text-gray-200 hover:text-blue-300 transition-colors" />
   </div>

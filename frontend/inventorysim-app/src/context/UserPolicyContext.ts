@@ -10,7 +10,7 @@ interface UserPolicy {
 
 export const UserPolicyContext = createContext<UserPolicy>({ userType: "guest", username: "guest" });
 
-// ✅ Hook to access policy with username auto-loaded
+// Hook to access policy with username auto-loaded
 export const useUserPolicy = (): UserPolicy => {
   const context = useContext(UserPolicyContext);
 
