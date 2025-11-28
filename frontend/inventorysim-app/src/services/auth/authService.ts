@@ -2,8 +2,6 @@ import type { Account } from "@/types/accounts";
 import api from "../api/api";
 import { saveToStorage } from "@/utils/storage";
 import { useProductStore } from "@/store/useProductStore";
-import { useNavigate } from "react-router-dom";
-
 
 export interface Credentials {
   identifier: string;

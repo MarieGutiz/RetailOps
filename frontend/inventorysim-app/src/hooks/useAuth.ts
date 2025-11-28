@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import authService, { type Credentials } from "@/services/auth/authService";
 import type { Account } from "@/types/accounts";
+import { useProductStore } from "@/store/useProductStore";
+import { saveToStorage } from "@/utils/storage";
 
 // Define registration schema
 export const registerShape = z
@@ -30,129 +32,138 @@ const loginShape = z
 
 // Hook
 export const useAuth = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-  const RegisterFormValidation = useForm({
-    resolver: zodResolver(registerShape),
-    defaultValues: {
-      fullname: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "USER",
-      position: "Student",
-    },
-    mode: "onBlur",
-  });
+    const setAuthenticated = useProductStore((s) => s.setAuthenticated);
 
-  // Handle registration 
-const handleRegister = async (data: z.infer<typeof registerShape>) => {
-  setLoading(true);
-  setError(null);
+    /** Automatically check token on mount */
+    useEffect(() => {
+      const token = saveToStorage.getItem("token");
+      const isValid = !!token && token !== "" && token !== null;
+      setAuthenticated(isValid);
+    }, []);
 
-  try {
-    console.log("Registering user:", data);
-    const account: Account = {
-      fullname: data.fullname,
-      email: data.email,
-      password: data.password,
-      role: data.role,
-      position: data.position,
-    };
+    const RegisterFormValidation = useForm({
+      resolver: zodResolver(registerShape),
+      defaultValues: {
+        fullname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        role: "USER",
+        position: "Student",
+      },
+      mode: "onBlur",
+    });
 
-    const response = await authService.register(account);
-
-    // Assume success if the API returned a 201 or 200 status, or if response.data exists
-    const success =
-      response?.status === 200 ||
-      response?.status === 201 ||
-      response?.data 
-
-     console.log("success "+success);
-
-    if (success) {
-      return { success: true, data: response?.data || null };
-    } else {
-      setError("Registration failed. Please try again.");
-      return { success: false };
-    }
-  } catch (err) {
-    console.error("Registration error:", err);
-    setError("Registration failed. Please try again.");
-    return { success: false };
-  } finally {
-    setLoading(false);
-     // Reset form
-    RegisterFormValidation.reset();
-  }
-};
-
-  const loginFormValidation = useForm({
-    resolver: zodResolver(loginShape),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-    mode: "onBlur",
-  });
-
-  const handleLogin = async (data: z.infer<typeof loginShape>) =>{
+    // Handle registration 
+  const handleRegister = async (data: z.infer<typeof registerShape>) => {
     setLoading(true);
     setError(null);
-    try{
-      const credentials: Credentials = {
-        identifier: data.email,
-        password: data.password
+
+    try {
+      console.log("Registering user:", data);
+      const account: Account = {
+        fullname: data.fullname,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+        position: data.position,
       };
-      const response = await authService.login(credentials);
-      const {token, id, email, username, name, role, position} = response;
-      const user = {id, email, username, name, role, position}
 
-      authService.saveAuthData(token, user);
+      const response = await authService.register(account);
 
-      // saveToStorage.setItem("token", token);
-      // saveToStorage.setItem("user",JSON.stringify({id, email, username, name, role, position}));
-      console.log("Logging in user (mock):", response);
-      
-      setLoading(false);
-      return response;
+      // Assume success if the API returned a 201 or 200 status, or if response.data exists
+      const success =
+        response?.status === 200 ||
+        response?.status === 201 ||
+        response?.data 
 
-    }catch(err:any){
-      setError("Login failed. Please try again." + err.message);
-      setLoading(false);
-      return null;
-    }
-  };
+      console.log("success "+success);
 
-  const handleLoginWithGoogle = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      authService.loginWithGoogle();
+      if (success) {
+        return { success: true, data: response?.data || null };
+      } else {
+        setError("Registration failed. Please try again.");
+        return { success: false };
+      }
     } catch (err) {
-      setError("Google login failed");
+      console.error("Registration error:", err);
+      setError("Registration failed. Please try again.");
+      return { success: false };
     } finally {
       setLoading(false);
+      // Reset form
+      RegisterFormValidation.reset();
     }
   };
 
-  const handleLoginWithGithub = async () => {
-    try {
+    const loginFormValidation = useForm({
+      resolver: zodResolver(loginShape),
+      defaultValues: {
+        email: "",
+        password: "",
+      },
+      mode: "onBlur",
+    });
+
+    const handleLogin = async (data: z.infer<typeof loginShape>) =>{
       setLoading(true);
       setError(null);
-      authService.loginWithGitHub();
-    } catch (err) {
-      setError("GitHub login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+      try{
+        const credentials: Credentials = {
+          identifier: data.email,
+          password: data.password
+        };
+        const response = await authService.login(credentials);
+        const {token, id, email, username, name, role, position} = response;
+        const user = {id, email, username, name, role, position}
 
-  const handleLogout = () =>{
-    authService.logout();
-  }
-  
+        authService.saveAuthData(token, user);
+
+        // saveToStorage.setItem("token", token);
+        // saveToStorage.setItem("user",JSON.stringify({id, email, username, name, role, position}));
+        console.log("Logging in user (mock):", response);
+        
+        setLoading(false);
+        return response;
+
+      }catch(err:any){
+        setError("Login failed. Please try again." + err.message);
+        setLoading(false);
+        return null;
+      }
+    };
+
+    const handleLoginWithGoogle = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        authService.loginWithGoogle();
+      } catch (err) {
+        setError("Google login failed");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const handleLoginWithGithub = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        authService.loginWithGitHub();
+      } catch (err) {
+        setError("GitHub login failed");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const handleLogout = () =>{
+      authService.logout();
+    }
+    
 
 
   return { 

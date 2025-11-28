@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import {persist, createJSONStorage} from "zustand/middleware"
 import { mountStoreDevtool } from 'simple-zustand-devtools';
+import { isTokenValid } from "@/utils/auth";
 
 
 interface ProductState {
@@ -15,6 +16,7 @@ interface ProductState {
   clearProducts: () => void;
   syncToBackend: () => Promise<void>;
   setAuthenticated: (value: boolean) => void;
+  initAuth: () => void;
 }
 /**
  * Zustand store for managing product state and authentication status
@@ -24,6 +26,10 @@ export const useProductStore = create<ProductState>()(
          (set, get) => ({
     products: [],
     isAuthenticated: false,
+     initAuth: () => {
+        const token = saveToStorage.getItem("token");
+        set({ isAuthenticated: isTokenValid(token) });
+      },
     addProduct: (product: Product) => {
         const { products, isAuthenticated } = get();
 
