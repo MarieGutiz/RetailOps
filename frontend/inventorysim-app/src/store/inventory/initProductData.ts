@@ -25,7 +25,7 @@ export const useInitProductData = () => {
         // Save merged products to store
         useProductStore.setState({ products: merged });
       } catch {
-        console.warn("⚠ Failed to load placeholder JSON");
+        console.warn("Failed to load placeholder JSON");
       }
     };
 

@@ -6,6 +6,7 @@ import PrimeContent from "./components/main/PrimeContent "
 import { useProductStore } from "@/store/useProductStore"
 import { useUserPolicy } from "@/context/UserPolicyContext"
 import GuestLimitAlert from "./context/GuestLimitAlert"
+import { useEffect } from "react"
 
 const controller = new PrimeLayoutController({ //verify options
   open: true,
@@ -19,6 +20,10 @@ const controller = new PrimeLayoutController({ //verify options
 
 
 const Prime = () => {
+  // Initialize auth from token once
+  useEffect(() => {
+    useProductStore.getState().initAuth();
+  }, []);
   // Check authentication status  
   const isAuth = useProductStore((s) => s.isAuthenticated);
   const { username } = useUserPolicy();

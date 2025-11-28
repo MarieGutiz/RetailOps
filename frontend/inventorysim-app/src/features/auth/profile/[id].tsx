@@ -1,4 +1,5 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { saveToStorage } from "@/utils/storage";
 
 interface ProfilePageProps {
    id: string;
@@ -11,7 +12,7 @@ interface ProfilePageProps {
 
 const ProfilePage = () => {
 
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const userData = JSON.parse(saveToStorage.getItem("user") || "{}");
   const user: ProfilePageProps | null = userData ? userData : null;
   if (!userData) {
     return <div>No user data available...</div>;
