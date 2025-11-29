@@ -2,17 +2,19 @@ import { useUserPolicy } from '@/context/UserPolicyContext';
 import { useProductStore } from '@/store/useProductStore';
 import { UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import UserAvatar from './UserAvatar';
 
 const UserMenu = () => {
   const navigate = useNavigate();
   const isAuth = useProductStore((s) => s.isAuthenticated);
-  const { username } = useUserPolicy();
+  const { username, profileImg } = useUserPolicy();
 
   return (
     <div className="flex items-center gap-2 flex-none">
       {isAuth ? (
         <div className="flex items-center gap-2">
           <span className="text-gray-200">Hello, {username}</span>
+          <UserAvatar avatar={profileImg || ""} username={username || "guest"} />
         </div>
       ) : (
         <div className="hidden sm:block">

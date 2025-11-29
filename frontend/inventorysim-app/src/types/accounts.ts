@@ -6,4 +6,6 @@ export interface Account {
   password: string;
   role: string | 'USER';
   position: string;
+  profileImage?: string | null;
+
 }

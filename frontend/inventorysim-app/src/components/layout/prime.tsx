@@ -33,7 +33,7 @@ const Prime = () => {
     <PrimeLayoutProvider controller={controller}>
       <main>
         {/* Top Header */}
-        <TopHeader isAuth={isAuth} username={username} />
+        <TopHeader />
         <GuestLimitAlert />
         {/* Global Header and module container */}
         <PrimeContent />
