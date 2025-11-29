@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Search, X, UserCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Search, X } from "lucide-react";
+import UserMenu from "../menu/user/UserMenu";
 
-export default function TopHeader({isAuth, username}: {isAuth?: boolean, username?: string}) {
+export default function TopHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
-  const navigate = useNavigate();
   
   return (
    <div
@@ -71,7 +70,7 @@ export default function TopHeader({isAuth, username}: {isAuth?: boolean, usernam
   </div>
 
   {/* ------------ RIGHT SECTION ------------ */}
-  <div className="flex items-center gap-2 flex-none">
+  {/* <div className="flex items-center gap-2 flex-none">
     {isAuth ? ( <>
     <div className="flex items-center gap-2">
         <span className="text-gray-200">Hello, {username}</span></div> </>
@@ -87,7 +86,8 @@ export default function TopHeader({isAuth, username}: {isAuth?: boolean, usernam
     
 
     <UserCircle className="h-4 w-4 text-gray-200 hover:text-blue-300 transition-colors" />
-  </div>
+  </div> */}
+  <UserMenu />
 </div>
 
 
