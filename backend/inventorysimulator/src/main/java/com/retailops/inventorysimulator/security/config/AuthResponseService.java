@@ -46,7 +46,8 @@ public class AuthResponseService {
                 account.getUsername(),
                 account.getName(),
                 role,
-                account.getPosition());
+                account.getPosition(),
+                account.getAvatar());
 
         //accountService.findByEmail()
     }

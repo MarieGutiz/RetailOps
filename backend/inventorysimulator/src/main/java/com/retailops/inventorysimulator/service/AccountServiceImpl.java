@@ -58,6 +58,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
         account.setRole(request.role());
         account.setPosition(request.position());
         account.setProvider(AuthProviderType.LOCAL);
+        account.setAvatar(null);
         account.setRegistrationDate(LocalDate.now());
 
         return userRepository.save(account);

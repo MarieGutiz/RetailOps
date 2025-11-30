@@ -89,7 +89,8 @@ public class OAuth2Controller {
                         account.getUsername(),
                         account.getName(),
                         account.getRole(),
-                        account.getPosition()
+                        account.getPosition(),
+                        account.getAvatar()
                 )
         );
     }

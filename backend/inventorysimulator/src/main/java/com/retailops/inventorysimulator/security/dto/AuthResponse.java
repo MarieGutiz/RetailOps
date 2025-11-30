@@ -24,18 +24,19 @@ public record AuthResponse(
         String username,
         String name,
         String role,
-        String position
+        String position,
+        String avatar
      //   String error // optional, only used on failure
 ) {
 
         // Success factory
-        public static AuthResponse success(String token, long id, String email, String username, String name, String role, String position){
-            return new AuthResponse(token,id, email, username, name, role, position);
+        public static AuthResponse success(String token, long id, String email, String username, String name, String role, String position, String avatar){
+            return new AuthResponse(token,id, email, username, name, role, position, avatar);
         }
 
         // Failure factory
         public static AuthResponse failure(String err) {
-            return new AuthResponse(null, null, null, null, null, null, null);
+            return new AuthResponse(null, null, null, null, null, null, null, null);
         }
 }
 
