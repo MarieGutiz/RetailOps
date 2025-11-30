@@ -33,6 +33,8 @@ public class Account extends BaseModel{
 
     private String role; // e.g. ROLE_USER, ROLE_ADMIN
 
+    private String avatar;
+
     @Enumerated(EnumType.STRING)
     private AuthProviderType provider;
 

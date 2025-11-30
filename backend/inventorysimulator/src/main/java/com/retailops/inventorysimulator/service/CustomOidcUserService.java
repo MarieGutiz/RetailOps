@@ -52,10 +52,11 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
         // Extract user info (email is guaranteed with "openid, email" scopes)
         String email = oidcUser.getEmail();
         String name = oidcUser.getFullName();
-        log.info("[LOGIN] OAuth2User name: {}, email{}", name, email);
+        String avatarUrl = (String) oidcUser.getAttributes().get("picture");
+        log.info("[LOGIN] OAuth2User name: {}, email{}, avatar{}", name, email, avatarUrl);
 
         // Persist user if not already in DB
-        userRepository.findByUsername(email).orElseGet(() -> {
+        Account account = userRepository.findByUsername(email).orElseGet(() -> {
             Account newAcc = new Account();
             newAcc.setUsername(email);
             newAcc.setEmail(email);
@@ -64,9 +65,15 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
             newAcc.setRole("USER_GOOGLE");
             newAcc.setProvider(AuthProviderType.GOOGLE);
             newAcc.setRegistrationDate(LocalDate.now());
+            newAcc.setAvatar(avatarUrl);
             return userRepository.save(newAcc);
         });
 
+        // Optional: update avatar if Google changed it
+        if (avatarUrl != null && !avatarUrl.equals(account.getAvatar())) {
+            account.setAvatar(avatarUrl);
+            userRepository.save(account);
+        }
         // Return user with authorities (ROLE_USER by default)
         return new DefaultOidcUser(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),

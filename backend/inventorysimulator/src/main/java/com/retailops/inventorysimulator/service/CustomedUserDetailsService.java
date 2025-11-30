@@ -95,7 +95,39 @@ public class CustomedUserDetailsService implements UserDetailsService {
                 account.getUsername(),
                 account.getName(),
                 role,
-                account.getPosition());
+                account.getPosition(),
+                account.getAvatar());
     }
+
+    public void updateAccount(Account updated) {
+        Account existing = userRepository.findById(updated.getId())
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        // Update only allowed fields:
+        if (updated.getName() != null) existing.setName(updated.getName());
+        if (updated.getEmail() != null) existing.setEmail(updated.getEmail());
+        if (updated.getUsername() != null) existing.setUsername(updated.getUsername());
+        if (updated.getPosition() != null) existing.setPosition(updated.getPosition());
+
+        // If password was changed (avoid overwriting with null)
+        if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
+            existing.setPassword(encoder.encode(updated.getPassword()));
+        }
+
+         userRepository.save(existing);
+    }
+
+    public void updateOAuth2Account(Account updated) {
+        Account existing = userRepository.findById(updated.getId())
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        // Only update avatar for GitHub
+        if (updated.getAvatar() != null) {
+            existing.setAvatar(updated.getAvatar());
+        }
+
+        userRepository.save(existing);
+    }
+
 
 }

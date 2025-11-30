@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -47,18 +48,31 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // Extract email or username from authentication
         String email;
         Object principal = authentication.getPrincipal();
+        String avatarUrl = null;
 
         if (principal instanceof OidcUser oidcUser) {
             email = oidcUser.getEmail(); // Google
         } else if (principal instanceof OAuth2User oauth2User) {
-            email = (String) oauth2User.getAttributes()
-                    .getOrDefault("email", oauth2User.getAttributes().get("login")); // GitHub
+            Map<String, Object> attrs = oauth2User.getAttributes();
+
+            //Get Email
+            email = (String) attrs.getOrDefault("email",attrs.get("login")); // GitHub
+
+            //Get Avatar
+            avatarUrl = (String) attrs.getOrDefault("avatarUrl",attrs.get("profileImageUrl"));
         } else {
             email = authentication.getName();
         }
 
         // Look up account details in your DB
         Account account = userDetailsService.authenticateOAuth2(email);
+
+        // If GitHub login → update avatar
+        if (avatarUrl != null && !avatarUrl.isBlank() && !avatarUrl.equals(account.getAvatar())) {
+            account.setAvatar(avatarUrl);
+            userDetailsService.updateOAuth2Account(account);
+        }
+        //Build JWT
         String role = authentication.getAuthorities().iterator().next().getAuthority();
 
         // Generate token
@@ -72,7 +86,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 + "&username=" + URLEncoder.encode(account.getUsername(), StandardCharsets.UTF_8)
                 + "&name=" + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
                 + "&role=" + account.getRole()
-                + "&position=" + (account.getPosition() != null ? account.getPosition() : "");
+                + "&position=" + (account.getPosition() != null ? account.getPosition() : "")
+                + "&avatar=" + URLEncoder.encode(
+                account.getAvatar() != null ? account.getAvatar() : "",
+                StandardCharsets.UTF_8
+        );
 
         // Redirect to frontend
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
