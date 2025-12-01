@@ -87,7 +87,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 + "&name=" + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
                 + "&role=" + account.getRole()
                 + "&position=" + (account.getPosition() != null ? account.getPosition() : "")
-                + "&avatar=" + URLEncoder.encode(
+                + "&profileImage=" + URLEncoder.encode(
                 account.getAvatar() != null ? account.getAvatar() : "",
                 StandardCharsets.UTF_8
         );
