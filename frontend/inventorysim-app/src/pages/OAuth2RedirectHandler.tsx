@@ -1,3 +1,4 @@
+import type ProfilePage from '@/features/auth/profile/[id]';
 import authService from '@/services/auth/authService';
 import { useProductStore } from '@/store/useProductStore';
 import  { useEffect, useState } from 'react'
@@ -8,33 +9,50 @@ const OAuth2RedirectHandler = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   //sync products to backend after login
-   const setAuthenticated = useProductStore((s) => s.setAuthenticated);
+  const setAuthenticated = useProductStore((s) => s.setAuthenticated);
   const syncToBackend = useProductStore((s) => s.syncToBackend);
 
-  useEffect(() => {
-    const token = searchParams.get("token");
-    const id = searchParams.get("id");
-    const email = searchParams.get("email");
-    const username = searchParams.get("username");
-    const name = searchParams.get("name");
-    const role = searchParams.get("role");
-    const position = searchParams.get("position");
+   useEffect(() => {
+  const params = {
+    token: searchParams.get("token"),
+    id: searchParams.get("id"),
+    email: searchParams.get("email"),
+    username: searchParams.get("username"),
+    name: searchParams.get("name"),
+    role: searchParams.get("role"),
+    position: searchParams.get("position") ?? "",
+    profileImage: searchParams.get("profileImage") ?? null,
+  };
 
-    if (token && id) {
-      const user = { id, email, username, name, role, position };
-      authService.saveAuthData(token, user);
-      //toast.success("Login successful. Redirecting...");
-
-       setAuthenticated(true);
-       syncToBackend(); // send local guest products to backend
-      
-      // Navigate after storage is guaranteed
-      navigate(`/profile/user/${id}`, { replace: true });
-    } else {
-      navigate("/login", { replace: true });
-    }
+  // ---------- INVALID LOGIN ----------
+  if (!params.token || !params.id) {
+    navigate("/login", { replace: true });
     setLoading(false);
-  }, [searchParams, navigate]);
+    return;
+  }
+
+  // ---------- SAVE USER ----------
+  const user = {
+    id: params.id,
+    email: params.email,
+    username: params.username,
+    name: params.name,
+    role: params.role,
+    position: params.position,
+    profileImage: params.profileImage,
+  };
+  console.log("OAuth2RedirectHandler - user:", user);
+  authService.saveAuthData(params.token, user);
+
+  // ---------- AUTH + SYNC ----------
+  setAuthenticated(true);
+  syncToBackend();
+
+  // ---------- DASHBOARD REDIRECT ----------
+  navigate("/dashboard", { replace: true });
+
+  setLoading(false);
+  }, [searchParams, navigate, setAuthenticated, syncToBackend]);
 
   if (loading) return <p>Redirecting...</p>;
   return null;

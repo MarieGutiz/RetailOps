@@ -22,7 +22,8 @@ export const useUserPolicy = (): UserPolicy => {
   // Get username from storage
   const storedUser = saveToStorage.getUser();
   const username = storedUser?.username ?? "guest";
-  const profileImg = storedUser?.profileImg ?? null;
+  const profileImg = storedUser?.profileImage ?? null;
+
 
   // Determine user type based on presence of a token or stored user
   const userType: UserType = storedUser ? "registered" : "guest";

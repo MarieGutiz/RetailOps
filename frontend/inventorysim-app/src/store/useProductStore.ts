@@ -61,7 +61,7 @@ export const useProductStore = create<ProductState>()(
         if (!isAuthenticated || products.length === 0) return;
 
         try {
-          await api.post("/api/products/bulk", products);//test end point
+          await api.post("/products/bulk", products);//test end point
           console.log("Products synced to backend");
         } catch (err) {
           console.error("Failed to sync:", err);
