@@ -8,6 +8,8 @@ const UserMenu = () => {
   const navigate = useNavigate();
   const isAuth = useProductStore((s) => s.isAuthenticated);
   const { username, profileImg } = useUserPolicy();
+  console.log("UserMenu - profileImg:", profileImg);
+  
 
   return (
     <div className="flex items-center gap-2 flex-none">
