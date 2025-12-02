@@ -7,12 +7,16 @@ interface UserPolicy {
   userType: UserType;
   username?: string | null;
   profileImg?: string | null;
+  id?: string | null;
+  email?: string | null;
 }
 
 export const UserPolicyContext = createContext<UserPolicy>({
    userType: "guest",
    username: "guest",
-   profileImg: null
+   id: null,
+   profileImg: null,
+   email: null,
   });
 
 // Hook to access policy with username auto-loaded
@@ -23,10 +27,11 @@ export const useUserPolicy = (): UserPolicy => {
   const storedUser = saveToStorage.getUser();
   const username = storedUser?.username ?? "guest";
   const profileImg = storedUser?.profileImage ?? null;
-
+  const id = storedUser?.id ?? null;
+  const email = storedUser?.email ?? null;
 
   // Determine user type based on presence of a token or stored user
   const userType: UserType = storedUser ? "registered" : "guest";
 
-  return { ...context, userType, username, profileImg };
+  return { ...context, userType, username, profileImg, id, email };
 };

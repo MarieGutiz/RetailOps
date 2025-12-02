@@ -1,11 +1,5 @@
-import {
-  BellIcon,
-  CreditCardIcon,
-  LogOutIcon,
-  MoreVerticalIcon,
-  UserCircleIcon,
-} from "lucide-react"
-
+import authService from "@/services/auth/authService";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,43 +9,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
-import UserAvatar from "../layout/components/menu/user/UserAvatar"
+import { useUserPolicy } from "@/context/UserPolicyContext";
+import { UserCircleIcon, LogOutIcon, MoreVerticalIcon, BellIcon } from "lucide-react";
+import UserAvatar from "./UserAvatar";
+import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/Button";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+const UserDropdown = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate();
+  const { username, email, id } = useUserPolicy();
   const { isMobile } = useSidebar()
 
+  const handleLogout = () => {
+    authService.logout();
+    navigate("/login");
+  };
+
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
+    <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <UserAvatar avatar={user.avatar} username={user.name} gray={true} />
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
-                </span>
-              </div>
-              <MoreVerticalIcon className="ml-auto size-4" />
-            </SidebarMenuButton>
+            <Button variant="default">{children}</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
@@ -61,11 +38,11 @@ export function NavUser({
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <UserAvatar avatar={user.avatar} username={user.name} />
+                {children}
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">{username}</span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user.email}
+                    {email}
                   </span>
                 </div>
               </div>
@@ -88,7 +65,7 @@ export function NavUser({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
   )
 }
+
+export default UserDropdown
