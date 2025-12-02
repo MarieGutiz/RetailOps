@@ -9,7 +9,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src")
-    }
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  server: {
+    host: true,         // (Optional) allow LAN/mobile testing
+    port: 5173          // (Optional) but recommended to fix port
   }
-})
+});
