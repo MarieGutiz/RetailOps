@@ -7,11 +7,15 @@ import {
 const UserAvatar = ({avatar, username,gray}: {avatar: string, username: string, gray?: boolean}) => {
   const initials = username ? username.slice(0, 2).toUpperCase() : "??";
 
-    return (
-        <Avatar className={`h-8 w-8 rounded-lg ${gray ? "grayscale" : ""}`}>
-        <AvatarImage src={avatar} alt={username} />
-        <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-        </Avatar>
+     return (
+    <Avatar
+      className={`h-8 w-8 rounded-lg ${
+        gray ? "ring-1 ring-white/20" : ""
+      }`}
+    >
+      <AvatarImage src={avatar} alt={username} />
+      <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+    </Avatar>
     );
 }
 
