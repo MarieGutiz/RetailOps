@@ -35,7 +35,7 @@ const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
         </SidebarContent>
 
         <SidebarFooter>
-          <NavUser user={data_menu.user} />
+          <NavUser />
         </SidebarFooter>
       </Sidebar>
   )

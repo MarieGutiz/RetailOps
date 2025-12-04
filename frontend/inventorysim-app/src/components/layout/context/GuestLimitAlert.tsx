@@ -8,16 +8,52 @@ const GuestLimitAlert = () => {
   if (isAuth) return null; // Authenticated users should NEVER see this
 
   return (
-    <div className="px-4 mt-2">
-      <Alert variant="default" className="bg-yellow-50 border-yellow-400 text-yellow-900">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Guest Mode Active</AlertTitle>
-        <AlertDescription>
-          You can add up to <strong>10 products</strong>. Create a free account to unlock
-          unlimited product storage and syncing with your backend.
-        </AlertDescription>
-      </Alert>
-    </div>
+    <div
+    className="
+      -mt-2 mb-4 px-4
+      text-[0.70rem]         /* mobile (xs) */
+      sm:text-xs             /* small screens */
+      md:text-sm             /* medium screens */
+      lg:text-base           /* large screens */
+    "
+  >
+    <Alert
+      variant="default"
+      className="
+        bg-yellow-50 border-yellow-400 text-yellow-900
+        p-2 sm:p-3 md:p-3.5 lg:p-4
+      "
+    >
+      <AlertCircle
+        className="
+          h-3.5 w-3.5       /* mobile */
+          sm:h-4 sm:w-4     /* small */
+          md:h-4 md:w-4     /* medium */
+          lg:h-5 lg:w-5     /* large */
+        "
+      />
+
+      <AlertTitle
+        className="
+          text-xs sm:text-sm md:text-sm lg:text-base 
+        "
+      >
+        Guest Mode Active
+      </AlertTitle>
+
+      <AlertDescription
+        className="
+          text-[0.70rem]    /* mobile */
+          sm:text-xs
+          md:text-sm
+          lg:text-sm
+        "
+      >
+        You can add up to <strong>10 products</strong>.  
+        Create a free account to unlock unlimited product storage and syncing.
+      </AlertDescription>
+    </Alert>
+  </div>
   );
 }
 

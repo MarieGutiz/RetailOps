@@ -119,6 +119,9 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
 
         {/* Search Input */}
         <Input
+          type="text"
+          id="product-search"
+          name="product-search"
           placeholder="Search product..."
           className="w-full max-w-[14rem] sm:max-w-xs md:max-w-sm text-sm py-1.5"
           value={search}

@@ -39,6 +39,8 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
       <ModuleHeaderActions>
         {userCases?.length > 0 && (
           <select
+            id="user-case-select"
+            name="user-case-select"
             className="toolbar-element jcombo-box toolbar-element-md w-fit sm:w-auto"
             onChange={(e) => onUserCaseChange?.(e.target.value)}
           >
