@@ -109,7 +109,7 @@ const RegisterForm = () => {
             </div>
             {/* Insert position */}
             <div className="flex items-center gap-2">
-            <Label htmlFor="position" className="text-sm font-medium text-left">
+            <Label className="text-sm font-medium text-left">
                 Position:
             </Label>
             <Controller
@@ -117,7 +117,7 @@ const RegisterForm = () => {
               control={RegisterFormValidation.control}
               rules={{ required: "Position is required" }}
               render={({ field }) => (
-                <Positions position={field.value} setPosition={field.onChange} />
+                <Positions  position={field.value || ""} setPosition={field.onChange} />
               )}
             />
 

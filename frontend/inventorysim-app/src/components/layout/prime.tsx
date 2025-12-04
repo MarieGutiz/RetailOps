@@ -31,15 +31,16 @@ const Prime = () => {
     
     <>   
     <PrimeLayoutProvider controller={controller}>
-      <main>
-        {/* Top Header */}
-        <TopHeader />
-        <GuestLimitAlert />
-        {/* Global Header and module container */}
-        <PrimeContent />
-        
-      </main>
       
+        {/* Top Header - is fixed top */}
+        <TopHeader />
+        {/* pushes content below header */}
+        <main className="pt-0"> 
+          <GuestLimitAlert />
+          {/* Global Header and module container */}
+          <PrimeContent />
+        
+      </main>      
     </PrimeLayoutProvider>
     </>
     

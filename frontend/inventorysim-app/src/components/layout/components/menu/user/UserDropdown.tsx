@@ -17,7 +17,8 @@ import UserAvatar from "./UserAvatar";
 const UserDropdown = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { username, email, id, name, profileImg } = useUserPolicy();
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+   const isGuest = !id;
 
   const handleLogout = () => {
     authService.logout();
@@ -56,27 +57,47 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuGroup>
-          <DropdownMenuItem onSelect={() => navigate(`/profile/user/${id}`)}>
-            <UserCircleIcon className="mr-2 h-4 w-4" />
-            Account
-          </DropdownMenuItem>
+          {/* AUTHENTICATED USER OPTIONS */}
+        {!isGuest && (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuItem onSelect={() => navigate(`/profile/user/${id}`)}>
+                <UserCircleIcon className="mr-2 h-4 w-4" />
+                Account
+              </DropdownMenuItem>
 
-          <DropdownMenuItem>
-            <BellIcon className="mr-2 h-4 w-4" />
-            Notifications
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+              <DropdownMenuItem>
+                <BellIcon className="mr-2 h-4 w-4" />
+                Notifications
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
 
-        <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
 
-        <DropdownMenuItem
-          onSelect={handleLogout}
-          className="text-red-600 cursor-pointer focus:text-red-700"
-        >
-          <LogOutIcon className="mr-2 h-4 w-4" />
-          Log out
-        </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={handleLogout}
+              className="text-red-600 cursor-pointer focus:text-red-700"
+            >
+              <LogOutIcon className="mr-2 h-4 w-4" />
+              Log out
+            </DropdownMenuItem>
+          </>
+        )}
+
+        {/* GUEST OPTIONS */}
+        {isGuest && (
+          <>
+           <DropdownMenuItem>
+              <BellIcon className="mr-2 h-4 w-4" />
+              Notifications
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => navigate("/login")}>
+              <UserCircleIcon className="mr-2 h-4 w-4" />
+              Login
+            </DropdownMenuItem>
+
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

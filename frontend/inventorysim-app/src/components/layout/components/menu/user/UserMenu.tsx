@@ -1,7 +1,7 @@
 import { useUserPolicy } from '@/context/UserPolicyContext';
 import { useProductStore } from '@/store/useProductStore';
-import { MoreVerticalIcon, UserCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import {  MoreVerticalIcon, UserCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import UserAvatar from './UserAvatar';
 import UserDropdown from './UserDropdown';
 import { Button } from '@/components/ui/Button';
@@ -60,8 +60,17 @@ const UserMenu = () => {
       )}
 
       {/* Hide default circle when authenticated */}
-      {!isAuth && (
-        <UserCircle className="h-4 w-4 text-gray-200 hover:text-blue-300 transition-colors" />
+     {!isAuth && (
+      <Link to="/register" className="p-1 group">
+        <UserCircle
+          className="
+            h-4 w-4 
+            text-gray-200 
+            group-hover:text-blue-300 
+            transition-colors
+          "
+        />
+      </Link>
       )}
     </div>
   );
