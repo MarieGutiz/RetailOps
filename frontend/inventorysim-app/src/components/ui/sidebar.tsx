@@ -307,7 +307,7 @@ const Sidebar = React.forwardRef<
           : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
         // Variant & padding adjustments
         variant === "floating" || variant === "inset"
-          ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
+          ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
           : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
         className
       )}
@@ -412,13 +412,13 @@ const SidebarInset = React.forwardRef<HTMLDivElement, React.ComponentProps<"main
           "md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
 
           // Left sidebar spacing
-          "md:peer-data-[side=left]:peer-data-[state=expanded]:ml-[calc(var(--sidebar-width)+4px)]",
+          "md:peer-data-[side=left]:peer-data-[state=expanded]:ml-[calc(var(--sidebar-width)+0px)]",
           "md:peer-data-[side=left]:peer-data-[state=collapsed]:ml-[calc(var(--sidebar-width-icon)+4px)]",
           // Add +4px more only when floating + collapsed + left side
           "md:peer-data-[side=left]:peer-data-[variant=floating]:peer-data-[state=collapsed]:ml-[calc(var(--sidebar-width-icon)+14px)]",
 
           // Right sidebar spacing
-          "md:peer-data-[side=right]:peer-data-[state=expanded]:mr-[calc(var(--sidebar-width)+4px)]",
+          "md:peer-data-[side=right]:peer-data-[state=expanded]:mr-[calc(var(--sidebar-width)+0px)]",
           "md:peer-data-[side=right]:peer-data-[state=collapsed]:mr-[calc(var(--sidebar-width-icon)+4px)]",
           // Add +4px more only when floating + collapsed + right side
           "md:peer-data-[side=right]:peer-data-[variant=floating]:peer-data-[state=collapsed]:mr-[calc(var(--sidebar-width-icon)+14px)]",

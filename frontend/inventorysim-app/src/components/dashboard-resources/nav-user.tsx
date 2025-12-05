@@ -29,9 +29,9 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <UserAvatar avatar={profileImg || " "} username={name || username || "Logged as Guest"} gray={true} />
+              <UserAvatar avatar={profileImg || " "} username={name || username || "Guest session active"} gray={true} />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{name || username || "Logged as Guest"}</span>
+                <span className="truncate font-medium">{name || username || "Guest session active"}</span>
                 <span className="truncate text-xs text-muted-foreground">
                   {name || "Guest"}
                 </span>

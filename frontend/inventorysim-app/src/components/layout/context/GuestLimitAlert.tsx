@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useProductStore } from "@/store/useProductStore";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Link } from "lucide-react";
 
 const GuestLimitAlert = () => {
  const isAuth = useProductStore((s) => s.isAuthenticated);
@@ -50,7 +50,7 @@ const GuestLimitAlert = () => {
         "
       >
         You can add up to <strong>10 products</strong>.  
-        Create a free account to unlock unlimited product storage and syncing.
+        Create a  <a href="/register">free account</a> to unlock unlimited product storage and syncing.
       </AlertDescription>
     </Alert>
   </div>

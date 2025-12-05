@@ -27,7 +27,7 @@ export const useUserPolicy = (): UserPolicy => {
 
   // Get username from storage
   const storedUser = saveToStorage.getUser();
-  const username = storedUser?.username ?? "Logged as Guest";
+  const username = storedUser?.username ?? "Guest session active";
   const profileImg = storedUser?.profileImage ?? null;
   const id = storedUser?.id ?? null;
   const email = storedUser?.email ?? null;

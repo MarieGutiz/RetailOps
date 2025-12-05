@@ -4,7 +4,7 @@ export class PrimeLayoutDragController {
   x?: MotionValue<number>;
   y?: MotionValue<number>;
   initialPosition = { x: 0, y: 0 };
-  sidebarWidth = 280;
+  sidebarWidth = 240; // default 15rem in px
   side: "left" | "right" = "left";
 
   constructor(options?: { side?: "left" | "right"; sidebarWidth?: number }) {

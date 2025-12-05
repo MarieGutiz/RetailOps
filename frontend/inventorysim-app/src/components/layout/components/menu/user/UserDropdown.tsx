@@ -49,7 +49,7 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
                 {name || username || "Guest"}
               </span>
               <span className="truncate text-xs text-muted-foreground">
-                {email || username || "Guest"}
+                {email || name || "Guest"}
               </span>
             </div>
           </div>
