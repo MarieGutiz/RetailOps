@@ -1,6 +1,7 @@
 import { motion, useMotionValue } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { PrimeLayoutController } from "../../controllers/PrimeLayoutController";
+import { usePrimeLayoutStore } from "../../hooks/usePrimeLayout";
 
 export function DraggableSidebar({
   controller,
@@ -9,6 +10,10 @@ export function DraggableSidebar({
   controller: PrimeLayoutController;
   children: React.ReactNode;
 }) {
+  const isInset = controller.variant === "inset";
+  const collapsed = usePrimeLayoutStore(l => l.open);
+  //bring states: collapsed/expanded
+  
   // Motion values for dragging
   const x = useMotionValue(
     controller.side === "left"
@@ -48,7 +53,8 @@ export function DraggableSidebar({
     unsubscribe();
   };
 }, [controller, x]);
-
+ 
+  const wide = collapsed ? width -22  : width+18;
   // console.log("Rendering DraggableSidebar with width:", width);
   // console.log("Controller toggle:", controller.sidebarWidth);
 
@@ -67,15 +73,20 @@ export function DraggableSidebar({
         left: controller.side === "left" ? 0 : "auto",
         // right: controller.side === "right" ? 0 : "auto",
         top: 0,
-        position: "fixed",
+        position: isInset ? "absolute" : "fixed",
         cursor: "move",
-        width: `${width}px`, // dynamic width
+        width: `${wide}px`, // dynamic width
+        margin: 0,
+        padding: 0,    // <-- important
+        border: "none" // <-- remove borders
       }}
       
-      className="inset-y-0 z-10 h-svh bg-sidebar shadow-md rounded-r-lg"
-    >
-      {children}
-    </motion.div>
+      // className="inset-y-0 z-10 h-svh bg-sidebar shadow-md rounded-r-lg"
+      className="z-10 h-svh flex items-center justify-center  bg-[#001e2b]" >
+          <div className="w-full h-full flex items-center justify-center">
+            {children}
+          </div>
+        </motion.div>
   
   );
 

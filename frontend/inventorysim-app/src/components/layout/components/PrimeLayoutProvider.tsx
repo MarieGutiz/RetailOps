@@ -45,7 +45,8 @@ export function PrimeLayoutProvider({
   return (
     <PrimeLayoutContext.Provider value={layout}>
       <PrimeLayoutContent >
-        {children}</PrimeLayoutContent>
+        {children}
+      </PrimeLayoutContent>
     </PrimeLayoutContext.Provider>
   )
 }

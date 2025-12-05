@@ -48,6 +48,8 @@ export const saveToStorage =  {
     clearUser: () => {
         saveToStorage.removeItem("user");
         saveToStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
     },
     // Helper to get username directly
     getUsername: (): string | null => {
