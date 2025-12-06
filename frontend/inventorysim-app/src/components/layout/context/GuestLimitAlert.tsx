@@ -1,9 +1,20 @@
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { notificationService } from "@/services/notifications/notificationService";
 import { useProductStore } from "@/store/useProductStore";
-import { AlertCircle, Link } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import { useEffect } from "react";
 
 const GuestLimitAlert = () => {
  const isAuth = useProductStore((s) => s.isAuthenticated);
+
+ // Only inject the guest notification when this component mounts
+  useEffect(() => {
+    if (!isAuth) {
+      notificationService.injectGuestNotification();
+    }
+    // Optional cleanup if you want to remove guest notification on unmount
+     return () => notificationService.removeGuestNotification();
+  }, [isAuth]);
 
   if (isAuth) return null; // Authenticated users should NEVER see this
 
