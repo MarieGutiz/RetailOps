@@ -13,16 +13,29 @@ import { useUserPolicy } from "@/context/UserPolicyContext";
 import { UserCircleIcon, LogOutIcon, BellIcon } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import UserAvatar from "./UserAvatar";
+import { useNotificationStore } from "@/store/notifications/useNotificationStore";
+import { useProductStore } from "@/store/useProductStore";
+import UserNotifications from "./UserNotifications";
 
 const UserDropdown = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { username, email, id, name, profileImg } = useUserPolicy();
   const { isMobile } = useSidebar();
-   const isGuest = !id;
-
+  const isGuest = !id;
+  
+   const isAuth = useProductStore((s) => s.isAuthenticated);
+   
   const handleLogout = () => {
     authService.logout();
     navigate("/login");
+  };
+
+   const { notifications, markAllAsRead } = useNotificationStore();
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const handleNotifications = () => {
+    markAllAsRead();
+    navigate("/notifications"); // optional
   };
 
   return (
@@ -66,10 +79,10 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
                 Account
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
-                <BellIcon className="mr-2 h-4 w-4" />
-                Notifications
-              </DropdownMenuItem>
+                <DropdownMenuItem onSelect={handleNotifications}>
+                <UserNotifications />
+                 Notifications
+            </DropdownMenuItem>
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
@@ -88,8 +101,8 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
         {isGuest && (
           <>
            <DropdownMenuItem>
-              <BellIcon className="mr-2 h-4 w-4" />
-              Notifications
+              <UserNotifications />
+               Notifications
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => navigate("/login")}>
               <UserCircleIcon className="mr-2 h-4 w-4" />

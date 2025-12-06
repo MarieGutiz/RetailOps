@@ -40,7 +40,8 @@ export const useNotificationStore = create<NotificationsStore>((set) => ({
       })),
     removeNotification: (id: string) => 
         set((state) => ({
-            notifications: state.notifications.filter((notif) => notif.id !== id),
+            notifications: state.notifications.
+            filter((notif) => !notif.protected && notif.id !== id),
         })),
         
     removeMany: (ids) =>
