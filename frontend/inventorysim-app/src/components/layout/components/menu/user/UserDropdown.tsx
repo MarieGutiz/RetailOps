@@ -10,12 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useUserPolicy } from "@/context/UserPolicyContext";
-import { UserCircleIcon, LogOutIcon, BellIcon } from "lucide-react";
+import { UserCircleIcon, LogOutIcon } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import UserAvatar from "./UserAvatar";
 import { useNotificationStore } from "@/store/notifications/useNotificationStore";
 import { useProductStore } from "@/store/useProductStore";
-import UserNotifications from "./UserNotifications";
+import UserNotificationsBell from "./UserNotificationsBell";
 
 const UserDropdown = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
               </DropdownMenuItem>
 
                 <DropdownMenuItem onSelect={handleNotifications}>
-                <UserNotifications />
+                <UserNotificationsBell />
                  Notifications
             </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -100,8 +100,8 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
         {/* GUEST OPTIONS */}
         {isGuest && (
           <>
-           <DropdownMenuItem>
-              <UserNotifications />
+           <DropdownMenuItem onSelect={handleNotifications}>
+              <UserNotificationsBell />
                Notifications
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => navigate("/login")}>

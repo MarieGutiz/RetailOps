@@ -13,7 +13,7 @@ const GuestLimitAlert = () => {
       notificationService.injectGuestNotification();
     }
     // Optional cleanup if you want to remove guest notification on unmount
-     return () => notificationService.removeGuestNotification();
+    // return () => notificationService.removeGuestNotification();
   }, [isAuth]);
 
   if (isAuth) return null; // Authenticated users should NEVER see this
