@@ -1,7 +1,7 @@
 import { useNotificationStore } from "@/store/notifications/useNotificationStore";
 import { BellIcon } from "lucide-react";
 
-const UserNotifications = () => {
+const UserNotificationsBell = () => {
   const { notifications } = useNotificationStore();
   const unread = notifications.filter((n) => !n.read).length;
 
@@ -25,4 +25,4 @@ const UserNotifications = () => {
   );
 };
 
-export default UserNotifications
+export default UserNotificationsBell
