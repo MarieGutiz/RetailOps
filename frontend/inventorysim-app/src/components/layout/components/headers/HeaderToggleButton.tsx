@@ -1,6 +1,5 @@
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import {  ToggleGroup,
-  ToggleGroupItem,} from "@/components/ui/toggle-group";
+import { ToggleGroupItem,} from "@/components/ui/toggle-group";
 
 interface HeaderToggleButtonProps {
   value?: string;

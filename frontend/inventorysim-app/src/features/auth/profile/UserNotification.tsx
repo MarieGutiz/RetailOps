@@ -1,14 +1,13 @@
 import { useNotificationStore } from "@/store/notifications/useNotificationStore";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/Button";
-import { Trash2Icon, BellIcon, ShieldIcon } from "lucide-react";
+import { Trash2Icon, BellIcon, ShieldIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
-  ItemGroup,
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
@@ -42,12 +41,14 @@ const UserNotification = () => {
   };
 
   return (
-    <div className="mx-auto max-w-[600px] px-4 py-8 flex flex-col gap-6">
+    <div className="mx-auto max-w-[650px] px-4 py-8 flex flex-col gap-6">
 
+      {/* HEADER */}
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Notifications</h2>
+        <h2 className="text-xl font-bold sm:text-2xl">Notifications</h2>
 
         <Button
+          className="rounded-md"
           variant="destructive"
           disabled={
             !Object.values(selected).some(Boolean) ||
@@ -60,48 +61,76 @@ const UserNotification = () => {
         </Button>
       </div>
 
+      {/* LIST */}
       <div className="flex flex-col gap-4">
         {notifications.length === 0 && (
-          <p className="text-muted-foreground text-sm">No notifications.</p>
+          <p className="text-muted-foreground text-sm sm:text-base">
+            No notifications.
+          </p>
         )}
 
         {notifications.map((n) => (
           <Item
             key={n.id}
             variant="outline"
-            className="flex items-center gap-3"
+            className="flex items-center gap-4 rounded-lg border p-3 sm:p-4"
           >
-            <ItemMedia>
-              <Checkbox
-                checked={selected[n.id] || false}
-                onCheckedChange={() => toggleSelect(n.id)}
+            {/* CUSTOM CHECKBOX */}
+            <ItemMedia >
+              <Button
+                // className=" w-6 rounded-md"
+                className={`
+                  jcheckbox
+                  ${selected[n.id] ? "selected" : ""}
+                  ${n.protected ? "disabled" : ""}
+                `}
+                variant="destructive"
+                onClick={() => toggleSelect(n.id)}
                 disabled={n.protected}
-              />
+              >
+                 {selected[n.id] && <XIcon className="mr-0 h-4 w-4" />}
+               
+              </Button>
             </ItemMedia>
 
-            <ItemContent>
-              <ItemTitle className="flex items-center gap-2">
-                {n.type === "success" && <BellIcon className="h-4 w-4 text-green-600" />}
-                {n.type === "warning" && <BellIcon className="h-4 w-4 text-yellow-600" />}
-                {n.type === "error" && <BellIcon className="h-4 w-4 text-red-600" />}
-                {n.type === "info" && <BellIcon className="h-4 w-4 text-blue-600" />}
-                {n.msg}
+            {/* CONTENT */}
+            <ItemContent className="flex flex-col gap-1 items-start">
+              <ItemTitle className="flex items-start gap-2 text-sm sm:text-base">
+                <span className="shrink-0 mt-0.5 mr-0.5">
+                  {n.type === "success" && (
+                    <BellIcon className="h-4 w-4 block text-green-600" />
+                  )}
+                  {n.type === "warning" && (
+                    <BellIcon className="h-4 w-4 block text-yellow-600" />
+                  )}
+                  {n.type === "error" && (
+                    <BellIcon className="h-4 w-4 block text-red-600" />
+                  )}
+                  {n.type === "info" && (
+                    <BellIcon className="h-4 w-4 block text-blue-600" />
+                  )}
+                </span>
+
+                {/* message column */}
+                <span className="leading-tight">{n.msg}</span>
               </ItemTitle>
 
+
+              {/* PROTECTED LABEL */}
               {n.protected && (
-                <ItemDescription className="text-xs flex items-center gap-1 text-blue-600">
+                <ItemDescription className="text-xs flex items-center align-middle gap-1 text-blue-700 sm:text-sm self-center">
                   <ShieldIcon className="h-3 w-3" />
-                  Cannot delete while in guest mode
+                  This notification cannot be deleted in guest mode.
                 </ItemDescription>
               )}
             </ItemContent>
 
-            <ItemActions></ItemActions>
+            <ItemActions />
           </Item>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 export default UserNotification

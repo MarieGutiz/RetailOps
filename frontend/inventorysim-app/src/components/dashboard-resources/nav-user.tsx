@@ -14,8 +14,10 @@ import {
 import UserAvatar from "../layout/components/menu/user/UserAvatar"
 import { useUserPolicy } from "@/context/UserPolicyContext"
 import UserDropdown from "../layout/components/menu/user/UserDropdown"
+import { useProductStore } from "@/store/useProductStore"
 
 export function NavUser() {
+  const isAuth = useProductStore((s) => s.isAuthenticated);
   const { username, profileImg, name } = useUserPolicy();
   // console.log("NavUser - username :", username , " name:", name);
 
