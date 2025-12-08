@@ -393,3 +393,41 @@
   height: 16px;
   display: block;
 }
+
+/* JButton-style checkbox */
+.jcheckbox {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+  border: 1px solid #c5c5c5;
+  border-radius: 0;
+  cursor: pointer;
+  transition: 0.2s ease-out;
+}
+
+.jcheckbox.selected {
+  background: linear-gradient(to bottom, #f0ad4e 0%, #d4882a 100%);
+  border: 1px solid #c67622;
+}
+
+.jcheckbox.disabled {
+  background: #efefef;
+  border-color: #ddd;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.jcheckbox svg {
+  width: 14px !important;
+  height: 14px !important;
+  fill: white !important;
+  stroke: white !important;
+  margin: 0 !important;       /* <-- ensures true centering */
+  padding: 0 !important;      /* <-- Lucide default padding removed */
+  display: block;             /* remove inline weird spacing */
+  box-sizing: content-box;    /* keep exact size */
+}

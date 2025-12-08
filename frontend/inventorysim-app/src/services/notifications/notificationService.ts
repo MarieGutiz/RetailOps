@@ -10,6 +10,14 @@ const guestNotification = {
   protected: true,
 };
 
+const customerNotification = {
+  id: "user-thankyou",
+  msg: "Thank you for being a valued user of RetailOps sim! We appreciate your support.",
+  type: "success" as notificationType,
+  read: false,
+  protected: false,
+};
+
 export const notificationService = {
   injectGuestNotification() {
     const { notifications, addNotificationRaw } = useNotificationStore.getState();
@@ -18,6 +26,7 @@ export const notificationService = {
     if (exists) return;
 
     addNotificationRaw(guestNotification);
+    addNotificationRaw(customerNotification);
   },
 
   removeGuestNotification() {
