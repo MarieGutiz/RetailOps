@@ -1,6 +1,6 @@
 import { Menu } from "lucide-react"
 import { useSidebar } from "@/components/ui/sidebar"
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/layout/use-mobile";
 
 const MobileSidebarButton = () => {
   const isMobile = useIsMobile()

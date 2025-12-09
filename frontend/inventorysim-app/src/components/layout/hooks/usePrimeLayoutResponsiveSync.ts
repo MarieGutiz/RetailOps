@@ -1,4 +1,4 @@
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/layout/use-mobile";
 import { useEffect } from "react";
 import { usePrimeLayout } from "../components/PrimeLayoutProvider";
 

@@ -11,7 +11,7 @@ import { Dialog,
 import { MoreHorizontal } from "lucide-react"
 import { useState } from "react"
 import ProductDialog from "./ProductDialog";
-import { useProductStore } from "@/store/useProductStore";
+import { useProductStore } from "@/store/inventory/useProductStore";
 import { toast } from "sonner";
 
 const RowActions = ({product}: {product: Product}) => {

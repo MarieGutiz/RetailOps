@@ -14,7 +14,7 @@ import { UserCircleIcon, LogOutIcon } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import UserAvatar from "./UserAvatar";
 import { useNotificationStore } from "@/store/notifications/useNotificationStore";
-import { useProductStore } from "@/store/useProductStore";
+import { useProductStore } from "@/store/inventory/useProductStore";
 import UserNotificationsBell from "./UserNotificationsBell";
 
 const UserDropdown = ({ children }: { children: React.ReactNode }) => {

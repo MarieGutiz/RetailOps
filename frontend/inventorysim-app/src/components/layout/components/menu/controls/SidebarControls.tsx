@@ -3,7 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight } from "lucide-react";
 import {  ToggleGroup,} from "@/components/ui/toggle-group";
 import HeaderToggleButton from "../../headers/HeaderToggleButton";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/layout/use-mobile";
 
 
 interface SidebarControlsProps {

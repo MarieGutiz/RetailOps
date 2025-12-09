@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { notificationService } from "@/services/notifications/notificationService";
-import { useProductStore } from "@/store/useProductStore";
+import { useProductStore } from "@/store/inventory/useProductStore";
 import { AlertCircle } from "lucide-react";
 import { useEffect } from "react";
 

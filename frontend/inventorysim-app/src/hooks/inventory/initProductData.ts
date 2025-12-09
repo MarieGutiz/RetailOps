@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useProductStore } from "../useProductStore";
+import { useProductStore } from "../../store/inventory/useProductStore";
 
 export const useInitProductData = () => {
   useEffect(() => {

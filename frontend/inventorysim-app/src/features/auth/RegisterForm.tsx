@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom"
 import Positions from "./ui/Positions"
 import SocialBtns from "./ui/SocialBtns"
 import Divider from "./ui/Divider"
-import {  useAuth } from "@/hooks/useAuth"
+import {  useAuth } from "@/hooks/auth/useAuth"
 import FormError from "./ui/FormError"
 import { Controller } from "react-hook-form"
 import toast from "react-hot-toast";

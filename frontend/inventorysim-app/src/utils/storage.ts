@@ -3,6 +3,8 @@
  */
 import { isLocalStorageAvailable } from "./auth";
 
+
+const inMemoryStore: Record<string, string> = {};
 const storageAvailable = isLocalStorageAvailable();
 
 export const saveToStorage =  {
@@ -12,8 +14,7 @@ export const saveToStorage =  {
         }else{
             console.warn("LocalStorage not available. Cannot set item.");
             // Fallback logic (e.g., use in-memory storage)
-           (window as any)._inMemoryStorage = (window as any)._inMemoryStorage || {};
-           (window as any)._inMemoryStorage[key] = value;
+           inMemoryStore[key] = value;
         }
     },
     getItem: (key: string): string | null => {
@@ -22,7 +23,7 @@ export const saveToStorage =  {
         }else{
             console.warn("LocalStorage not available. Cannot get item.");
             // Fallback logic (e.g., use in-memory storage)
-           return (window as any)._inMemoryStorage ? (window as any)._inMemoryStorage[key] : null;
+           return inMemoryStore[key] ?? null;
         }
     },
     removeItem: (key: string) => {
@@ -31,42 +32,40 @@ export const saveToStorage =  {
         }else{
             console.warn("LocalStorage not available. Cannot remove item.");
             // Fallback logic (e.g., use in-memory storage)
-           delete (window as any)._inMemoryStorage[key];
+           delete inMemoryStore[key];
         }
      },
      
     /** Save a full user object safely */
     setUser: (user: any) => {
         try {
-            saveToStorage.setItem("user", JSON.stringify(user));
+          saveToStorage.setItem("user", JSON.stringify(user));
         } catch (err) {
-            console.error("Failed to save user:", err);
+        console.error("Failed to save user:", err);
         }
     },
-
-    /** Remove both user + token */
-    clearUser: () => {
-        saveToStorage.removeItem("user");
-        saveToStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
+       /** Restore full user object */
+        getUser(): any | null {
+        try {
+        const raw = this.getItem("user");
+        return raw ? JSON.parse(raw) : null;
+        } catch (err) {
+        console.error("Failed to parse user:", err);
+        return null;
+        }
     },
+    
     // Helper to get username directly
     getUsername: (): string | null => {
         const user = saveToStorage.getUser();
         return user?.username || null;
     },
-     //  Helper to get user data safely
-    getUser: (): any | null => {
-        const userStr = saveToStorage.getItem("user");
-        if (!userStr) return null;
-        try {
-        return JSON.parse(userStr);
-        } catch (err) {
-        console.error("Failed to parse user from storage", err);
-        return null;
-        }
-    },
 
+    /** Remove both user + token */
+    clearUser() {
+        this.removeItem("user");
+        this.removeItem("token");
+    },
+     
     
     }

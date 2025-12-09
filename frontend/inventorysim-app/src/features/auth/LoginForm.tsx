@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/Button"
 import { Link, useNavigate } from "react-router-dom"
 import SocialBtns from "./ui/SocialBtns"
 import Divider from "./ui/Divider"
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth } from "@/hooks/auth/useAuth"
 import FormError from "./ui/FormError"
 import Top from "./ui/Top"
-import { useProductStore } from "@/store/useProductStore"
+import { useProductStore } from "@/store/inventory/useProductStore"
 import { saveToStorage } from "@/utils/storage"
 
 const LoginForm = () => {

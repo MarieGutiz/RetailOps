@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, PanelLeft, PanelRight } from "lucide-react";
 import HeaderToggleButton from "./HeaderToggleButton";
 import { ToggleGroup } from "@/components/ui/toggle-group";
 import MobileSidebarButton from "../menu/controls/MobileSidebarButton";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/layout/use-mobile";
 
 interface GlobalHeaderControlsProps {
   pinned: boolean;

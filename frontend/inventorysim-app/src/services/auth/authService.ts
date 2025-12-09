@@ -1,7 +1,8 @@
 import type { Account } from "@/types/accounts";
 import api from "../api/api";
 import { saveToStorage } from "@/utils/storage";
-import { useProductStore } from "@/store/useProductStore";
+import { useProductStore } from "@/store/inventory/useProductStore";
+import { useUserStore } from "@/store/user/useUserStore";
 
 export interface Credentials {
   identifier: string;
@@ -46,7 +47,9 @@ const authService = {
 
   logout: () => {
     saveToStorage.clearUser();
+    useUserStore.getState().clearUser();
     useProductStore.getState().setAuthenticated(false);
+
     window.location.href = "/login";
   },
 };

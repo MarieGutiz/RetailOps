@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/Button'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/hooks/auth/useAuth'
 import FormError from './FormError';
 
 const SocialBtns = () => {

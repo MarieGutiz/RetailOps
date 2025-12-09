@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useMemo, useEffect } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/hooks/layout/use-mobile"
 import { PrimeLayoutController } from "../controllers/PrimeLayoutController"
 import PrimeMenu from "./PrimeMenu"
 import { usePrimeLayoutStore } from "../hooks/usePrimeLayout"
