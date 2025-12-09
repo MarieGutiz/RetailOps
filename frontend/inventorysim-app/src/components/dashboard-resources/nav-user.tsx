@@ -14,12 +14,13 @@ import {
 import UserAvatar from "../layout/components/menu/user/UserAvatar"
 import { useUserPolicy } from "@/context/UserPolicyContext"
 import UserDropdown from "../layout/components/menu/user/UserDropdown"
-import { useProductStore } from "@/store/useProductStore"
+import { useProductStore } from "@/store/inventory/useProductStore"
 
 export function NavUser() {
   const isAuth = useProductStore((s) => s.isAuthenticated);
   const { username, profileImg, name } = useUserPolicy();
-  // console.log("NavUser - username :", username , " name:", name);
+  console.log("NavUser - username :", username , " name:", name);
+  const msg = isAuth ? name : "Welcome, Guest";
 
   return (
     <SidebarMenu>
@@ -33,7 +34,7 @@ export function NavUser() {
             >
               <UserAvatar avatar={profileImg || " "} username={name || username || "Guest session active"} gray={true} />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{name || username || "Guest session active"}</span>
+                <span className="truncate font-medium">{msg}</span>
                 <span className="truncate text-xs text-muted-foreground">
                   {name || "Guest"}
                 </span>

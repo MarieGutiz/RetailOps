@@ -1,9 +1,9 @@
-import { saveToStorage } from "@/utils/storage";
-import { createContext, useContext } from "react";
+import { useUserStore } from "@/store/user/useUserStore";
+import { createContext } from "react";
 
 export type UserType = "Guest" | "Registered";
 
-interface UserPolicy {
+export interface UserPolicy {
   userType: UserType;
   username?: string | null;
   profileImg?: string | null;
@@ -23,18 +23,22 @@ export const UserPolicyContext = createContext<UserPolicy>({
 
 // Hook to access policy with username auto-loaded
 export const useUserPolicy = (): UserPolicy => {
-  const context = useContext(UserPolicyContext);
+  const user = useUserStore((state) => state.user);
 
-  // Get username from storage
-  const storedUser = saveToStorage.getUser();
-  const username = storedUser?.username ?? "Guest session active";
-  const profileImg = storedUser?.profileImage ?? null;
-  const id = storedUser?.id ?? null;
-  const email = storedUser?.email ?? null;
-  const name = storedUser?.name ?? null;
+  const username = user?.username ?? "Guest";
+  const profileImg = user?.profileImg ?? null;
+  const id = user?.id ?? null;
+  const email = user?.email ?? null;
+  const name = user?.name ?? null;
 
-  // Determine user type based on presence of a token or stored user
-  const userType: UserType = storedUser ? "Registered" : "Guest";
+  const userType: UserType = user ? "Registered" : "Guest";
 
-  return { ...context, userType, username, profileImg, id, email, name };
+  return {
+    userType,
+    username,
+    profileImg,
+    id,
+    email,
+    name,
+  };
 };

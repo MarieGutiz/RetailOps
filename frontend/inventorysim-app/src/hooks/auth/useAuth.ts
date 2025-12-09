@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import authService, { type Credentials } from "@/services/auth/authService";
 import type { Account } from "@/types/accounts";
-import { useProductStore } from "@/store/useProductStore";
+import { useProductStore } from "@/store/inventory/useProductStore";
 import { saveToStorage } from "@/utils/storage";
+import { useUserStore } from "@/store/user/useUserStore";
 
 // Define registration schema
 export const registerShape = z
@@ -122,8 +123,11 @@ export const useAuth = () => {
 
         authService.saveAuthData(token, user);
 
-        // saveToStorage.setItem("token", token);
-        // saveToStorage.setItem("user",JSON.stringify({id, email, username, name, role, position}));
+         // Store reactively in Zustand
+         useUserStore.getState().setUser(user);
+
+          // Mark authenticated
+          useProductStore.getState().setAuthenticated(true);
         console.log("Logging in user (mock):", response);
         
         setLoading(false);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useProductStore } from "@/store/useProductStore";
+import { useProductStore } from "@/store/inventory/useProductStore";
 import { toast } from "sonner";
 import type { Product } from "@/types/products";
 

@@ -1,6 +1,6 @@
 import type ProfilePage from '@/features/auth/profile/[id]';
 import authService from '@/services/auth/authService';
-import { useProductStore } from '@/store/useProductStore';
+import { useProductStore } from '@/store/inventory/useProductStore';
 import  { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 

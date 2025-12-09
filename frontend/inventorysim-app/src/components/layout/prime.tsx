@@ -3,7 +3,7 @@ import TopHeader from "./components/headers/TopHeader"
 import  { PrimeLayoutProvider } from "./components/PrimeLayoutProvider"
 import { PrimeLayoutController } from "./controllers/PrimeLayoutController"
 import PrimeContent from "./components/main/PrimeContent "
-import { useProductStore } from "@/store/useProductStore"
+import { useProductStore } from "@/store/inventory/useProductStore"
 import GuestLimitAlert from "./context/GuestLimitAlert"
 import { useEffect } from "react"
 
