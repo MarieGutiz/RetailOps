@@ -19,7 +19,7 @@ import { useProductStore } from "@/store/inventory/useProductStore"
 export function NavUser() {
   const isAuth = useProductStore((s) => s.isAuthenticated);
   const { username, profileImg, name } = useUserPolicy();
-  console.log("NavUser - username :", username , " name:", name);
+  // console.log("NavUser - username :", username , " name:", name);
   const msg = isAuth ? name : "Welcome, Guest";
 
   return (

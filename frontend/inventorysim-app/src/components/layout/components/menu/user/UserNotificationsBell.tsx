@@ -3,6 +3,8 @@ import { BellIcon } from "lucide-react";
 
 const UserNotificationsBell = () => {
   const { notifications } = useNotificationStore();
+  //const {read, } = useNotificationStore();
+
   const unread = notifications.filter((n) => !n.read).length;
 
   return (
