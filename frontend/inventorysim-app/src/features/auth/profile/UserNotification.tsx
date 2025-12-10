@@ -1,5 +1,4 @@
 import { useNotificationStore } from "@/store/notifications/useNotificationStore";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/Button";
 import { Trash2Icon, BellIcon, ShieldIcon, XIcon } from "lucide-react";
 import { useState } from "react";
@@ -41,7 +40,7 @@ const UserNotification = () => {
   };
 
   return (
-    <div className="mx-auto max-w-[650px] px-4 py-8 flex flex-col gap-6">
+    <div className="mx-auto max-w-[650px] px-4 py-20 flex flex-col gap-6">
 
       {/* HEADER */}
       <div className="flex justify-between items-center">

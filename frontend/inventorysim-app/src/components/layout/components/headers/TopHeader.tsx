@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Search, X } from "lucide-react";
 import UserMenu from "../menu/user/UserMenu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function TopHeader() {
+export default function TopHeader({logo}: {logo?:boolean}) {
   const [searchOpen, setSearchOpen] = useState(false);
-  
+  //show logo if needed
   return (
    <div
   className="fixed top-0 left-0 right-0 z-50 h-10 px-3 sm:px-5
@@ -50,6 +51,33 @@ export default function TopHeader() {
         >
           <X className="h-4 w-4" />
         </button>
+      </div>
+    )}
+    {/* ADD LOGO */}
+    {logo && (
+      <div>
+        <a
+        href="/"
+        className={`flex items-center gap-2 transition-all duration-300
+          "justify-start"}`}
+      >
+        <Avatar className="h-8 w-8 rounded-lg shrink-0">
+          <AvatarImage src="src/assets/range.png" alt="@RetailOps Sim" />
+          <AvatarFallback>RS</AvatarFallback>
+        </Avatar>
+
+        {/* Brand text */}
+        <div
+          className={`flex flex-col transition-opacity duration-300"opacity-100 w-auto"}`}
+        >
+          <span className="text-base font-semibold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            RetailOps Sim
+          </span>
+          <span className="text-[10px] text-muted-foreground tracking-wide mt-0.5">
+            Optimize. Simulate.
+          </span>
+        </div>
+      </a>
       </div>
     )}
 

@@ -9,7 +9,7 @@ import ProfilePage from '@/features/auth/profile/[id]'
 import ProtectedRoute from './ProtectedRoute '
 import ErrorPage from '@/pages/ErrorPage'
 import OAuth2RedirectHandler from '@/pages/OAuth2RedirectHandler'
-import UserNotification from '@/features/auth/profile/UserNotification'
+import Notifications from '@/pages/Notifications'
 
 const Approutes = () => {
   return (
@@ -22,7 +22,7 @@ const Approutes = () => {
         path="/dashboard"
         element={<Dashboard />}
       />
-      <Route path="/notifications" element={<UserNotification />} />
+      <Route path="/notifications" element={<Notifications />} />
       <Route path="/splash" element={<AnimatedLogo />} />
       <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
       <Route path="*" element={<ErrorPage code={404}/>} />
