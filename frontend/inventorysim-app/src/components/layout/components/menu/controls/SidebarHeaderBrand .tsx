@@ -1,5 +1,5 @@
 import { usePrimeLayoutStore } from "@/components/layout/hooks/usePrimeLayout";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import Brand from "../../headers/Brand";
 
 const SidebarHeaderBrand  = () => {
     const isCollapsed = !usePrimeLayoutStore((l) => l.open)
@@ -13,23 +13,14 @@ const SidebarHeaderBrand  = () => {
         className={`flex items-center gap-2 transition-all duration-300
           ${isCollapsed ? "justify-center" : "justify-start"}`}
       >
-        <Avatar className="h-8 w-8 rounded-lg shrink-0">
-          <AvatarImage src="src/assets/range.jpg" alt="@RetailOps Sim" />
-          <AvatarFallback>RS</AvatarFallback>
-        </Avatar>
+        <Brand
+          asChild
+          variant="nav"
+          collapsed={isCollapsed}       // your existing state
+          imgSrc="src/assets/range.jpg" // nav image (different file)
+          imgAlt="@RetailOps Sim"
+        />
 
-        {/* Brand text */}
-        <div
-          className={`flex flex-col transition-opacity duration-300
-            ${isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"}`}
-        >
-          <span className="text-base font-semibold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
-            RetailOps Sim
-          </span>
-          <span className="text-[10px] text-muted-foreground tracking-wide mt-0.5">
-            Optimize. Simulate.
-          </span>
-        </div>
       </a>
     </div>
   );
