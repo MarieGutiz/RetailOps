@@ -10,6 +10,7 @@ interface BrandProps {
   imgAlt?: string;
   href?: string;
   className?: string;
+  asChild?: boolean;
 }
 
 const Brand = ({
@@ -19,13 +20,17 @@ const Brand = ({
   imgAlt = "RetailOps Sim Logo",
   href = "/",
   className = "",
+  asChild = false,
 }: BrandProps) => {
 
   const isNav = variant === "nav";
+  const Wrapper = asChild ? "div" : "a";
+  const wrapperProps = asChild ? {} : { href };
+
 
   return (
-    <a
-      href={href}
+    <Wrapper
+      {...wrapperProps}
       className={`flex items-center gap-2 transition-all duration-300 ${className}`}
     >
       {/* Avatar sizes & shape differs by variant */}
@@ -69,7 +74,7 @@ const Brand = ({
           Optimize. Simulate.
         </span>
       </div>
-    </a>
+    </Wrapper>
   )
 }
 

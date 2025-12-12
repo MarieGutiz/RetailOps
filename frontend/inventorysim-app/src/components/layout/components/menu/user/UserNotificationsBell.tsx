@@ -2,10 +2,9 @@ import { useNotificationStore } from "@/store/notifications/useNotificationStore
 import { BellIcon } from "lucide-react";
 
 const UserNotificationsBell = () => {
-  const { notifications } = useNotificationStore();
-  //const {read, } = useNotificationStore();
-
-  const unread = notifications.filter((n) => !n.read).length;
+  const unread = useNotificationStore(
+    (state) => state.notifications.filter((n) => !n.read).length
+  );
 
   return (
     <div className="relative mr-2">

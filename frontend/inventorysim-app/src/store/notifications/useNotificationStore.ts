@@ -1,5 +1,7 @@
+import { saveToStorage } from "@/utils/storage";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export type notificationType = "info" | "success" | "warning" | "error";
 
@@ -24,7 +26,11 @@ export interface NotificationsStore{
     removeNotification: (id: string) => void;
     removeMany: (ids: string[]) => void;
 }
-export const useNotificationStore = create<NotificationsStore>((set) => ({
+export const useNotificationStore = create<NotificationsStore>()(
+    
+    persist(        
+        (set) => ({  
+
     notifications: [],
 
     addNotification: (msg, type = "info") =>
@@ -57,8 +63,12 @@ export const useNotificationStore = create<NotificationsStore>((set) => ({
             ),  
         })),
     markAllAsRead: () =>
+        // Mark all except protected notifications as read
       set((state) => ({
-        notifications: state.notifications.map((notif) => ({ ...notif, read: true })),
+        notifications: state.notifications.map(
+            (notif) => notif.protected
+             ? notif 
+             : { ...notif, read: true })
       })),
 
     // --------------------------------------------------------
@@ -76,9 +86,18 @@ export const useNotificationStore = create<NotificationsStore>((set) => ({
     set((state) => ({
       notifications: state.notifications.filter((n) => !ids.includes(n.id)),
     })),
+    }),
+    {
+      name: "notification-storage",
+       storage: createJSONStorage(() => ({
+        getItem: saveToStorage.getItem,
+        setItem: saveToStorage.setItem,
+        removeItem: saveToStorage.removeItem,
+      })),
+    }
+  )
 
-        
-}))
+)
 
 if (import.meta.env.MODE === "development") {
   mountStoreDevtool("NotificationStore", useNotificationStore);

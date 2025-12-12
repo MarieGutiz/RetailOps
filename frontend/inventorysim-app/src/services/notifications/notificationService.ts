@@ -22,11 +22,14 @@ export const notificationService = {
   injectGuestNotification() {
     const { notifications, addNotificationRaw } = useNotificationStore.getState();
 
-    const exists = notifications.some((n) => n.id === GUEST_NOTIFICATION_ID);
-    if (exists) return;
+    const exists = notifications.some(
+      (n) => n.id === GUEST_NOTIFICATION_ID
+    );
 
-    addNotificationRaw(guestNotification);
-    addNotificationRaw(customerNotification);
+    if (!exists) {
+      addNotificationRaw(guestNotification);
+      addNotificationRaw(customerNotification);
+    }
   },
 
   removeGuestNotification() {
