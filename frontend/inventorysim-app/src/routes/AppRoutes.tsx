@@ -10,6 +10,7 @@ import ProtectedRoute from './ProtectedRoute '
 import ErrorPage from '@/pages/ErrorPage'
 import OAuth2RedirectHandler from '@/pages/OAuth2RedirectHandler'
 import Notifications from '@/pages/Notifications'
+import ForgotPassword from '@/features/auth/ForgotPassword'
 
 const Approutes = () => {
   return (
@@ -18,6 +19,8 @@ const Approutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterForm />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
       <Route
         path="/dashboard"
         element={<Dashboard />}
@@ -36,14 +39,6 @@ const Approutes = () => {
           </ProtectedRoute>
         }
       />
-      {/* <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={["ROLE_USER", "ROLE_ADMIN"]}>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      /> */}
     </Routes>  
   )
 }

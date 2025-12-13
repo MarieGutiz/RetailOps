@@ -31,6 +31,12 @@ const loginShape = z
     password: z.string().min(6, "Password must be at least 6 characters"),
   });
 
+
+  // Define forgot password schema
+export const forgotPasswordShape = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
 // Hook
 export const useAuth = () => {
     const [loading, setLoading] = useState(false);
@@ -99,7 +105,8 @@ export const useAuth = () => {
       RegisterFormValidation.reset();
     }
   };
-
+   
+  //Handle login
     const loginFormValidation = useForm({
       resolver: zodResolver(loginShape),
       defaultValues: {
@@ -163,12 +170,44 @@ export const useAuth = () => {
         setLoading(false);
       }
     };
-
+    
+    //Handle logout
     const handleLogout = () =>{
       authService.logout();
     }
     
+    // Define forgot password form
+    const forgotPasswordForm = useForm({
+      resolver: zodResolver(forgotPasswordShape),
+      defaultValues: {
+        email: "",
+      },
+      mode: "onBlur",
+    });
 
+    const handleForgotPassword = async (
+      data: z.infer<typeof forgotPasswordShape>
+    ) => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        console.log("Forgot password request for:", data.email);
+
+        // Later: authService.forgotPassword(data.email)
+        // For now: simulate success
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
+        return { success: true };
+      } catch (err) {
+        console.error("Forgot password error:", err);
+        setError("Failed to send reset link. Please try again.");
+        return { success: false };
+      } finally {
+        setLoading(false);
+        forgotPasswordForm.reset();
+      }
+    };
 
   return { 
     RegisterFormValidation,
@@ -179,5 +218,8 @@ export const useAuth = () => {
     handleLogin,
     handleLoginWithGoogle,
     handleLoginWithGithub,
-    handleLogout};
+    handleLogout,
+    forgotPasswordForm,
+    handleForgotPassword
+  };
 };
