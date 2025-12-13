@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const AnimatedLogo = () => {
   const size = 25;
-  const spacing = 35;
+  const spacing = 30;
 
   // Generate cubes: 4→1 pattern
   const cubes: { x: number; y: number }[] = [];
@@ -22,15 +22,22 @@ const AnimatedLogo = () => {
 //     L ${spacing * 3} ${spacing * 2.5}
 //     L ${spacing * 4} ${spacing * 3.8}
 //   `;
+// Compute "M" path dynamically based on cube positions
+  const leftX = 0;
+  const rightX = spacing * (columns - 1);
+  const topY = spacing * 0.5;
+  const bottomY = spacing * (columns - 0.2);
 
+  const path = `
+    M ${leftX + size / 2} ${bottomY}
+    L ${leftX + spacing} ${topY}
+    L ${spacing * 2 -10} ${bottomY - spacing / 3}
+    L ${rightX - spacing / 2} ${topY}
+    L ${rightX - size / 2} ${bottomY}
+  `;
 
   return (
-    <svg
-      width="180"
-      height="150"
-      viewBox="0 0 180 150"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="180" height="150" viewBox="0 0 180 150" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="blueGradient" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#6EE7FF" />
@@ -44,11 +51,10 @@ const AnimatedLogo = () => {
 
       {/* Blue cubes */}
       {cubes.map((cube, i) => (
-         console.log(cube ," i", i, "cube.y ", cube.y, " cube.x ", cube.x),
         <motion.rect
           key={i}
           x={cube.x * spacing}
-          y={spacing * (3 - cube.y)} // flip vertically so bottom aligns
+          y={spacing * (columns - 1 - cube.y)}
           width={size}
           height={size}
           rx="4"
@@ -60,30 +66,15 @@ const AnimatedLogo = () => {
       ))}
 
       {/* Yellow M line */}
-      {/* <motion.path
+      <motion.path
         d={path}
         stroke="url(#yellowGradient)"
         strokeWidth="4"
-        fill="transparent"
-        strokeLinecap="round"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 2, delay: cubes.length * 0.12 }}
-      /> */}
-       {/* Yellow "M" line (precisely traced & smoothed from your image) */}
-      <motion.path
-        d="M 10 165 
-           L 40 60 
-           L 75 110 
-           L 110 90 
-           L 145 165"
-        stroke="url(#yellowGradient)"
-        strokeWidth="5"
         fill="none"
         strokeLinecap="round"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
-        transition={{ duration: 2, ease: 'easeInOut', delay: 1.2 }}
+        transition={{ duration: 2, ease: "easeInOut", delay: cubes.length * 0.12 }}
       />
     </svg>
   );

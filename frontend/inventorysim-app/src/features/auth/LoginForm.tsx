@@ -15,19 +15,16 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const {loginFormValidation, handleLogin, loading, error} = useAuth();
 
-
   const onSubmit = loginFormValidation.handleSubmit(async (data) => {
     console.log("Valid form data:", data);
     const response = await handleLogin(data);
    
     if (response) {
       console.log("Login successful:", response);
-      //navigate(`/profile/${response.id}`);
       //Redirect to user's dashboard <--
        saveToStorage.setUser(response);
-       useProductStore.getState().setAuthenticated(true);  // <--- IMPORTANT
+       useProductStore.getState().setAuthenticated(true);
         navigate("/dashboard");
-      //navigate(`/profile/user/${response.id}`);
 
     }
   });
@@ -66,12 +63,12 @@ const LoginForm = () => {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <a
-                  href="#"
+                 <Link
+                  to="/forgot-password"
                   className="text-sm font-medium text-indigo-500 hover:underline"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
               <Input
                 id="password"

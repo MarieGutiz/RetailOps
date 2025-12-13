@@ -11,11 +11,14 @@ export interface Notification{
     type: notificationType;
     read?: boolean;
     protected?: boolean;// can't be removed by user
+    src?: string; // source module of notification
 }
 
 export interface NotificationsStore{
     notifications: Notification[];
     addNotification: (msg:string ,type?: notificationType) => void;
+    addNotificationSrc: (msg:string ,type?: notificationType, source?:string) => void;
+
 
       // LOW-LEVEL helper (exact object, used by services)
     addNotificationRaw: (notification: Notification) => void;
@@ -46,7 +49,20 @@ export const useNotificationStore = create<NotificationsStore>()(
             },
         ],
         })),
-
+    addNotificationSrc: (msg, type = "info", source = "system") =>
+        set((state) => ({
+        notifications: [ 
+            ...state.notifications,
+            {
+            id: crypto.randomUUID(),    
+            msg,
+            type,
+            read: false,
+            protected: false,
+            src: source,
+            },
+        ],
+        })),
         // --------------------------------------------------------
         // 2. LOW-LEVEL: Add a fully formed notification
         //    (Used by guest mode, system messages, upgrades, etc.)
