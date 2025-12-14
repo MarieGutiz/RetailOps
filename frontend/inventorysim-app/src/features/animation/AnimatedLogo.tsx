@@ -29,12 +29,12 @@ const AnimatedLogo = () => {
   const bottomY = spacing * (columns - 0.2);
 
   const path = `
-    M ${leftX + size / 2} ${bottomY}
-    L ${leftX + spacing} ${topY}
-    L ${spacing * 2 -10} ${bottomY - spacing / 3}
-    L ${rightX - spacing / 2} ${topY}
-    L ${rightX - size / 2} ${bottomY}
-  `;
+  M ${leftX + size / 2} ${bottomY}
+  L ${leftX + spacing} ${bottomY - spacing * 1.6}
+  L ${spacing * 2 - 8} ${bottomY - spacing * 1.1}
+  L ${rightX - spacing / 2} ${bottomY - spacing * 2.3}
+  L ${rightX - size / 2} ${bottomY - spacing * 1.8}
+`;
 
   return (
     <svg width="180" height="150" viewBox="0 0 180 150" xmlns="http://www.w3.org/2000/svg">

@@ -10,8 +10,7 @@ const UserMenu = () => {
   const navigate = useNavigate();
   const isAuth = useProductStore((s) => s.isAuthenticated);
   const { username, profileImg, name } = useUserPolicy();
-  console.log("UserMenu - profileImg:", profileImg);
-  console.log("UserMenu - profileImg src:", new Image().src = "https://lh3.googleusercontent.com/a/ACg8ocIHV1m1AMWBBCby9FZTZkjPAW84-dF8BGZTY4jhGI8WLyqGELo=s96-c.");
+  // console.log("UserMenu - profileImg:", profileImg);
 
    return (
     <div className="flex items-center gap-2 flex-none">
