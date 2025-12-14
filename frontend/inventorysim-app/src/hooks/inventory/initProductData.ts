@@ -4,9 +4,17 @@ import { useProductStore } from "../../store/inventory/useProductStore";
 export const useInitProductData = () => {
   useEffect(() => {
     const loadPlaceholder = async () => {
-      const { products } = useProductStore.getState();
+      const { products, setLoading } = useProductStore.getState();
+
+      // If products already exist, do NOT show loading
+      if (products.length > 0) return;
+
+      setLoading(true);
 
       try {
+        // Optional delay so skeletons are actually visible
+        await new Promise((r) => setTimeout(r, 600));
+
         const response = await fetch("/src/views/data/products.json");
         const placeholder = await response.json();
 
@@ -24,8 +32,10 @@ export const useInitProductData = () => {
 
         // Save merged products to store
         useProductStore.setState({ products: merged });
-      } catch {
-        console.warn("Failed to load placeholder JSON");
+      } catch(err){
+        console.warn("Failed to load placeholder JSON", err);
+      } finally {
+        setLoading(false);
       }
     };
 

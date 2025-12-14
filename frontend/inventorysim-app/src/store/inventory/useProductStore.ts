@@ -10,13 +10,21 @@ import { isTokenValid } from "@/utils/auth";
 
 interface ProductState {
   products: Product[];
-  isAuthenticated: boolean;
+  loading: boolean;
+
+  // Product actions
   addProduct: (product: Product) => void;
   removeProduct: (name: string) => void;
   clearProducts: () => void;
   syncToBackend: () => Promise<void>;
+
+  // Auth awareness (kept intentionally)
+  isAuthenticated: boolean;
   setAuthenticated: (value: boolean) => void;
   initAuth: () => void;
+
+  // Loading
+  setLoading: (value: boolean) => void;
 }
 /**
  * Zustand store for managing product state and authentication status
@@ -26,16 +34,25 @@ export const useProductStore = create<ProductState>()(
          (set, get) => ({
     products: [],
     isAuthenticated: false,
+    loading: false,
+
+
+    setLoading: (value: boolean) => {
+        set({ loading: value });
+    },
+
      initAuth: () => {
         const token = saveToStorage.getItem("token");
         set({ isAuthenticated: isTokenValid(token) });
       },
+
     addProduct: (product: Product) => {
         const { products, isAuthenticated } = get();
 
          // Limit guest users to 10 products
         if (!isAuthenticated && products.length >= 10) {
-          alert("Guest users can only add up to 10 products.");
+          // alert("Guest users can only add up to 10 products.");
+
           toast.error(`Guest users can only add up to 10 products.\n
              You can get register to have full experience`)
           return;
@@ -48,14 +65,17 @@ export const useProductStore = create<ProductState>()(
         ];
         set({ products: updated });
     },
+
     removeProduct: (name: string) => {
         set((state) => ({
             products: state.products.filter((product) => product.name !== name),
         }));
     },
+
     clearProducts: () => {
         set({ products: [] });
     },
+    
     syncToBackend: async () => {
         const { products, isAuthenticated } = get();
         if (!isAuthenticated || products.length === 0) return;
