@@ -6,9 +6,10 @@ import { useInitProductData } from "@/hooks/inventory/initProductData";
 import ProductTable from "./inventory/ProductTable";
 
 const ProductLibraryView = () => {
-useInitProductData(); // loads JSON placeholder if empty
+  useInitProductData(); // loads JSON inventory if empty
 
   const products = useProductStore((s) => s.products);
+  const loading = useProductStore((s) => s.loading);
   return (
     <div >
       <PrimeBreadcrumb
@@ -29,7 +30,7 @@ useInitProductData(); // loads JSON placeholder if empty
         </CardHeader>
 
         <CardContent>
-          <ProductTable data={products} />
+          <ProductTable data={products} loading={loading} />
         </CardContent>
       </Card>
     </div>

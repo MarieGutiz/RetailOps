@@ -25,9 +25,11 @@ import RowActions from "./forms/RowActions";
 import SortableHeader from "./forms/SortableHeader";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import ModuleHeaderActions from "@/components/layout/components/headers/ModuleHeaderActions";
+import { Skeleton } from "@/components/ui/skeleton";
+import ProductTableHeaderSkeleton from "./forms/ProductTableHeaderSkeleton";
 
 
-const ProductTable = ({ data }: { data: Product[] }) => {
+const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [search, setSearch] = useState("");
 
@@ -91,8 +93,6 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
   []
 );
 
-
-
   // TABLE INSTANCE
 
   const [pagination, setPagination] = useState({
@@ -114,60 +114,64 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
     <div className="space-y-4">
      {/* Search + Filters */}
       <ModuleHeaderActions>
+         {loading ? (
+          <ProductTableHeaderSkeleton />
+      ) : (
+         
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center justify-between w-full">
 
-      <div className="flex flex-col sm:flex-row gap-2 sm:items-center justify-between w-full">
+          {/* Search Input */}
+          <Input
+            type="text"
+            id="product-search"
+            name="product-search"
+            placeholder="Search product..."
+            className="w-full max-w-[14rem] sm:max-w-xs md:max-w-sm text-sm py-1.5"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-        {/* Search Input */}
-        <Input
-          type="text"
-          id="product-search"
-          name="product-search"
-          placeholder="Search product..."
-          className="w-full max-w-[14rem] sm:max-w-xs md:max-w-sm text-sm py-1.5"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+          {/* Filters Row */}
+          <div className="flex gap-2">
 
-        {/* Filters Row */}
-        <div className="flex gap-2">
+            {/* Page Size Select */}
+            <Select
+              onValueChange={(value) =>
+                setPagination((prev) => ({ ...prev, pageSize: Number(value) }))
+              }
+            >
+              <SelectTrigger className="w-[100px] toolbar-element jbtn-flat-btn toolbar-element-md">
+                <SelectValue placeholder="Show 3" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="3">3</SelectItem>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+              </SelectContent>
+            </Select>
 
-          {/* Page Size Select */}
-          <Select
-            onValueChange={(value) =>
-              setPagination((prev) => ({ ...prev, pageSize: Number(value) }))
-            }
-          >
-            <SelectTrigger className="w-[100px] toolbar-element jbtn-flat-btn toolbar-element-md">
-              <SelectValue placeholder="Show 3" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="3">3</SelectItem>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-            </SelectContent>
-          </Select>
+            {/* Sorting Select */}
+            <Select
+              onValueChange={(value) =>
+                setSorting([{ id: value, desc: false }])
+              }
+            >
+              <SelectTrigger className="w-[100px] toolbar-element jbtn-flat-btn toolbar-element-md active">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="unitCost">Cost</SelectItem>
+                <SelectItem value="unitPrice">Price</SelectItem>
+              </SelectContent>
+            </Select>
 
-          {/* Sorting Select */}
-          <Select
-            onValueChange={(value) =>
-              setSorting([{ id: value, desc: false }])
-            }
-          >
-            <SelectTrigger className="w-[100px] toolbar-element jbtn-flat-btn toolbar-element-md active">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="name">Name</SelectItem>
-              <SelectItem value="unitCost">Cost</SelectItem>
-              <SelectItem value="unitPrice">Price</SelectItem>
-            </SelectContent>
-          </Select>
-
+          </div>
         </div>
-      </div>
+     )}
 
-</ModuleHeaderActions>
+    </ModuleHeaderActions>
 
 
       {/* Table */}
@@ -186,7 +190,18 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {loading
+              ? Array.from({ length: pagination.pageSize }).map((_, idx) => (
+                  <TableRow key={`skeleton-${idx}`}>
+                    {columns.map((col, cIdx) => (
+                      <TableCell key={`skeleton-cell-${cIdx}`}>
+                        <Skeleton className="h-4 w-full rounded" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              :
+            table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
