@@ -14,6 +14,15 @@ export interface ABCData{
   quantity: number;
 }
 
+export interface ABCTableRow {
+  product: Product;
+  quantity: number;
+  totalValue: number;
+  cumulative: number;
+  category: "A" | "B" | "C";
+}
+
+
 // For backend DTO compatibility
 export interface AbcItemDto {
   productName: string;

@@ -4,6 +4,8 @@ import { useUserPolicy } from "@/context/UserPolicyContext";
 import { runABCAnalysis } from "@/services/sim/runABCAnalysis";
 import type { ABCData, AbcItemDto, AbcRequestDto, ABCResult } from "@/types/abc";
 import type { Product } from "@/types/products";
+import type { SimulatorABCOutput } from "@/types/simulator";
+import { buildABCTableData } from "@/lib/abc/buildABCTableData";
 
 export function useSimulator() {
   const { userType, username } = useUserPolicy();
@@ -17,7 +19,7 @@ export function useSimulator() {
     }
 
     //Guest users → local (frontend) ABC calculation
-    if (userType === "guest") {
+    if (userType === "Guest") {
       const abcData: ABCData[] = products.map((p) => ({
         product: p,
         quantity: (p as any).quantity ?? 1,
@@ -35,7 +37,7 @@ export function useSimulator() {
 
     const dto: AbcRequestDto = {
       items,
-      username: username ?? "guest",
+      username: username ?? "Guest",
       mode: "classic",
     };
 
@@ -43,5 +45,35 @@ export function useSimulator() {
     return res;
   }
 
-  return { runSimulation };
+  /**
+   * Runs ABC simulation and prepares UI-friendly data
+   */
+  async function runABCSimulationForUI(
+    products: Product[]
+  ): Promise<SimulatorABCOutput> {
+
+    // Guest users
+    if (userType === "Guest") {
+      const abcData = products.map((p) => ({
+        product: p,
+        quantity: (p as any).quantity ?? 1,
+      }));
+
+      const result = runABCAnalysis(abcData);
+      const table = buildABCTableData(abcData);
+
+      return { result, table };
+    }
+
+    // Registered users
+    const rawResult = await runSimulation(products);
+
+    // Backend may return different shape, so table is optional/future-proof
+    return {
+      result: rawResult as ABCResult,
+      table: [],
+    };
+  }
+
+  return { runSimulation , runABCSimulationForUI};
 }
