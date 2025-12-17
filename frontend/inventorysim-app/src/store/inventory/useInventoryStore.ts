@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-export type InventoryItem = {
+export interface InventoryItem {
   productId: string;
   quantity: number;
-};
+}
 
 interface InventoryStore {
   inventory: InventoryItem[];
