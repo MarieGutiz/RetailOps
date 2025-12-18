@@ -15,6 +15,7 @@ const AddToInventoryDialog = ({
      open,
      onOpenChange,
       product }: AddToInventoryDialogProps) => {
+        
         const { addToInventory } = useInventoryStore();
         const [quantity, setQuantity] = useState<number>(0);
         const handleSubmit = () => {

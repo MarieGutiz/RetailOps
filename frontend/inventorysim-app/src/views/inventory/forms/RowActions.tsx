@@ -13,6 +13,8 @@ import { useState } from "react"
 import ProductDialog from "./ProductDialog";
 import { useProductStore } from "@/store/inventory/useProductStore";
 import { toast } from "sonner";
+import AddToInventoryDialog from "./AddToInventoryDialog";
+import DeleteProductDialog from "./DeleteProductDialog";
 
 const RowActions = ({product}: {product: Product}) => {
   const [editOpen, setEditOpen] = useState(false);
@@ -23,6 +25,11 @@ const RowActions = ({product}: {product: Product}) => {
 
   // Local state to hold edits, initialized with the incoming product
   const [editData, setEditData] = useState<Product>(product);
+
+  //Adding product to inventory store
+  const [inventoryOpen, setInventoryOpen] = useState(false);
+  const [inventoryDeleteOpen, setInventoryDeleteOpen] = useState(false);
+
 
   return (
     <>
@@ -53,8 +60,25 @@ const RowActions = ({product}: {product: Product}) => {
           >
             Delete
           </DropdownMenuItem>
+
+          <DropdownMenuLabel>Inventory</DropdownMenuLabel>
+          {/* OPEN ADD TO INVENTORY DIALOG */}
+          <DropdownMenuItem
+            onSelect={() => setInventoryOpen(true)}
+          >
+            Add to Inventory
+          </DropdownMenuItem>
+
+        {/* OPEN DELETE FROM INVENTORY DIALOG */}
+        <DropdownMenuItem
+            className="text-red-600"
+            onSelect={() => setInventoryDeleteOpen(true)}
+          >
+            Remove from Inventory
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+     
 
       {/* EDIT PRODUCT DIALOG */}
       <ProductDialog
@@ -103,6 +127,21 @@ const RowActions = ({product}: {product: Product}) => {
 
         </DialogContent>
       </Dialog>
+
+
+       {/* ADD TO INVENTORY DIALOG */}
+      <AddToInventoryDialog
+        open={inventoryOpen}
+        onOpenChange={setInventoryOpen}
+        product={product}
+      />
+
+      {/* REMOVE FROM INVENTORY DIALOG */}
+      <DeleteProductDialog
+        deleteOpen={inventoryDeleteOpen}
+        onOpenChange={setInventoryDeleteOpen}
+        product={product}       
+      />
     </>
   );
 }
