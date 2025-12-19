@@ -1,24 +1,18 @@
 import { Button } from "@/components/ui/Button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import type { Product } from "@/types/products"
-import { Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle, } from "@/components/ui/dialog";
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, PackagePlus, Pencil, Trash2, PackageMinus } from "lucide-react"
 import { useState } from "react"
 import ProductDialog from "./ProductDialog";
 import { useProductStore } from "@/store/inventory/useProductStore";
 import { toast } from "sonner";
 import AddToInventoryDialog from "./AddToInventoryDialog";
-import DeleteProductDialog from "./DeleteProductDialog";
+import ConfirmActionDialog from "./ConfirmActionDialog";
+import { useInventoryStore } from "@/store/inventory/useInventoryStore";
+import { is } from "zod/v4/locales"
 
 const RowActions = ({product}: {product: Product}) => {
   const [editOpen, setEditOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const addProduct = useProductStore((s) => s.addProduct);
   const removeProduct = useProductStore((s) => s.removeProduct);
@@ -28,56 +22,85 @@ const RowActions = ({product}: {product: Product}) => {
 
   //Adding product to inventory store
   const [inventoryOpen, setInventoryOpen] = useState(false);
-  const [inventoryDeleteOpen, setInventoryDeleteOpen] = useState(false);
+
+  //Delete prdct or remove from inventory confirmation
+  const [confirm, setConfirm] = useState<null | "delete-product" | "remove-inventory">(null);
+  const { removeFromInventory } = useInventoryStore((s) => s);
+
+  const productId = product.id?.toString()
+
+  const inventoryItem = useInventoryStore(
+    (state) =>
+      productId
+        ? state.inventory.find(
+            (item) => item.productId === productId
+          )
+        : undefined
+  )
+
+  const isInInventory = !!inventoryItem
+
 
 
   return (
     <>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon-sm">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon-sm">
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="min-w-[190px]">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          {/* OPEN EDIT DIALOG */}
-          <DropdownMenuItem
-            onSelect={() => {
-              setEditData(product); // reset when opened
-              setEditOpen(true);
-            }}
-          >
-            Edit
-          </DropdownMenuItem>
-
-          {/* OPEN DELETE DIALOG */}
-          <DropdownMenuItem
-            className="text-red-600"
-            onSelect={() => setDeleteOpen(true)}
-          >
-            Delete
-          </DropdownMenuItem>
-
-          <DropdownMenuLabel>Inventory</DropdownMenuLabel>
-          {/* OPEN ADD TO INVENTORY DIALOG */}
-          <DropdownMenuItem
-            onSelect={() => setInventoryOpen(true)}
-          >
-            Add to Inventory
-          </DropdownMenuItem>
-
-        {/* OPEN DELETE FROM INVENTORY DIALOG */}
+        {/* EDIT */}
         <DropdownMenuItem
-            className="text-red-600"
-            onSelect={() => setInventoryDeleteOpen(true)}
-          >
-            Remove from Inventory
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          className="flex items-center gap-2"
+          onSelect={() => {
+            setEditData(product)
+            setEditOpen(true)
+          }}
+        >
+          <Pencil className="h-4 w-4 opacity-70" />
+          <span>Edit</span>
+        </DropdownMenuItem>
+
+        {/* DELETE */}
+        <DropdownMenuItem
+          className="flex items-center gap-2 text-red-600"
+          onSelect={() => setConfirm("delete-product")}
+        >
+          <Trash2 className="h-4 w-4" />
+          <span>Delete</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuLabel>Inventory</DropdownMenuLabel>
+
+        {/* ADD TO INVENTORY */}
+        <DropdownMenuItem
+          className="flex items-center gap-2"
+          onSelect={() => setInventoryOpen(true)}
+        >
+          <PackagePlus className="h-4 w-4 opacity-70" />
+          <span>Add to Inventory</span>
+        </DropdownMenuItem>
+
+        {/* REMOVE FROM INVENTORY */}
+        <DropdownMenuItem
+          className="flex items-center gap-2 text-red-600"
+          disabled={!isInInventory}
+          onSelect={() => {
+            if (!isInInventory) return
+            setConfirm("remove-inventory")
+          }}
+        >
+          <PackageMinus className="h-4 w-4" />
+          <span>Remove from Inventory</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
      
 
       {/* EDIT PRODUCT DIALOG */}
@@ -94,41 +117,6 @@ const RowActions = ({product}: {product: Product}) => {
         }}
       />
 
-      {/* DELETE CONFIRMATION */}
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="j-dialog sm:max-w-[400px]">
-
-          <DialogHeader>
-            <DialogTitle className="j-dialog-title">Delete Product</DialogTitle>
-            <DialogDescription className="j-dialog-description py-4">
-              Are you sure you want to delete <b>{product.name}</b>?  
-              This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <DialogClose asChild>
-              <button className="toolbar-element jbtn-flat-btn jbtn-success">
-                Cancel
-              </button>
-            </DialogClose>
-
-            <button
-              className="toolbar-element jbtn-flat-btn jbtn-danger"
-              onClick={() => {
-                removeProduct(product.name);
-                setDeleteOpen(false);
-                toast.success("Product deleted.");
-              }}
-            >
-              Delete
-            </button>
-          </DialogFooter>
-
-        </DialogContent>
-      </Dialog>
-
-
        {/* ADD TO INVENTORY DIALOG */}
       <AddToInventoryDialog
         open={inventoryOpen}
@@ -137,11 +125,46 @@ const RowActions = ({product}: {product: Product}) => {
       />
 
       {/* REMOVE FROM INVENTORY DIALOG */}
-      <DeleteProductDialog
-        deleteOpen={inventoryDeleteOpen}
-        onOpenChange={setInventoryDeleteOpen}
-        product={product}       
+      <ConfirmActionDialog
+        open={confirm !== null}
+        onOpenChange={(open) => !open && setConfirm(null)}
+        title={
+          confirm === "delete-product"
+            ? "Delete product"
+            : "Remove from inventory"
+        }
+        description={
+          confirm === "delete-product" ? (
+            <>
+              Are you sure you want to delete <b>{product.name}</b>?
+              <br />
+              This will remove it from the product library.
+            </>
+          ) : (
+            <>
+              Are you sure you want to remove <b>{product.name}</b> from inventory?
+              <br />
+              This action cannot be undone.
+            </>
+          )
+        }
+        confirmLabel={confirm === "delete-product" ? "Delete" : "Remove"}
+        variant="danger"
+        onConfirm={() => {
+          if (confirm === "delete-product") {
+            removeProduct(product.name)
+            toast.success("Product deleted")
+          }
+
+          if (confirm === "remove-inventory") {
+            removeFromInventory(product.id!.toString())
+            toast.success("Removed from inventory")
+          }
+
+          setConfirm(null)
+        }}
       />
+
     </>
   );
 }

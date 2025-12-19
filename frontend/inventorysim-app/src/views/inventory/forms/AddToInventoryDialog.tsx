@@ -49,7 +49,7 @@ const AddToInventoryDialog = ({
 
           {/* Quantity */}
           <div className="j-dialog-field">
-            <Label className="j-dialog-label">Quantity</Label>
+            <Label className="j-dialog-label">Quantity (Units) </Label>
             <Input
               type="number"
               min={0}
