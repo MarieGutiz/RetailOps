@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/Button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface ConfirmActionDialogProps {
@@ -18,36 +19,41 @@ const ConfirmActionDialog = ({
     variant = "default",
     onConfirm }: ConfirmActionDialogProps) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="j-dialog sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle className="j-dialog-title text-center">
             {title}
           </DialogTitle>
-          <DialogDescription className="j-dialog-description py-4">
+
+          <DialogDescription className="j-dialog-description py-4 text-center">
             {description}
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter>
+        {/* ACTIONS – copied from ProductDialog */}
+        <div className="flex justify-center gap-2 pt-0">
           <DialogClose asChild>
-            <button className="toolbar-element jbtn-flat-btn">
+            <Button
+              variant="ghost"
+              className="jbtn-flat-btn jbtn-passive"
+            >
               Cancel
-            </button>
+            </Button>
           </DialogClose>
 
-          <button
-            className={`jbtn-flat-btn ${
-              variant === "danger" ? "jbtn-danger" : "jbtn-success"
-            }`}
+          <Button
+             className={`jbtn-flat-btn ${
+      variant === "danger" ? "jbtn-danger" : "jbtn-success"
+    }`}
             onClick={() => {
               onConfirm()
               onOpenChange(false)
             }}
           >
             {confirmLabel}
-          </button>
-        </DialogFooter>
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   )

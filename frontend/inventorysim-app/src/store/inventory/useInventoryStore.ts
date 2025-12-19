@@ -8,7 +8,6 @@ export interface InventoryItem {
 
 interface InventoryStore {
   inventory: InventoryItem[];
-
   addToInventory: (productId: string, quantity: number) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   removeFromInventory: (productId: string) => void;
@@ -56,7 +55,6 @@ export const useInventoryStore = create<InventoryStore>()(
             (item) => item.productId !== productId
           ),
         })),
-
       clearInventory: () => set({ inventory: [] }),
     }),
     {
