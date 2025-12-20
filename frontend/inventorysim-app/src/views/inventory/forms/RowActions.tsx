@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import AddToInventoryDialog from "./AddToInventoryDialog";
 import ConfirmActionDialog from "./ConfirmActionDialog";
 import { useInventoryStore } from "@/store/inventory/useInventoryStore";
-import { is } from "zod/v4/locales"
 
 const RowActions = ({product}: {product: Product}) => {
   const [editOpen, setEditOpen] = useState(false);
