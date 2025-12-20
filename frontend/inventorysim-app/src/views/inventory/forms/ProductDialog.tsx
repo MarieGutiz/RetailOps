@@ -116,7 +116,7 @@ const ProductDialog = ({
         {/* Action Button */}
         <div className="flex justify-center pt-2">
           <Button
-            className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+            className="jbtn-flat-btn jbtn-passive"
             onClick={() => onSubmit(product)}
           >
             {mode === "add" ? "Save Product" : "Save Changes"}

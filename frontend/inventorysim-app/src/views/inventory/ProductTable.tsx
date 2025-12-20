@@ -27,11 +27,29 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import ModuleHeaderActions from "@/components/layout/components/headers/ModuleHeaderActions";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductTableHeaderSkeleton from "./forms/ProductTableHeaderSkeleton";
+import { useInventoryStore } from "@/store/inventory/useInventoryStore";
+import { Badge } from "@/components/ui/badge";
+import { useInventoryStatus } from "./hooks/useInventoryStatus";
+import AddToInventoryDialog from "./forms/AddToInventoryDialog";
 
 
 const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [search, setSearch] = useState("");
+
+  //For inventory status
+  const inventory = useInventoryStore((s) => s.inventory);
+  const removeFromInventory = useInventoryStore((s) => s.removeFromInventory);
+
+  const inventorySet = useMemo(
+    () => new Set(inventory.map((i) => i.productId)),
+    [inventory]
+  );
+
+  // For Add to inventory dialog
+  const [inventoryDialogOpen, setInventoryDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
 
   // MEMOIZED FILTERING
   const filteredData = useMemo(() => {
@@ -82,6 +100,54 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
           "-"
         ),
     },
+    {
+      id: "inventoryStatus",
+      header: "Inventory",
+      enableSorting: false,
+      cell: ({ row }) => {
+        const product = row.original
+  const inInventory = useInventoryStatus(String(product.id))
+
+  if (!inInventory) {
+    return (
+      <div className="flex items-center gap-2">
+        <Badge variant="secondary" className="text-xs">
+          Not added
+        </Badge>
+
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            setSelectedProduct(product)
+            setInventoryDialogOpen(true)
+          }}
+        >
+          Add
+        </Button>
+      </div>
+    )
+   }
+
+      return (
+        <div className="flex items-center gap-2">
+          <Badge className="bg-green-600 text-white">
+            In inventory
+          </Badge>
+
+          <Button
+            size="sm"
+            variant="ghost"
+            className="text-red-600"
+            onClick={() => removeFromInventory(String(product.id))}
+          >
+            Remove
+          </Button>
+        </div>
+      )
+      },
+    },
+
     {
       id: "actions",
       header: "",
@@ -220,6 +286,15 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
             )}
           </TableBody>
         </Table>
+
+        {selectedProduct && (
+          <AddToInventoryDialog
+            open={inventoryDialogOpen}
+            onOpenChange={setInventoryDialogOpen}
+            product={selectedProduct}
+          />
+        )}
+
       </div>
 
       {/* Pagination */}
@@ -249,6 +324,9 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
         </div>
       </div>
     </div>
+
+    //Add inventory dialog component can be placed here
+    
   );
 };
 

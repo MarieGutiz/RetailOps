@@ -15,8 +15,9 @@ const AddToInventoryDialog = ({
      open,
      onOpenChange,
       product }: AddToInventoryDialogProps) => {
-        
-        const { addToInventory } = useInventoryStore();
+
+       const addToInventory = useInventoryStore((s) => s.addToInventory);
+
         const [quantity, setQuantity] = useState<number>(0);
         const handleSubmit = () => {
             addToInventory(product.id!.toString(), quantity);
@@ -62,7 +63,7 @@ const AddToInventoryDialog = ({
           {/* Action */}
           <div className="flex justify-center pt-2">
             <Button
-              className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+              className="jbtn-flat-btn jbtn-passive"
               onClick={handleSubmit}
               disabled={quantity <= 0}
             >
