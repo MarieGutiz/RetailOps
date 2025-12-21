@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import AddToInventoryDialog from "./AddToInventoryDialog";
 import ConfirmActionDialog from "./ConfirmActionDialog";
 import { useInventoryStore } from "@/store/inventory/useInventoryStore";
+import { Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip"
 
 const RowActions = ({product}: {product: Product}) => {
   const [editOpen, setEditOpen] = useState(false);
@@ -43,62 +44,85 @@ const RowActions = ({product}: {product: Product}) => {
 
   return (
     <>
-      <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
+      <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex justify-center">
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon-sm">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="min-w-[190px]">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            {/* menu content */}
+            <DropdownMenuContent align="end" className="min-w-[190px]">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-        {/* EDIT */}
-        <DropdownMenuItem
-          className="flex items-center gap-2"
-          onSelect={() => {
-            setEditData(product)
-            setEditOpen(true)
-          }}
-        >
-          <Pencil className="h-4 w-4 opacity-70" />
-          <span>Edit</span>
-        </DropdownMenuItem>
+              {/* EDIT */}
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onSelect={() => {
+                  setEditData(product)
+                  setEditOpen(true)
+                }}
+              >
+                <Pencil className="h-4 w-4 opacity-70" />
+                <span>Edit</span>
+              </DropdownMenuItem>
 
-        {/* DELETE */}
-        <DropdownMenuItem
-          className="flex items-center gap-2 text-red-600"
-          onSelect={() => setConfirm("delete-product")}
-        >
-          <Trash2 className="h-4 w-4" />
-          <span>Delete</span>
-        </DropdownMenuItem>
+              {/* DELETE */}
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-red-600"
+                onSelect={() => setConfirm("delete-product")}
+              >
+                <Trash2 className="h-4 w-4" />
+                <span>Delete</span>
+              </DropdownMenuItem>
 
-        <DropdownMenuLabel>Inventory</DropdownMenuLabel>
+              <DropdownMenuLabel>Inventory</DropdownMenuLabel>
 
-        {/* ADD TO INVENTORY */}
-        <DropdownMenuItem
-          className="flex items-center gap-2"
-          onSelect={() => setInventoryOpen(true)}
-        >
-          <PackagePlus className="h-4 w-4 opacity-70" />
-          <span>Add to Inventory</span>
-        </DropdownMenuItem>
+              {/* ADD / EDIT INVENTORY */}
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onSelect={() => setInventoryOpen(true)}
+              >
+                {isInInventory ? (
+                  <>
+                    <Pencil className="h-4 w-4 opacity-70" />
+                    <span>
+                      In inventory (Qty: {inventoryItem?.quantity})
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <PackagePlus className="h-4 w-4 opacity-70" />
+                    <span>Add to Inventory</span>
+                  </>
+                )}
+              </DropdownMenuItem>
 
-        {/* REMOVE FROM INVENTORY */}
-        <DropdownMenuItem
-          className="flex items-center gap-2 text-red-600"
-          disabled={!isInInventory}
-          onSelect={() => {
-            if (!isInInventory) return
-            setConfirm("remove-inventory")
-          }}
-        >
-          <PackageMinus className="h-4 w-4" />
-          <span>Remove from Inventory</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+              {/* REMOVE FROM INVENTORY */}
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-red-600"
+                disabled={!isInInventory}
+                onSelect={() => {
+                  if (!isInInventory) return
+                  setConfirm("remove-inventory")
+                }}
+              >
+                <PackageMinus className="h-4 w-4" />
+                <span>Remove from Inventory</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </TooltipTrigger>
+
+      <TooltipContent side="right">
+        Actions
+      </TooltipContent>
+    </Tooltip>
+
 
      
 
@@ -121,6 +145,7 @@ const RowActions = ({product}: {product: Product}) => {
         open={inventoryOpen}
         onOpenChange={setInventoryOpen}
         product={product}
+        inventoryItem={inventoryItem}
       />
 
       {/* REMOVE FROM INVENTORY DIALOG */}

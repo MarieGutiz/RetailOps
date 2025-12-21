@@ -41,11 +41,6 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
   const inventory = useInventoryStore((s) => s.inventory);
   const removeFromInventory = useInventoryStore((s) => s.removeFromInventory);
 
-  const inventorySet = useMemo(
-    () => new Set(inventory.map((i) => i.productId)),
-    [inventory]
-  );
-
   // For Add to inventory dialog
   const [inventoryDialogOpen, setInventoryDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -59,105 +54,117 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
   }, [data, search]);
 
   // MEMOIZED COLUMNS (MOST IMPORTANT!)
-const columns = useMemo<ColumnDef<ProductZ>[]>(
-  () => [
+  const columns = useMemo<ColumnDef<ProductZ>[]>(() => [
     {
-       accessorKey: "name",
-         header: ({ column }) => (
-          <SortableHeader column={column} label="Name" />
+      accessorKey: "name",
+      header: ({ column }) => (
+        <SortableHeader column={column} label="Name" />
       ),
+      cell: ({ row }) => (
+        <span className="font-medium truncate">
+          {row.original.name}
+        </span>
+      ),
+      size: 200,
     },
     {
       accessorKey: "category",
       header: "Category",
-      cell: ({ row }) => row.original.category || "-",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.category || "-"}
+        </span>
+      ),
+      size: 140,
     },
     {
       accessorKey: "unitCost",
       header: ({ column }) => (
         <SortableHeader column={column} label="Cost" />
-        ),
-      cell: ({ row }) => (
-        <span data-type="number">${row.original.unitCost.toFixed(2)}</span>
       ),
+      cell: ({ row }) => (
+        <span className="tabular-nums">
+          ${row.original.unitCost.toFixed(2)}
+        </span>
+      ),
+      size: 90,
     },
     {
       accessorKey: "unitPrice",
-       header: ({ column }) => (
-       <SortableHeader column={column} label="Price" />
+      header: ({ column }) => (
+        <SortableHeader column={column} label="Price" />
       ),
       cell: ({ row }) => (
-        <span data-type="number">${row.original.unitPrice.toFixed(2)}</span>
+        <span className="tabular-nums">
+          ${row.original.unitPrice.toFixed(2)}
+        </span>
       ),
+      size: 90,
     },
     {
       accessorKey: "description",
       header: "Description",
-      cell: ({ row }) =>
-        row.original.description ? (
-          <span className="text-gray-600">{row.original.description}</span>
-        ) : (
-          "-"
-        ),
+      cell: ({ row }) => (
+        <div className="text-muted-foreground text-sm line-clamp-2">
+          {row.original.description || "-"}
+        </div>
+      ),
+      size: 220, // grow column
     },
     {
-      id: "inventoryStatus",
+      id: "inventory",
       header: "Inventory",
       enableSorting: false,
       cell: ({ row }) => {
         const product = row.original
-  const inInventory = useInventoryStatus(String(product.id))
+        const inInventory = useInventoryStatus(String(product.id))
 
-  if (!inInventory) {
-    return (
-      <div className="flex items-center gap-2">
-        <Badge variant="secondary" className="text-xs">
-          Not added
-        </Badge>
-
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            setSelectedProduct(product)
-            setInventoryDialogOpen(true)
-          }}
-        >
-          Add
-        </Button>
-      </div>
-    )
-   }
-
-      return (
-        <div className="flex items-center gap-2">
-          <Badge className="bg-green-600 text-white">
-            In inventory
-          </Badge>
-
-          <Button
-            size="sm"
-            variant="ghost"
-            className="text-red-600"
-            onClick={() => removeFromInventory(String(product.id))}
-          >
-            Remove
-          </Button>
-        </div>
-      )
+        return (
+          <div className="flex items-center gap-2">
+            {inInventory ? (
+              <>
+                <Badge className="bg-green-600 text-white">
+                  In inventory
+                </Badge>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-red-600 jbtn-danger"
+                  onClick={() => removeFromInventory(String(product.id))}
+                >
+                  ➖
+                </Button>
+              </>
+            ) : (
+              <>
+                <Badge variant="secondary" className="bg-gray-400 text-white">Not added</Badge>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="jbtn-passive"
+                  onClick={() => {
+                    setSelectedProduct(product)
+                    setInventoryDialogOpen(true)
+                  }}
+                >
+                  ➕
+                </Button>
+              </>
+            )}
+          </div>
+        )
       },
+      size: 220,
     },
-
     {
       id: "actions",
       header: "",
       cell: ({ row }) => <RowActions product={row.original} />,
       enableSorting: false,
-      enableHiding: false,
+      size: 48,
     },
-  ],
-  []
-);
+  ], []);
+
 
   // TABLE INSTANCE
 
@@ -192,7 +199,7 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
             id="product-search"
             name="product-search"
             placeholder="Search product..."
-            className="w-full max-w-[14rem] sm:max-w-xs md:max-w-sm text-sm py-1.5"
+            className="w-full max-w-56 sm:max-w-xs md:max-w-sm text-sm py-1.5"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -241,50 +248,81 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
 
 
       {/* Table */}
-      <div className="rounded-md border overflow-x-auto">
-        <Table className="table-grid min-w-[600px]">
-          <TableHeader>
-            {table.getHeaderGroups().map((hg) => (
-              <TableRow key={hg.id}>
-                {hg.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
+      <div className="rounded-lg border overflow-hidden">
+      <div className="relative max-h-[520px] overflow-y-auto overflow-x-auto">
+        <div className="inline-block min-w-full align-top">
+
+      <Table className="table-fixed border-collapse w-auto table-grid">
+
+          <TableHeader className="sticky top-0 z-10 bg-muted">
+          {table.getHeaderGroups().map((hg) => (
+            <TableRow key={hg.id}>
+              {hg.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className="border-b border-r px-2 py-2 j-subtitle font-semibold text-center"
+                  style={{ width: header.getSize() }}
+                >
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+
 
           <TableBody>
-            {loading
-              ? Array.from({ length: pagination.pageSize }).map((_, idx) => (
-                  <TableRow key={`skeleton-${idx}`}>
-                    {columns.map((col, cIdx) => (
-                      <TableCell key={`skeleton-cell-${cIdx}`}>
-                        <Skeleton className="h-4 w-full rounded" />
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              :
-            table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="text-center">
-                  No products found.
-                </TableCell>
+          {loading ? (
+            // 1 LOADING STATE (Excel-like skeleton grid)
+            Array.from({ length: pagination.pageSize }).map((_, rowIdx) => (
+              <TableRow key={`skeleton-${rowIdx}`}>
+                {table.getAllColumns().map((col, colIdx) => (
+                  <TableCell
+                    key={`skeleton-cell-${colIdx}`}
+                    data-type="number"
+                    className="border-b border-r px-2 py-1"
+                  >
+                    <Skeleton className="h-4 w-full rounded" />
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
-          </TableBody>
+            ))
+          ) : table.getRowModel().rows.length > 0 ? (
+            //  DATA STATE
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                className="hover:bg-muted/40"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className="border-b border-r px-2 py-1 align-middle text-sm"
+                    style={{ width: cell.column.getSize() }}
+                  >
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            // 3 EMPTY STATE
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center text-muted-foreground truncate whitespace-nowrap"
+              >
+                No products found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
         </Table>
 
         {selectedProduct && (
@@ -292,9 +330,12 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
             open={inventoryDialogOpen}
             onOpenChange={setInventoryDialogOpen}
             product={selectedProduct}
+            inventoryItem={inventory.find(item => item.productId === String(selectedProduct.id))}
           />
         )}
 
+      </div>
+      </div>
       </div>
 
       {/* Pagination */}
@@ -324,8 +365,6 @@ const columns = useMemo<ColumnDef<ProductZ>[]>(
         </div>
       </div>
     </div>
-
-    //Add inventory dialog component can be placed here
     
   );
 };
