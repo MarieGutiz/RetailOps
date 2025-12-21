@@ -2,23 +2,33 @@ import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
-import { useInventoryStore } from "@/store/inventory/useInventoryStore";
+import { useInventoryStore, type InventoryItem } from "@/store/inventory/useInventoryStore";
 import type { Product } from "@/types/products";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AddToInventoryDialogProps {
     open: boolean; 
     onOpenChange: (open: boolean) => void;
     product: Product;
+    inventoryItem: InventoryItem | undefined;
 }
 const AddToInventoryDialog = ({
      open,
      onOpenChange,
-      product }: AddToInventoryDialogProps) => {
+      product,
+      inventoryItem,
+      }: AddToInventoryDialogProps) => {
 
        const addToInventory = useInventoryStore((s) => s.addToInventory);
+       const isEdit = !!inventoryItem
+
+       useEffect(() => {
+          if (!open) setQuantity(0)
+        }, [open])
+
 
         const [quantity, setQuantity] = useState<number>(0);
+
         const handleSubmit = () => {
             addToInventory(product.id!.toString(), quantity);
             setQuantity(0);
@@ -30,11 +40,19 @@ const AddToInventoryDialog = ({
       <DialogContent className="j-dialog max-w-md">
         <DialogHeader>
           <DialogTitle className="j-dialog-title text-center">
-            Add to Inventory
+            {isEdit ? "Update Inventory Quantity" : "Add to Inventory"}
           </DialogTitle>
 
           <DialogDescription className="j-dialog-description text-center">
-            Set the quantity to add for this product.
+             {isEdit ? (
+              <>
+                <b>{product.name}</b> is already in inventory.<br />
+                Current quantity:{" "}
+                <b>{inventoryItem?.quantity}</b>
+              </>
+            ) : (
+              <>Set the quantity to add for this product.</>
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -50,7 +68,9 @@ const AddToInventoryDialog = ({
 
           {/* Quantity */}
           <div className="j-dialog-field">
-            <Label className="j-dialog-label">Quantity (Units) </Label>
+            <Label className="j-dialog-label">
+              {isEdit ? "Add units" : "Quantity (Units)"}
+            </Label>
             <Input
               type="number"
               min={0}
@@ -67,7 +87,7 @@ const AddToInventoryDialog = ({
               onClick={handleSubmit}
               disabled={quantity <= 0}
             >
-              Add to Inventory
+              {isEdit ? "Add Quantity" : "Add to Inventory"}
             </Button>
           </div>
         </div>
