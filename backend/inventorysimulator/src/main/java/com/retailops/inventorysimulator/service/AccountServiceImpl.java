@@ -19,7 +19,7 @@ package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
-import com.retailops.inventorysimulator.repository.UserRepository;
+import com.retailops.inventorysimulator.repository.AccountRepository;
 import com.retailops.inventorysimulator.security.dto.RegisterRequest;
 import com.retailops.inventorysimulator.util.AuthProviderType;
 import lombok.RequiredArgsConstructor;
@@ -30,22 +30,35 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl extends BaseServiceImpl<Account> implements AccountService{
-    private  final UserRepository userRepository;
+    private  final AccountRepository accountRepository;
     private final PasswordEncoder encoder;
 
     @Override
     protected JpaRepository<Account, Long> getRepository() {
-        return userRepository;
+        return accountRepository;
     }
 
     @Override
     public Optional<Account> findByUsername(String username) {
-        return Optional.of(userRepository.findByUsername(username)
+        return Optional.of(accountRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No account found for this username")));
+    }
+
+    @Override
+    public Optional<Account> findByEmail(String email) {
+        return Optional.of(accountRepository.findByEmail(email))
+                .orElseThrow(() -> new AuthException(email, "No account found for this email address"));
+    }
+
+    @Override
+    public Optional<Account> findByProviderAndProviderId(AuthProviderType provider, String providerId) {
+        if (provider == null || providerId == null) return Optional.empty();
+        return accountRepository.findByProviderAndProviderId(provider, providerId);
     }
 
     @Override
@@ -58,18 +71,36 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
         account.setRole(request.role());
         account.setPosition(request.position());
         account.setProvider(AuthProviderType.LOCAL);
+        account.setProviderId(UUID.randomUUID().toString()); // unique ID for local accounts
         account.setAvatar(null);
         account.setRegistrationDate(LocalDate.now());
 
-        return userRepository.save(account);
+        return accountRepository.save(account);
 
     }
 
     @Override
-    public Optional<Account> findByEmail(String email) {
-        return Optional.of(userRepository.findByEmail(email))
-                .orElseThrow(() -> new AuthException(email, "No account found for this email address"));
+    public Account save(Account account) {
+        return accountRepository.save(account);
     }
 
+    @Override
+    public void updateAccount(Account updated) {
+        Account existing = accountRepository.findById(updated.getId())
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        // Update only allowed fields:
+        if (updated.getName() != null) existing.setName(updated.getName());
+        if (updated.getEmail() != null) existing.setEmail(updated.getEmail());
+        if (updated.getUsername() != null) existing.setUsername(updated.getUsername());
+        if (updated.getPosition() != null) existing.setPosition(updated.getPosition());
+
+        // If password was changed (avoid overwriting with null)
+        if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
+            existing.setPassword(encoder.encode(updated.getPassword()));
+        }
+
+        accountRepository.save(existing);
+    }
 
 }

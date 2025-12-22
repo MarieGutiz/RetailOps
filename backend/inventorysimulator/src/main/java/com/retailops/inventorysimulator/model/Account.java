@@ -14,7 +14,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @Entity
-@Table(name = "accounts")
+@Table(
+        name = "accounts",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"provider", "provider_id"}
+        )
+)
 public class Account extends BaseModel{
     private String name;
     private  String position;// A manager, a student
@@ -38,5 +43,7 @@ public class Account extends BaseModel{
     @Enumerated(EnumType.STRING)
     private AuthProviderType provider;
 
+    @Column(nullable = false)
+    private String providerId;
 
 }
