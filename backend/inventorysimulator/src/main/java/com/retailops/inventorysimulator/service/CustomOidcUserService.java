@@ -18,7 +18,6 @@
 package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.model.Account;
-import com.retailops.inventorysimulator.repository.UserRepository;
 import com.retailops.inventorysimulator.util.AuthProviderType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,7 +39,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest, OidcUser> {
-    private final UserRepository userRepository;
+    private final AccountService accountService;
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
@@ -53,26 +52,36 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
         String email = oidcUser.getEmail();
         String name = oidcUser.getFullName();
         String avatarUrl = (String) oidcUser.getAttributes().get("picture");
-        log.info("[LOGIN] OAuth2User name: {}, email{}, avatar{}", name, email, avatarUrl);
+        String providerId = oidcUser.getSubject(); // unique Google ID
+
+        log.info("[LOGIN] OAuth2User name: {}, email{}, avatar{}, providerId{} ", name, email, avatarUrl, providerId);
 
         // Persist user if not already in DB
-        Account account = userRepository.findByUsername(email).orElseGet(() -> {
-            Account newAcc = new Account();
-            newAcc.setUsername(email);
-            newAcc.setEmail(email);
-            newAcc.setName(name != null ? name : email);
-            newAcc.setPassword(UUID.randomUUID().toString());
-            newAcc.setRole("USER_GOOGLE");
-            newAcc.setProvider(AuthProviderType.GOOGLE);
-            newAcc.setRegistrationDate(LocalDate.now());
-            newAcc.setAvatar(avatarUrl);
-            return userRepository.save(newAcc);
-        });
+        Account account = accountService
+                .findByProviderAndProviderId(AuthProviderType.GOOGLE, providerId)
+                .orElseGet(Account::new);
+
+        account.setProvider(AuthProviderType.GOOGLE);
+        account.setProviderId(providerId);
+        account.setUsername(email);
+        account.setEmail(email);
+        account.setName(name != null ? name : email);
+        account.setAvatar(avatarUrl);
+        account.setRole("USER_GOOGLE");
+
+        if (account.getRegistrationDate() == null) {
+            account.setRegistrationDate(LocalDate.now());
+        }
+        if (account.getPassword() == null) {
+            account.setPassword(UUID.randomUUID().toString());
+        }
+
+        accountService.save(account);
 
         // Optional: update avatar if Google changed it
         if (avatarUrl != null && !avatarUrl.equals(account.getAvatar())) {
             account.setAvatar(avatarUrl);
-            userRepository.save(account);
+            accountService.save(account);
         }
         // Return user with authorities (ROLE_USER by default)
         return new DefaultOidcUser(

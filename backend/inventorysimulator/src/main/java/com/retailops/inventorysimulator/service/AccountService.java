@@ -19,12 +19,15 @@ package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.security.dto.RegisterRequest;
+import com.retailops.inventorysimulator.util.AuthProviderType;
 
 import java.util.Optional;
 
 public interface AccountService extends BaseService<Account, Long> {
     Optional<Account> findByUsername(String username);
-//    Account register(Account account);
     Account register(RegisterRequest request);
     Optional<Account> findByEmail(String email);
+    Optional<Account> findByProviderAndProviderId(AuthProviderType provider, String providerId);
+    Account save(Account account); // for updates
+    void updateAccount(Account account);
 }

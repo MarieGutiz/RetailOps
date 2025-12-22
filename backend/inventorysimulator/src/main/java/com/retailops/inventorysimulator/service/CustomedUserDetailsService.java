@@ -19,10 +19,12 @@ package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
-import com.retailops.inventorysimulator.repository.UserRepository;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.dto.LoginRequest;
+import com.retailops.inventorysimulator.util.AuthProviderType;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,28 +32,30 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+
 @Service
 @RequiredArgsConstructor
 public class CustomedUserDetailsService implements UserDetailsService {
-
-    private final UserRepository userRepository;
+    private static final Logger log = LoggerFactory.getLogger(CustomedUserDetailsService.class);
+    private final AccountService accountService;
     private final PasswordEncoder encoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account user = userRepository.findByUsername(username).
+        Account user = accountService.findByUsername(username).
                 orElseThrow(() -> new UsernameNotFoundException("User not found, load by username: " + username));
 
-        return User.withUsername(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole())
-                .build();
+        return buildUserDetails(user);
     }
 
     //Check user's info in the db
     // Standard username/password login
     public UserDetails authenticate(LoginRequest request) {
-        Account account = getAccountByEmailOrUsername(request);
+        Account account = accountService.findByEmail(request.identifier())
+                .or(() -> accountService.findByUsername(request.identifier()))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + request.identifier()));
 
         if (!encoder.matches(request.password(), account.getPassword())) {
             throw new AuthException(account.getUsername(), "Invalid password");
@@ -63,8 +67,8 @@ public class CustomedUserDetailsService implements UserDetailsService {
     private Account getAccountByEmailOrUsername(LoginRequest request) {
         Account account;
 
-        account = userRepository.findByEmail(request.identifier())
-                .orElseGet(() -> userRepository.findByUsername(request.identifier())
+        account = accountService.findByEmail(request.identifier())
+                .orElseGet(() -> accountService.findByUsername(request.identifier())
                         .orElseThrow(() -> new UsernameNotFoundException("User not found nor email: " + request.identifier())));
 
         return account;
@@ -72,18 +76,10 @@ public class CustomedUserDetailsService implements UserDetailsService {
 
     // OAuth2 login: just check DB and return UserDetails
     public Account authenticateOAuth2(String usernameOrEmail) {
-
-        return userRepository.findByUsername(usernameOrEmail)
-                .or(() -> userRepository.findByEmail(usernameOrEmail))
-                .orElseThrow(() -> new AuthException(usernameOrEmail, "User not found "+usernameOrEmail));
-    }
-
-    private UserDetails buildUserDetails(Account account) {
-        return User.withUsername(account.getUsername())
-//                .username(account.getEmail())
-                .password(account.getPassword())
-                .roles(account.getRole())
-                .build();
+        log.info("[LOGIN][Auth2] OAuth2User attributes: {}", usernameOrEmail);
+        return accountService.findByUsername(usernameOrEmail)
+                .or(() -> accountService.findByEmail(usernameOrEmail))
+                .orElseThrow(() -> new AuthException(usernameOrEmail, "User not found " + usernameOrEmail));
     }
 
     public AuthResponse response(String token, String role,LoginRequest request){
@@ -99,35 +95,23 @@ public class CustomedUserDetailsService implements UserDetailsService {
                 account.getAvatar());
     }
 
-    public void updateAccount(Account updated) {
-        Account existing = userRepository.findById(updated.getId())
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-
-        // Update only allowed fields:
-        if (updated.getName() != null) existing.setName(updated.getName());
-        if (updated.getEmail() != null) existing.setEmail(updated.getEmail());
-        if (updated.getUsername() != null) existing.setUsername(updated.getUsername());
-        if (updated.getPosition() != null) existing.setPosition(updated.getPosition());
-
-        // If password was changed (avoid overwriting with null)
-        if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
-            existing.setPassword(encoder.encode(updated.getPassword()));
-        }
-
-         userRepository.save(existing);
-    }
-
     public void updateOAuth2Account(Account updated) {
-        Account existing = userRepository.findById(updated.getId())
+        Account existing = accountService.findByUsername(updated.getUsername())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-
-        // Only update avatar for GitHub
         if (updated.getAvatar() != null) {
             existing.setAvatar(updated.getAvatar());
         }
-
-        userRepository.save(existing);
+        accountService.save(existing);
     }
 
+    public Optional<Account> findByProviderAndProviderId(AuthProviderType provider, String providerId) {
+        return accountService.findByProviderAndProviderId(provider, providerId);
+    }
 
+    private UserDetails buildUserDetails(Account account) {
+        return User.withUsername(account.getUsername())
+                .password(account.getPassword())
+                .roles(account.getRole())
+                .build();
+    }
 }

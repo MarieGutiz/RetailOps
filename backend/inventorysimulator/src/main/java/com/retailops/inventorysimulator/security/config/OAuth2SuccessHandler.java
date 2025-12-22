@@ -17,10 +17,12 @@
 
 package com.retailops.inventorysimulator.security.config;
 
+import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.security.jwt.JwtAuthFilter;
 import com.retailops.inventorysimulator.security.jwt.JwtService;
 import com.retailops.inventorysimulator.service.CustomedUserDetailsService;
+import com.retailops.inventorysimulator.util.AuthProviderType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,24 +51,33 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String email;
         Object principal = authentication.getPrincipal();
         String avatarUrl = null;
+        AuthProviderType provider;
+        String providerId;
 
         if (principal instanceof OidcUser oidcUser) {
-            email = oidcUser.getEmail(); // Google
+            provider = AuthProviderType.GOOGLE;
+            providerId = oidcUser.getSubject(); // "sub"
+            avatarUrl = (String) oidcUser.getAttributes().get("picture");
         } else if (principal instanceof OAuth2User oauth2User) {
-            Map<String, Object> attrs = oauth2User.getAttributes();
-
-            //Get Email
-            email = (String) attrs.getOrDefault("email",attrs.get("login")); // GitHub
-
-            //Get Avatar
-            avatarUrl = (String) attrs.getOrDefault("avatarUrl",attrs.get("profileImageUrl"));
+            provider = AuthProviderType.GITHUB;
+            providerId = String.valueOf(oauth2User.getAttributes().get("id")); // GitHub user ID
+            avatarUrl = (String) oauth2User.getAttributes().get("avatar_url");
         } else {
-            email = authentication.getName();
+            // fallback LOCAL
+            provider = AuthProviderType.LOCAL;
+            providerId = null;
         }
 
         // Look up account details in your DB
-        Account account = userDetailsService.authenticateOAuth2(email);
+        Account account;
 
+        if (provider == AuthProviderType.LOCAL) {
+            // fallback for local login
+            account = userDetailsService.authenticateOAuth2(authentication.getName());
+        } else {
+            account = userDetailsService.findByProviderAndProviderId(provider, providerId)
+                    .orElseThrow(() -> new AuthException(provider + ":" + providerId, "User not found"));
+        }
         // If GitHub login → update avatar
         if (avatarUrl != null && !avatarUrl.isBlank() && !avatarUrl.equals(account.getAvatar())) {
             account.setAvatar(avatarUrl);

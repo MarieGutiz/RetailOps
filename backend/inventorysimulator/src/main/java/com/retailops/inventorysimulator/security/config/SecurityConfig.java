@@ -27,23 +27,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig  {
-//    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtAuthFilter jwtAuthFilter;
-//    private final AuthResponseService authResponseService;
     private final CustomOidcUserService customOidcUserService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
@@ -63,6 +65,7 @@ public class SecurityConfig  {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults()) // enable CORS support
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/products/**").permitAll()
@@ -70,53 +73,31 @@ public class SecurityConfig  {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))//change to stateless
-//                .oauth2Login(oauth2 -> oauth2
-//                        .userInfoEndpoint(userInfo -> userInfo
-//                                .oidcUserService(customOidcUserService)   // Google
-//                                .userService(customOAuth2UserService)    // GitHub
-//                        )
-//                        .successHandler((request, response, authentication) -> {
-//                            String email = authentication.getName(); // now it's the email
-//                            AuthResponse authResponse =
-//                                    authResponseService.buildResponse(email, authentication.getAuthorities());
-//
-//                            response.setContentType("application/json");
-//                            new ObjectMapper().writeValue(response.getWriter(), authResponse);
-//                        })
-//                )
+
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
                                 .oidcUserService(customOidcUserService)   // Google
                                 .userService(customOAuth2UserService)    // GitHub
                         )
                         .successHandler(
-//                                (request, response, authentication) -> {
-//                            String email;
-//                            Object principal = authentication.getPrincipal();
-//
-//                            if (principal instanceof OidcUser oidcUser) {
-//                                // Google
-//                                email = oidcUser.getEmail();
-//                            } else if (principal instanceof OAuth2User oauth2User) {
-//                                // GitHub
-//                                email = (String) oauth2User.getAttributes().getOrDefault("email",
-//                                        oauth2User.getAttributes().get("login"));
-//                            } else {
-//                                email = authentication.getName();
-//                            }
-//
-//                            AuthResponse authResponse =
-//                                    authResponseService.buildResponse(email, authentication.getAuthorities());
-//
-//                            response.setContentType("application/json");
-//                            new ObjectMapper().writeValue(response.getWriter(), authResponse);
-
                                 oAuth2SuccessHandler
                         )
                 )
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     // Simpler authentication manager, no manual injection of user service

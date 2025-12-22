@@ -15,7 +15,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductServiceImpl extends BaseServiceImpl<Product> implements ProductService {
     private final ProductRepository productRepository;
-    //We can freely add other repo here
 
     @Override
     protected JpaRepository<Product, Long> getRepository() {
