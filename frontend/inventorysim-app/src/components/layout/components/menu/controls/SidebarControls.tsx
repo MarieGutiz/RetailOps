@@ -23,7 +23,7 @@ export const SidebarControls = ({
   onToggleCollapse,
   onToggleSide,
 }: SidebarControlsProps) => {
-  console.log("Rendering SidebarControls - pinned:", pinned, "collapsed:", collapsed, "side:", side);
+  // console.log("Rendering SidebarControls - pinned:", pinned, "collapsed:", collapsed, "side:", side);
    const isMobile = useIsMobile();
    
   return (

@@ -15,7 +15,7 @@ const UserNotification = () => {
   const { notifications, removeMany } = useNotificationStore();
   const [selected, setSelected] = useState<Record<string, boolean>>({});
 
-  console.log(notifications);
+  // console.log(notifications);
 
   const toggleSelect = (id: string) => {
     setSelected((prev) => ({

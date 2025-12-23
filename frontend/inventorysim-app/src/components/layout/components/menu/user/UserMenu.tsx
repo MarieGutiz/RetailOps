@@ -5,11 +5,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import UserAvatar from './UserAvatar';
 import UserDropdown from './UserDropdown';
 import { Button } from '@/components/ui/Button';
+import { useUserStore } from '@/store/user/useUserStore';
 
 const UserMenu = () => {
   const navigate = useNavigate();
   const isAuth = useProductStore((s) => s.isAuthenticated);
-  const { username, profileImg, name } = useUserPolicy();
+  const { user } = useUserStore();
   // console.log("UserMenu - profileImg:", profileImg);
 
    return (
@@ -23,7 +24,7 @@ const UserMenu = () => {
             sm:text-sm        /* small screens */
             md:text-sm      /* medium and up */
             whitespace-nowrap ">
-            Hello, {name || username}
+            Hello, {user.name || user.username}
           </span>          
           
           <UserDropdown>
@@ -40,8 +41,8 @@ const UserMenu = () => {
             >
               {/* Avatar */}
             <UserAvatar 
-              avatar={profileImg || ""}
-              username={name || username || "Guest"} 
+              avatar={user.profileImg || ""}
+              username={user.name || user.username || "Guest"} 
             />
             <MoreVerticalIcon className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
           </Button>
