@@ -1,6 +1,6 @@
-import type ProfilePage from '@/features/auth/profile/[id]';
 import authService from '@/services/auth/authService';
 import { useProductStore } from '@/store/inventory/useProductStore';
+import { useUserStore } from '@/store/user/useUserStore';
 import  { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -11,6 +11,9 @@ const OAuth2RedirectHandler = () => {
   //sync products to backend after login
   const setAuthenticated = useProductStore((s) => s.setAuthenticated);
   const syncToBackend = useProductStore((s) => s.syncToBackend);
+
+    const setUser = useUserStore((s) => s.setUser);
+
 
    useEffect(() => {
   const params = {
@@ -43,6 +46,9 @@ const OAuth2RedirectHandler = () => {
   };
   console.log("OAuth2RedirectHandler - user:", user);
   authService.saveAuthData(params.token, user);
+  
+  // Update user store
+  setUser(user);
 
   // ---------- AUTH + SYNC ----------
   setAuthenticated(true);

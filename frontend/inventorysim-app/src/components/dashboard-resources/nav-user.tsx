@@ -12,15 +12,16 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import UserAvatar from "../layout/components/menu/user/UserAvatar"
-import { useUserPolicy } from "@/context/UserPolicyContext"
 import UserDropdown from "../layout/components/menu/user/UserDropdown"
 import { useProductStore } from "@/store/inventory/useProductStore"
+import { useUserStore } from "@/store/user/useUserStore"
 
 export function NavUser() {
   const isAuth = useProductStore((s) => s.isAuthenticated);
-  const { username, profileImg, name } = useUserPolicy();
+  const { user } = useUserStore();
+  
   // console.log("NavUser - username :", username , " name:", name);
-  const msg = isAuth ? name : "Welcome, Guest";
+  const msg = isAuth ? user.name : "Welcome, Guest";
 
   return (
     <SidebarMenu>
@@ -32,11 +33,11 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <UserAvatar avatar={profileImg || " "} username={name || username || "Guest session active"} gray={true} />
+              <UserAvatar avatar={user.profileImg || " "} username={user.name || user.username || "Guest session active"} gray={true} />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{msg}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {name || "Guest"}
+                  {user.name || "Guest"}
                 </span>
               </div>
               <MoreVerticalIcon className="ml-auto size-4" />

@@ -9,29 +9,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useUserPolicy } from "@/context/UserPolicyContext";
 import { UserCircleIcon, LogOutIcon } from "lucide-react";
-import { useSidebar } from "@/components/ui/sidebar";
 import UserAvatar from "./UserAvatar";
 import { useNotificationStore } from "@/store/notifications/useNotificationStore";
-import { useProductStore } from "@/store/inventory/useProductStore";
 import UserNotificationsBell from "./UserNotificationsBell";
+import { useIsMobile } from "@/hooks/layout/use-mobile";
+import { useUserStore } from "@/store/user/useUserStore";
 
 const UserDropdown = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
-  const { username, email, id, name, profileImg } = useUserPolicy();
-  const { isMobile } = useSidebar();
-  const isGuest = !id;
-  
-   const isAuth = useProductStore((s) => s.isAuthenticated);
-   
+  // const { username, email, id, name, profileImg, userType } = useUserPolicy();
+  const isMobile = useIsMobile();
+
+  const { user, clearUser } = useUserStore();
+  const isGuest = user.userType === "Guest";
+
+  const {  markAllAsRead } = useNotificationStore();
+
   const handleLogout = () => {
     authService.logout();
     navigate("/login");
-  };
-
-   const { notifications, markAllAsRead } = useNotificationStore();
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  };   
 
   const handleNotifications = () => {
     markAllAsRead();
@@ -54,15 +52,15 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <UserAvatar 
-              avatar={profileImg || ""} 
-              username={name || username || "Guest"} 
+              avatar={user.profileImg || ""} 
+              username={user.name || user.username || "Guest"} 
             />
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">
-                {name || username || "Guest"}
+                {user.name || user.username || "Guest"}
               </span>
               <span className="truncate text-xs text-muted-foreground">
-                {email || name || "Guest"}
+                {user.email || user.name || "Guest"}
               </span>
             </div>
           </div>
@@ -74,7 +72,7 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
         {!isGuest && (
           <>
             <DropdownMenuGroup>
-              <DropdownMenuItem onSelect={() => navigate(`/profile/user/${id}`)}>
+              <DropdownMenuItem onSelect={() => navigate(`/profile/user/${user.id}`)}>
                 <UserCircleIcon className="mr-2 h-4 w-4" />
                 Account
               </DropdownMenuItem>
@@ -98,7 +96,7 @@ const UserDropdown = ({ children }: { children: React.ReactNode }) => {
         )}
 
         {/* GUEST OPTIONS */}
-        {isGuest && (
+        {isGuest  && (
           <>
            <DropdownMenuItem onSelect={handleNotifications}>
               <UserNotificationsBell />

@@ -1,14 +1,14 @@
 // src/hooks/useSimulator.ts
 import { analyzeABC } from "@/services/api/abc.api";
-import { useUserPolicy } from "@/context/UserPolicyContext";
 import { runABCAnalysis } from "@/services/sim/runABCAnalysis";
 import type { ABCData, AbcItemDto, AbcRequestDto, ABCResult } from "@/types/abc";
 import type { Product } from "@/types/products";
 import type { SimulatorABCOutput } from "@/types/simulator";
 import { buildABCTableData } from "@/lib/abc/buildABCTableData";
+import { useUserStore } from "@/store/user/useUserStore";
 
 export function useSimulator() {
-  const { userType, username } = useUserPolicy();
+  const { user } = useUserStore();
 
   /**
    * Runs ABC simulation — locally for guests, via backend for registered users.
@@ -19,7 +19,7 @@ export function useSimulator() {
     }
 
     //Guest users → local (frontend) ABC calculation
-    if (userType === "Guest") {
+    if (user.userType === "Guest") {
       const abcData: ABCData[] = products.map((p) => ({
         product: p,
         quantity: (p as any).quantity ?? 1,
@@ -37,7 +37,7 @@ export function useSimulator() {
 
     const dto: AbcRequestDto = {
       items,
-      username: username ?? "Guest",
+      username: user.username ?? "Guest",
       mode: "classic",
     };
 
@@ -53,7 +53,7 @@ export function useSimulator() {
   ): Promise<SimulatorABCOutput> {
 
     // Guest users
-    if (userType === "Guest") {
+    if (user.userType === "Guest") {
       const abcData = products.map((p) => ({
         product: p,
         quantity: (p as any).quantity ?? 1,
