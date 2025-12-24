@@ -120,41 +120,55 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
         const inInventory = useInventoryStatus(String(product.id))
 
         return (
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2 lg:gap-0 xl:gap-0 w-full">
+
+          {/* Status */}
+          <div className="shrink-0 sm: mr-0 lg:-mr4 xl:-mr-6">
             {inInventory ? (
-              <>
-                <Badge className="bg-green-600 text-white">
-                  In inventory
-                </Badge>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-red-600 jbtn-danger"
-                  onClick={() => removeFromInventory(String(product.id))}
-                >
-                  ➖
-                </Button>
-              </>
+              <Badge className="bg-green-600 text-white whitespace-nowrap">
+                In inventory
+              </Badge>
             ) : (
-              <>
-                <Badge variant="secondary" className="bg-gray-400 text-white">Not added</Badge>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="jbtn-passive"
-                  onClick={() => {
-                    setSelectedProduct(product)
-                    setInventoryDialogOpen(true)
-                  }}
-                >
-                  ➕
-                </Button>
-              </>
+              <Badge
+                variant="secondary"
+                className="bg-gray-400 text-white whitespace-nowrap"
+              >
+                Not added
+              </Badge>
             )}
           </div>
-        )
+
+          {/* Action */}
+          <div className="shrink-0">
+            {inInventory ? (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="jbtn-danger"
+                onClick={() => removeFromInventory(String(product.id))}
+              >
+                ➖
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="jbtn-passive"
+                onClick={() => {
+                  setSelectedProduct(product)
+                  setInventoryDialogOpen(true)
+                }}
+              >
+                ➕
+              </Button>
+            )}
+          </div>
+        </div>
+      )
+
+
       },
-      size: 220,
+      size: 240,
     },
     {
       id: "actions",
