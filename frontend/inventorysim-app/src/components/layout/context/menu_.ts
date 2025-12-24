@@ -1,4 +1,5 @@
-import { LayoutDashboardIcon, ClipboardListIcon, PlayCircleIcon, BarChartIcon, FileTextIcon, LayersIcon, UsersIcon, DatabaseIcon, CalculatorIcon, ActivityIcon, ScaleIcon, SettingsIcon, SearchIcon, CommandIcon, HelpCircleIcon, FileIcon, NotebookIcon } from "lucide-react";
+import { LayoutDashboardIcon, ClipboardListIcon, PlayCircleIcon, BarChartIcon, FileTextIcon, LayersIcon, UsersIcon, DatabaseIcon, CalculatorIcon, ActivityIcon, ScaleIcon, SettingsIcon, SearchIcon, CommandIcon, HelpCircleIcon, FileIcon, NotebookIcon, PackagePlus, BarChart3 } from "lucide-react";
+
 
 export const data_menu = {
   user: {
@@ -12,41 +13,61 @@ export const data_menu = {
       id: "dashboard",
       url: "#",
       icon: LayoutDashboardIcon,
+      subitems: [],
     },
     {
       title: "Inventory",
       id: "inventory",
       url: "#",
       icon: ClipboardListIcon,
+      subitems: [
+        {
+          title: "Products",
+          id: "inventory-products",
+          url: "/inventory/products",
+          icon: PackagePlus,
+        },
+        {
+          title: "Stock",
+          id: "inventory-stock",
+          url: "/inventory/stock",
+          icon: BarChart3,
+        },
+      ],
     },
     {
       title: "Simulations",
       id: "simulations",
       url: "#",
       icon: PlayCircleIcon,
+      subitems: [],
     },
     {
       title: "Analytics",
       url: "#",
       icon: BarChartIcon,
+      subitems: [],
     },
     {
       title: "Reports",
       id: "reports",
       url: "#",
       icon: FileTextIcon,
+      subitems: [],
     },
     {
       title: "Scenarios",
       id: "scenarios",
       url: "#",
       icon: LayersIcon,
+      subitems: [],
     },
     {
       title: "Collaboration",
       id: "team",
       url: "#",
       icon: UsersIcon,
+      subitems: [],
     },
   ],
   navClouds: [

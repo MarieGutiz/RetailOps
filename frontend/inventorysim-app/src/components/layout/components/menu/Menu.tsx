@@ -18,7 +18,7 @@ import SidebarHeaderBrand from './controls/SidebarHeaderBrand '
 const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
 
   return (
-    <Sidebar className="flex flex-1 pt-11" collapsible="icon" {...props}>
+    <Sidebar className="flex flex-1 pt-11 overflow-x-hidden" collapsible="icon" {...props}>
         <SidebarHeader style={{ cursor: "default", userSelect: "none" }}>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -28,7 +28,7 @@ const Menu = ({...props}: React.ComponentProps<typeof Sidebar>) => {
           </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="overflow-x-hidden">
           <NavMenuRoot items={data_menu.navMain} />
           {/* <NavDocuments items={data_menu.documents} />
           <NavSecondary items={data_menu.navSecondary} className="mt-auto" /> */}
