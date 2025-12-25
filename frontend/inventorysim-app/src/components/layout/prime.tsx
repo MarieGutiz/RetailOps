@@ -6,6 +6,7 @@ import PrimeContent from "./components/main/PrimeContent "
 import { useProductStore } from "@/store/inventory/useProductStore"
 import GuestLimitAlert from "./context/GuestLimitAlert"
 import { useEffect } from "react"
+import { Outlet } from "react-router-dom"
 
 const controller = new PrimeLayoutController({ //verify options
   open: true,
@@ -33,7 +34,8 @@ const Prime = () => {
         <main className="pt-0"> 
           <GuestLimitAlert />
           {/* Global Header and module container */}
-          <PrimeContent />
+          {/* <PrimeContent /> */}
+          <Outlet />
         
       </main>      
     </PrimeLayoutProvider>

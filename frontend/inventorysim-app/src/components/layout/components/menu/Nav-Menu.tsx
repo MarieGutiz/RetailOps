@@ -4,6 +4,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
 import {
@@ -95,32 +98,22 @@ const NavMenuRoot = ({ items }: {
                     </CollapsibleTrigger>
 
                     <CollapsibleContent className="w-full overflow-hidden">
-                    <SidebarMenu className="mt-1 gap-1 pl-6">
+                    <SidebarMenuSub className="pl-6">
                       {item.subitems!.map((sub) => (
-                        <SidebarMenuItem
-                          key={sub.id || sub.title}
-                          className="w-full min-w-0"
-                        >
-                          <SidebarMenuButton
-                            className="
-                              text-sm
-                              px-2 py-1.5
-                              w-full
-                              min-w-0
-                              justify-start
-                            "
+                        <SidebarMenuSubItem key={sub.id || sub.title}>
+                          <SidebarMenuSubButton
+                            className="flex items-center gap-3 text-sm"
                           >
                             {sub.icon && (
-                            <sub.icon className="h-4 w-4 opacity-70 shrink-0" />
-                          )}
-                            <span className="truncate">
-                              {sub.title}
-                            </span>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
+                              <sub.icon className="h-4 w-4 opacity-70 shrink-0" />
+                            )}
+                            <span className="truncate">{sub.title}</span>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
                       ))}
-                    </SidebarMenu>
+                    </SidebarMenuSub>
                   </CollapsibleContent>
+
 
 
                   </SidebarMenuItem>
