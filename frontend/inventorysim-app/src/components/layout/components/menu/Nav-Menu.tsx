@@ -20,6 +20,7 @@ import { SidebarControls } from "./controls/SidebarControls";
 import FooterMenu from "../footer/FooterMenu";
 import { usePrimeLayoutStore } from "../../hooks/usePrimeLayout";
 import { usePrimeLayout } from "../PrimeLayoutProvider";
+import { NavLink, useLocation } from "react-router-dom";
 
 const NavMenuRoot = ({ items }: {
   items: { 
@@ -30,10 +31,16 @@ const NavMenuRoot = ({ items }: {
     subitems?: { title: string; id?: string; url: string, icon?: React.ElementType;}[];
   }[];
 }) => {
-   const layout = usePrimeLayout(); // always defined
+    const layout = usePrimeLayout(); // always defined
     const pinned = usePrimeLayoutStore(l => l.pinned);
     const side = usePrimeLayoutStore(l => l.side);
     const collapsed = usePrimeLayoutStore(l => l.open)
+
+    const { pathname } = useLocation();
+
+    const isActiveRoute = (url: string) =>
+      pathname === url || pathname.startsWith(url + "/");    
+
   return (
     <SidebarGroup className="flex flex-col h-full justify-between">
       {/* --- Control Section --- */}
@@ -51,25 +58,16 @@ const NavMenuRoot = ({ items }: {
       {/* --- Navigation Section --- */}
       <SidebarGroupContent className="flex flex-col gap-2 flex-grow">
         <SidebarMenu>
-          {/* {items.map((item) => (
-            <SidebarMenuItem key={item.id || item.title}>
-              <SidebarMenuButton
-                tooltip={item.title}
-                className="hover:bg-primary/10 text-sm flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-150"
-              >
-                {item.icon && <item.icon className="h-4 w-4 text-primary" />}
-                <span className="truncate">{item.title}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))} */}
-
           {items.map((item) => {
             const hasSubitems = !!item.subitems?.length;
-
+            const isParentActive = item.subitems?.some(sub =>
+                isActiveRoute(sub.url)
+              );
             if (hasSubitems) {
               return (
                 <Collapsible
                   key={item.id || item.title}
+                  defaultOpen={isParentActive}
                   className="group/collapsible"
                 >
                   <SidebarMenuItem>
@@ -101,20 +99,37 @@ const NavMenuRoot = ({ items }: {
                     <SidebarMenuSub className="pl-6">
                       {item.subitems!.map((sub) => (
                         <SidebarMenuSubItem key={sub.id || sub.title}>
-                          <SidebarMenuSubButton
+                          {/* <SidebarMenuSubButton
                             className="flex items-center gap-3 text-sm"
                           >
                             {sub.icon && (
                               <sub.icon className="h-4 w-4 opacity-70 shrink-0" />
                             )}
                             <span className="truncate">{sub.title}</span>
-                          </SidebarMenuSubButton>
+                          </SidebarMenuSubButton> */}
+                          <SidebarMenuSubButton asChild>
+                          <NavLink
+                            to={sub.url}
+                            className={({ isActive }) =>
+                              [
+                                "flex items-center gap-3 text-sm transition-colors rounded-md px-2 py-1.5",
+                                isActive
+                                  ? "bg-primary/15 text-primary font-medium"
+                                  : "text-muted-foreground hover:text-foreground",
+                              ].join(" ")
+                            }
+                          >
+                            {sub.icon && (
+                              <sub.icon className="h-4 w-4 shrink-0" />
+                            )}
+                            <span className="truncate">{sub.title}</span>
+                          </NavLink>
+                        </SidebarMenuSubButton>
+
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>
                   </CollapsibleContent>
-
-
 
                   </SidebarMenuItem>
                 </Collapsible>

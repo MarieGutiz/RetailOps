@@ -362,6 +362,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
           <Button
             variant="outline"
             size="sm"
+            className="toolbar-element jbtn-flat-btn toolbar-element-md active"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -371,6 +372,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
           <Button
             variant="outline"
             size="sm"
+            className="toolbar-element jbtn-flat-btn toolbar-element-md active"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >

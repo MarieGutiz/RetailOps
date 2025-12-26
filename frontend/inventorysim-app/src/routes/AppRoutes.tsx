@@ -1,5 +1,5 @@
 
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Login from '../pages/Login'
 import Home from '../pages/Home'
 import RegisterForm from '@/features/auth/RegisterForm'
@@ -14,6 +14,8 @@ import PrimeContent from '@/components/layout/components/main/PrimeContent '
 import ProductLibraryModule from '@/components/layout/components/main/outlet/inventory/ProductLibraryModule'
 import DashboardModule from '@/components/layout/components/main/outlet/dashboard/DashboardModule'
 import Prime from '@/components/layout/prime'
+import InventoryModuleLayout from '@/components/layout/components/main/outlet/dashboard/InventoryModuleLayout'
+
 
 const Approutes = () => {
   return (
@@ -24,17 +26,23 @@ const Approutes = () => {
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      {/* <Route
-        path="/dashboard"
-        element={<Dashboard />}
-      /> */}
       <Route path="/dashboard" element={<Prime />}>
       <Route element={<PrimeContent />}>
         {/* Index route shows by default */}
         <Route index element={<DashboardModule />} />
 
-        {/* Inventory module */}
-        <Route path="inventory" element={<ProductLibraryModule />} />
+        {/* Inventory module
+        <Route path="inventory" element={<ProductLibraryModule />} /> */}
+
+            {/* Inventory module */}
+            <Route path="inventory" element={<InventoryModuleLayout />}>
+              {/* DEFAULT VIEW */}
+              <Route index element={<Navigate to="products" replace />} />
+
+              {/* Sub-views */}
+              <Route path="products" element={<ProductLibraryModule />} />
+            </Route>
+
       </Route>
     </Route>
 

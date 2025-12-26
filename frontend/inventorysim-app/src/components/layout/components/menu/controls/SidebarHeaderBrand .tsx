@@ -1,5 +1,6 @@
 import { usePrimeLayoutStore } from "@/components/layout/hooks/usePrimeLayout";
 import Brand from "../../headers/Brand";
+import rangeLogo from "@/assets/range.jpg";
 
 const SidebarHeaderBrand  = () => {
     const isCollapsed = !usePrimeLayoutStore((l) => l.open)
@@ -17,7 +18,7 @@ const SidebarHeaderBrand  = () => {
           asChild
           variant="nav"
           collapsed={isCollapsed}       // your existing state
-          imgSrc="src/assets/range.jpg" // nav image (different file)
+          imgSrc={rangeLogo} // nav image (different file)
           imgAlt="@RetailOps Sim"
         />
 
