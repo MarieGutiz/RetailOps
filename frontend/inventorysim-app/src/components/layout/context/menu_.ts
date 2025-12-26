@@ -2,11 +2,6 @@ import { LayoutDashboardIcon, ClipboardListIcon, PlayCircleIcon, BarChartIcon, F
 
 
 export const data_menu = {
-  user: {
-    name: "RetailOps Manager",
-    email: "m@example.com",
-    avatar: "src/assets/range.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -21,19 +16,20 @@ export const data_menu = {
       url: "#",
       icon: ClipboardListIcon,
       subitems: [
-        {
-          title: "Products",
-          id: "inventory-products",
-          url: "/inventory/products",
-          icon: PackagePlus,
-        },
-        {
-          title: "Stock",
-          id: "inventory-stock",
-          url: "/inventory/stock",
-          icon: BarChart3,
-        },
-      ],
+      {
+        title: "Product Library",
+        id: "inventory-products",
+        url: "/dashboard/inventory/products",
+        icon: PackagePlus,
+      },
+      {
+        title: "Stock",
+        id: "inventory-stock",
+        url: "/dashboard/inventory/stock",
+        icon: BarChart3,
+      },
+    ],
+
     },
     {
       title: "Simulations",

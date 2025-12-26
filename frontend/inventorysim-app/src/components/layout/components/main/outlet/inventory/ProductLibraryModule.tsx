@@ -7,8 +7,8 @@ const ProductLibraryModule = () => {
             title="Product Library"
             subtitle="Manage your products efficiently"
             breadcrumbTrail={[
-              { label: "Home", path: "/" },
               { label: "Dashboard", path: "/dashboard" },
+              { label: "Inventory", path: "/dashboard/inventory" },
               { label: "Product Library" },
             ]}
             userCases={["Scenario A", "Scenario B", "Scenario C"]}
