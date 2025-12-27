@@ -13,7 +13,7 @@ export const data_menu = {
     {
       title: "Inventory",
       id: "inventory",
-      url: "#",
+      url: "/dashboard/inventory",
       icon: ClipboardListIcon,
       subitems: [
       {

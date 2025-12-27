@@ -41,6 +41,8 @@ const NavMenuRoot = ({ items }: {
     const isActiveRoute = (url: string) =>
       pathname === url || pathname.startsWith(url + "/");    
 
+    // console.log("active route check:", isActiveRoute("/dashboard/inventory/products"), pathname);
+    
   return (
     <SidebarGroup className="flex flex-col h-full justify-between">
       {/* --- Control Section --- */}
@@ -60,7 +62,9 @@ const NavMenuRoot = ({ items }: {
         <SidebarMenu>
           {items.map((item) => {
             const hasSubitems = !!item.subitems?.length;
-            const isParentActive = item.subitems?.some(sub =>
+            const isParentActive = 
+              isActiveRoute(item.url) ||
+             item.subitems?.some(sub =>
                 isActiveRoute(sub.url)
               );
             if (hasSubitems) {
@@ -97,38 +101,31 @@ const NavMenuRoot = ({ items }: {
 
                     <CollapsibleContent className="w-full overflow-hidden">
                     <SidebarMenuSub className="pl-6">
-                      {item.subitems!.map((sub) => (
-                        <SidebarMenuSubItem key={sub.id || sub.title}>
-                          {/* <SidebarMenuSubButton
-                            className="flex items-center gap-3 text-sm"
-                          >
-                            {sub.icon && (
-                              <sub.icon className="h-4 w-4 opacity-70 shrink-0" />
-                            )}
-                            <span className="truncate">{sub.title}</span>
-                          </SidebarMenuSubButton> */}
-                          <SidebarMenuSubButton asChild>
-                          <NavLink
-                            to={sub.url}
-                            className={({ isActive }) =>
-                              [
-                                "flex items-center gap-3 text-sm transition-colors rounded-md px-2 py-1.5",
-                                isActive
-                                  ? "bg-primary/15 text-primary font-medium"
-                                  : "text-muted-foreground hover:text-foreground",
-                              ].join(" ")
-                            }
-                          >
-                            {sub.icon && (
-                              <sub.icon className="h-4 w-4 shrink-0" />
-                            )}
-                            <span className="truncate">{sub.title}</span>
-                          </NavLink>
-                        </SidebarMenuSubButton>
-
-                        </SidebarMenuSubItem>
-                      ))}
+                      {item.subitems!.map((sub) => {
+                        const isSubActive = isActiveRoute(sub.url);
+                        return (
+                          <SidebarMenuSubItem key={sub.id || sub.title}>
+                            <SidebarMenuSubButton asChild>
+                              <NavLink
+                                to={sub.url}
+                                className={[
+                                  "flex items-center gap-3 text-sm rounded-md px-2 py-1.5 transition-colors",
+                                  isSubActive
+                                    ? " text-amber-500! font-semibold!"
+                                    : "text-muted-foreground hover:text-foreground!",
+                                ].join(" ")}
+                              >
+                                {sub.icon && (
+                                  <sub.icon className="h-4 w-4 shrink-0" />
+                                )}
+                                <span className="truncate">{sub.title}</span>
+                              </NavLink>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        );
+                      })}
                     </SidebarMenuSub>
+
                   </CollapsibleContent>
 
                   </SidebarMenuItem>

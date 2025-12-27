@@ -1,9 +1,9 @@
 import PrimeBreadcrumb from "@/components/layout/components/main/PrimeBreadcrumb";
 import  { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import AddProduct from "./inventory/forms/AddProduct";
+import AddProduct from "./forms/AddProduct";
 import { useProductStore } from "@/store/inventory/useProductStore";
 import { useInitProductData } from "@/hooks/inventory/initProductData";
-import ProductTable from "./inventory/ProductTable";
+import ProductTable from "./ProductTable";
 
 const ProductLibraryView = () => {
   useInitProductData(); // loads JSON inventory if empty
