@@ -1,4 +1,4 @@
-import ProductLibraryView from "@/views/ProductLibraryView"
+import ProductLibraryView from "@/views/inventory/ProductLibraryView"
 import ModuleContainer from "../../ModuleContainer"
 
 const ProductLibraryModule = () => {
