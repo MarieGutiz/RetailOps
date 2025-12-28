@@ -6,8 +6,8 @@ const DashboardModule = () => {
       title="Dashboard Home"
       subtitle="Overview of your modules"
       breadcrumbTrail={[
-        { label: "Home", path: "/" },
-        { label: "Dashboard" },
+        { label: "Dashboard", path: "/dashboard" },
+        { label: "" },
       ]}
     >
       <div>Welcome to your dashboard!</div>
