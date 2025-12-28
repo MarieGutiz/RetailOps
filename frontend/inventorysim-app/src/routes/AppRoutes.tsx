@@ -15,6 +15,7 @@ import ProductLibraryModule from '@/components/layout/components/main/outlet/inv
 import DashboardModule from '@/components/layout/components/main/outlet/dashboard/DashboardModule'
 import Prime from '@/components/layout/prime'
 import InventoryModuleLayout from '@/components/layout/components/main/outlet/dashboard/InventoryModuleLayout'
+import InventoryStockModule from '@/components/layout/components/main/outlet/inventory/InventoryStockModule'
 
 
 const Approutes = () => {
@@ -41,6 +42,7 @@ const Approutes = () => {
 
               {/* Sub-views */}
               <Route path="products" element={<ProductLibraryModule />} />
+              <Route path="stock" element={<InventoryStockModule />} />
             </Route>
 
       </Route>

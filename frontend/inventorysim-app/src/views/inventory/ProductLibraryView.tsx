@@ -1,4 +1,3 @@
-import PrimeBreadcrumb from "@/components/layout/components/main/PrimeBreadcrumb";
 import  { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import AddProduct from "./forms/AddProduct";
 import { useProductStore } from "@/store/inventory/useProductStore";
@@ -11,14 +10,7 @@ const ProductLibraryView = () => {
   const products = useProductStore((s) => s.products);
   const loading = useProductStore((s) => s.loading);
   return (
-    <div >
-      <PrimeBreadcrumb
-        trail={[
-          { label: "RetailOps Sim", path: "#" },
-          { label: "Product Library" },
-        ]}
-      />
-
+    <div>
       <Card className="shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
