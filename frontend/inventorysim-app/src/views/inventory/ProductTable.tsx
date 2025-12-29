@@ -144,7 +144,10 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
               <Button
                 size="sm"
                 variant="ghost"
-                className="jbtn-danger"
+                className="jbtn-danger
+                h-8
+                w-8
+                p-0"
                 onClick={() => removeFromInventory(String(product.id))}
               >
                 ➖
@@ -153,7 +156,10 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
               <Button
                 size="sm"
                 variant="ghost"
-                className="jbtn-passive"
+                className="jbtn-passive
+                h-8
+                w-8
+                p-0"
                 onClick={() => {
                   setSelectedProduct(product)
                   setInventoryDialogOpen(true)
