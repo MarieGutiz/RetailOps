@@ -30,13 +30,13 @@ const InventoryStockView = () => {
       const unitPrice = product?.unitPrice ?? 0
       const quantity = item.quantity
 
-      const totalValue = unitCost * quantity
+      const inventoryValue = unitCost * quantity
       const totalProfit = (unitPrice - unitCost) * quantity
 
       return {
         ...item,
         product,
-        totalValue,
+        inventoryValue ,
         totalProfit,
       }
     })
@@ -47,11 +47,11 @@ const InventoryStockView = () => {
       return rows.reduce(
         (acc, row) => {
           acc.totalQuantity += row.quantity
-          acc.totalValue += row.totalValue
+          acc.inventoryValue  += row.inventoryValue 
           acc.totalProfit += row.totalProfit
           return acc
         },
-        { totalQuantity: 0, totalValue: 0, totalProfit: 0 }
+        { totalQuantity: 0, inventoryValue : 0, totalProfit: 0 }
       )
     }, [rows])
 
@@ -110,7 +110,7 @@ const InventoryStockView = () => {
               <TableHead className="text-right">Unit Cost</TableHead>
               <TableHead className="text-right">Unit Price</TableHead>
               <TableHead className="text-right">Quantity</TableHead>
-              <TableHead className="text-right">Total Value</TableHead>
+              <TableHead className="text-right">Inventory Value(cost)</TableHead>
               <TableHead className="text-right">Profit</TableHead>
 
               <TableHead className="w-10"></TableHead>
@@ -164,7 +164,7 @@ const InventoryStockView = () => {
               </TableCell>
 
               <TableCell className="text-right tabular-nums font-medium">
-                ${row.totalValue.toFixed(2)}
+                ${row.inventoryValue .toFixed(2)}
               </TableCell>
 
               <TableCell
@@ -214,7 +214,7 @@ const InventoryStockView = () => {
             </TableCell>
 
             <TableCell className="text-right tabular-nums">
-              ${totals.totalValue.toFixed(2)}
+              ${totals.inventoryValue .toFixed(2)}
             </TableCell>
 
             <TableCell className="text-right tabular-nums text-emerald-600">
