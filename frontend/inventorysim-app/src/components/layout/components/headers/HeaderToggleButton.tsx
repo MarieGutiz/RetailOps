@@ -16,7 +16,7 @@ const HeaderToggleButton = ({ value, active, onClick, tooltip, children }: Heade
         <ToggleGroupItem
           value={value || " "}
           onClick={onClick}
-          className={`sidebar-btn ${active ? "active" : ""}`}
+          className={`sidebar-btn ${active ? "active" : ""} p-0`}
         >
           {children}
         </ToggleGroupItem>
