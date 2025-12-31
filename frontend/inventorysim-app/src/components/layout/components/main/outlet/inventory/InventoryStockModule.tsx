@@ -1,5 +1,7 @@
 import InventoryStockView from "@/views/inventory/InventoryStockView"
 import ModuleContainer from "../../ModuleContainer"
+import ABCSummaryView from "@/views/ABCViews/ABCSummaryView"
+import ParetoCurveView from "@/views/ABCViews/ParetoCurveView"
 
 const InventoryStockModule = () => {
   return (
@@ -27,6 +29,12 @@ const InventoryStockModule = () => {
       }
     >
       <InventoryStockView />
+      <div className="mt-6 space-y-6">
+        <ABCSummaryView />
+        <ParetoCurveView />
+        {/* WhatIfPanel */}
+    </div>
+
     </ModuleContainer>
   )
 }

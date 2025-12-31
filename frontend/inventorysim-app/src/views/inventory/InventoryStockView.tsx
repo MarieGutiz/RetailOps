@@ -1,8 +1,6 @@
 import { Card,  CardHeader,  CardTitle,  CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/Input'
 import  { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from '@/components/ui/table'
-import { useABCInput } from '@/hooks/simulator/modules/abc/useABCInput'
-import { runABCAnalysis } from '@/services/sim/runABCAnalysis'
 import  { useInventoryStore } from '@/store/inventory/useInventoryStore'
 import { useProductStore } from '@/store/inventory/useProductStore'
 import { Trash2 } from 'lucide-react'
@@ -17,8 +15,8 @@ const InventoryStockView = () => {
     const updateQuantity = useInventoryStore((s) => s.updateQuantity)
 
     // Derived ABC input
-    const abcInput = useABCInput()
-    const abcResult = runABCAnalysis(abcInput) // ready for later panels
+    // const abcInput = useABCInput()
+    // const abcResult = runABCAnalysis(abcInput) // ready for later panels
 
     const rows = useMemo(() => {
     return inventory.map((item) => {
@@ -69,7 +67,7 @@ const InventoryStockView = () => {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle className="j-heading j-h1  sm: text-left text-2x">
-              Inventory Stock
+              In Stock
             </CardTitle>
             <p className="j-heading j-subtitle text-base font-normal sm:text-left">
               Define assumed stock quantities used for simulations
