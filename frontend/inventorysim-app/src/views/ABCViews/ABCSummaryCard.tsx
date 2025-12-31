@@ -1,4 +1,3 @@
-import React from 'react'
 
 const ABCSummaryCard = ({ label, data }: { label: string; data: any }) => {
   return (
