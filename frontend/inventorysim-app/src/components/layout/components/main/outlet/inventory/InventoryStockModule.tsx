@@ -2,8 +2,13 @@ import InventoryStockView from "@/views/inventory/InventoryStockView"
 import ModuleContainer from "../../ModuleContainer"
 import ABCSummaryView from "@/views/ABCViews/ABCSummaryView"
 import ParetoCurveView from "@/views/ABCViews/ParetoCurveView"
+import { useABCInput, buildParetoData } from "@/hooks/simulator/modules/abc/useABCInput"
+import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 
 const InventoryStockModule = () => {
+  const abcInput = useABCInput()
+  const abcTableData = buildABCTableData(abcInput)
+  const paretoData = buildParetoData(abcTableData)
   return (
     <ModuleContainer
       title="Inventory Stock"
@@ -31,7 +36,7 @@ const InventoryStockModule = () => {
       <InventoryStockView />
       <div className="mt-6 space-y-6">
         <ABCSummaryView />
-        <ParetoCurveView />
+        <ParetoCurveView data={paretoData} />
         {/* WhatIfPanel */}
     </div>
 

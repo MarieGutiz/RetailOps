@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useInventoryStore } from "@/store/inventory/useInventoryStore"
-import type { ABCData } from "@/types/abc"
+import type { ABCData, ABCTableRow, ParetoPoint } from "@/types/abc"
 import { useProductStore } from "@/store/inventory/useProductStore"
 import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 
@@ -48,4 +48,13 @@ export const useABCSummary = (abcInput: ABCData[]) => {
       C: { count: byCategory.C.length, valuePct: percent(byCategory.C) },
     }
   }, [abcInput])
+}
+
+export const buildParetoData = (rows: ABCTableRow[]): ParetoPoint[] => {
+  return rows.map((row) => ({
+    name: row.product.name,
+    value: row.totalValue,
+    cumulativePct: row.cumulative,
+    category: row.category,
+  }))
 }
