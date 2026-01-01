@@ -22,6 +22,12 @@ export interface ABCTableRow {
   category: "A" | "B" | "C";
 }
 
+export interface ParetoPoint {
+  name: string
+  value: number
+  cumulativePct: number
+  category: "A" | "B" | "C"
+}
 
 // For backend DTO compatibility
 export interface AbcItemDto {
