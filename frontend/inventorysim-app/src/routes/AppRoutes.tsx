@@ -31,9 +31,8 @@ const Approutes = () => {
       <Route element={<PrimeContent />}>
         {/* Index route shows by default */}
         <Route index element={<DashboardModule />} />
+        <Route path="overview" element={<DashboardModule />} />
 
-        {/* Inventory module
-        <Route path="inventory" element={<ProductLibraryModule />} /> */}
 
             {/* Inventory module */}
             <Route path="inventory" element={<InventoryModuleLayout />}>

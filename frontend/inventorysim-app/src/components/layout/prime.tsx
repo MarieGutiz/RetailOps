@@ -2,7 +2,6 @@
 import TopHeader from "./components/headers/TopHeader"
 import  { PrimeLayoutProvider } from "./components/PrimeLayoutProvider"
 import { PrimeLayoutController } from "./controllers/PrimeLayoutController"
-import PrimeContent from "./components/main/PrimeContent "
 import { useProductStore } from "@/store/inventory/useProductStore"
 import GuestLimitAlert from "./context/GuestLimitAlert"
 import { useEffect } from "react"
@@ -26,8 +25,9 @@ const Prime = () => {
   }, []);
   return (    
     <>   
+    
+
     <PrimeLayoutProvider controller={controller}>
-      
         {/* Top Header - is fixed top */}
         <TopHeader />
         {/* pushes content below header */}
@@ -37,8 +37,9 @@ const Prime = () => {
           {/* <PrimeContent /> */}
           <Outlet />
         
-      </main>      
+      </main> 
     </PrimeLayoutProvider>
+    
     </>
     
 

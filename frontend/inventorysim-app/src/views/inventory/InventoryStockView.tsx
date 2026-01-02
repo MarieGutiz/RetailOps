@@ -14,10 +14,6 @@ const InventoryStockView = () => {
     const inventory = useInventoryStore((s) => s.inventory)
     const updateQuantity = useInventoryStore((s) => s.updateQuantity)
 
-    // Derived ABC input
-    // const abcInput = useABCInput()
-    // const abcResult = runABCAnalysis(abcInput) // ready for later panels
-
     const rows = useMemo(() => {
     return inventory.map((item) => {
       const product = products.find(
@@ -29,12 +25,14 @@ const InventoryStockView = () => {
       const quantity = item.quantity
 
       const inventoryValue = unitCost * quantity
+      const revenue = unitPrice * quantity
       const totalProfit = (unitPrice - unitCost) * quantity
 
       return {
         ...item,
         product,
-        inventoryValue ,
+        inventoryValue,
+        revenue,
         totalProfit,
       }
     })
@@ -46,10 +44,11 @@ const InventoryStockView = () => {
         (acc, row) => {
           acc.totalQuantity += row.quantity
           acc.inventoryValue  += row.inventoryValue 
+          acc.revenue += row.revenue
           acc.totalProfit += row.totalProfit
           return acc
         },
-        { totalQuantity: 0, inventoryValue : 0, totalProfit: 0 }
+        { totalQuantity: 0, inventoryValue : 0, revenue: 0, totalProfit: 0 }
       )
     }, [rows])
 
@@ -109,6 +108,7 @@ const InventoryStockView = () => {
               <TableHead className="text-right">Unit Price</TableHead>
               <TableHead className="text-right">Quantity</TableHead>
               <TableHead className="text-right">Inventory Value(cost)</TableHead>
+              <TableHead className="text-right">Revenue</TableHead>
               <TableHead className="text-right">Profit</TableHead>
 
               <TableHead className="w-10"></TableHead>
@@ -162,7 +162,11 @@ const InventoryStockView = () => {
               </TableCell>
 
               <TableCell className="text-right tabular-nums font-medium">
-                ${row.inventoryValue .toFixed(2)}
+                ${row.inventoryValue.toFixed(2)}
+              </TableCell>
+              
+              <TableCell className="text-right tabular-nums font-medium">
+                ${row.revenue.toFixed(2)}
               </TableCell>
 
               <TableCell
@@ -213,6 +217,9 @@ const InventoryStockView = () => {
 
             <TableCell className="text-right tabular-nums">
               ${totals.inventoryValue .toFixed(2)}
+            </TableCell>
+            <TableCell className="text-right tabular-nums">
+              ${totals.revenue.toFixed(2)}
             </TableCell>
 
             <TableCell className="text-right tabular-nums text-emerald-600">

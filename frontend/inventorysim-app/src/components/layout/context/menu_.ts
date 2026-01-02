@@ -1,4 +1,4 @@
-import { LayoutDashboardIcon, ClipboardListIcon, PlayCircleIcon, BarChartIcon, FileTextIcon, LayersIcon, UsersIcon, DatabaseIcon, CalculatorIcon, ActivityIcon, ScaleIcon, SettingsIcon, SearchIcon, CommandIcon, HelpCircleIcon, FileIcon, NotebookIcon, PackagePlus, BarChart3 } from "lucide-react";
+import { LayoutDashboardIcon, ClipboardListIcon, PlayCircleIcon, BarChartIcon, FileTextIcon, LayersIcon, UsersIcon, DatabaseIcon, CalculatorIcon, ActivityIcon, ScaleIcon, SettingsIcon, SearchIcon, CommandIcon, HelpCircleIcon, FileIcon, NotebookIcon, PackagePlus, BarChart3, Settings, View } from "lucide-react";
 
 
 export const data_menu = {
@@ -8,7 +8,15 @@ export const data_menu = {
       id: "dashboard",
       url: "#",
       icon: LayoutDashboardIcon,
-      subitems: [],
+      subitems: [
+      {
+        title: "Overview",
+        id: "overview",
+        url: "/dashboard/overview",
+        icon: View,
+      },
+
+      ],
     },
     {
       title: "Inventory",
