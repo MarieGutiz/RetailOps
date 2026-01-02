@@ -1,4 +1,5 @@
 import ModuleContainer from "../../ModuleContainer";
+import DashboardSettings from "./DashboardSettings";
 
 const DashboardModule = () => {
   return (
@@ -11,6 +12,7 @@ const DashboardModule = () => {
       ]}
     >
       <div>Welcome to your dashboard!</div>
+      <DashboardSettings />
     </ModuleContainer>
   );
 }
