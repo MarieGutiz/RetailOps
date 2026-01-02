@@ -24,7 +24,7 @@ export interface ABCTableRow {
 
 export interface ParetoPoint {
   name: string
-  value: number
+  metric: number
   cumulativePct: number
   category: "A" | "B" | "C"
 }

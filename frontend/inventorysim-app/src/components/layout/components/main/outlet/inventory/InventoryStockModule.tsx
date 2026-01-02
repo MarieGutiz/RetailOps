@@ -1,7 +1,7 @@
 import InventoryStockView from "@/views/inventory/InventoryStockView"
 import ModuleContainer from "../../ModuleContainer"
 import ABCSummaryView from "@/views/ABCViews/ABCSummaryView"
-import ParetoCurveView from "@/views/ABCViews/ParetoCurveView"
+import ParetoCurveView from "@/views/ABCViews/plots/ParetoCurveView"
 import { useABCInput, buildParetoData } from "@/hooks/simulator/modules/abc/useABCInput"
 import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 

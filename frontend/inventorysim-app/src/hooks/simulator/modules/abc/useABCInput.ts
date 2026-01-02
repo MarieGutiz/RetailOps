@@ -53,8 +53,14 @@ export const useABCSummary = (abcInput: ABCData[]) => {
 export const buildParetoData = (rows: ABCTableRow[]): ParetoPoint[] => {
   return rows.map((row) => ({
     name: row.product.name,
-    value: row.totalValue,
+    metric: row.totalValue,
     cumulativePct: row.cumulative,
     category: row.category,
   }))
 }
+
+export const tooltipParetoLabels: Record<string, string> = {
+  metric: "Total Value",
+  cumulativePct: "Cumulative contribution",
+}
+
