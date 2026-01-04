@@ -1,45 +1,104 @@
-import CurrencySettings from "@/components/layout/context/CurrencySettings";
+import { CurrencySetting, UnitSetting, HorizonSetting, PolicySetting } from "@/components/layout/context/Settings";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSimulatorStore } from "@/store/user/useSimulatorStore";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { Label } from "@radix-ui/react-label";
+import { SlidersHorizontal } from "lucide-react";
 
 const DashboardSettings = () => {
   const { currency, unit, horizon, stockPolicy } = useSimulatorStore();
-  return (
-    <Card className="p-6 space-y-6">
-      <h2 className="text-lg font-semibold">Dashboard Settings</h2>
 
-      {/* Legend Card */}
-      <Card className="relative w-full max-w-md border rounded-lg pt-6">
-        {/* Legend cut-out */}
-        <div className="absolute -top-3 left-4 bg-background px-2 text-sm font-medium text-muted-foreground">
-          Current Simulator Settings
-        </div>
+    return (
+    <div
+      className="
+        min-h-full px-4 lg:px-6 py-6
+        bg-gradient-to-br
+        from-blue-50 via-blue-100/40 to-transparent
+        dark:from-slate-900 dark:via-slate-900 dark:to-slate-900
+      "
+    >
+      <div
+        className="
+          grid grid-cols-1 gap-6 items-start
+          lg:grid-cols-[minmax(600px,1.2fr)_minmax(320px,0.8fr)]
+          *:data-[slot=card]:bg-gradient-to-t
+        *:data-[slot=card]:from-blue-900/10
+        *:data-[slot=card]:to-blue-900/30
+          *:data-[slot=card]:to-card
+          *:data-[slot=card]:shadow-xs
+            dark:*:data-[slot=card]:bg-card
+          "
+      >
+        {/* ===== LEFT: Advanced Settings ===== */}
+        <Card className="p-6 space-y-4">
+          <Accordion type="single" collapsible>
+          <AccordionItem value="advanced" className="border-none">
+            <AccordionTrigger className="text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4" />
+                Simulator Settings
+              </div>
+            </AccordionTrigger>
 
-        <CardContent className="space-y-4">
-          {/* Read-only overview */}
-          <div className="grid grid-cols-2 gap-y-2 text-sm">
-            <span className="text-muted-foreground">Currency</span>
-            <span className="font-medium">{currency}</span>
+            <AccordionContent className="pt-2">
+            <div className="flex justify-center">
+              <div className="w-full max-w-md divide-y divide-border/50 dark:divide-border/30">
+                <div className="py-1">
+                  <CurrencySetting />
+                </div>
 
-            <span className="text-muted-foreground">Unit</span>
-            <span className="font-medium">{unit}</span>
+                <div className="py-1">
+                  <UnitSetting />
+                </div>
 
-            <span className="text-muted-foreground">Horizon (days)</span>
-            <span className="font-medium">{horizon}</span>
+                <Separator className="my-2" />
 
-            <span className="text-muted-foreground">Stock Policy</span>
-            <span className="font-medium">{stockPolicy}</span>
-          </div>
+                <Label className="block text-sm text-muted-foreground italic mb-2">
+                  Advanced Settings
+                </Label>
 
-          {/* Editable controls */}
-          <div className="pt-4 border-t">
-            <CurrencySettings />
-          </div>
-        </CardContent>
-      </Card>
-    </Card>
+                <div className="py-1">
+                  <HorizonSetting />
+                </div>
+
+                <div className="py-1">
+                  <PolicySetting />
+                </div>
+              </div>
+            </div>
+          </AccordionContent>
+
+          </AccordionItem>
+        </Accordion>
+
+        </Card>
+
+        {/* ===== RIGHT: Current Settings (LEGEND) ===== */}
+        <Card>
+          {/* Floating legend label */}
+          <div className="absolute -top-3 left-4 bg-background px-2 text-sm font-medium text-muted-foreground">
+             Current Simulator Settings 
+            </div> 
+            <CardContent className="space-y-0 mt-1">
+               <div className="grid grid-cols-2 gap-y-4 text-sm"> 
+                <span className="text-muted-foreground">Currency</span>
+                <span className="font-medium">{currency}</span>
+                <span className="text-muted-foreground">Unit</span>
+                <span className="font-medium">{unit}</span>
+                <span className="text-muted-foreground">Horizon</span>
+                <span className="font-medium">{horizon} days</span>
+                <span className="text-muted-foreground">Stock Policy</span>
+                <span className="font-medium">{stockPolicy}</span>
+              </div>
+            </CardContent>
+          </Card>
+      </div>
+    </div>
   );
 
-}
+
+};
+
 
 export default DashboardSettings
