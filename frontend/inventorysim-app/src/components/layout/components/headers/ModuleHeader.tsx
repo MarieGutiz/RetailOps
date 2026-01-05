@@ -27,8 +27,8 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
                 space-y-2 sm:space-y-0 w-full">
 
       {/* Left side */}
-      <div className="flex flex-col items-center sm:items-start sm:basis-1/3">
-        <h1 className="j-heading j-h1  sm: text-left text-2xl">{title}</h1>
+      <div className="flex flex-col items-center sm:items-start sm:basis-1/2">
+        <h1 className="j-heading j-h1  sm: text-left text-xl whitespace-nowrap">{title}</h1>
 
         {subtitle && (
           <p className="j-heading j-subtitle text-base sm:text-left">{subtitle}</p>

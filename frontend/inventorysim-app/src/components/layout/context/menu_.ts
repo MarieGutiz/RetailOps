@@ -10,6 +10,12 @@ export const data_menu = {
       icon: LayoutDashboardIcon,
       subitems: [
       {
+        title: "Settings",
+        id: "settings",
+        url: "/dashboard/settings",
+        icon: Settings,
+      },
+      {
         title: "Overview",
         id: "overview",
         url: "/dashboard/overview",
