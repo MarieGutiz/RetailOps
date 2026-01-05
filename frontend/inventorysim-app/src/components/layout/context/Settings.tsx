@@ -6,7 +6,7 @@ import { Bitcoin, DollarSign, Euro, PoundSterling } from "lucide-react";
    Currency
 =========================== */
 
-const currencyOptions = [
+export const currencyOptions = [
   { value: "$", label: "Dollar", icon: DollarSign },
   { value: "€", label: "Euro", icon: Euro },
   { value: "£", label: "Pound", icon: PoundSterling },
@@ -14,7 +14,6 @@ const currencyOptions = [
 ] as const;
 
 type Currency = typeof currencyOptions[number]["value"];
-
 export const CurrencySetting = () => {
   const { currency, setCurrency } = useSimulatorStore();
 

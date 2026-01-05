@@ -12,10 +12,12 @@ import Notifications from '@/pages/Notifications'
 import ForgotPassword from '@/features/auth/ForgotPassword'
 import PrimeContent from '@/components/layout/components/main/PrimeContent '
 import ProductLibraryModule from '@/components/layout/components/main/outlet/inventory/ProductLibraryModule'
-import DashboardModule from '@/components/layout/components/main/outlet/dashboard/DashboardModule'
 import Prime from '@/components/layout/prime'
-import InventoryModuleLayout from '@/components/layout/components/main/outlet/dashboard/InventoryModuleLayout'
+import InventoryModuleLayout from '@/components/layout/components/main/outlet/inventory/InventoryModuleLayout'
 import InventoryStockModule from '@/components/layout/components/main/outlet/inventory/InventoryStockModule'
+import DashboardSettingModule from '@/components/layout/components/main/outlet/dashboard/DashboardSettingModule'
+import DashboardOverviewModule from '@/components/layout/components/main/outlet/dashboard/DashboardOverviewModule'
+import DashboardModuleLayout from '@/components/layout/components/main/outlet/dashboard/DashboardModuleLayout'
 
 
 const Approutes = () => {
@@ -26,27 +28,29 @@ const Approutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      
 
       <Route path="/dashboard" element={<Prime />}>
       <Route element={<PrimeContent />}>
-        {/* Index route shows by default */}
-        <Route index element={<DashboardModule />} />
-        <Route path="overview" element={<DashboardModule />} />
+        
+        {/* Dashboard module */}
+        <Route element={<DashboardModuleLayout />}>
+          {/* DEFAULT: redirect index to settings */}
+          <Route index element={<Navigate to="overview" replace />} />
+          {/* Sub-pages */}
+          <Route path="overview" element={<DashboardOverviewModule />} />
+          <Route path="settings" element={<DashboardSettingModule />} />
+        </Route>
 
+          {/* Inventory module */}
+          <Route path="inventory" element={<InventoryModuleLayout />}>
+            <Route index element={<Navigate to="products" replace />} />
+            <Route path="products" element={<ProductLibraryModule />} />
+            <Route path="stock" element={<InventoryStockModule />} />
+          </Route>
 
-            {/* Inventory module */}
-            <Route path="inventory" element={<InventoryModuleLayout />}>
-              {/* DEFAULT VIEW */}
-              <Route index element={<Navigate to="products" replace />} />
-
-              {/* Sub-views */}
-              <Route path="products" element={<ProductLibraryModule />} />
-              <Route path="stock" element={<InventoryStockModule />} />
-            </Route>
-
-      </Route>
-    </Route>
-
+        </Route>
+       </Route>
 
       <Route path="/notifications" element={<Notifications />} />
       <Route path="/splash" element={<AnimatedLogo />} />
