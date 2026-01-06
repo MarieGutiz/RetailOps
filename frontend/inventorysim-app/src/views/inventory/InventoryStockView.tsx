@@ -8,11 +8,15 @@ import { useMemo, useState } from 'react'
 import ConfirmActionDialog from './forms/ConfirmActionDialog'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/Button'
+import { useSimulatorStore } from '@/store/user/useSimulatorStore'
 
 const InventoryStockView = () => {
     const products = useProductStore((s) => s.products)
     const inventory = useInventoryStore((s) => s.inventory)
     const updateQuantity = useInventoryStore((s) => s.updateQuantity)
+
+    //Currency
+      const { currency } = useSimulatorStore();
 
     const rows = useMemo(() => {
     return inventory.map((item) => {
@@ -135,11 +139,11 @@ const InventoryStockView = () => {
               </TableCell>
 
               <TableCell className="text-right tabular-nums">
-                ${row.product?.unitCost.toFixed(2)}
+                {currency}{row.product?.unitCost.toFixed(2)}
               </TableCell>
 
               <TableCell className="text-right tabular-nums">
-                ${row.product?.unitPrice.toFixed(2)}
+                {currency}{row.product?.unitPrice.toFixed(2)}
               </TableCell>
 
               <TableCell className="text-right">
@@ -162,11 +166,11 @@ const InventoryStockView = () => {
               </TableCell>
 
               <TableCell className="text-right tabular-nums font-medium">
-                ${row.inventoryValue.toFixed(2)}
+                {currency}{row.inventoryValue.toFixed(2)}
               </TableCell>
               
               <TableCell className="text-right tabular-nums font-medium">
-                ${row.revenue.toFixed(2)}
+                {currency}{row.revenue.toFixed(2)}
               </TableCell>
 
               <TableCell
@@ -177,7 +181,7 @@ const InventoryStockView = () => {
                   text-emerald-600
                 "
               >
-                ${row.totalProfit.toFixed(2)}
+                {currency}{row.totalProfit.toFixed(2)}
               </TableCell>
 
 
@@ -216,14 +220,14 @@ const InventoryStockView = () => {
             </TableCell>
 
             <TableCell className="text-right tabular-nums">
-              ${totals.inventoryValue .toFixed(2)}
+              {currency}{totals.inventoryValue.toFixed(2)}
             </TableCell>
             <TableCell className="text-right tabular-nums">
-              ${totals.revenue.toFixed(2)}
+              {currency}{totals.revenue.toFixed(2)}
             </TableCell>
 
             <TableCell className="text-right tabular-nums text-emerald-600">
-              ${totals.totalProfit.toFixed(2)}
+              {currency}{totals.totalProfit.toFixed(2)}
             </TableCell>
 
             <TableCell />

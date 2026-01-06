@@ -6,7 +6,7 @@ export const data_menu = {
     {
       title: "Dashboard",
       id: "dashboard",
-      url: "#",
+      url: "/dashboard/overview",
       icon: LayoutDashboardIcon,
       subitems: [
       {

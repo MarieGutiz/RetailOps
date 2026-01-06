@@ -88,7 +88,7 @@ export const useSimulatorStore = create<SimulatorSettings>((set) => {
         });
 
         // save to storage
-        saveToStorage.setItem("currency", "$");
+        saveToStorage.setItem("currency", "€");
         saveToStorage.setItem("unit", "pcs");
         saveToStorage.setItem("horizon", "30");
         saveToStorage.setItem("stockPolicy", "EOQ");

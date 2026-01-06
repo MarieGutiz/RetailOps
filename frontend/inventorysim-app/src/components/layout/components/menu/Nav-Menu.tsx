@@ -21,6 +21,7 @@ import FooterMenu from "../footer/FooterMenu";
 import { usePrimeLayoutStore } from "../../hooks/usePrimeLayout";
 import { usePrimeLayout } from "../PrimeLayoutProvider";
 import { NavLink, useLocation } from "react-router-dom";
+import React from "react";
 
 const NavMenuRoot = ({ items }: {
   items: { 
@@ -40,6 +41,32 @@ const NavMenuRoot = ({ items }: {
 
     const isActiveRoute = (url: string) =>
       pathname === url || pathname.startsWith(url + "/");    
+
+    // Manage open state for collapsible sections
+    const [openSections, setOpenSections] = React.useState<Record<string, boolean>>(
+      {}
+    );
+    // Auto-open sections based on current route
+    React.useEffect(() => {
+      items.forEach((item) => {
+        const shouldBeOpen =
+          isActiveRoute(item.url) ||
+          item.subitems?.some(sub => isActiveRoute(sub.url));
+
+        if (shouldBeOpen) {
+          setOpenSections(prev => ({
+            ...prev,
+            [item.id ?? item.title]: true,
+          }));
+        }
+      });
+    }, [pathname]);
+
+    // const sectionKey = item.id ?? item.title;
+    // const isOpen = openSections[sectionKey] ?? isParentActive;
+
+
+
 
     // console.log("active route check:", isActiveRoute("/dashboard/inventory/products"), pathname);
     
@@ -68,10 +95,20 @@ const NavMenuRoot = ({ items }: {
                 isActiveRoute(sub.url)
               );
             if (hasSubitems) {
+              const sectionKey = item.id ?? item.title;
+              const isOpen = openSections[sectionKey] ?? isParentActive;
+
               return (
                 <Collapsible
                   key={item.id || item.title}
-                  defaultOpen={isParentActive}
+                  // defaultOpen={isParentActive}
+                   open={isOpen}
+                    onOpenChange={(value) =>
+                      setOpenSections(prev => ({
+                        ...prev,
+                        [sectionKey]: value,
+                      }))
+                    }
                   className="group/collapsible"
                 >
                   <SidebarMenuItem>

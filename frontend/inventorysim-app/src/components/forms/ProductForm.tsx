@@ -1,4 +1,4 @@
-import { runABCAnalysis } from '@/services/sim/runABCAnalysis';
+import { runABCAnalysis } from '@/services/sim/segmentation/runABCAnalysis';
 import  { useProductStore } from '@/store/inventory/useProductStore';
 import type { ABCData } from '@/types/abc';
 
