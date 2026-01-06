@@ -31,8 +31,7 @@ const Approutes = () => {
       
 
       <Route path="/dashboard" element={<Prime />}>
-      <Route element={<PrimeContent />}>
-        
+      <Route element={<PrimeContent />}>        
         {/* Dashboard module */}
         <Route element={<DashboardModuleLayout />}>
           {/* DEFAULT: redirect index to settings */}

@@ -31,6 +31,7 @@ import { useInventoryStore } from "@/store/inventory/useInventoryStore";
 import { Badge } from "@/components/ui/badge";
 import { useInventoryStatus } from "./hooks/useInventoryStatus";
 import AddToInventoryDialog from "./forms/AddToInventoryDialog";
+import { useSimulatorStore } from "@/store/user/useSimulatorStore";
 
 
 const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean }) => {
@@ -45,6 +46,9 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
   const [inventoryDialogOpen, setInventoryDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  //Currency
+  const { currency } = useSimulatorStore();
+   
 
   // MEMOIZED FILTERING
   const filteredData = useMemo(() => {
@@ -84,7 +88,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
       ),
       cell: ({ row }) => (
         <span className="tabular-nums">
-          ${row.original.unitCost.toFixed(2)}
+          {currency}{row.original.unitCost.toFixed(2)}
         </span>
       ),
       size: 90,
@@ -96,7 +100,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
       ),
       cell: ({ row }) => (
         <span className="tabular-nums">
-          ${row.original.unitPrice.toFixed(2)}
+          {currency}{row.original.unitPrice.toFixed(2)}
         </span>
       ),
       size: 90,
@@ -113,67 +117,70 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
     },
     {
       id: "inventory",
-      header: "Inventory",
-      enableSorting: false,
+      enableSorting: true,
+
+      header: ({ column }) => (
+        <SortableHeader column={column} label="Inventory" />
+      ),
+
+      // For sorting purposes, we return 1 if in inventory, else 0
+      accessorFn: (row) =>
+        useInventoryStore
+          .getState()
+          .inventory
+          .some(item => item.productId === String(row.id))
+          ? 1
+          : 0,
+
       cell: ({ row }) => {
         const product = row.original
         const inInventory = useInventoryStatus(String(product.id))
 
         return (
-        <div className="flex items-center justify-between gap-2 lg:gap-0 xl:gap-0 w-full">
+          <div className="flex items-center justify-between gap-2 lg:gap-0 xl:gap-0 w-full">
+            <div className="shrink-0 sm:mr-0 lg:-mr4 xl:-mr-6">
+              {inInventory ? (
+                <Badge className="bg-green-600 text-white whitespace-nowrap">
+                  In inventory
+                </Badge>
+              ) : (
+                <Badge
+                  variant="secondary"
+                  className="bg-gray-400 text-white whitespace-nowrap"
+                >
+                  Not added
+                </Badge>
+              )}
+            </div>
 
-          {/* Status */}
-          <div className="shrink-0 sm: mr-0 lg:-mr4 xl:-mr-6">
-            {inInventory ? (
-              <Badge className="bg-green-600 text-white whitespace-nowrap">
-                In inventory
-              </Badge>
-            ) : (
-              <Badge
-                variant="secondary"
-                className="bg-gray-400 text-white whitespace-nowrap"
-              >
-                Not added
-              </Badge>
-            )}
+            <div className="shrink-0">
+              {inInventory ? (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="jbtn-danger h-8 w-8 p-0"
+                  onClick={() => removeFromInventory(String(product.id))}
+                >
+                  ➖
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="jbtn-passive h-8 w-8 p-0"
+                  onClick={() => {
+                    setSelectedProduct(product)
+                    setInventoryDialogOpen(true)
+                  }}
+                >
+                  ➕
+                </Button>
+              )}
+            </div>
           </div>
-
-          {/* Action */}
-          <div className="shrink-0">
-            {inInventory ? (
-              <Button
-                size="sm"
-                variant="ghost"
-                className="jbtn-danger
-                h-8
-                w-8
-                p-0"
-                onClick={() => removeFromInventory(String(product.id))}
-              >
-                ➖
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                variant="ghost"
-                className="jbtn-passive
-                h-8
-                w-8
-                p-0"
-                onClick={() => {
-                  setSelectedProduct(product)
-                  setInventoryDialogOpen(true)
-                }}
-              >
-                ➕
-              </Button>
-            )}
-          </div>
-        </div>
-      )
-
-
+        )
       },
+
       size: 240,
     },
     {
@@ -183,7 +190,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
       enableSorting: false,
       size: 48,
     },
-  ], []);
+  ], [currency, removeFromInventory]);
 
 
   // TABLE INSTANCE
@@ -257,6 +264,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
                 <SelectItem value="name">Name</SelectItem>
                 <SelectItem value="unitCost">Cost</SelectItem>
                 <SelectItem value="unitPrice">Price</SelectItem>
+                <SelectItem value="inventory">Inventory</SelectItem>
               </SelectContent>
             </Select>
 
@@ -296,7 +304,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
 
           <TableBody>
           {loading ? (
-            // 1 LOADING STATE (Excel-like skeleton grid)
+            // 1 LOADING STATE 
             Array.from({ length: pagination.pageSize }).map((_, rowIdx) => (
               <TableRow key={`skeleton-${rowIdx}`}>
                 {table.getAllColumns().map((col, colIdx) => (

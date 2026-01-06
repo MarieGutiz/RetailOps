@@ -1,6 +1,6 @@
 // src/hooks/useSimulator.ts
 import { analyzeABC } from "@/services/api/abc.api";
-import { runABCAnalysis } from "@/services/sim/runABCAnalysis";
+import { runABCAnalysis } from "@/services/sim/segmentation/runABCAnalysis";
 import type { ABCData, AbcItemDto, AbcRequestDto, ABCResult } from "@/types/abc";
 import type { Product } from "@/types/products";
 import type { SimulatorABCOutput } from "@/types/simulator";
