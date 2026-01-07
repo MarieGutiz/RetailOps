@@ -17,7 +17,7 @@ console.log(result.categoryA);
 console.log("Total items "+result.summary?.totalItems + " and total values "+ result.summary?.totalValue);
   const handleAdd = () => {
     const newProduct = {
-      id: Date.now(), // unique ID based on timestamp
+      id: String(Date.now()), // unique ID based on timestamp
       name: `Orange Juice ${products.length + 1}`, // makes each product distinct
       category: "A",
       unitCost: 5,

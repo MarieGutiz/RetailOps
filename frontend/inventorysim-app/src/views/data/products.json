@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "sku": "SNK-POT-50G",
     "name": "Potato Chips",
     "category": "Snacks",
     "description": "Crispy salted potato chips in a 50g bag.",
@@ -9,6 +10,7 @@
   },
   {
     "id": 2,
+    "sku": "BEV-COLA-330ML",
     "name": "Cola Drink",
     "category": "Beverages",
     "description": "Refreshing carbonated soft drink, 330ml can.",
@@ -17,10 +19,20 @@
   },
   {
     "id": 3,
+    "sku": "CNF-CHOC-45G",
     "name": "Chocolate Bar",
     "category": "Confectionery",
     "description": "Milk chocolate bar, 45g.",
     "unitCost": 0.8,
     "unitPrice": 1.5
+  },
+  {
+    "id": 4,
+    "sku": "SNK-CHIPAHOY-200G",
+    "name": "Chips A'hoy Cookies",
+    "category": "Snacks",
+    "description": "Cookies with chocolate chips, 200g pack.",
+    "unitCost": 0.9,
+    "unitPrice": 1.8
   }
 ]

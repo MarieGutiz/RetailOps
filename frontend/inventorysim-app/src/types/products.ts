@@ -2,7 +2,8 @@
 import { z } from "zod"
 
 export interface Product{
-    id?: number;
+    id?: string;
+    sku?: string;
     name: string;
     category?:string;
     description?: string;
@@ -12,7 +13,8 @@ export interface Product{
 
 
 export const productSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
+  sku: z.string().optional(),
   name: z.string(),
   category: z.string().optional(),
   description: z.string().optional(),

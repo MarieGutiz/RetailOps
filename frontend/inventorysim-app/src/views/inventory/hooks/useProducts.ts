@@ -6,6 +6,7 @@ import type { Product } from "@/types/products";
 export const useProducts = () => {
   const addProduct = useProductStore((s) => s.addProduct);
   const [newProduct, setNewProduct] = useState<Product>({
+    sku: "",
     name: "",
     category: "",
     description: "",
@@ -18,10 +19,11 @@ export const useProducts = () => {
 
     addProduct({
       ...newProduct,
-      id: Date.now(),
+      id: Date.now().toString(),
     });
 
     setNewProduct({
+      sku: "",
       name: "",
       category: "",
       description: "",
