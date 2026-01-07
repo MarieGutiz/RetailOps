@@ -51,7 +51,15 @@ const ProductDialog = ({
             onChange={(e) => onChange({ ...product, name: e.target.value })}
           />
         </div>
-
+        {/* SKU */}
+        <div className="j-dialog-field">
+          <Label className="j-dialog-label">SKU</Label>
+          <Input
+            placeholder="Product SKU"
+            value={product.sku}
+            onChange={(e) => onChange({ ...product, sku: e.target.value })}
+          />
+        </div>
         {/* Category */}
         <div className="j-dialog-field">
           <Label className="j-dialog-label">Category</Label>

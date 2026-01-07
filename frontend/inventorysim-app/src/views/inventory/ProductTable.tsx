@@ -53,7 +53,8 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
   // MEMOIZED FILTERING
   const filteredData = useMemo(() => {
     return data.filter((p) =>
-      p.name.toLowerCase().includes(search.toLowerCase())
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.sku?.toLowerCase().includes(search.toLowerCase())
     );
   }, [data, search]);
 
@@ -71,6 +72,18 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
       ),
       size: 200,
     },
+    {
+    accessorKey: "sku",
+    header: ({ column }) => (
+      <SortableHeader column={column} label="SKU" />
+    ),
+    cell: ({ row }) => (
+      <span className="font-mono text-xs text-muted-foreground truncate">
+        {row.original.sku}
+      </span>
+    ),
+    size: 120,
+  },
     {
       accessorKey: "category",
       header: "Category",
@@ -137,16 +150,16 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
         const inInventory = useInventoryStatus(String(product.id))
 
         return (
-          <div className="flex items-center justify-between gap-2 lg:gap-0 xl:gap-0 w-full">
+          <div className="flex items-center justify-between gap-3 lg:gap-0 xl:gap-0 w-full">
             <div className="shrink-0 sm:mr-0 lg:-mr4 xl:-mr-6">
               {inInventory ? (
-                <Badge className="bg-green-600 text-white whitespace-nowrap">
+                <Badge className="bg-green-600 text-white whitespace-nowrap text-[10px] px-2 py-0.5">
                   In inventory
                 </Badge>
               ) : (
                 <Badge
                   variant="secondary"
-                  className="bg-gray-400 text-white whitespace-nowrap"
+                  className="bg-gray-400 text-white whitespace-nowrap text-[10px] px-2 py-0.5"
                 >
                   Not added
                 </Badge>
@@ -158,7 +171,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="jbtn-danger h-8 w-8 p-0"
+                  className="jbtn-danger h-7 w-7 p-0 text-xs"
                   onClick={() => removeFromInventory(String(product.id))}
                 >
                   ➖
@@ -181,7 +194,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
         )
       },
 
-      size: 240,
+      size: 320,
     },
     {
       id: "actions",
@@ -262,6 +275,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="sku">SKU</SelectItem>
                 <SelectItem value="unitCost">Cost</SelectItem>
                 <SelectItem value="unitPrice">Price</SelectItem>
                 <SelectItem value="inventory">Inventory</SelectItem>
