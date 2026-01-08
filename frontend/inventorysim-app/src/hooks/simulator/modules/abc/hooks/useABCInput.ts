@@ -4,6 +4,12 @@ import type { ABCData, ABCTableRow, ParetoPoint } from "@/types/abc"
 import { useProductStore } from "@/store/inventory/useProductStore"
 import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 
+/**
+ * 
+ * Hook to get ABC input data from inventory and products
+ * @return ABCData[]
+ * 
+ */
 export const useABCInput = (): ABCData[] => {
   const products = useProductStore(s => s.products)
   const inventory = useInventoryStore(s => s.inventory)
@@ -22,6 +28,11 @@ export const useABCInput = (): ABCData[] => {
   }, [inventory, products])
 }
 
+/**
+ * 
+ * @param abcInput 
+ * @returns the ABC summary data grouped by category A, B, C
+ */
 
 export const useABCSummary = (abcInput: ABCData[]) => {
   return useMemo(() => {
@@ -63,4 +74,15 @@ export const tooltipParetoLabels: Record<string, string> = {
   metric: "Total Value",
   cumulativePct: "Cumulative contribution",
 }
+
+// hooks/useABCColors.ts
+export const useABCColors = () => {
+  const colors = {
+    A: { bg: "bg-emerald-100", hover: "hover:bg-emerald-200" },
+    B: { bg: "bg-amber-100", hover: "hover:bg-amber-200" },
+    C: { bg: "bg-rose-100", hover: "hover:bg-rose-200" },
+  };
+
+  return { colors };
+};
 

@@ -4,7 +4,7 @@ import type { ParetoPoint } from "@/types/abc"
 import { useMemo, useState } from "react"
 import { Line, XAxis, CartesianGrid, ResponsiveContainer, YAxis, Tooltip, Bar, ComposedChart, Cell } from "recharts"
 import ParetoPlotFooter from "./ParetoPlotFooter"
-import { tooltipParetoLabels } from "@/hooks/simulator/modules/abc/useABCInput"
+import { tooltipParetoLabels } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
 
 
 const chartConfig = {
