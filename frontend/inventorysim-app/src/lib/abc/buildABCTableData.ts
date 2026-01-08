@@ -1,7 +1,7 @@
 import type { ABCData, ABCTableRow } from "@/types/abc";
 
 export const buildABCTableData = (products: ABCData[]): ABCTableRow[] => {
-  if (!products.length) return [];
+  if (!products.length) return [];  
 
     // 1. Add total value
     const withValue = products.map((p) => ({

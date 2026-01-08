@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { useSimulatorStore } from '@/store/user/useSimulatorStore'
 import type { Product } from '@/types/products'
 import { toast } from 'sonner'
+import { useABCColors } from '@/hooks/simulator/modules/abc/hooks/useABCInput'
 
 export interface InventoryRow {
   product:Product,
@@ -15,7 +16,11 @@ export interface InventoryRow {
   inventoryValue: number   // unitCost * quantity
   revenue: number         // unitPrice * quantity
   totalProfit: number     // (unitPrice - unitCost) * quantity
+
+  abcClass?: "A" | "B" | "C"  
+  categoryContributionPct?: number // cumulative %
 }
+
 export interface InventoryTotals {
   totalQuantity: number
   inventoryValue: number
@@ -40,6 +45,9 @@ const InventoryStockView = ({
 }) => {
   const [confirm, setConfirm] = useState<null | "remove-inventory">(null)
   const { currency } = useSimulatorStore()
+  // ABC colors
+  const { colors } = useABCColors();
+  
 
   return (
     <div>
@@ -68,17 +76,27 @@ const InventoryStockView = ({
                   <TableHead className="text-right">Inventory Value(cost)</TableHead>
                   <TableHead className="text-right">Revenue</TableHead>
                   <TableHead className="text-right">Profit</TableHead>
+                  <TableHead className="text-center">ABC</TableHead>
+                  <TableHead className="text-right">Cumulative %</TableHead>
                   <TableHead className="w-10"></TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
-                {rows.map((row) => (
+                {rows.map((row) => {
+                  // Ensure the class is exactly "A" | "B" | "C"
+                  const abcClass = row.abcClass as "A" | "B" | "C" | undefined;
+                  const rowColor = abcClass ? colors[abcClass] : undefined;
+
+                  return (
                   <TableRow
                     key={row.product.sku}
-                    className="odd:bg-muted/20 hover:bg-muted/40"
+                    // className="odd:bg-muted/20 hover:bg-muted/40"
+                    className={`                      
+                       ${rowColor ? `${rowColor.bg} ${rowColor.hover}` : ""}
+                    `}
                   >
-                    <TableCell className="text-center">{row.product.sku}</TableCell>
+                    <TableCell className="text-center font-semibold">{row.product.sku}</TableCell>
                     <TableCell className="text-center">{row.product.name}</TableCell>
                     <TableCell className="text-center">{row.product.category}</TableCell>
                     <TableCell className="text-right tabular-nums">
@@ -106,6 +124,16 @@ const InventoryStockView = ({
                     <TableCell className="text-right tabular-nums font-medium text-emerald-600">
                       {currency}{row.totalProfit.toFixed(2)}
                     </TableCell>
+                    <TableCell className="text-center font-semibold">
+                      {row.abcClass ?? "-"}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {row.categoryContributionPct != null
+                        ? `${(row.categoryContributionPct).toFixed(1)}%`
+                        : "-"}
+                    </TableCell>
+
+
                     <TableCell className="text-center">
                       <Button
                         variant="destructive"
@@ -119,7 +147,9 @@ const InventoryStockView = ({
                       </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                 );
+  })}
+            
 
                 {/* TOTALS ROW */}
                 <TableRow className="sticky bottom-0 bg-background border-t-2 border-muted font-semibold">
@@ -128,6 +158,7 @@ const InventoryStockView = ({
                   <TableCell className="text-right tabular-nums">{currency}{totals.inventoryValue.toFixed(2)}</TableCell>
                   <TableCell className="text-right tabular-nums">{currency}{totals.revenue.toFixed(2)}</TableCell>
                   <TableCell className="text-right tabular-nums text-emerald-600">{currency}{totals.totalProfit.toFixed(2)}</TableCell>
+                  <TableCell colSpan={2} className="text-right tabular-nums"> 100 %</TableCell>
                   <TableCell />
                 </TableRow>
 

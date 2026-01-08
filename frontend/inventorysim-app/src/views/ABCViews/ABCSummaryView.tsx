@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useABCInput, useABCSummary } from "@/hooks/simulator/modules/abc/useABCInput"
+import { useABCInput, useABCSummary } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
 import ABCSummaryCard from "./ABCSummaryCard"
 
 const ABCSummaryView = () => {
