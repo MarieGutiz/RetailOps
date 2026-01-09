@@ -13,7 +13,8 @@ const InventoryStockView = ({
   selectedProduct,
   onSelectProduct,
   onHover,
-  hoveredCategory
+  hoveredCategory,
+  loading,
 }: {
   rows: InventoryRow[]
   totals: InventoryTotals
@@ -23,12 +24,11 @@ const InventoryStockView = ({
   onSelectProduct: (p: Product | null) => void
    hoveredCategory: "A" | "B" | "C" | null;
    onHover: (category: "A" | "B" | "C" | null) => void;
+  loading: boolean
 }) => {  
 
   return (
-    <div className="overflow-hidden">
-      
-    <Card className="w-full max-w-full mx-auto overflow-hidden">
+    <Card >
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="j-heading j-h1  sm: text-left text-2x">
@@ -39,10 +39,7 @@ const InventoryStockView = ({
           </p>
         </div>                
       </CardHeader>      
-      <CardContent className="p-0">
-      <div className="relative w-full overflow-hidden">
-      <div className="@container/main flex flex-col min-w-0">
-        <div className="relative overflow-x-auto overscroll-x-contain">
+      <CardContent >     
           <StockTable
             rows={rows}
             totals={totals}
@@ -52,13 +49,11 @@ const InventoryStockView = ({
             onSelectProduct={onSelectProduct}
             hoveredCategory={hoveredCategory}
             onHover={onHover}
+            loading={loading}
           />
-      </div>
-      </div>
-    </div>
+      
     </CardContent>
       </Card>
-    </div>
   )
 }
 

@@ -2,7 +2,7 @@
 import ModuleContainer from "../../ModuleContainer"
 import ABCSummaryView from "@/views/ABCViews/ABCSummaryView"
 import ParetoCurveView from "@/views/ABCViews/plots/ParetoCurveView"
-import { useABCHover, useABCInput, useABCSummary } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
+import { useABCHover, useABCInput, useABCSummary, useLoadABC } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
 import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 import { useInventoryStore } from "@/store/inventory/useInventoryStore"
 import { useProductStore } from "@/store/inventory/useProductStore"
@@ -12,12 +12,15 @@ import type { InventoryRow } from "@/types/inventory"
 import InventoryStockView from "@/views/inventory/InventoryStockView"
 
 const InventoryStockModule = () => {
+  useLoadABC(100)  //Fake delay to simulate loading
+  
   const abcInput = useABCInput()
   const abcTableData = buildABCTableData(abcInput)
   const paretoData = buildParetoData(abcTableData)
 
   const products = useProductStore((s) => s.products)
   const inventory = useInventoryStore((s) => s.inventory)
+  const loading = useInventoryStore((s) => s.loading)
 
   const abcSummary = useABCSummary(abcInput); // returns totalValue + A/B/C {count, valuePct}
 
@@ -126,6 +129,7 @@ const totals = useMemo(() => {
         onSelectProduct={setSelectedProduct}
         hoveredCategory={hoveredCategory}
         onHover={onHover}
+        loading={loading}
       />
 
 

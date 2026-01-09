@@ -32,10 +32,13 @@ const Prime = () => {
         <TopHeader />
         {/* pushes content below header */}
         <main className="pt-0"> 
-          <GuestLimitAlert />
-          {/* Global Header and module container */}
-          {/* <PrimeContent /> */}
-          <Outlet />
+          <div className="@container/main flex flex-col min-w-0">
+            {/* Guest Limit Alert */}
+            <GuestLimitAlert />
+            {/* Global Header and module container */}
+            <Outlet />          
+          </div>
+          
         
       </main> 
     </PrimeLayoutProvider>
