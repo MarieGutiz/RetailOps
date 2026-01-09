@@ -1,3 +1,4 @@
+import { saveToStorage } from "@/utils/storage";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -8,16 +9,21 @@ export interface InventoryItem {
 
 interface InventoryStore {
   inventory: InventoryItem[];
+  loading: boolean;
   addToInventory: (productId: string, quantity: number) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   removeFromInventory: (productId: string) => void;
   clearInventory: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
 export const useInventoryStore = create<InventoryStore>()(
   persist(
     (set) => ({
       inventory: [],
+      loading: false,
+
+      setLoading: (loading) => set({ loading }),
 
       addToInventory: (productId, quantity) =>
         set((state) => {
@@ -59,7 +65,16 @@ export const useInventoryStore = create<InventoryStore>()(
     }),
     {
       name: "inventory-store",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => ({
+        getItem: saveToStorage.getItem,
+        setItem: saveToStorage.setItem,
+        removeItem: saveToStorage.removeItem,
+        })),
+      // exclude loading from persistence
+      partialize: (state) => ({
+        inventory: state.inventory,
+      }),
+
     }
   )
 );

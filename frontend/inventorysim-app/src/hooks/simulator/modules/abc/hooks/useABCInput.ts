@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useInventoryStore } from "@/store/inventory/useInventoryStore"
 import type { ABCData } from "@/types/abc"
 import { useProductStore } from "@/store/inventory/useProductStore"
 import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 
+  const setLoading = useInventoryStore((s) => s.setLoading) 
 /**
  * 
  * Hook to get ABC input data from inventory and products
@@ -98,4 +99,16 @@ export const useABCHover = () => {
 };
 
 
+// Simulate loading state when ABC input changes
+export function useLoadABC(delay = 800) {
+  const setLoading = useInventoryStore((s) => s.setLoading)
 
+  useEffect(() => {
+    setLoading(true)
+    const t = setTimeout(() => {
+      setLoading(false)
+    }, delay)
+
+    return () => clearTimeout(t)
+  }, [setLoading, delay])
+}

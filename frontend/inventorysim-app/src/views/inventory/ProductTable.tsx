@@ -212,6 +212,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
     pageIndex: 0,
     pageSize: 3,
     });
+    
   const table = useReactTable({
     data: filteredData,
     columns,
