@@ -1,32 +1,9 @@
 import { Card,  CardHeader,  CardTitle,  CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/Input'
-import  { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from '@/components/ui/table'
-import { Trash2 } from 'lucide-react'
-import { useState } from 'react'
-import ConfirmActionDialog from './forms/ConfirmActionDialog'
-import { Button } from '@/components/ui/Button'
-import { useSimulatorStore } from '@/store/user/useSimulatorStore'
 import type { Product } from '@/types/products'
-import { toast } from 'sonner'
-import { useABCColors } from '@/hooks/simulator/modules/abc/hooks/useABCInput'
+import type { InventoryRow, InventoryTotals } from '@/types/inventory'
+import StockTable from './StockTable'
 
-export interface InventoryRow {
-  product:Product,
-  quantity: number
-  inventoryValue: number   // unitCost * quantity
-  revenue: number         // unitPrice * quantity
-  totalProfit: number     // (unitPrice - unitCost) * quantity
 
-  abcClass?: "A" | "B" | "C"  
-  categoryContributionPct?: number // cumulative %
-}
-
-export interface InventoryTotals {
-  totalQuantity: number
-  inventoryValue: number
-  revenue: number
-  totalProfit: number
-}
 
 const InventoryStockView = ({
   rows,
@@ -35,6 +12,8 @@ const InventoryStockView = ({
   onRemove,
   selectedProduct,
   onSelectProduct,
+  onHover,
+  hoveredCategory
 }: {
   rows: InventoryRow[]
   totals: InventoryTotals
@@ -42,153 +21,43 @@ const InventoryStockView = ({
   onRemove: (id: string) => void
   selectedProduct: Product | null
   onSelectProduct: (p: Product | null) => void
-}) => {
-  const [confirm, setConfirm] = useState<null | "remove-inventory">(null)
-  const { currency } = useSimulatorStore()
-  // ABC colors
-  const { colors } = useABCColors();
-  
+   hoveredCategory: "A" | "B" | "C" | null;
+   onHover: (category: "A" | "B" | "C" | null) => void;
+}) => {  
 
   return (
-    <div>
-      <Card className="shadow-sm">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle className="j-heading j-h1  sm: text-left text-2x">
-              In Stock
-            </CardTitle>
-            <p className="j-heading j-subtitle text-base font-normal sm:text-left">
-              Define assumed stock quantities used for simulations
-            </p>
-          </div>                
-        </CardHeader>      
-        <CardContent className="p-0">
-          <div className="max-h-[480px] overflow-auto">
-            <Table className="border border-border">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-14 text-center">SKU</TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead className="text-right">Unit Cost</TableHead>
-                  <TableHead className="text-right">Unit Price</TableHead>
-                  <TableHead className="text-right">Quantity</TableHead>
-                  <TableHead className="text-right">Inventory Value(cost)</TableHead>
-                  <TableHead className="text-right">Revenue</TableHead>
-                  <TableHead className="text-right">Profit</TableHead>
-                  <TableHead className="text-center">ABC</TableHead>
-                  <TableHead className="text-right">Cumulative %</TableHead>
-                  <TableHead className="w-10"></TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {rows.map((row) => {
-                  // Ensure the class is exactly "A" | "B" | "C"
-                  const abcClass = row.abcClass as "A" | "B" | "C" | undefined;
-                  const rowColor = abcClass ? colors[abcClass] : undefined;
-
-                  return (
-                  <TableRow
-                    key={row.product.sku}
-                    // className="odd:bg-muted/20 hover:bg-muted/40"
-                    className={`                      
-                       ${rowColor ? `${rowColor.bg} ${rowColor.hover}` : ""}
-                    `}
-                  >
-                    <TableCell className="text-center font-semibold">{row.product.sku}</TableCell>
-                    <TableCell className="text-center">{row.product.name}</TableCell>
-                    <TableCell className="text-center">{row.product.category}</TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {currency}{row.product.unitCost.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {currency}{row.product.unitPrice.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Input
-                        type="number"
-                        className="w-20 text-right h-8 px-2 border-border focus:ring-1 focus:ring-primary"
-                        value={row.quantity}
-                        onChange={(e) =>
-                          onQuantityChange(String(row.product.id), Number(e.target.value))
-                        }
-                      />
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums font-medium">
-                      {currency}{row.inventoryValue.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums font-medium">
-                      {currency}{row.revenue.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums font-medium text-emerald-600">
-                      {currency}{row.totalProfit.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-center font-semibold">
-                      {row.abcClass ?? "-"}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {row.categoryContributionPct != null
-                        ? `${(row.categoryContributionPct).toFixed(1)}%`
-                        : "-"}
-                    </TableCell>
-
-
-                    <TableCell className="text-center">
-                      <Button
-                        variant="destructive"
-                        className="jbtn-danger h-8 w-8 p-0"
-                        onClick={() => {
-                          onSelectProduct(row.product)
-                          setConfirm("remove-inventory")
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                 );
-  })}
-            
-
-                {/* TOTALS ROW */}
-                <TableRow className="sticky bottom-0 bg-background border-t-2 border-muted font-semibold">
-                  <TableCell colSpan={5} className="text-right">Totals</TableCell>
-                  <TableCell className="text-right tabular-nums">{totals.totalQuantity}</TableCell>
-                  <TableCell className="text-right tabular-nums">{currency}{totals.inventoryValue.toFixed(2)}</TableCell>
-                  <TableCell className="text-right tabular-nums">{currency}{totals.revenue.toFixed(2)}</TableCell>
-                  <TableCell className="text-right tabular-nums text-emerald-600">{currency}{totals.totalProfit.toFixed(2)}</TableCell>
-                  <TableCell colSpan={2} className="text-right tabular-nums"> 100 %</TableCell>
-                  <TableCell />
-                </TableRow>
-
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
+    <div className="overflow-hidden">
+      
+    <Card className="w-full max-w-full mx-auto overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle className="j-heading j-h1  sm: text-left text-2x">
+            In Stock
+          </CardTitle>
+          <p className="j-heading j-subtitle text-base font-normal sm:text-left">
+            Define assumed stock quantities used for simulations
+          </p>
+        </div>                
+      </CardHeader>      
+      <CardContent className="p-0">
+      <div className="relative w-full overflow-hidden">
+      <div className="@container/main flex flex-col min-w-0">
+        <div className="relative overflow-x-auto overscroll-x-contain">
+          <StockTable
+            rows={rows}
+            totals={totals}
+            onQuantityChange={onQuantityChange}
+            onRemove={onRemove}
+            selectedProduct={selectedProduct}
+            onSelectProduct={onSelectProduct}
+            hoveredCategory={hoveredCategory}
+            onHover={onHover}
+          />
+      </div>
+      </div>
+    </div>
+    </CardContent>
       </Card>
-
-      {selectedProduct && (
-        <ConfirmActionDialog
-          open={confirm !== null}
-          onOpenChange={(open) => !open && setConfirm(null)}
-          title="Remove from inventory"
-          description={
-            <>
-              Are you sure you want to remove <b>{selectedProduct.name}</b> from inventory?<br/>
-              This action cannot be undone.
-            </>
-          }
-          confirmLabel="Remove"
-          variant="danger"
-          onConfirm={() => {
-            onRemove(String(selectedProduct.id))
-            toast.success("Removed from inventory")
-            setConfirm(null)
-            onSelectProduct(null)
-          }}
-        />
-      )}
     </div>
   )
 }

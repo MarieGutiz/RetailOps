@@ -1,6 +1,6 @@
-import { useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useInventoryStore } from "@/store/inventory/useInventoryStore"
-import type { ABCData, ABCTableRow, ParetoPoint } from "@/types/abc"
+import type { ABCData } from "@/types/abc"
 import { useProductStore } from "@/store/inventory/useProductStore"
 import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 
@@ -61,28 +61,41 @@ export const useABCSummary = (abcInput: ABCData[]) => {
   }, [abcInput])
 }
 
-export const buildParetoData = (rows: ABCTableRow[]): ParetoPoint[] => {
-  return rows.map((row) => ({
-    name: row.product.name,
-    metric: row.totalValue,
-    cumulativePct: row.cumulative,
-    category: row.category,
-  }))
-}
-
-export const tooltipParetoLabels: Record<string, string> = {
-  metric: "Total Value",
-  cumulativePct: "Cumulative contribution",
-}
-
-// hooks/useABCColors.ts
+// Assign colors based on ABC category
 export const useABCColors = () => {
   const colors = {
-    A: { bg: "bg-emerald-100", hover: "hover:bg-emerald-200" },
-    B: { bg: "bg-amber-100", hover: "hover:bg-amber-200" },
-    C: { bg: "bg-rose-100", hover: "hover:bg-rose-200" },
+    A: {
+      bg: "bg-emerald-100",
+      hover: "hover:bg-emerald-200",
+      active: "bg-emerald-200",
+    },
+    B: {
+      bg: "bg-amber-100",
+      hover: "hover:bg-amber-200",
+      active: "bg-amber-200",
+    },
+    C: {
+      bg: "bg-rose-100",
+      hover: "hover:bg-rose-200",
+      active: "bg-rose-200",
+    },
   };
-
   return { colors };
 };
+
+// Change background color of elements based on hovered ABC category
+export const useABCHover = () => {
+  const [hoveredCategory, setHoveredCategory] = useState<"A" | "B" | "C" | null>(null);
+
+  const onHover = useCallback((category: "A" | "B" | "C" | null) => {
+    setHoveredCategory(category);
+  }, []);
+
+  return {
+    hoveredCategory,
+    onHover,
+  };
+};
+
+
 

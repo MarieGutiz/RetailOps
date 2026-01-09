@@ -4,7 +4,7 @@ import type { ParetoPoint } from "@/types/abc"
 import { useMemo, useState } from "react"
 import { Line, XAxis, CartesianGrid, ResponsiveContainer, YAxis, Tooltip, Bar, ComposedChart, Cell } from "recharts"
 import ParetoPlotFooter from "./ParetoPlotFooter"
-import { tooltipParetoLabels } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
+import { tooltipParetoLabels } from "@/lib/abc/buildParetoData"
 
 
 const chartConfig = {
@@ -41,7 +41,7 @@ export function ParetoCurveView({ data }: { data: ParetoPoint[] }) {
   const [hoveredItem, setHoveredItem] = useState<ParetoPoint | null>(null);
 
   return (
-    <Card>
+    <Card className="shadow-sm overflow-hidden">
       <CardHeader>
         <CardTitle>Pareto Curve Plot</CardTitle>
         <CardDescription>
