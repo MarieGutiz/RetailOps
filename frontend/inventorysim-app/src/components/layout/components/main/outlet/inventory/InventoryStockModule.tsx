@@ -1,12 +1,15 @@
-import InventoryStockView, { type InventoryRow } from "@/views/inventory/InventoryStockView"
+
 import ModuleContainer from "../../ModuleContainer"
 import ABCSummaryView from "@/views/ABCViews/ABCSummaryView"
 import ParetoCurveView from "@/views/ABCViews/plots/ParetoCurveView"
-import { useABCInput, buildParetoData, useABCSummary } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
+import { useABCHover, useABCInput, useABCSummary } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
 import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 import { useInventoryStore } from "@/store/inventory/useInventoryStore"
 import { useProductStore } from "@/store/inventory/useProductStore"
 import { useMemo, useState } from "react"
+import { buildParetoData } from "@/lib/abc/buildParetoData"
+import type { InventoryRow } from "@/types/inventory"
+import InventoryStockView from "@/views/inventory/InventoryStockView"
 
 const InventoryStockModule = () => {
   const abcInput = useABCInput()
@@ -63,56 +66,6 @@ const rows = useMemo(() => {
 }, [inventory, products, abcMap, abcContributionMap]);
 
 
-//   // Create a map for quick ABC lookup
-//   const abcMap = useMemo(() => {
-//       return new Map(
-//         abcTableData.map(r => [String(r.product.id), r.category])
-//       )
-//     }, [abcTableData])  
-
-//   // Create a map for quick Pareto lookup
-//   const paretoMap = useMemo(() => {
-//   return new Map(
-//     abcTableData.map(r => [
-//       String(r.product.id),
-//       {
-//         abcClass: r.category,
-//         paretoSharePct: r.cumulative, // 0-100%
-//       },
-//     ])
-//   )
-// }, [abcTableData])
-
-
- 
-//   const rows = useMemo(() => {
-//   return inventory
-//     .map((item) => {
-//       const product = products.find((p) => String(p.id) === item.productId)
-//       if (!product) return null // skip missing product
-//       // Get ABC class from map
-//       const abcClass = abcMap.get(String(product.id))
-//       // Get Pareto data from map
-//       const pareto = paretoMap.get(String(product.id))
-
-//       const unitCost = product.unitCost
-//       const unitPrice = product.unitPrice
-//       const quantity = item.quantity
-
-//       return {
-//         product,
-//         quantity,
-//         inventoryValue: unitCost * quantity,
-//         revenue: unitPrice * quantity,
-//         totalProfit: (unitPrice - unitCost) * quantity,
-//         ...(abcClass ? { abcClass } : {}),
-//          ...(pareto ? { paretoSharePct: pareto.paretoSharePct } : {}),
-//       }
-//     })
-//     .filter((row): row is InventoryRow => row !== null)
-// }, [inventory, products])
-
-
 // Calculate totals --footer of the table
 const totals = useMemo(() => {
   return rows.reduce(
@@ -135,6 +88,9 @@ const totals = useMemo(() => {
 
     const updateQuantity = useInventoryStore((s) => s.updateQuantity)
     const removeFromInventory = useInventoryStore( (s) => s.removeFromInventory )
+
+    const { hoveredCategory, onHover } = useABCHover();
+
 
   return (
     <ModuleContainer
@@ -168,11 +124,13 @@ const totals = useMemo(() => {
         onRemove={removeFromInventory}
         selectedProduct={selectedProduct}
         onSelectProduct={setSelectedProduct}
+        hoveredCategory={hoveredCategory}
+        onHover={onHover}
       />
 
 
       <div className="mt-6 space-y-6">
-        <ABCSummaryView />
+        <ABCSummaryView hoveredCategory={hoveredCategory} onHover={onHover} />
         <ParetoCurveView data={paretoData} />
         {/* WhatIfPanel */}
     </div>
