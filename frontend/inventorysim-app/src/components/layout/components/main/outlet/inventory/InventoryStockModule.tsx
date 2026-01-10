@@ -41,6 +41,14 @@ const InventoryStockModule = () => {
     ]);
   }, [abcSummary]);
 
+  //Add to Pareto data the category contribution %
+  const enrichedParetoData = useMemo(() => {
+  return paretoData.map(p => ({
+    ...p,
+    categoryContributionPct: abcContributionMap.get(p.category),
+  }))
+}, [paretoData, abcContributionMap])
+
   // Build inventory rows with ABC data
 const rows = useMemo(() => {
   return inventory
@@ -135,7 +143,7 @@ const totals = useMemo(() => {
 
       <div className="mt-6 space-y-6">
         <ABCSummaryView hoveredCategory={hoveredCategory} onHover={onHover} />
-        <ParetoCurveView data={paretoData} />
+        <ParetoCurveView data={enrichedParetoData} hoveredCategory={hoveredCategory} onHover={onHover} />
         {/* WhatIfPanel */}
     </div>
 
