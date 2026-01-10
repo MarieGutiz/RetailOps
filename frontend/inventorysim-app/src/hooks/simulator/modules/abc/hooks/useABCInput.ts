@@ -4,7 +4,7 @@ import type { ABCData } from "@/types/abc"
 import { useProductStore } from "@/store/inventory/useProductStore"
 import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 
-  const setLoading = useInventoryStore((s) => s.setLoading) 
+ 
 /**
  * 
  * Hook to get ABC input data from inventory and products
@@ -111,4 +111,11 @@ export function useLoadABC(delay = 800) {
 
     return () => clearTimeout(t)
   }, [setLoading, delay])
+}
+
+// Impact label for each category
+export const impactLabel: Record<"A" | "B" | "C", string> = {
+  A: "High impact",
+  B: "Medium impact",
+  C: "Low impact",
 }

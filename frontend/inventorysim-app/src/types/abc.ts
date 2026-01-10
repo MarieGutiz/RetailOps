@@ -27,6 +27,7 @@ export interface ParetoPoint {
   metric: number
   cumulativePct: number
   category: "A" | "B" | "C"
+  categoryContributionPct?: number
 }
 
 // For backend DTO compatibility
