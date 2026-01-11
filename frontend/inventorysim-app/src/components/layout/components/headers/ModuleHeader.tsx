@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import PrimeBreadcrumb from "../main/PrimeBreadcrumb";
 import ModuleHeaderActions from "./ModuleHeaderActions";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ModuleContainerProps {
   title: string
@@ -38,16 +39,19 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
       {/* Right side → now using the ModuleHeaderActions component */}
       <ModuleHeaderActions>
         {userCases?.length > 0 && (
-          <select
-            id="user-case-select"
-            name="user-case-select"
-            className="toolbar-element jcombo-box toolbar-element-md w-fit sm:w-auto"
-            onChange={(e) => onUserCaseChange?.(e.target.value)}
-          >
+          <Select onValueChange={(value) => onUserCaseChange?.(value)}>
+          <SelectTrigger className="toolbar-element btn-flat-btn toolbar-element-md active w-fit sm:w-auto">
+            <SelectValue placeholder="Select user case" />
+          </SelectTrigger>
+
+          <SelectContent>
             {userCases.map((uc, i) => (
-              <option key={i} value={uc}>{uc}</option>
+              <SelectItem key={i} value={uc}>
+                {uc}
+              </SelectItem>
             ))}
-          </select>
+          </SelectContent>
+        </Select>
         )}
 
            {actions}

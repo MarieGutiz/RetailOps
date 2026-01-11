@@ -22,6 +22,20 @@ export interface ABCTableRow {
   category: "A" | "B" | "C";
 }
 
+export interface ABCCategorySummary {
+  count: number
+  valuePct: number
+}
+
+
+export interface ABCSummary {
+  totalValue: number
+  A: ABCCategorySummary
+  B: ABCCategorySummary
+  C: ABCCategorySummary
+}
+
+
 export interface ParetoPoint {
   name: string
   metric: number

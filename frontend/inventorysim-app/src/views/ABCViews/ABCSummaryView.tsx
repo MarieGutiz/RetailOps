@@ -1,16 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useABCInput, useABCSummary } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
 import ABCSummaryCard from "./ABCSummaryCard"
+import type { ABCSummary } from "@/types/abc";
 
 const ABCSummaryView = ({
+  summary,
   hoveredCategory,
   onHover
 }: {
-   hoveredCategory: "A" | "B" | "C" | null;
-   onHover: (category: "A" | "B" | "C" | null) => void;
+  summary: ABCSummary | null
+  hoveredCategory: "A" | "B" | "C" | null;
+  onHover: (category: "A" | "B" | "C" | null) => void;
 }) => {
-  const abcInput = useABCInput()
-  const summary = useABCSummary(abcInput)
 
   if (!summary) return null
 

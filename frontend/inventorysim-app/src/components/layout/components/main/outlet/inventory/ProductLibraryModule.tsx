@@ -16,7 +16,7 @@ const ProductLibraryModule = () => {
             actions={
               <>
                 <button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
-                  Simulate
+                  Import data
                 </button>
                 <button className="toolbar-element jbtn-flat-btn toolbar-element-md">
                   Helpers
