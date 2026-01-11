@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart"
 import type { ParetoPoint } from "@/types/abc"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Line, XAxis, CartesianGrid, ResponsiveContainer, YAxis, Tooltip, Bar, ComposedChart, Cell, ReferenceLine, Brush } from "recharts"
 import ParetoPlotFooter from "./ParetoPlotFooter"
 import CardHeaderPlot, { type ViewMode } from "./CardHeaderPlot"
@@ -68,7 +68,10 @@ export function ParetoCurveView({
   }
   }, [data, viewMode, cutoffCount])
 
-
+//  useEffect(() => {
+//   console.log("hoveredCategory changed:", hoveredCategory);
+//   console.log("visibleData categories:", visibleData.map(d => ({ name: d.name, category: d.category })));
+// }, [hoveredCategory, visibleData]);
   return (
     <Card className="shadow-sm overflow-hidden">
       <CardHeader>
@@ -80,8 +83,7 @@ export function ParetoCurveView({
       </CardHeader>
 
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <ResponsiveContainer width="100%" height={320}>
+        <ChartContainer className="w-full" config={chartConfig}>          
             <ComposedChart data={visibleData}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
 
@@ -177,18 +179,31 @@ export function ParetoCurveView({
                 radius={dense ? 0 : [4, 4, 0, 0]}
                 name="Total Value"
                 onMouseEnter={(_, index) => {
-                  setHoveredItem(data[index])
+                  // setHoveredItem(visibleData[index])
+
+                  const item = visibleData[index]
+                  setHoveredItem(item)
+                  onHover(item.category)
+                      // console.log("Bar hover → item:", item.name, "category:", item.category, "hoveredCategory:", hoveredCategory);
+
                 }}
-                onMouseLeave={() => setHoveredItem(null)}
+                onMouseLeave={() => {
+                  setHoveredItem(null)
+                  onHover(null)
+                }}
               >
-                {data.map((entry, index) => (
+                {visibleData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={abcColors[entry.category]}
                     fillOpacity={
-                      hoveredCategory && hoveredCategory !== entry.category ? 0.3 : 0.85
+                      // hoveredCategory && hoveredCategory !== entry.category ? 0.3 : 0.85
+                      hoveredCategory
+                      ? entry.category === hoveredCategory
+                        ? 0.9
+                        : 0.1
+                      : 0.85
                     }
-                    // fillOpacity={0.85}
                   />
                 ))}
               </Bar>
@@ -213,8 +228,7 @@ export function ParetoCurveView({
               travellerWidth={10}
               stroke="var(--muted-foreground)"
             />
-            </ComposedChart>
-          </ResponsiveContainer>
+            </ComposedChart>          
         </ChartContainer>
         <span className="text-xs text-muted-foreground">
           Showing {visibleData.length} of {data.length} products
@@ -230,3 +244,5 @@ export function ParetoCurveView({
 }
 
 export default ParetoCurveView
+
+

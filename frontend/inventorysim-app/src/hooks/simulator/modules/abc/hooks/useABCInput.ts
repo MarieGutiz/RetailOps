@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useInventoryStore } from "@/store/inventory/useInventoryStore"
-import type { ABCData } from "@/types/abc"
+import type { ABCData, ABCTableRow } from "@/types/abc"
 import { useProductStore } from "@/store/inventory/useProductStore"
-import { buildABCTableData } from "@/lib/abc/buildABCTableData"
 
  
 /**
@@ -35,11 +34,10 @@ export const useABCInput = (): ABCData[] => {
  * @returns the ABC summary data grouped by category A, B, C
  */
 
-export const useABCSummary = (abcInput: ABCData[]) => {
+export const useABCSummary = (rows: ABCTableRow[]) => {
   return useMemo(() => {
-    if (!abcInput.length) return null
-
-    const rows = buildABCTableData(abcInput)
+    if (!rows.length) return null
+    
     const totalValue = rows.reduce((s, r) => s + r.totalValue, 0)
 
     const byCategory = {
@@ -59,7 +57,7 @@ export const useABCSummary = (abcInput: ABCData[]) => {
       B: { count: byCategory.B.length, valuePct: percent(byCategory.B) },
       C: { count: byCategory.C.length, valuePct: percent(byCategory.C) },
     }
-  }, [abcInput])
+  }, [rows])
 }
 
 // Assign colors based on ABC category
@@ -100,7 +98,7 @@ export const useABCHover = () => {
 
 
 // Simulate loading state when ABC input changes
-export function useLoadABC(delay = 800) {
+export function useLoadABC(delay = 100) {
   const setLoading = useInventoryStore((s) => s.setLoading)
 
   useEffect(() => {

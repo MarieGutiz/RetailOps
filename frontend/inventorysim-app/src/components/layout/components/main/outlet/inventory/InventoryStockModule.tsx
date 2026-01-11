@@ -3,33 +3,43 @@ import ModuleContainer from "../../ModuleContainer"
 import ABCSummaryView from "@/views/ABCViews/ABCSummaryView"
 import ParetoCurveView from "@/views/ABCViews/plots/ParetoCurveView"
 import { useABCHover, useABCInput, useABCSummary, useLoadABC } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
-import { buildABCTableData } from "@/lib/abc/buildABCTableData"
+import { ABC_SCENARIOS, buildABCTableData } from "@/lib/abc/buildABCTableData"
 import { useInventoryStore } from "@/store/inventory/useInventoryStore"
 import { useProductStore } from "@/store/inventory/useProductStore"
 import { useMemo, useState } from "react"
 import { buildParetoData } from "@/lib/abc/buildParetoData"
 import type { InventoryRow } from "@/types/inventory"
 import InventoryStockView from "@/views/inventory/InventoryStockView"
+import { Button } from "@/components/ui/Button"
 
 const InventoryStockModule = () => {
   useLoadABC(100)  //Fake delay to simulate loading
-  
+  const [selectedCase, setSelectedCase] = useState<keyof typeof ABC_SCENARIOS>("Baseline");
+
   const abcInput = useABCInput()
-  const abcTableData = buildABCTableData(abcInput)
+  // const scenarioThresholds = ABC_SCENARIOS[selectedCase];
+  // const abcTableData = buildABCTableData(abcInput, scenarioThresholds);
+  // const abcTableData = buildABCTableData(abcInput)
+
+  const abcTableData = useMemo(
+  () => buildABCTableData(abcInput, ABC_SCENARIOS[selectedCase]),
+  [abcInput, selectedCase]
+  );
+
   const paretoData = buildParetoData(abcTableData)
 
   const products = useProductStore((s) => s.products)
   const inventory = useInventoryStore((s) => s.inventory)
   const loading = useInventoryStore((s) => s.loading)
 
-  const abcSummary = useABCSummary(abcInput); // returns totalValue + A/B/C {count, valuePct}
+  const abcSummary = useABCSummary(abcTableData); // returns totalValue + A/B/C {count, valuePct}
 
   // Create a map of productId → ABC class
   const abcMap = useMemo(() => {
-    return new Map(
-      buildABCTableData(abcInput).map(r => [String(r.product.id), r.category])
-    );
-}, [abcInput]);
+  return new Map(
+    abcTableData.map(r => [String(r.product.id), r.category])
+  );
+}, [abcTableData]);
 
   // Map category → % contribution (from summary card)
   const abcContributionMap = useMemo(() => {
@@ -42,12 +52,36 @@ const InventoryStockModule = () => {
   }, [abcSummary]);
 
   //Add to Pareto data the category contribution %
-  const enrichedParetoData = useMemo(() => {
-  return paretoData.map(p => ({
-    ...p,
-    categoryContributionPct: abcContributionMap.get(p.category),
-  }))
-}, [paretoData, abcContributionMap])
+//   const enrichedParetoData = useMemo(() => {
+//   return paretoData.map(p => ({
+//     ...p,
+//     categoryContributionPct: abcContributionMap.get(p.category),
+//   }))
+// }, [paretoData, abcContributionMap])
+
+const nameToCategory = useMemo(() => {
+  const map = new Map<string, "A" | "B" | "C">();
+  abcTableData.forEach(r => map.set(r.product.name, r.category));
+  return map;
+}, [abcTableData]);
+
+const enrichedParetoData = useMemo(() => {
+  return paretoData.map(p => {
+    const correctCategory = nameToCategory.get(p.name) ?? p.category;
+    const contributionPct = abcContributionMap.get(correctCategory);
+    // console.log("Mapping Pareto:", p.name, "category:", correctCategory, "contribution:", contributionPct);
+    return {
+      ...p,
+      category: correctCategory,
+      categoryContributionPct: contributionPct,
+    };
+  });
+}, [paretoData, nameToCategory, abcContributionMap]);
+
+
+
+
+
 
   // Build inventory rows with ABC data
 const rows = useMemo(() => {
@@ -97,6 +131,7 @@ const totals = useMemo(() => {
 }, [rows])
     const [selectedProduct, setSelectedProduct] = useState<any>(null)
 
+
     const updateQuantity = useInventoryStore((s) => s.updateQuantity)
     const removeFromInventory = useInventoryStore( (s) => s.removeFromInventory )
 
@@ -113,17 +148,29 @@ const totals = useMemo(() => {
         { label: "Stock" },
       ]}
       userCases={["Baseline", "Optimistic", "Pessimistic"]}
-      onUserCaseChange={(value) =>
-        console.log("Selected stock scenario:", value)
+      onUserCaseChange={(value) =>{
+          setSelectedCase(value as keyof typeof ABC_SCENARIOS);
+          console.log("Selected ABC scenario:", value);
+        }
       }
       actions={
         <>
-          <button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
+          <Button className="jbtn-passive h-8 w-8 p-0 text-muted-foreground hover:text-black">
+              <svg viewBox="0 0 24 24" className="h-4 w-4 hover:text-black">
+                <path
+                  d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"
+                  fill="currentColor"
+                />
+              </svg>
+       
+          </Button>
+
+          <Button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
             Simulate
-          </button>
-          <button className="toolbar-element jbtn-flat-btn toolbar-element-md">
+          </Button>
+          <Button className="toolbar-element jbtn-flat-btn toolbar-element-md">
             Reset
-          </button>
+          </Button>
         </>
       }
     >
@@ -142,7 +189,7 @@ const totals = useMemo(() => {
 
 
       <div className="mt-6 space-y-6">
-        <ABCSummaryView hoveredCategory={hoveredCategory} onHover={onHover} />
+        <ABCSummaryView summary={abcSummary} hoveredCategory={hoveredCategory} onHover={onHover} />
         <ParetoCurveView data={enrichedParetoData} hoveredCategory={hoveredCategory} onHover={onHover} />
         {/* WhatIfPanel */}
     </div>

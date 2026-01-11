@@ -1,6 +1,13 @@
 import type { ABCData, ABCTableRow } from "@/types/abc";
 
-export const buildABCTableData = (products: ABCData[]): ABCTableRow[] => {
+
+const DEFAULT_THRESHOLDS = { a: 80, b: 95, c: 100 };
+
+export const buildABCTableData = (
+    products: ABCData[],
+    thresholds = DEFAULT_THRESHOLDS):
+    ABCTableRow[] => {
+
   if (!products.length) return [];  
 
     // 1. Add total value
@@ -24,9 +31,11 @@ export const buildABCTableData = (products: ABCData[]): ABCTableRow[] => {
         cumulative += (p.totalValue / total) * 100;
 
         let category: "A" | "B" | "C";
-        if (cumulative <= 80) category = "A";
-        else if (cumulative <= 95) category = "B";
+
+        if (cumulative <= thresholds.a) category = "A";
+        else if (cumulative <= thresholds.b) category = "B";
         else category = "C";
+
 
         return {
         product: p.product,
@@ -36,4 +45,10 @@ export const buildABCTableData = (products: ABCData[]): ABCTableRow[] => {
         category,
         };
     });
+};
+
+export const ABC_SCENARIOS = {
+  Baseline: { a: 80, b: 95, c: 100 },        // default: 80% A, next 15% B, last 5% C
+  Optimistic: { a: 85, b: 97, c: 100 },      // more products get class A
+  Pessimistic: { a: 70, b: 90, c: 100 },     // fewer products get class A
 };
