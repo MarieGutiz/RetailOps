@@ -117,3 +117,5 @@ export const impactLabel: Record<"A" | "B" | "C", string> = {
   B: "Medium impact",
   C: "Low impact",
 }
+
+
