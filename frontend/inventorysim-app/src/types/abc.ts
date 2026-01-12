@@ -56,3 +56,11 @@ export interface AbcRequestDto {
   username?: string;
   mode?: 'classic' | 'multi';
 }
+
+//Delta
+
+export type ABCDelta = {
+  A: number
+  B: number
+  C: number
+} | null

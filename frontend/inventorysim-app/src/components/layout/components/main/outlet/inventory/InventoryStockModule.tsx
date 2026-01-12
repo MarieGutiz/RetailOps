@@ -11,15 +11,13 @@ import { buildParetoData } from "@/lib/abc/buildParetoData"
 import type { InventoryRow } from "@/types/inventory"
 import InventoryStockView from "@/views/inventory/InventoryStockView"
 import { Button } from "@/components/ui/Button"
+import Info from "@/views/ABCViews/info/Info"
 
 const InventoryStockModule = () => {
   useLoadABC(100)  //Fake delay to simulate loading
   const [selectedCase, setSelectedCase] = useState<keyof typeof ABC_SCENARIOS>("Baseline");
 
   const abcInput = useABCInput()
-  // const scenarioThresholds = ABC_SCENARIOS[selectedCase];
-  // const abcTableData = buildABCTableData(abcInput, scenarioThresholds);
-  // const abcTableData = buildABCTableData(abcInput)
 
   const abcTableData = useMemo(
   () => buildABCTableData(abcInput, ABC_SCENARIOS[selectedCase]),
@@ -51,13 +49,28 @@ const InventoryStockModule = () => {
     ]);
   }, [abcSummary]);
 
-  //Add to Pareto data the category contribution %
-//   const enrichedParetoData = useMemo(() => {
-//   return paretoData.map(p => ({
-//     ...p,
-//     categoryContributionPct: abcContributionMap.get(p.category),
-//   }))
-// }, [paretoData, abcContributionMap])
+  //Calculate the delta (delta vs. baseline) when is not baseline
+
+  const baselineTable = useMemo(
+  () => buildABCTableData(abcInput, ABC_SCENARIOS.Baseline),
+  [abcInput]
+)
+
+const baselineSummary = useABCSummary(baselineTable)
+
+const abcDeltas = useMemo(() => {
+  if (!abcSummary || !baselineSummary || selectedCase === "Baseline") {
+    return null
+  }
+
+  return {
+    A: abcSummary.A.valuePct - baselineSummary.A.valuePct,
+    B: abcSummary.B.valuePct - baselineSummary.B.valuePct,
+    C: abcSummary.C.valuePct - baselineSummary.C.valuePct,
+  }
+}, [abcSummary, baselineSummary, selectedCase])
+
+
 
 const nameToCategory = useMemo(() => {
   const map = new Map<string, "A" | "B" | "C">();
@@ -69,7 +82,6 @@ const enrichedParetoData = useMemo(() => {
   return paretoData.map(p => {
     const correctCategory = nameToCategory.get(p.name) ?? p.category;
     const contributionPct = abcContributionMap.get(correctCategory);
-    // console.log("Mapping Pareto:", p.name, "category:", correctCategory, "contribution:", contributionPct);
     return {
       ...p,
       category: correctCategory,
@@ -77,11 +89,6 @@ const enrichedParetoData = useMemo(() => {
     };
   });
 }, [paretoData, nameToCategory, abcContributionMap]);
-
-
-
-
-
 
   // Build inventory rows with ABC data
 const rows = useMemo(() => {
@@ -155,16 +162,7 @@ const totals = useMemo(() => {
       }
       actions={
         <>
-          <Button className="jbtn-passive h-8 w-8 p-0 text-muted-foreground hover:text-black">
-              <svg viewBox="0 0 24 24" className="h-4 w-4 hover:text-black">
-                <path
-                  d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"
-                  fill="currentColor"
-                />
-              </svg>
-       
-          </Button>
-
+          <Info scenarioKey={selectedCase} />
           <Button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
             Simulate
           </Button>
@@ -189,7 +187,7 @@ const totals = useMemo(() => {
 
 
       <div className="mt-6 space-y-6">
-        <ABCSummaryView summary={abcSummary} hoveredCategory={hoveredCategory} onHover={onHover} />
+        <ABCSummaryView summary={abcSummary} deltas={abcDeltas} hoveredCategory={hoveredCategory} onHover={onHover} />
         <ParetoCurveView data={enrichedParetoData} hoveredCategory={hoveredCategory} onHover={onHover} />
         {/* WhatIfPanel */}
     </div>
