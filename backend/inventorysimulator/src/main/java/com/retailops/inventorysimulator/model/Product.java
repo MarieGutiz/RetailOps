@@ -1,10 +1,7 @@
 package com.retailops.inventorysimulator.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 
@@ -19,6 +16,10 @@ public class Product extends BaseModel{
 
     @NotBlank(message = "Product name is required")
     private String name;
+
+    @NotBlank
+    @Size(max = 50)
+    private String sku;
 
     @NotBlank(message = "Category is required")
     @Column(length = 80, nullable = false)

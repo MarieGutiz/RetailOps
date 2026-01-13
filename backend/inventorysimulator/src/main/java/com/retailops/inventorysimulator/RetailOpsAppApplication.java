@@ -19,6 +19,7 @@ public class RetailOpsAppApplication {
 		return args -> {
 			productRepo.save(Product.builder()
 					.name("Juice A")
+					.sku("JC-302")
 					.category("Juice")
 					.unitCost(1.00)
 					.unitPrice(2.50)
@@ -26,6 +27,7 @@ public class RetailOpsAppApplication {
 
 			productRepo.save(Product.builder()
 					.name("Juice B")
+					.sku("JC-303")
 					.category("Juice")
 					.unitCost(1.20)
 					.unitPrice(2.80)
@@ -33,6 +35,7 @@ public class RetailOpsAppApplication {
 
 			productRepo.save(Product.builder()
 					.name("Cookie C")
+					.sku("CK-SN2")
 					.category("Cookie")
 					.unitCost(0.60)
 					.unitPrice(1.50)
@@ -40,6 +43,7 @@ public class RetailOpsAppApplication {
 
 			productRepo.save(Product.builder()
 					.name("Cookie D")
+					.sku("CK-SN3")
 					.category("Cookie")
 					.unitCost(0.70)
 					.unitPrice(1.60)

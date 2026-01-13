@@ -47,6 +47,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product> implements Prod
         return Optional.ofNullable(productRepository.findById(id)
                 .map(existing -> {
                     existing.setName(updatedProduct.getName());
+                    existing.setSku(updatedProduct.getSku());
                     existing.setCategory(updatedProduct.getCategory());
                     existing.setUnitCost(updatedProduct.getUnitCost());
                     existing.setUnitPrice(updatedProduct.getUnitPrice());
@@ -67,5 +68,10 @@ public class ProductServiceImpl extends BaseServiceImpl<Product> implements Prod
                 .filter(p -> p.getDescription() != null && p.getUnitPrice() != null)
                 .toList();
         return productRepository.saveAll(validProducts);
+    }
+
+    @Override
+    public Optional<Product> findByName(String name) {
+        return Optional.ofNullable(productRepository.findByName(name));
     }
 }
