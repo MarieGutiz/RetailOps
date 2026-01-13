@@ -12,4 +12,6 @@ public interface ProductService extends BaseService<Product, Long> {
     Optional<Product> getProduct(Long id);
 
     List<Product> saveAll(List<Product> products);
+
+    Optional<Product> findByName(String s);
 }
