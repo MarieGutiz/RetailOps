@@ -72,4 +72,11 @@ public class AbcSummaryBuilder {
 
         return cs;
     }
+
+    public static String buildSku(String prefix, String name) {
+        return prefix + "-" + name
+                .toUpperCase()
+                .replaceAll("[^A-Z0-9]", "");
+    }
+
 }

@@ -28,6 +28,7 @@ public class MonteCarloABCMapper {
     public static AbcItemDto toAbcItem(MonteCarloItemDto mcItem) {
         AbcItemDto dto = new AbcItemDto();
         dto.setProductName(mcItem.getProductName());
+        dto.setSku(mcItem.getSku());
         dto.setDemandFrequency(mcItem.getDemandFrequency());
         dto.setSalesValue(mcItem.getSalesValue());
         dto.setUnitCost(mcItem.getUnitCost());

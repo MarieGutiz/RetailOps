@@ -68,6 +68,7 @@ public class SecurityConfig  {
                 .cors(Customizer.withDefaults()) // enable CORS support
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/simulations/florist/abc").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/products/**").permitAll()
                         .requestMatchers("/auth/**", "/api/auth/**").permitAll()
                         .anyRequest().authenticated()

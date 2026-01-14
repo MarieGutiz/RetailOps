@@ -15,19 +15,26 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.dto;
+package com.retailops.inventorysimulator.simulator.inventory;
 
-import com.retailops.inventorysimulator.simulator.inventory.InventoryItemBase;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-
 @SuperBuilder
-@RequiredArgsConstructor
-public class AbcItemDto extends InventoryItemBase {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class InventoryItemBase {
 
-    // ABC-specific logic
+    private String productName;
+    private String sku;
+    private BigDecimal unitCost;
+    private BigDecimal unitPrice;
+    private BigDecimal salesValue;
+    private BigInteger demandFrequency;
 }

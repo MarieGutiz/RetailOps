@@ -19,4 +19,17 @@ public enum SimulationType {
     SimulationType(String name) {
         this.name = name;
     }
+
+    public static SimulationType fromString(String value) {
+        return switch (value.toUpperCase()) {
+            case "CLASSIC" -> ABC_CLASSIC;
+            case "MULTI" -> ABC_MULTI;
+            case "EOQ" -> EOQ;
+            case "PROFIT" -> PROFIT;
+            case "NEWSVENDOR" -> NEWSVENDOR;
+            default -> throw new IllegalArgumentException("Invalid SimulationType: " + value);
+        };
+    }
+
+
 }

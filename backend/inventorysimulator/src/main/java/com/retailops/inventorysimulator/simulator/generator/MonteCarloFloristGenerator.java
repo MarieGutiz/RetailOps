@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.retailops.inventorysimulator.simulator.segmentation.AbcSummaryBuilder.buildSku;
+
 
 /**
  * Inventory data was generated using Monte Carlo simulation, where SKU demand follows normal
@@ -73,15 +75,23 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
        GENERATION HELPERS
        ========================= */
 
-    private MonteCarloItemDto generateNormalItem(String name, int meanDemand, int stdDev,
-                                                 double minCost, double maxCost, double markup) {
+    private MonteCarloItemDto generateNormalItem(
+            String name,
+            int meanDemand,
+            int stdDev,
+            double minCost,
+            double maxCost,
+            double markup
+    ) {
         int demand = Math.max((int) Math.round(Normal.normal(meanDemand, stdDev)), meanDemand / 3);
         BigDecimal unitCost = randomCost(minCost, maxCost);
-        BigDecimal unitPrice = unitCost.multiply(BigDecimal.valueOf(markup)).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal unitPrice = unitCost.multiply(BigDecimal.valueOf(markup))
+                .setScale(2, RoundingMode.HALF_UP);
         BigDecimal salesValue = unitPrice.multiply(BigDecimal.valueOf(demand));
 
         MonteCarloItemDto item = new MonteCarloItemDto();
         item.setProductName(name);
+        item.setSku(buildSku("FLR", name));
         item.setDemandFrequency(BigInteger.valueOf(demand));
         item.setUnitCost(unitCost);
         item.setUnitPrice(unitPrice);
@@ -101,8 +111,13 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
      * or strong central tendency, making uniform distribution more
      * appropriate than normal distribution.
      */
-    private MonteCarloItemDto generateUniformItem(String name, int minDemand, int maxDemand,
-                                                  double minCost, double maxCost, double markup) {
+    private MonteCarloItemDto generateUniformItem(
+            String name,
+            int minDemand,
+            int maxDemand,
+            double minCost,
+            double maxCost,
+            double markup) {
         int demand = random.nextInt(maxDemand - minDemand + 1) + minDemand;
         BigDecimal unitCost = randomCost(minCost, maxCost);
         BigDecimal unitPrice = unitCost.multiply(BigDecimal.valueOf(markup)).setScale(2, RoundingMode.HALF_UP);
@@ -110,6 +125,7 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
 
         MonteCarloItemDto item = new MonteCarloItemDto();
         item.setProductName(name);
+        item.setSku(buildSku("FLR", name));
         item.setDemandFrequency(BigInteger.valueOf(demand));
         item.setUnitCost(unitCost);
         item.setUnitPrice(unitPrice);

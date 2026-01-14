@@ -17,6 +17,7 @@
 
 package com.retailops.inventorysimulator.simulator.dto;
 
+import com.retailops.inventorysimulator.simulator.inventory.InventoryItemBase;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -27,11 +28,8 @@ import java.math.BigInteger;
 @Setter
 @RequiredArgsConstructor
 @ToString
-@Data
-public class MonteCarloItemDto {
-    private String productName;
-    private BigInteger demandFrequency; // generated demand
-    private BigDecimal unitCost;        // cost per unit
-    private BigDecimal unitPrice;       // selling price per unit
-    private BigDecimal salesValue;      // unitPrice * demandFrequency
+public class MonteCarloItemDto extends InventoryItemBase {
+    // Monte Carlo specific behavior later:
+    // - distribution metadata
+    // - seed reference
 }
