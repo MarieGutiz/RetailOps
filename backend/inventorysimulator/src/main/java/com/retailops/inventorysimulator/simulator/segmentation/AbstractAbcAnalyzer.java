@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2025
+ *  * Copyright (c) 2026
  *  * Author: Mariela Paola Gutierrez
  *  * Repository: https://github.com/mariegutiz
  *  *
@@ -17,18 +17,25 @@
 
 package com.retailops.inventorysimulator.simulator.segmentation;
 
-import com.retailops.inventorysimulator.model.ABCResult;
-import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
+import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
+import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcAnalyzer;
 import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcRankedItem;
-import com.retailops.inventorysimulator.util.SimulationType;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface AbcAnalyzerStrategy {
-    static final BigDecimal CLASS_A = BigDecimal.valueOf(80);
-    static final BigDecimal CLASS_B = BigDecimal.valueOf(95);
+public abstract class AbstractAbcAnalyzer {
 
-    List<AbcRankedItem> analyze(AbcRequestDto requestDto);
-    SimulationType getType();
+    protected BigDecimal totalSales(List<AbcItemDto> items) {
+        return items.stream()
+                .map(AbcItemDto::getSalesValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    protected List<AbcRankedItem> rank(
+            List<AbcItemDto> items,
+            BigDecimal totalSales
+    ) {
+        return AbcAnalyzer.rankItems(items, totalSales);
+    }
 }

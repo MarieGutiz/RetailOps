@@ -17,24 +17,21 @@
 
 package com.retailops.inventorysimulator.simulator.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-@Data
-@ToString
-@NoArgsConstructor        // required for mapper
-@AllArgsConstructor
-public class AbcItemDto {
-    private String productName;
-    private String sku;
-    private BigDecimal salesValue;
-    private BigInteger demandFrequency;
 
-    private BigDecimal unitPrice;  // optional, for frontend table
-    private BigDecimal unitCost;   // optional, for frontend table
+@Getter
+@Setter
+@RequiredArgsConstructor
+@ToString
+@Data
+public class MonteCarloItemDto {
+    private String productName;
+    private BigInteger demandFrequency; // generated demand
+    private BigDecimal unitCost;        // cost per unit
+    private BigDecimal unitPrice;       // selling price per unit
+    private BigDecimal salesValue;      // unitPrice * demandFrequency
 }

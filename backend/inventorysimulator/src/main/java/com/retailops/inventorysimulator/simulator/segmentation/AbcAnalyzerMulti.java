@@ -17,9 +17,9 @@
 
 package com.retailops.inventorysimulator.simulator.segmentation;
 
-import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
+import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcRankedItem;
 import com.retailops.inventorysimulator.util.SimulationType;
 import org.springframework.stereotype.Component;
 
@@ -29,30 +29,27 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.retailops.inventorysimulator.simulator.AbcAnalyzer.getAbcResults;
-
 @Component
-public class AbcAnalyzerMulti implements AbcAnalyzerStrategy {
+public class AbcAnalyzerMulti extends AbstractAbcAnalyzer implements AbcAnalyzerStrategy {
+
     @Override
-    public List<ABCResult> analyze(AbcRequestDto requestDto) {
+    public List<AbcRankedItem> analyze(AbcRequestDto requestDto) {
         List<AbcItemDto> items = new ArrayList<>(requestDto.items());
 
-        BigDecimal totalSales = items.stream()
-                .map(AbcItemDto::getSalesValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+        BigDecimal totalSales = totalSales(items);
         BigInteger totalDemand = items.stream()
                 .map(AbcItemDto::getDemandFrequency)
                 .reduce(BigInteger.ZERO, BigInteger::add);
 
-        // sort by weighted score
-        items.sort((i1, i2) -> weightedScore(i2, totalSales, totalDemand)
-                .compareTo(weightedScore(i1, totalSales, totalDemand)));
+        items.sort((i1, i2) ->
+                weightedScore(i2, totalSales, totalDemand)
+                        .compareTo(
+                                weightedScore(i1, totalSales, totalDemand)
+                        )
+        );
 
-        return getAbcResults(requestDto, items, totalSales);
+        return rank(items, totalSales);
     }
-
-
 
     private BigDecimal weightedScore(AbcItemDto item,
                                      BigDecimal totalSales,
@@ -65,6 +62,8 @@ public class AbcAnalyzerMulti implements AbcAnalyzerStrategy {
         return salesShare.multiply(BigDecimal.valueOf(0.7))
                 .add(demandShare.multiply(BigDecimal.valueOf(0.3)));
     }
+
+
 
     @Override
     public SimulationType getType() {
