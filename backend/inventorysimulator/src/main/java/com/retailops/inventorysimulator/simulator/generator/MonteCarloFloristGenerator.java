@@ -17,7 +17,7 @@
 
 package com.retailops.inventorysimulator.simulator.generator;
 
-import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
+import com.retailops.inventorysimulator.simulator.dto.MonteCarloItemDto;
 import com.retailops.inventorysimulator.util.distribution.Normal;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ import java.util.Random;
  * @author Mariela
  */
 @Service
-public class MonteCarloFloristGenerator implements  MonteCarloGenerator<AbcItemDto> {
+public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCarloItemDto> {
 
     private final Random random;
 
@@ -50,24 +50,22 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<AbcItemD
         this.random = new Random(seed);
     }
 
-    public List<AbcItemDto> generateInventory() {
-        List<AbcItemDto> items = new ArrayList<>();
+    public List<MonteCarloItemDto> generateInventory() {
+        List<MonteCarloItemDto> items = new ArrayList<>();
 
         // A ITEMS
-        items.add(generateNormalItem("Orchids", 1200, 300, 7, 12));
-        items.add(generateNormalItem("Proteas", 1000, 250, 8, 14));
-        items.add(generateNormalItem("Premium Vase", 400, 120, 18, 30));
+        items.add(generateNormalItem("Orchids", 1200, 300, 7, 12, 1.3));
+        items.add(generateNormalItem("Proteas", 1000, 250, 8, 14, 1.3));
+        items.add(generateNormalItem("Premium Vase", 400, 120, 18, 30, 1.3));
 
         // B ITEMS
-        items.add(generateNormalItem("Roses", 8000, 1500, 1.5, 3.0));
-        items.add(generateNormalItem("Tulips", 6000, 1200, 1.2, 2.5));
-        items.add(generateNormalItem("Standard Vase", 2000, 500, 3.0, 6.0));
-
+        items.add(generateNormalItem("Roses", 8000, 1500, 1.5, 3.0, 1.2));
+        items.add(generateNormalItem("Tulips", 6000, 1200, 1.2, 2.5, 1.2));
+        items.add(generateNormalItem("Standard Vase", 2000, 500, 3.0, 6.0, 1.2));
         // C ITEMS
-        items.add(generateUniformItem("Floral Foam", 8000, 15000, 0.4, 1.0));
-        items.add(generateUniformItem("Ribbon", 12000, 20000, 0.1, 0.4));
-        items.add(generateUniformItem("Flower Food", 15000, 25000, 0.05, 0.15));
-
+        items.add(generateUniformItem("Floral Foam", 8000, 15000, 0.4, 1.0, 1.1));
+        items.add(generateUniformItem("Ribbon", 12000, 20000, 0.1, 0.4, 1.1));
+        items.add(generateUniformItem("Flower Food", 15000, 25000, 0.05, 0.15, 1.1));
         return items;
     }
 
@@ -75,25 +73,18 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<AbcItemD
        GENERATION HELPERS
        ========================= */
 
-    private AbcItemDto generateNormalItem(String name,
-                                          int meanDemand,
-                                          int stdDev,
-                                          double minCost,
-                                          double maxCost) {
-
-        int demand = clampPositive(
-                (int) Math.round(Normal.normal(meanDemand, stdDev)),
-                meanDemand / 3
-        );
-
+    private MonteCarloItemDto generateNormalItem(String name, int meanDemand, int stdDev,
+                                                 double minCost, double maxCost, double markup) {
+        int demand = Math.max((int) Math.round(Normal.normal(meanDemand, stdDev)), meanDemand / 3);
         BigDecimal unitCost = randomCost(minCost, maxCost);
+        BigDecimal unitPrice = unitCost.multiply(BigDecimal.valueOf(markup)).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal salesValue = unitPrice.multiply(BigDecimal.valueOf(demand));
 
-        BigDecimal salesValue =
-                unitCost.multiply(BigDecimal.valueOf(demand));
-
-        AbcItemDto item = new AbcItemDto();
+        MonteCarloItemDto item = new MonteCarloItemDto();
         item.setProductName(name);
         item.setDemandFrequency(BigInteger.valueOf(demand));
+        item.setUnitCost(unitCost);
+        item.setUnitPrice(unitPrice);
         item.setSalesValue(salesValue);
 
         return item;
@@ -110,21 +101,18 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<AbcItemD
      * or strong central tendency, making uniform distribution more
      * appropriate than normal distribution.
      */
-    private AbcItemDto generateUniformItem(String name,
-                                           int minDemand,
-                                           int maxDemand,
-                                           double minCost,
-                                           double maxCost) {
-
+    private MonteCarloItemDto generateUniformItem(String name, int minDemand, int maxDemand,
+                                                  double minCost, double maxCost, double markup) {
         int demand = random.nextInt(maxDemand - minDemand + 1) + minDemand;
         BigDecimal unitCost = randomCost(minCost, maxCost);
+        BigDecimal unitPrice = unitCost.multiply(BigDecimal.valueOf(markup)).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal salesValue = unitPrice.multiply(BigDecimal.valueOf(demand));
 
-        BigDecimal salesValue =
-                unitCost.multiply(BigDecimal.valueOf(demand));
-
-        AbcItemDto item = new AbcItemDto();
+        MonteCarloItemDto item = new MonteCarloItemDto();
         item.setProductName(name);
         item.setDemandFrequency(BigInteger.valueOf(demand));
+        item.setUnitCost(unitCost);
+        item.setUnitPrice(unitPrice);
         item.setSalesValue(salesValue);
 
         return item;
@@ -141,7 +129,7 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<AbcItemD
 
 
     @Override
-    public List<AbcItemDto> generateMonteCarlo() {
+    public List<MonteCarloItemDto> generateMonteCarlo() {
         return generateInventory();
     }
 

@@ -17,24 +17,28 @@
 
 package com.retailops.inventorysimulator.simulator.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @ToString
-@NoArgsConstructor        // required for mapper
-@AllArgsConstructor
-public class AbcItemDto {
-    private String productName;
-    private String sku;
-    private BigDecimal salesValue;
-    private BigInteger demandFrequency;
+@Data
+public class AbcSummaryDto {
 
-    private BigDecimal unitPrice;  // optional, for frontend table
-    private BigDecimal unitCost;   // optional, for frontend table
+    private BigDecimal totalValue;
+
+    private CategorySummary A;
+    private CategorySummary B;
+    private CategorySummary C;
+
+
+    @Getter
+    @Setter
+    public static class CategorySummary {
+        private int count;
+        private BigDecimal valuePct;
+    }
 }
