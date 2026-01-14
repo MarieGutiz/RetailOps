@@ -108,13 +108,49 @@ public class MonteCarloFloristAbcGeneratorTest {
     @Nonnull
     private static AbcRequestDto getAbcRequestDto() {
         List<AbcItemDto> items = List.of(
-                new AbcItemDto("Rose Bouquet", "RB001", BigDecimal.valueOf(1000), BigInteger.valueOf(10), null, null), // A
-                new AbcItemDto("Lily Bundle", "LB001", BigDecimal.valueOf(100), BigInteger.valueOf(7), null, null),     // B
-                new AbcItemDto("Tulip Bunch", "TB001", BigDecimal.valueOf(80), BigInteger.valueOf(8), null, null),      // B
-                new AbcItemDto("Orchid Pot", "OP001", BigDecimal.valueOf(40), BigInteger.valueOf(4), null, null),       // C
-                new AbcItemDto("Daisy Vase", "DV001", BigDecimal.valueOf(20), BigInteger.valueOf(5), null, null),       // C
-                new AbcItemDto("Sunflower Stem", "SS001", BigDecimal.valueOf(10), BigInteger.valueOf(2), null, null)   // C
+                AbcItemDto.builder()
+                        .productName("Rose Bouquet")
+                        .sku("RB001")
+                        .unitCost(BigDecimal.valueOf(1000))
+                        .demandFrequency(BigInteger.valueOf(10))
+                        .build(), // A
+
+                AbcItemDto.builder()
+                        .productName("Lily Bundle")
+                        .sku("LB001")
+                        .unitCost(BigDecimal.valueOf(100))
+                        .demandFrequency(BigInteger.valueOf(7))
+                        .build(), // B
+
+                AbcItemDto.builder()
+                        .productName("Tulip Bunch")
+                        .sku("TB001")
+                        .unitCost(BigDecimal.valueOf(80))
+                        .demandFrequency(BigInteger.valueOf(8))
+                        .build(), // B
+
+                AbcItemDto.builder()
+                        .productName("Orchid Pot")
+                        .sku("OP001")
+                        .unitCost(BigDecimal.valueOf(40))
+                        .demandFrequency(BigInteger.valueOf(4))
+                        .build(), // C
+
+                AbcItemDto.builder()
+                        .productName("Daisy Vase")
+                        .sku("DV001")
+                        .unitCost(BigDecimal.valueOf(20))
+                        .demandFrequency(BigInteger.valueOf(5))
+                        .build(), // C
+
+                AbcItemDto.builder()
+                        .productName("Sunflower Stem")
+                        .sku("SS001")
+                        .unitCost(BigDecimal.valueOf(10))
+                        .demandFrequency(BigInteger.valueOf(2))
+                        .build() // C
         );
+
 
 
         // Prepare request
