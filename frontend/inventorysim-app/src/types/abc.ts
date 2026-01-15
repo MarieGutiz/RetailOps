@@ -44,19 +44,6 @@ export interface ParetoPoint {
   categoryContributionPct?: number
 }
 
-// For backend DTO compatibility
-export interface AbcItemDto {
-  productName: string;
-  salesValue: number;
-  demandFrequency: number;
-}
-
-export interface AbcRequestDto {
-  items: AbcItemDto[];
-  username?: string;
-  mode?: 'classic' | 'multi';
-}
-
 //Delta
 
 export type ABCDelta = {

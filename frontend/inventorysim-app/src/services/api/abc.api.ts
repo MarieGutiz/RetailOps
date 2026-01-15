@@ -1,13 +1,14 @@
 import api from "@/services/api/api";
-import type { AbcRequestDto, ABCResult } from "@/types/abc";
+import type { AbcRequestDto, AbcResponseDto } from "@/types/abc-backend";
 
-export const analyzeABC = async (data: AbcRequestDto): Promise<ABCResult[]> => {
-
-    try {
-        const response = await api.post('/api/abc/analyze', data);
-        return response.data;
-    } catch (error) {
-        console.error("Error analyzing ABC:", error);
-        throw error;
-    }
+export const analyzeABC = async (
+  data: AbcRequestDto
+): Promise<AbcResponseDto> => {
+  try {
+    const response = await api.post("/api/abc/analyze", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error analyzing ABC:", error);
+    throw error;
+  }
 };
