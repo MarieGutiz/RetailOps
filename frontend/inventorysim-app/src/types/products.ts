@@ -9,6 +9,7 @@ export interface Product{
     description?: string;
     unitCost: number;
     unitPrice: number;
+    source?: string;
 }
 
 

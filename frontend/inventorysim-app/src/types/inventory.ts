@@ -17,3 +17,15 @@ export interface InventoryTotals {
   revenue: number
   totalProfit: number
 }
+
+// Inventory Base for the backend
+export interface InventoryItemBase {
+  productName: string;
+  sku?: string;
+
+  unitCost: number;
+  unitPrice: number;
+
+  salesValue?: number;
+  demandFrequency?: number;
+}
