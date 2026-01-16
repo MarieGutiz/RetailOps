@@ -18,6 +18,7 @@
 package com.retailops.inventorysimulator.simulator;
 
 import com.retailops.inventorysimulator.model.ABCResult;
+import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.MonteCarloItemDto;
@@ -27,6 +28,7 @@ import com.retailops.inventorysimulator.simulator.generator.MonteCarloFloristGen
 import com.retailops.inventorysimulator.simulator.generator.mapper.MonteCarloABCMapper;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerClassic;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerMulti;
+import com.retailops.inventorysimulator.util.ABCCategoryType;
 import com.retailops.inventorysimulator.util.SimulationType;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
@@ -67,39 +69,55 @@ public class MonteCarloFloristAbcGeneratorTest {
         assertThat(items).hasSize(9);
 
         assertThat(items)
-                .allMatch(i -> i.getSalesValue().doubleValue() > 0)
-                .allMatch(i -> i.getDemandFrequency().intValue() > 0)
-                .allMatch(i -> i.getProductName() != null);
+                .allSatisfy(item -> {
+                    Product p = item.getProduct();
+                    assertThat(p).isNotNull();
+                    assertThat(p.getName()).isNotBlank();
+                    assertThat(p.getSku()).isNotBlank();
+                    assertThat(p.getUnitPrice()).isGreaterThan(p.getUnitCost());
+                });
+
     }
+
 
     @Test
-    void classicABC_shouldProduceABCDistribution() {
-        //  Deterministic test data (guaranteed A/B/C)
+    void classicABC_shouldProduceValidClassicDistribution() {
+
         AbcRequestDto request = getAbcRequestDto();
-//        classicAnalyzer.setThresholds(0.7, 0.2, 0.1);
 
-        //  Run analyzer
         List<AbcRankedItem> ranked = classicAnalyzer.analyze(request);
-
-        // Convert to results
         List<ABCResult> results = AbcAnalyzer.getAbcResults(request, ranked);
 
-        // Optional: log results for clarity
-        results.forEach(MonteCarloFloristAbcGeneratorTest::extracted
-        );
+        results.forEach(MonteCarloFloristAbcGeneratorTest::extracted);
 
-        // Count categories
-        Map<String, Long> categoryCount = results.stream()
-                .collect(Collectors.groupingBy(
-                        r -> r.getAbcClass().name(),
-                        Collectors.counting()
-                ));
+        // 1. Strongest item is first
+        assertThat(results)
+                .first()
+                .extracting(ABCResult::getProductName)
+                .isEqualTo("Rose Bouquet");
 
-        // Assertions
-        assertThat(categoryCount.getOrDefault("A", 0L)).isNotZero();
-        assertThat(categoryCount.getOrDefault("B", 0L)).isNotZero();
-        assertThat(categoryCount.getOrDefault("C", 0L)).isNotZero();
+        // 2. Weakest item is last and C
+        assertThat(results)
+                .last()
+                .satisfies(r -> {
+                    assertThat(r.getProductName()).isEqualTo("Orchid Pot");
+                    assertThat(r.getAbcClass()).isEqualTo(ABCCategoryType.C);
+                });
+
+        // 3. ABC classes are monotonic
+        assertThat(results)
+                .extracting(ABCResult::getAbcClass)
+                .isSortedAccordingTo(Enum::compareTo);
+
+        // 4. More than one class exists
+        assertThat(
+                results.stream()
+                        .map(ABCResult::getAbcClass)
+                        .distinct()
+                        .count()
+        ).isGreaterThan(1);
     }
+
 
     private static void extracted(ABCResult r) {
         log.info("Product: {}, ABC: {}", r.getProductName(), r.getAbcClass());
@@ -109,57 +127,62 @@ public class MonteCarloFloristAbcGeneratorTest {
     private static AbcRequestDto getAbcRequestDto() {
         List<AbcItemDto> items = List.of(
                 AbcItemDto.builder()
-                        .productName("Rose Bouquet")
-                        .sku("RB001")
-                        .unitCost(BigDecimal.valueOf(1000))
+                        .product(Product.builder()
+                                .name("Rose Bouquet")
+                                .sku("RB001")
+                                .category("Flowers")
+                                .unitCost(BigDecimal.valueOf(1000.0))
+                                .unitPrice(BigDecimal.valueOf(1200.0))
+                                .description("Test Product A")
+                                .build())
                         .demandFrequency(BigInteger.valueOf(10))
+                        .salesValue(BigDecimal.valueOf(12000))
                         .build(), // A
 
                 AbcItemDto.builder()
-                        .productName("Lily Bundle")
-                        .sku("LB001")
-                        .unitCost(BigDecimal.valueOf(100))
+                        .product(Product.builder()
+                                .name("Lily Bundle")
+                                .sku("LB001")
+                                .category("Flowers")
+                                .unitCost(BigDecimal.valueOf(100.0))
+                                .unitPrice(BigDecimal.valueOf(120.0))
+                                .description("Test Product B")
+                                .build())
                         .demandFrequency(BigInteger.valueOf(7))
+                        .salesValue(BigDecimal.valueOf(840))
                         .build(), // B
 
                 AbcItemDto.builder()
-                        .productName("Tulip Bunch")
-                        .sku("TB001")
-                        .unitCost(BigDecimal.valueOf(80))
+                        .product(Product.builder()
+                                .name("Tulip Bunch")
+                                .sku("TB001")
+                                .category("Flowers")
+                                .unitCost(BigDecimal.valueOf(80.0))
+                                .unitPrice(BigDecimal.valueOf(96.0))
+                                .description("Test Product B2")
+                                .build())
                         .demandFrequency(BigInteger.valueOf(8))
+                        .salesValue(BigDecimal.valueOf(768))
                         .build(), // B
 
                 AbcItemDto.builder()
-                        .productName("Orchid Pot")
-                        .sku("OP001")
-                        .unitCost(BigDecimal.valueOf(40))
+                        .product(Product.builder()
+                                .name("Orchid Pot")
+                                .sku("OP001")
+                                .category("Flowers")
+                                .unitCost(BigDecimal.valueOf(40.0))
+                                .unitPrice(BigDecimal.valueOf(48.0))
+                                .description("Test Product C")
+                                .build())
                         .demandFrequency(BigInteger.valueOf(4))
-                        .build(), // C
-
-                AbcItemDto.builder()
-                        .productName("Daisy Vase")
-                        .sku("DV001")
-                        .unitCost(BigDecimal.valueOf(20))
-                        .demandFrequency(BigInteger.valueOf(5))
-                        .build(), // C
-
-                AbcItemDto.builder()
-                        .productName("Sunflower Stem")
-                        .sku("SS001")
-                        .unitCost(BigDecimal.valueOf(10))
-                        .demandFrequency(BigInteger.valueOf(2))
+                        .salesValue(BigDecimal.valueOf(192))
                         .build() // C
         );
 
-
-
-        // Prepare request
-        return new AbcRequestDto(
-                items,
-                "test-user",
-                SimulationType.ABC_CLASSIC
-        );
+        return new AbcRequestDto(items, "test-user", SimulationType.ABC_CLASSIC);
     }
+
+
 
     @Test
     void multiABC_shouldReorderComparedToClassic() {
@@ -172,47 +195,25 @@ public class MonteCarloFloristAbcGeneratorTest {
         AbcRequestDto multiRequest =
                 new AbcRequestDto(items, "test-user", SimulationType.ABC_MULTI);
 
-        List<AbcRankedItem> classicRankedItems = classicAnalyzer.analyze(classicRequest);
-        List<AbcRankedItem> multiRankedItems  = multiAnalyzer.analyze(multiRequest);
+        List<AbcRankedItem> classicRankedItems =
+                classicAnalyzer.analyze(classicRequest);
+        List<AbcRankedItem> multiRankedItems =
+                multiAnalyzer.analyze(multiRequest);
 
-        List<ABCResult> classicResults = AbcAnalyzer.getAbcResults(classicRequest, classicRankedItems);
-        List<ABCResult> multiResults = AbcAnalyzer.getAbcResults(multiRequest, multiRankedItems);
+        List<ABCResult> classicResults =
+                AbcAnalyzer.getAbcResults(classicRequest, classicRankedItems);
+        List<ABCResult> multiResults =
+                AbcAnalyzer.getAbcResults(multiRequest, multiRankedItems);
 
-        // Optional: log results for classic
-        log.info("Classic Results: {}", classicResults);
-        classicResults.forEach(MonteCarloFloristAbcGeneratorTest::extracted
-        );
+        // Log classic results
+        log.info("Classic ABC Results:");
+        classicResults.forEach(MonteCarloFloristAbcGeneratorTest::extracted);
 
-        //log result for multi
-        log.info("Multi Results: {}", multiResults);
+        // Log multi results
+        log.info("Multi ABC Results:");
         multiResults.forEach(MonteCarloFloristAbcGeneratorTest::extracted);
 
-
-        multiResults.forEach(r -> {
-            // calculate weighted score for logging
-            AbcItemDto item = items.stream()
-                    .filter(i -> i.getProductName().equals(r.getProductName()))
-                    .findFirst().orElse(null);
-
-            if (item != null) {
-                BigDecimal totalSales = items.stream()
-                        .map(AbcItemDto::getSalesValue)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-                BigInteger totalDemand = items.stream()
-                        .map(AbcItemDto::getDemandFrequency)
-                        .reduce(BigInteger.ZERO, BigInteger::add);
-                BigDecimal weightedScore = new BigDecimal("0.7").multiply(
-                                item.getSalesValue().divide(totalSales, 6, RoundingMode.HALF_UP))
-                        .add(new BigDecimal("0.3").multiply(
-                                new BigDecimal(item.getDemandFrequency())
-                                        .divide(new BigDecimal(totalDemand), 6, RoundingMode.HALF_UP)
-                        ));
-
-
-            }
-        });
-
-        // Assertion: order should differ
+        // Assertion: ranking order must differ
         assertThat(classicResults)
                 .extracting(ABCResult::getProductName)
                 .isNotEqualTo(
@@ -223,20 +224,54 @@ public class MonteCarloFloristAbcGeneratorTest {
     }
 
 
+
     @Test
     void shouldGenerateFloristInventoryWithAllCategories() {
         List<MonteCarloItemDto> items = generator.generateMonteCarlo();
 
         assertThat(items).isNotEmpty();
 
-        items.forEach(item ->
-                log.info("Florist item: {} - Demand: {} - Sales: {}",
-                        item.getProductName(),
-                        item.getDemandFrequency(),
-                        item.getSalesValue()
-                )
-        );
+        items.forEach(item -> {
+            Product p = item.getProduct();
 
+            log.info(
+                    "Florist item: {} [{}] | Category: {} | Demand: {} | Sales: {}",
+                    p.getName(),
+                    p.getSku(),
+                    p.getCategory(),
+                    item.getDemandFrequency(),
+                    item.getSalesValue()
+            );
+
+            assertThat(p.getCategory()).isNotBlank();
+        });
+    }
+
+
+    private static AbcItemDto abcItem(
+            String name,
+            String sku,
+            BigDecimal unitCost,
+            BigInteger demand
+    ) {
+        Product product = new Product();
+        product.setName(name);
+        product.setSku(sku);
+        product.setCategory("Test Category");
+        product.setUnitCost(unitCost);
+        // Multiply by 1.2 using BigDecimal
+        BigDecimal unitPrice = unitCost.multiply(BigDecimal.valueOf(1.2))
+                .setScale(2, RoundingMode.HALF_UP); // optional rounding
+        product.setUnitPrice(unitPrice);
+
+        // Calculate salesValue: unitPrice * demand
+        BigDecimal salesValue = unitPrice.multiply(new BigDecimal(demand));
+
+        return AbcItemDto.builder()
+                .product(product)
+                .demandFrequency(demand)
+                .salesValue(salesValue)
+                .build();
     }
 
 }

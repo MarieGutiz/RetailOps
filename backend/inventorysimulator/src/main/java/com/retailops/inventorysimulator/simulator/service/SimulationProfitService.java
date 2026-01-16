@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 @Service
@@ -24,27 +25,31 @@ public class SimulationProfitService {
     final ProductService productService;
     final SimulationServiceModel simulationServiceModel;
 
-    //check calculation of profit
     public ProfitResponse calculateProfit(ProfitRequest request) {
 
         Product product = productService.getProduct(request.productId())
                 .orElseThrow(() -> new ProductNotFoundException(request.productId()));
 
-        int stock = request.stockQtyOrDefault().intValueExact();
-        int demand = request.demandOrDefault().intValueExact();
-        int sales = Math.min(stock, demand);
+        BigInteger stock = request.stockQtyOrDefault();
+        BigInteger demand = request.demandOrDefault();
+        BigInteger sales = stock.min(demand); // BigInteger.min
 
-        double revenue = sales * product.getUnitPrice();
-        double cost = stock * product.getUnitCost();
-        double profit = Math.round((revenue - cost) * 100.0) / 100.0; // round to 2 decimals
+        // Revenue = sales * unitPrice
+        BigDecimal revenue = product.getUnitPrice().multiply(new BigDecimal(sales));
+
+        // Cost = stock * unitCost
+        BigDecimal cost = product.getUnitCost().multiply(new BigDecimal(stock));
+
+        // Profit = revenue - cost, rounded to 2 decimals
+        BigDecimal profit = revenue.subtract(cost).setScale(2, RoundingMode.HALF_UP);
 
         if (request.saveToHistory()) {
             SimulationRun sim = SimulationRun.builder()
                     .productName(product.getName())
                     .simulationType(SimulationType.PROFIT)
-                    .stockQty(BigInteger.valueOf(stock))
-                    .demand(BigInteger.valueOf(demand))
-                    .profit(BigDecimal.valueOf(profit))
+                    .stockQty(stock)
+                    .demand(demand)
+                    .profit(profit)
                     .runAt(LocalDateTime.now())
                     .username(request.usernameOrDefault())
                     .build();
@@ -53,11 +58,12 @@ public class SimulationProfitService {
 
         return new ProfitResponse(
                 product.getName(),
-                BigInteger.valueOf(stock),
-                BigInteger.valueOf(demand),
-                BigDecimal.valueOf(profit)
+                stock,
+                demand,
+                profit
         );
     }
+
 
 
     public Page<SimulationRunDTO> getHistory(String username, int page, int size) {

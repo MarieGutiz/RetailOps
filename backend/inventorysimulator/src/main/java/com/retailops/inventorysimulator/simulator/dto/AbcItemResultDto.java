@@ -1,5 +1,6 @@
 package com.retailops.inventorysimulator.simulator.dto;
 
+import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.util.ABCCategoryType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +12,14 @@ import java.math.BigDecimal;
 @Setter
 @RequiredArgsConstructor
 public class AbcItemResultDto {
-    private String productName;
-    private String sku;
+    // Product identity
+    private Product product; // replaces productName, sku, description, productCategory
 
+    // Commercial data
     private BigDecimal salesValue;
-    private BigDecimal unitPrice;
-    private BigDecimal unitCost;
 
+    // ABC analysis result
     private int rank;
     private BigDecimal cumulativePct;
-    private ABCCategoryType category; // "A", "B", "C"
+    private ABCCategoryType abcCategoryType; // "A", "B", "C"
 }

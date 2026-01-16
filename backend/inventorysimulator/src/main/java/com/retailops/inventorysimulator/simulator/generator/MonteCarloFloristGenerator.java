@@ -17,7 +17,9 @@
 
 package com.retailops.inventorysimulator.simulator.generator;
 
+import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.simulator.dto.MonteCarloItemDto;
+import com.retailops.inventorysimulator.util.FloristCategoryType;
 import com.retailops.inventorysimulator.util.distribution.Normal;
 import org.springframework.stereotype.Service;
 
@@ -55,19 +57,30 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
     public List<MonteCarloItemDto> generateInventory() {
         List<MonteCarloItemDto> items = new ArrayList<>();
 
-        // A ITEMS
-        items.add(generateNormalItem("Orchids", 1200, 300, 7, 12, 1.3));
-        items.add(generateNormalItem("Proteas", 1000, 250, 8, 14, 1.3));
-        items.add(generateNormalItem("Premium Vase", 400, 120, 18, 30, 1.3));
+        // Fresh Flowers
+        items.add(generateNormalItem(
+                "Orchids", FloristCategoryType.FRESH_FLOWERS.name(), 1200, 300, 7, 12, 1.3));
+        items.add(generateNormalItem(
+                "Proteas", FloristCategoryType.FRESH_FLOWERS.name(), 1000, 250, 8, 14, 1.3));
+        items.add(generateNormalItem(
+                "Roses", FloristCategoryType.FRESH_FLOWERS.name(), 8000, 1500, 1.5, 3.0, 1.2));
+        items.add(generateNormalItem(
+                "Tulips", FloristCategoryType.FRESH_FLOWERS.name(), 6000, 1200, 1.2, 2.5, 1.2));
 
-        // B ITEMS
-        items.add(generateNormalItem("Roses", 8000, 1500, 1.5, 3.0, 1.2));
-        items.add(generateNormalItem("Tulips", 6000, 1200, 1.2, 2.5, 1.2));
-        items.add(generateNormalItem("Standard Vase", 2000, 500, 3.0, 6.0, 1.2));
-        // C ITEMS
-        items.add(generateUniformItem("Floral Foam", 8000, 15000, 0.4, 1.0, 1.1));
-        items.add(generateUniformItem("Ribbon", 12000, 20000, 0.1, 0.4, 1.1));
-        items.add(generateUniformItem("Flower Food", 15000, 25000, 0.05, 0.15, 1.1));
+        // Decorative Containers
+        items.add(generateNormalItem(
+                "Premium Vase", FloristCategoryType.DECORATIVE_CONTAINERS.name(), 400, 120, 18, 30, 1.3));
+        items.add(generateNormalItem(
+                "Standard Vase", FloristCategoryType.DECORATIVE_CONTAINERS.name(), 2000, 500, 3.0, 6.0, 1.2));
+
+        // Floral Supplies / Plant Care
+        items.add(generateUniformItem(
+                "Floral Foam", FloristCategoryType.FLORAL_SUPPLIES.name(), 8000, 15000, 0.4, 1.0, 1.1));
+        items.add(generateUniformItem(
+                "Ribbon", FloristCategoryType.FLORAL_SUPPLIES.name(), 12000, 20000, 0.1, 0.4, 1.1));
+        items.add(generateUniformItem(
+                "Flower Food", FloristCategoryType.PLANT_CARE_PRODUCTS.name(), 15000, 25000, 0.05, 0.15, 1.1));
+
         return items;
     }
 
@@ -77,6 +90,7 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
 
     private MonteCarloItemDto generateNormalItem(
             String name,
+            String category,
             int meanDemand,
             int stdDev,
             double minCost,
@@ -89,12 +103,17 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
                 .setScale(2, RoundingMode.HALF_UP);
         BigDecimal salesValue = unitPrice.multiply(BigDecimal.valueOf(demand));
 
+        Product product = buildProduct(
+                name,
+                category,
+                unitCost,
+                unitPrice
+        );
+
+
         MonteCarloItemDto item = new MonteCarloItemDto();
-        item.setProductName(name);
-        item.setSku(buildSku("FLR", name));
+        item.setProduct(product);
         item.setDemandFrequency(BigInteger.valueOf(demand));
-        item.setUnitCost(unitCost);
-        item.setUnitPrice(unitPrice);
         item.setSalesValue(salesValue);
 
         return item;
@@ -113,22 +132,29 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
      */
     private MonteCarloItemDto generateUniformItem(
             String name,
+            String category,
             int minDemand,
             int maxDemand,
             double minCost,
             double maxCost,
             double markup) {
+
         int demand = random.nextInt(maxDemand - minDemand + 1) + minDemand;
         BigDecimal unitCost = randomCost(minCost, maxCost);
         BigDecimal unitPrice = unitCost.multiply(BigDecimal.valueOf(markup)).setScale(2, RoundingMode.HALF_UP);
         BigDecimal salesValue = unitPrice.multiply(BigDecimal.valueOf(demand));
 
+        Product product = buildProduct(
+                name,
+                category,
+                unitCost,
+                unitPrice
+        );
+
+
         MonteCarloItemDto item = new MonteCarloItemDto();
-        item.setProductName(name);
-        item.setSku(buildSku("FLR", name));
+        item.setProduct(product);
         item.setDemandFrequency(BigInteger.valueOf(demand));
-        item.setUnitCost(unitCost);
-        item.setUnitPrice(unitPrice);
         item.setSalesValue(salesValue);
 
         return item;
@@ -142,6 +168,24 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
     private int clampPositive(int value, int min) {
         return Math.max(value, min);
     }
+
+    private Product buildProduct(
+            String name,
+            String category,
+            BigDecimal unitCost,
+            BigDecimal unitPrice
+    ) {
+        Product product = new Product();
+        product.setName(name);
+        product.setSku(buildSku("FLR", name));
+        product.setCategory(category);
+        product.setUnitCost(unitCost);
+        product.setUnitPrice(unitPrice);
+        product.setDescription(category + " florist item");
+
+        return product;
+    }
+
 
 
     @Override

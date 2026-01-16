@@ -17,6 +17,7 @@
 
 package com.retailops.inventorysimulator.simulator.inventory;
 
+import com.retailops.inventorysimulator.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,12 +30,10 @@ import java.math.BigInteger;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InventoryItemBase {
+public abstract class InventoryItemBase {
 
-    private String productName;
-    private String sku;
-    private BigDecimal unitCost;
-    private BigDecimal unitPrice;
-    private BigDecimal salesValue;
+    private Product product;
+
     private BigInteger demandFrequency;
+    private BigDecimal salesValue;
 }

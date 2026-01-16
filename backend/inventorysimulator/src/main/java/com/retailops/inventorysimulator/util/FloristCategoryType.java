@@ -15,17 +15,11 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer;
+package com.retailops.inventorysimulator.util;
 
-import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
-import com.retailops.inventorysimulator.util.ABCCategoryType;
-
-import java.math.BigDecimal;
-
-public record AbcRankedItem(
-        AbcItemDto item,
-        int rank,
-        BigDecimal cumulativePct,
-        ABCCategoryType abcCategoryType//A, B, or C category
-) {
+public enum FloristCategoryType {
+    FRESH_FLOWERS,
+    DECORATIVE_CONTAINERS,
+    FLORAL_SUPPLIES,
+    PLANT_CARE_PRODUCTS
 }

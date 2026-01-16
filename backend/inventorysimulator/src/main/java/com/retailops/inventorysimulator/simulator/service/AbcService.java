@@ -68,7 +68,7 @@ public class AbcService {
                         r.item(),
                         r.rank(),
                         r.cumulativePct(),
-                        r.category()
+                        r.abcCategoryType()
                 ))
                 .toList();
 

@@ -9,12 +9,13 @@ public class CriticalRatioCalculator {
 
     public static BigDecimal calculateCriticalRatio(Product product) {
         // Costs
-        BigDecimal unitPrice = BigDecimal.valueOf(product.getUnitPrice());
-        BigDecimal unitCost = BigDecimal.valueOf(product.getUnitCost());
+        BigDecimal unitPrice = product.getUnitPrice();
+        BigDecimal unitCost  = product.getUnitCost();
 
         BigDecimal Cu = unitPrice.subtract(unitCost); // underage cost
         BigDecimal Co = unitCost;                     // overage cost
 
+        // Critical ratio = Cu / (Cu + Co), rounded to 4 decimals
         return Cu.divide(Cu.add(Co), 4, RoundingMode.HALF_UP);
     }
 }

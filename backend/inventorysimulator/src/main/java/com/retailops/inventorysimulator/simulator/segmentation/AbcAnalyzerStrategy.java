@@ -17,7 +17,6 @@
 
 package com.retailops.inventorysimulator.simulator.segmentation;
 
-import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcRankedItem;
 import com.retailops.inventorysimulator.util.SimulationType;

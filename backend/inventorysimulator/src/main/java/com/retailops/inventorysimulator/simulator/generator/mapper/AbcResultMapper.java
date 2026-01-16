@@ -33,16 +33,14 @@ public class AbcResultMapper {
     ) {
         AbcItemResultDto dto = new AbcItemResultDto();
 
-        dto.setProductName(item.getProductName());
-        dto.setSku(item.getSku());
+        // Copy the Product object directly
+        dto.setProduct(item.getProduct());
 
+        // ABC-specific fields
         dto.setSalesValue(item.getSalesValue());
-        dto.setUnitPrice(item.getUnitPrice());
-        dto.setUnitCost(item.getUnitCost());
-
         dto.setRank(rank);
         dto.setCumulativePct(cumulativePct);
-        dto.setCategory(category);
+        dto.setAbcCategoryType(category);
 
         return dto;
     }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 
 @Getter
 @Setter
@@ -29,13 +31,13 @@ public class Product extends BaseModel{
     private String description;
 
     @Positive(message = "Unit cost must be greater than 0")
-    private Double unitCost;
+    private BigDecimal unitCost;
+
+    @Positive(message = "Unit price must be greater than 0")
+    private BigDecimal unitPrice;
 
     @AssertTrue(message = "Unit price must be greater than cost")
     private boolean isPriceValid() {
-        return unitPrice != null && unitCost != null && unitPrice > unitCost;
+        return unitPrice != null && unitCost != null && unitPrice.compareTo(unitCost) > 0;
     }
-
-    @Positive(message = "Unit price must be greater than 0")
-    private Double unitPrice;
 }
