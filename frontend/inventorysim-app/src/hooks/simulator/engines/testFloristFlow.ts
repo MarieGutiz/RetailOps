@@ -1,25 +1,152 @@
 import type { ABCTableRow } from "@/types/abc";
 import type { AbcResponseDto } from "@/types/abc-backend";
-import { floristItemToProduct, mapAbcResponseToTable } from "./mapper/abcBackendMapper";
+import {  mapAbcResponseToTable } from "./mapper/abcBackendMapper";
+import { runFloristABC } from "./floristABC";
 
 const floristMockResponse: AbcResponseDto = {
   items: [
-    { productName: "Standard Vase", sku: "FLR-STANDARDVASE", salesValue: 20903.38, unitPrice: 6.73, unitCost: 5.61, rank: 1, cumulativePct: 19.17, category: "A" },
-    { productName: "Tulips", sku: "FLR-TULIPS", salesValue: 17808.44, unitPrice: 2.99, unitCost: 2.49, rank: 2, cumulativePct: 35.51, category: "A" },
-    { productName: "Orchids", sku: "FLR-ORCHIDS", salesValue: 20094.0, unitPrice: 12.75, unitCost: 9.81, rank: 3, cumulativePct: 53.94, category: "A" },
-    { productName: "Roses", sku: "FLR-ROSES", salesValue: 13186.0, unitPrice: 2.0, unitCost: 1.67, rank: 4, cumulativePct: 66.03, category: "A" },
-    { productName: "Flower Food", sku: "FLR-FLOWERFOOD", salesValue: 2056.01, unitPrice: 0.11, unitCost: 0.1, rank: 5, cumulativePct: 67.92, category: "A" },
-    { productName: "Floral Foam", sku: "FLR-FLORALFOAM", salesValue: 8851.68, unitPrice: 1.08, unitCost: 0.98, rank: 6, cumulativePct: 76.04, category: "A" },
-    { productName: "Ribbon", sku: "FLR-RIBBON", salesValue: 2414.51, unitPrice: 0.17, unitCost: 0.15, rank: 7, cumulativePct: 78.25, category: "A" },
-    { productName: "Proteas", sku: "FLR-PROTEAS", salesValue: 11815.79, unitPrice: 12.53, unitCost: 9.64, rank: 8, cumulativePct: 89.09, category: "B" },
-    { productName: "Premium Vase", sku: "FLR-PREMIUMVASE", salesValue: 11897.8, unitPrice: 38.38, unitCost: 29.52, rank: 9, cumulativePct: 100.0, category: "C" },
+    {
+      product: {
+        id: null,
+        name: "Roses",
+        sku: "FLR-ROSES",
+        category: "FRESH_FLOWERS",
+        description: "FRESH_FLOWERS florist item",
+        unitCost: 1.95,
+        unitPrice: 2.34,
+      },
+      salesValue: 17737.2,
+      rank: 1,
+      cumulativePct: 20.32,
+      abcCategoryType: "A",
+    },
+    {
+      product: {
+        id: null,
+        name: "Floral Foam",
+        sku: "FLR-FLORALFOAM",
+        category: "FLORAL_SUPPLIES",
+        description: "FLORAL_SUPPLIES florist item",
+        unitCost: 0.8,
+        unitPrice: 0.88,
+      },
+      salesValue: 10136.72,
+      rank: 2,
+      cumulativePct: 31.94,
+      abcCategoryType: "A",
+    },
+    {
+      product: {
+        id: null,
+        name: "Flower Food",
+        sku: "FLR-FLOWERFOOD",
+        category: "PLANT_CARE_PRODUCTS",
+        description: "PLANT_CARE_PRODUCTS florist item",
+        unitCost: 0.05,
+        unitPrice: 0.06,
+      },
+      salesValue: 1482.54,
+      rank: 3,
+      cumulativePct: 33.63,
+      abcCategoryType: "A",
+    },
+    {
+      product: {
+        id: null,
+        name: "Tulips",
+        sku: "FLR-TULIPS",
+        category: "FRESH_FLOWERS",
+        description: "FRESH_FLOWERS florist item",
+        unitCost: 1.71,
+        unitPrice: 2.05,
+      },
+      salesValue: 11238.1,
+      rank: 4,
+      cumulativePct: 46.51,
+      abcCategoryType: "A",
+    },
+    {
+      product: {
+        id: null,
+        name: "Ribbon",
+        sku: "FLR-RIBBON",
+        category: "FLORAL_SUPPLIES",
+        description: "FLORAL_SUPPLIES florist item",
+        unitCost: 0.35,
+        unitPrice: 0.39,
+      },
+      salesValue: 5636.67,
+      rank: 5,
+      cumulativePct: 52.97,
+      abcCategoryType: "A",
+    },
+    {
+      product: {
+        id: null,
+        name: "Premium Vase",
+        sku: "FLR-PREMIUMVASE",
+        category: "DECORATIVE_CONTAINERS",
+        description: "DECORATIVE_CONTAINERS florist item",
+        unitCost: 28.88,
+        unitPrice: 37.54,
+      },
+      salesValue: 12275.58,
+      rank: 6,
+      cumulativePct: 67.03,
+      abcCategoryType: "A",
+    },
+    {
+      product: {
+        id: null,
+        name: "Orchids",
+        sku: "FLR-ORCHIDS",
+        category: "FRESH_FLOWERS",
+        description: "FRESH_FLOWERS florist item",
+        unitCost: 8.06,
+        unitPrice: 10.48,
+      },
+      salesValue: 11454.64,
+      rank: 7,
+      cumulativePct: 80.16,
+      abcCategoryType: "B",
+    },
+    {
+      product: {
+        id: null,
+        name: "Standard Vase",
+        sku: "FLR-STANDARDVASE",
+        category: "DECORATIVE_CONTAINERS",
+        description: "DECORATIVE_CONTAINERS florist item",
+        unitCost: 4.35,
+        unitPrice: 5.22,
+      },
+      salesValue: 9296.82,
+      rank: 8,
+      cumulativePct: 90.81,
+      abcCategoryType: "B",
+    },
+    {
+      product: {
+        id: null,
+        name: "Proteas",
+        sku: "FLR-PROTEAS",
+        category: "FRESH_FLOWERS",
+        description: "FRESH_FLOWERS florist item",
+        unitCost: 8.65,
+        unitPrice: 11.25,
+      },
+      salesValue: 8021.25,
+      rank: 9,
+      cumulativePct: 100.0,
+      abcCategoryType: "C",
+    },
   ],
   summary: {
-    totalValue: 109027.61,
-    a: { count: 7, valuePct: 78.25 },
-    b: { count: 1, valuePct: 10.84 },
-    c: { count: 1, valuePct: 10.91 },
-  }
+    totalValue: 87279.52,
+    a: { count: 6, valuePct: 67.03 },
+    b: { count: 2, valuePct: 23.78 },
+    c: { count: 1, valuePct: 9.19 },
+  },
 };
 
 
@@ -28,66 +155,67 @@ export function testFloristFlowLocal() {
   console.log("=== Starting Local Florist ABC Test ===");
 
   try {
-    console.log("Step 1: Using mock florist response:");
+    console.log("Step 1: Using mock backend response");
     console.log(floristMockResponse);
 
     // -------------------------------
-    // MANUAL BASELINE (what you already had)
+    // MAPPER UNDER TEST
     // -------------------------------
-    console.log("Step 2A: Manual mapping (baseline)...");
-    const manualTable: ABCTableRow[] = floristMockResponse.items.map(item => {
-      const product = floristItemToProduct(item);
-      return {
-        product,
-        quantity: 1,
-        totalValue: item.salesValue,
-        cumulative: Number(item.cumulativePct),
-        category: item.category,
-      };
-    });
+    console.log("Step 2: Mapping backend response to table");
+    const table: ABCTableRow[] = mapAbcResponseToTable(floristMockResponse);
 
     console.table(
-      manualTable.map(row => ({
+      table.map(row => ({
         sku: row.product.sku,
         name: row.product.name,
-        category: row.category,
+        abcCategory: row.category,
         totalValue: row.totalValue,
         cumulative: row.cumulative,
-        source: row.product.source,
       }))
     );
 
     // -------------------------------
-    // REAL MAPPER TEST (IMPORTANT PART)
+    // SANITY CHECKS
     // -------------------------------
-    console.log("Step 2B: Testing mapAbcResponseToTable...");
-    const mapperTable = mapAbcResponseToTable(floristMockResponse);
-
-    console.table(
-      mapperTable.map(row => ({
-        sku: row.product.sku,
-        name: row.product.name,
-        category: row.category,
-        totalValue: row.totalValue,
-        cumulative: row.cumulative,
-        source: row.product.source,
-      }))
-    );
-
-    // -------------------------------
-    // SANITY CHECK
-    // -------------------------------
-    console.log("Step 3: Sanity check (row count)");
+    console.log("Step 3: Sanity checks");
     console.log({
-      manualRows: manualTable.length,
-      mapperRows: mapperTable.length,
+      rows: table.length,
+      expectedRows: floristMockResponse.items.length,
     });
 
-    console.log("Step 4: Summary from response:");
+    console.log("Step 4: Summary (backend truth)");
     console.log(floristMockResponse.summary);
 
     console.log("=== Local Florist ABC Test Complete ===");
   } catch (err) {
     console.error("Error during Local Florist ABC test:", err);
+  }
+}
+
+
+///Test endpoint
+export async function testFloristEndpointLive() {
+  console.log("Starting LIVE florist ABC endpoint test");
+
+  try {
+    const output = await runFloristABC("multi");
+
+    console.log("Raw backend response:");
+    console.log(output.result);
+
+    console.log("Mapped table:");
+    console.table(
+      output.table.map(row => ({
+        sku: row.product.sku,
+        name: row.product.name,
+        abcCategory: row.category,
+        totalValue: row.totalValue,
+        cumulative: row.cumulative,
+      }))
+    );
+
+    console.log("Live florist ABC test finished successfully");
+  } catch (err) {
+    console.error("Live florist ABC test failed:", err);
   }
 }

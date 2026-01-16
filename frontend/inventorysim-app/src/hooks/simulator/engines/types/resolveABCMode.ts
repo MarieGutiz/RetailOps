@@ -20,7 +20,7 @@ export function resolveBackendMode(
 ): SimulationType {
 
   if (executionMode === "BACKEND_PUBLIC") {
-    return "florist";
+    return opts?.advanced ? "multi" : "classic";
   }
 
   if (executionMode === "BACKEND") {
@@ -29,3 +29,4 @@ export function resolveBackendMode(
 
   throw new Error("Frontend execution has no backend mode");
 }
+

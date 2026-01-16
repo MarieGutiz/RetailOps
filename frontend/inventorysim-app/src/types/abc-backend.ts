@@ -1,21 +1,19 @@
 // src/types/abc-backend.ts
 import type { InventoryItemBase } from "@/types/inventory";
+import type { Product } from "./products";
 
 export interface AbcItemDto extends InventoryItemBase {}
 
 export type ABCCategory = "A" | "B" | "C";
 
 export interface AbcItemResultDto {
-  productName: string;
-  sku?: string;
+  product: Product;
 
-  salesValue: number;
-  unitPrice?: number;
-  unitCost?: number;
+  salesValue: number;  
 
   rank: number;
   cumulativePct: number;
-  category: ABCCategory;
+  abcCategoryType: ABCCategory;
 }
 
 export interface AbcCategorySummary {
@@ -38,7 +36,7 @@ export interface AbcResponseDto {
 }
 
 
-export type SimulationType = "classic" | "multi" | "florist";
+export type SimulationType = "classic" | "multi" ;
 
 export interface AbcRequestDto {
   items?: AbcItemDto[];   // optional for florist

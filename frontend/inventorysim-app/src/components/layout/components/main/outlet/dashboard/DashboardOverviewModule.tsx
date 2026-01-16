@@ -1,11 +1,12 @@
 import { Card } from "@/components/ui/card"
 import ModuleContainer from "../../ModuleContainer"
-import { testFloristFlowLocal } from "@/hooks/simulator/engines/testFloristFlow";
+import { testFloristEndpointLive, testFloristFlowLocal } from "@/hooks/simulator/engines/testFloristFlow";
 import { useEffect } from "react";
 
 const DashboardOverviewModule = () => {
   useEffect(() => {
-  testFloristFlowLocal();
+  // testFloristFlowLocal();
+  testFloristEndpointLive();
 }, []);
   return (
     <ModuleContainer

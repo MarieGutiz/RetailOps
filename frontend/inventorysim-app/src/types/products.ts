@@ -2,7 +2,7 @@
 import { z } from "zod"
 
 export interface Product{
-    id?: string;
+    id?: string | null;
     sku?: string;
     name: string;
     category?:string;
