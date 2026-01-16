@@ -20,11 +20,7 @@ export interface InventoryTotals {
 
 // Inventory Base for the backend
 export interface InventoryItemBase {
-  productName: string;
-  sku?: string;
-
-  unitCost: number;
-  unitPrice: number;
+  product: Product;
 
   salesValue?: number;
   demandFrequency?: number;
