@@ -27,7 +27,7 @@ import java.math.BigInteger;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@ToString
+@ToString(callSuper = true)
 public class MonteCarloItemDto extends InventoryItemBase {
     // Monte Carlo specific behavior later:
     // - distribution metadata

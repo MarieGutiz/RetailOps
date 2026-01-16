@@ -50,7 +50,7 @@ public class AbcSummaryBuilder {
     ) {
         List<AbcItemResultDto> filtered =
                 items.stream()
-                        .filter(i -> i.getCategory() == category)
+                        .filter(i -> i.getAbcCategoryType() == category)
                         .toList();
 
         BigDecimal valueSum =

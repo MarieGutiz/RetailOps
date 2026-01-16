@@ -7,6 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.math.BigDecimal;
+
 @SpringBootApplication
 public class RetailOpsAppApplication {
 
@@ -21,32 +23,32 @@ public class RetailOpsAppApplication {
 					.name("Juice A")
 					.sku("JC-302")
 					.category("Juice")
-					.unitCost(1.00)
-					.unitPrice(2.50)
+					.unitCost(BigDecimal.valueOf(1.00))
+					.unitPrice(BigDecimal.valueOf(2.50))
 					.build());
 
 			productRepo.save(Product.builder()
 					.name("Juice B")
 					.sku("JC-303")
 					.category("Juice")
-					.unitCost(1.20)
-					.unitPrice(2.80)
+					.unitCost(BigDecimal.valueOf(1.20))
+					.unitPrice(BigDecimal.valueOf(2.80))
 					.build());
 
 			productRepo.save(Product.builder()
 					.name("Cookie C")
 					.sku("CK-SN2")
 					.category("Cookie")
-					.unitCost(0.60)
-					.unitPrice(1.50)
+					.unitCost(BigDecimal.valueOf(0.60))
+					.unitPrice(BigDecimal.valueOf(1.50))
 					.build());
 
 			productRepo.save(Product.builder()
 					.name("Cookie D")
 					.sku("CK-SN3")
 					.category("Cookie")
-					.unitCost(0.70)
-					.unitPrice(1.60)
+					.unitCost(BigDecimal.valueOf(0.70))
+					.unitPrice(BigDecimal.valueOf(1.60))
 					.build());
 
 			productRepo.findAll().forEach(p ->

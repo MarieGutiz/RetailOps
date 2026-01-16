@@ -70,8 +70,8 @@ public class AbcAnalyzer {
         for (AbcRankedItem ranked : rankedItems) {
 
             ABCResult result = new ABCResult();
-            result.setProductName(ranked.item().getProductName());
-            result.setAbcClass(ranked.category());
+            result.setProductName(ranked.item().getProduct().getName());
+            result.setAbcClass(ranked.abcCategoryType());
             result.setContributionPercentage(ranked.cumulativePct());
             result.setRank(ranked.rank());
             result.setUsername(requestDto.username());

@@ -26,17 +26,16 @@ import java.util.List;
 public class MonteCarloABCMapper {
 
     public static AbcItemDto toAbcItem(MonteCarloItemDto mcItem) {
-        AbcItemDto dto = new AbcItemDto();
-        dto.setProductName(mcItem.getProductName());
-        dto.setSku(mcItem.getSku());
-        dto.setDemandFrequency(mcItem.getDemandFrequency());
-        dto.setSalesValue(mcItem.getSalesValue());
-        dto.setUnitCost(mcItem.getUnitCost());
-        dto.setUnitPrice(mcItem.getUnitPrice());
-        return dto;
+        return AbcItemDto.builder()
+                .product(mcItem.getProduct())
+                .demandFrequency(mcItem.getDemandFrequency())
+                .salesValue(mcItem.getSalesValue())
+                .build();
     }
 
     public static List<AbcItemDto> toAbcItems(List<MonteCarloItemDto> mcItems) {
-        return mcItems.stream().map(MonteCarloABCMapper::toAbcItem).toList();
+        return mcItems.stream()
+                .map(MonteCarloABCMapper::toAbcItem)
+                .toList();
     }
 }

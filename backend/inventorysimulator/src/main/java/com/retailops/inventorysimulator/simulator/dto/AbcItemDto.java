@@ -26,7 +26,9 @@ import java.math.BigInteger;
 
 
 @SuperBuilder
-@RequiredArgsConstructor
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class AbcItemDto extends InventoryItemBase {
 
     // ABC-specific logic
