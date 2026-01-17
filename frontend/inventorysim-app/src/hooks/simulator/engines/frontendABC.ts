@@ -1,25 +1,41 @@
 import { ABC_SCENARIOS, buildABCTableData } from "@/lib/abc/buildABCTableData";
+import api from "@/services/api/api";
 import { runABCAnalysis } from "@/services/sim/segmentation/runABCAnalysis";
 import type { ABCData } from "@/types/abc";
-import type { Product } from "@/types/products";
+import type { SimulationType, AbcResponseDto } from "@/types/abc-backend";
+import type { ShopType } from "@/types/shop";
 import type { SimulatorABCOutput } from "@/types/simulator";
+import { mapAbcResponseToTable } from "./mapper/abcBackendMapper";
 
 export function runFrontendABC(
-  products: Product[],
+  items: ABCData[],
   scenario: keyof typeof ABC_SCENARIOS
 ): SimulatorABCOutput {
 
-  const abcData: ABCData[] = products.map(p => ({
-    product: p,
-    quantity: (p as any).quantity ?? 1,
-  }));
-
   const table = buildABCTableData(
-    abcData,
+    items,
     ABC_SCENARIOS[scenario]
   );
 
-  const result = runABCAnalysis(abcData);
+  const result = runABCAnalysis(items);
 
   return { result, table };
+}
+
+
+export async function runShopABC(
+  shop: ShopType,
+  simulationType: SimulationType
+): Promise<SimulatorABCOutput> {
+
+  const { data } = await api.get<AbcResponseDto>(
+    `/simulations/${shop.toLowerCase()}/abc?mode=${simulationType.toUpperCase()}`
+  );
+
+  const table = mapAbcResponseToTable(data);
+
+  return {
+    result: data,
+    table,
+  };
 }

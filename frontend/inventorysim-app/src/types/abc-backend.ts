@@ -14,6 +14,7 @@ export interface AbcItemResultDto {
   rank: number;
   cumulativePct: number;
   abcCategoryType: ABCCategory;
+  demandFrequency: number;
 }
 
 export interface AbcCategorySummary {
