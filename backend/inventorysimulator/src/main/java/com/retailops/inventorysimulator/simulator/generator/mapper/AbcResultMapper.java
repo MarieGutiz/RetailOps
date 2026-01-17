@@ -38,6 +38,7 @@ public class AbcResultMapper {
 
         // ABC-specific fields
         dto.setSalesValue(item.getSalesValue());
+        dto.setDemandFrequency(item.getDemandFrequency());
         dto.setRank(rank);
         dto.setCumulativePct(cumulativePct);
         dto.setAbcCategoryType(category);

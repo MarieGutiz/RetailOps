@@ -110,7 +110,6 @@ public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCar
                 unitPrice
         );
 
-
         MonteCarloItemDto item = new MonteCarloItemDto();
         item.setProduct(product);
         item.setDemandFrequency(BigInteger.valueOf(demand));
