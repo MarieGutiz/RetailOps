@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Getter
 @Setter
@@ -22,4 +23,5 @@ public class AbcItemResultDto {
     private int rank;
     private BigDecimal cumulativePct;
     private ABCCategoryType abcCategoryType; // "A", "B", "C"
+    private BigInteger demandFrequency;
 }
