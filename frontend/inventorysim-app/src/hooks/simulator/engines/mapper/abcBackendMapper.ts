@@ -11,6 +11,7 @@ export function mapAbcResponseToTable(
     totalValue: item.salesValue,
     cumulative: Number(item.cumulativePct),
     category: item.abcCategoryType,
+    demandFrequency: item.demandFrequency
   }));
 }
 

@@ -1,7 +1,7 @@
 import type { UserType } from "@/store/user/useUserStore";
 import type { SimulationType } from "@/types/abc-backend";
 
-type ABCExecutionMode =
+export type ABCExecutionMode =
   | "FRONTEND"
   | "BACKEND"
   | "BACKEND_PUBLIC";

@@ -1,0 +1,193 @@
+
+import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendABC";
+import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
+import type { Product } from "@/types/products";
+import type { ShopType, InventoryState, AnalyticsState, ShopABCState, RunABCOptions, ABCComputationSource } from "@/types/shop";
+import type { SimulatorABCOutput, SimulatorABCResult } from "@/types/simulator";
+import { saveToStorage } from "@/utils/storage";
+import { mountStoreDevtool } from "simple-zustand-devtools";
+import { create } from "zustand";
+import {persist, createJSONStorage} from "zustand/middleware"
+
+type ShopStore = {
+  shop: ShopType;
+
+  products: Product[];
+
+  inventory?: InventoryState;
+  analytics?: AnalyticsState;
+
+  abc: ShopABCState;
+
+  setShop: (shop: ShopType) => void;
+  setProducts: (products: Product[]) => void;
+
+  setInventory: (inventory: InventoryState) => void;
+  setAnalytics: (analytics: AnalyticsState) => void;
+
+  runABC: (opts: RunABCOptions) => Promise<void>;
+  resetABC: () => void;
+};
+
+
+
+export const useShopStore = create<ShopStore>()(
+  persist(
+    (set, get) => ({
+      shop: "FLORIST",
+
+      products: [],
+      inventory: undefined,
+      analytics: undefined,
+
+      abc: { loading: false },
+
+      // --- setters ---
+      setShop: (shop) => set({ shop }),
+      setProducts: (products) => set({ products }),
+      setInventory: (inventory) => set({ inventory }),
+      setAnalytics: (analytics) => set({ analytics }),
+
+      resetABC: () =>
+        set({
+          abc: {
+            loading: false,
+            error: undefined,
+            table: undefined,
+            summary: undefined,
+            executionMode: undefined,
+            mode: undefined,
+          },
+        }),
+
+      // --- main ABC runner ---
+      runABC: async ({
+        executionMode,
+        simulationType,
+        scenario = "Baseline",
+      }: RunABCOptions) => {
+        // map transport executionMode to store-safe executionMode
+        const storeExecutionMode: ABCComputationSource =
+          executionMode === "FRONTEND" ? "FRONTEND" : "BACKEND";
+
+        // set loading state
+        set({
+          abc: {
+            loading: true,
+            error: undefined,
+            executionMode: storeExecutionMode,
+            mode: simulationType,
+          },
+        });
+
+        try {
+          let output: SimulatorABCOutput;
+
+          if (executionMode === "FRONTEND") {
+            const { products, inventory } = get();
+            if (!inventory) {
+              throw new Error("Inventory data missing for frontend ABC");
+            }
+
+            const abcData: ABCData[] = products.map((p) => {
+              const key = p.id ?? p.sku ?? p.name;
+              if (!key) {
+                throw new Error(
+                  `Product missing identifiers: ${JSON.stringify(p)}`
+                );
+              }
+
+              return {
+                product: { ...p, source: p.source ?? "LOCAL" },
+                quantity: inventory.quantities[key] ?? 0,
+              };
+            });
+
+            output = runFrontendABC(abcData, scenario);
+          } else {
+            if (!simulationType) {
+              throw new Error("Backend simulation type required");
+            }
+
+            const { shop } = get();
+            output = await runShopABC(shop, simulationType);
+          }
+
+          // normalize table for frontend/backend
+          const sortedTable = sortABCTable(output.table);
+
+          const normalizedSummary = normalizeSummary(output.result);
+
+          // set final ABC state
+          set({
+            abc: {
+              loading: false,
+              table: sortedTable,
+              summary: normalizedSummary, // normalized summary
+              executionMode: storeExecutionMode,
+              mode: simulationType,
+            },
+          });
+        } catch (err) {
+          set({
+            abc: {
+              loading: false,
+              error:
+                err instanceof Error ? err.message : "ABC execution failed",
+            },
+          });
+        }
+      },
+    }),
+    {
+      name: "shop-storage", // localStorage key
+      storage: createJSONStorage(() => ({
+        getItem: (name) => saveToStorage.getItem(name),
+        setItem: (name, value) => saveToStorage.setItem(name, value),
+        removeItem: (name) => saveToStorage.removeItem(name),
+      })),
+    }
+  )
+);
+
+//
+
+
+if (import.meta.env.MODE === "development") {
+  mountStoreDevtool("ProductStore", useShopStore);
+}
+
+//Helper function
+function sortABCTable(table: ABCTableRow[]): ABCTableRow[] {
+  return [...table].sort((a, b) => b.totalValue - a.totalValue);
+}
+
+//Normalize the summary
+
+function normalizeSummary(result: SimulatorABCResult): ABCSummary | undefined {
+  if (!result?.summary) return undefined;
+
+  // Frontend ABCResult
+  if ("categoryA" in result) {
+    const totalValue = result.summary.totalValue ?? 0;
+    return {
+      totalValue,
+      A: { count: result.categoryA.length, valuePct: (totalValue ? (result.categoryA.reduce((sum, p) => sum + (p.unitPrice ?? 0), 0) / totalValue) * 100 : 0) },
+      B: { count: result.categoryB.length, valuePct: (totalValue ? (result.categoryB.reduce((sum, p) => sum + (p.unitPrice ?? 0), 0) / totalValue) * 100 : 0) },
+      C: { count: result.categoryC.length, valuePct: (totalValue ? (result.categoryC.reduce((sum, p) => sum + (p.unitPrice ?? 0), 0) / totalValue) * 100 : 0) },
+    };
+  }
+
+  // Backend AbcResponseDto
+  if ("items" in result) {
+    return {
+      totalValue: result.summary.totalValue,
+      A: { count: result.summary.a.count, valuePct: result.summary.a.valuePct },
+      B: { count: result.summary.b.count, valuePct: result.summary.b.valuePct },
+      C: { count: result.summary.c.count, valuePct: result.summary.c.valuePct },
+    };
+  }
+
+  return undefined;
+}
+

@@ -3,7 +3,7 @@ import type { AbcResponseDto } from "./abc-backend";
 
 export type SimulatorABCResult =
   | ABCResult          // frontend guest simulation
-  | AbcResponseDto;    // backend simulation (classic, multi, florist)
+  | AbcResponseDto;    // backend simulation (classic, multi)
 
 export interface SimulatorABCOutput {
   result: SimulatorABCResult;

@@ -91,7 +91,7 @@ export const useProductStore = create<ProductState>()(
         set({ isAuthenticated: value });
     },
 }),
- {
+  {
     name: "product-storage", // key for localStorage
     storage: createJSONStorage(() => ({
     getItem: saveToStorage.getItem,
