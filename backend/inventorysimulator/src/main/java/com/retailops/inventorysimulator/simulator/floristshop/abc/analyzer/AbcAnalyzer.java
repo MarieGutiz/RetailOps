@@ -19,6 +19,7 @@ package com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer;
 
 import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
+import com.retailops.inventorysimulator.simulator.dto.AbcItemResultDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerStrategy;
 import com.retailops.inventorysimulator.util.ABCCategoryType;
@@ -70,6 +71,7 @@ public class AbcAnalyzer {
         for (AbcRankedItem ranked : rankedItems) {
 
             ABCResult result = new ABCResult();
+
             result.setProductName(ranked.item().getProduct().getName());
             result.setAbcClass(ranked.abcCategoryType());
             result.setContributionPercentage(ranked.cumulativePct());
@@ -82,5 +84,26 @@ public class AbcAnalyzer {
 
         return results;
     }
+
+    public static List<AbcItemResultDto> toResultDtos(
+            List<AbcRankedItem> rankedItems
+    ) {
+        return rankedItems.stream()
+                .map(ranked -> {
+                    AbcItemResultDto dto = new AbcItemResultDto();
+
+                    dto.setProduct(ranked.item().getProduct());
+                    dto.setSalesValue(ranked.item().getSalesValue());
+                    dto.setDemandFrequency(ranked.item().getDemandFrequency());
+
+                    dto.setRank(ranked.rank());
+                    dto.setCumulativePct(ranked.cumulativePct());
+                    dto.setAbcCategoryType(ranked.abcCategoryType());
+
+                    return dto;
+                })
+                .toList();
+    }
+
 
 }

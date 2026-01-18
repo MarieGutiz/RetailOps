@@ -17,26 +17,24 @@
 
 package com.retailops.inventorysimulator.controller;
 
-import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
+import com.retailops.inventorysimulator.simulator.dto.AbcResponseDto;
 import com.retailops.inventorysimulator.simulator.service.AbcService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/abc")
+@RequestMapping("/api/simulations/abc")
 @RequiredArgsConstructor
 public class AbcController {
 
     private final AbcService abcService;
 
     @PostMapping("/analyze")
-    public ResponseEntity<List<ABCResult>> runAbc(@RequestBody AbcRequestDto dto) {
-        List<ABCResult> results = abcService.runAbc(dto);
-        return ResponseEntity.ok(results);
+    public ResponseEntity<AbcResponseDto> runAbc(@RequestBody AbcRequestDto dto) {
+        AbcResponseDto response = abcService.runAbc(dto);
+        return ResponseEntity.ok(response);
     }
 
 

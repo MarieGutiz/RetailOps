@@ -1,6 +1,7 @@
 package com.retailops.inventorysimulator.util;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -31,5 +32,9 @@ public enum SimulationType {
         };
     }
 
+    @JsonCreator
+    public static SimulationType fromJson(String value) {
+        return fromString(value);
+    }
 
 }
