@@ -17,15 +17,16 @@
 
 package com.retailops.inventorysimulator.simulator.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.retailops.inventorysimulator.simulator.inventory.InventoryItemBase;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 
 @SuperBuilder
+@Jacksonized
 @Getter
 @Setter
 @ToString(callSuper = true)
