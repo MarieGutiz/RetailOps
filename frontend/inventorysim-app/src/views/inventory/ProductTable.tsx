@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-import type { Product, ProductZ } from "@/types/products";
+import type { Product } from "@/types/products";
 import RowActions from "./forms/RowActions";
 import SortableHeader from "./forms/SortableHeader";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
@@ -59,7 +59,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
   }, [data, search]);
 
   // MEMOIZED COLUMNS (MOST IMPORTANT!)
-  const columns = useMemo<ColumnDef<ProductZ>[]>(() => [
+  const columns = useMemo<ColumnDef<Product>[]>(() => [
     {
       accessorKey: "name",
       header: ({ column }) => (

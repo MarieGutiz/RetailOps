@@ -52,3 +52,5 @@ export const ABC_SCENARIOS = {
   Optimistic: { a: 85, b: 97, c: 100 },      // more products get class A
   Pessimistic: { a: 70, b: 90, c: 100 },     // fewer products get class A
 };
+
+

@@ -6,7 +6,7 @@ import { useUserStore } from "@/store/user/useUserStore";
 import { resolveABCMode, resolveBackendMode } from "@/hooks/simulator/engines/types/resolveABCMode";
 import { runBackendABC } from "@/hooks/simulator/engines/backendABC";
 import { useFeatureFlags } from "./useFeatureFlags";
-import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendABC";
+import {  runShopABC } from "@/hooks/simulator/engines/frontendABC";
 import { useShopStore } from "@/store/shop/useShopStore";
 
 export function useSimulator() {
@@ -22,11 +22,12 @@ export function useSimulator() {
     const executionMode = resolveABCMode(user.userType, scenario);
 
     switch (executionMode) {
+      //Use with small samples
       case "FRONTEND":{
           // return runFrontendABC(products, scenario);
-         console.log("runn")
+         console.log("run")
       }
-       
+      // Send samples to server to be process
       case "BACKEND": {
         const backendMode = resolveBackendMode(
           executionMode,
@@ -35,7 +36,7 @@ export function useSimulator() {
 
         return runBackendABC(products, user, backendMode);
       }
-
+      //Placeholder shops
       case "BACKEND_PUBLIC": {
         const backendMode = resolveBackendMode(
           executionMode,

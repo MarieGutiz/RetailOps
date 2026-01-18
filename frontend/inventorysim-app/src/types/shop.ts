@@ -2,7 +2,6 @@ import type { ABCExecutionMode } from "@/hooks/simulator/engines/types/resolveAB
 import type { ABC_SCENARIOS } from "@/lib/abc/buildABCTableData";
 import type { SimulationType } from "./abc-backend";
 import type { ABCSummary, ABCTableRow } from "./abc";
-import type { SimulatorABCResult } from "./simulator";
 
 export type ShopType = "FLORIST" | "CAFETERIA";
 export type ABCComputationSource = "FRONTEND" | "BACKEND";
@@ -26,8 +25,6 @@ export interface ShopABCState {
   table?: ABCTableRow[];
   summary?: ABCSummary;
 }
-
-
 
 export type RunABCOptions = {
   executionMode: ABCExecutionMode;
