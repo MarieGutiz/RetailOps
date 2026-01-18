@@ -10,24 +10,25 @@ export function toAbcRequest(
   user: UserPolicy,
   mode: SimulationType
 ): AbcRequestDto {
-
-  if (mode === "florist") {
-    return { mode };
-  }
-
   return {
     mode,
     username: user.username ?? "Guest",
     items: products.map(p => ({
-      productName: p.name,
-      sku: p.sku,
-      unitCost: p.unitCost,
-      unitPrice: p.unitPrice,
-      salesValue: p.unitPrice * ((p as any).quantity ?? 1),
+      product: {
+        id: p.id ?? null,
+        name: p.name,
+        sku: p.sku,
+        category: p.category,
+        description: p.description,
+        unitCost: p.unitCost,
+        unitPrice: p.unitPrice,
+      },
       demandFrequency: (p as any).quantity ?? 1,
+      salesValue: p.unitPrice * ((p as any).quantity ?? 1),
     })),
   };
 }
+
 
 
 export async function runBackendABC(
@@ -39,7 +40,7 @@ export async function runBackendABC(
   const dto = toAbcRequest(products, user, mode);
   const response = await analyzeABC(dto); // AbcResponseDto
 
-  const table = mapAbcResponseToTable(response, products);
+  const table = mapAbcResponseToTable(response);
 
   return {
     result: response, // keep raw backend response

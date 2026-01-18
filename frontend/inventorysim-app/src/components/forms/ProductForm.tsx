@@ -1,4 +1,3 @@
-import { runABCAnalysis } from '@/services/sim/segmentation/runABCAnalysis';
 import  { useProductStore } from '@/store/inventory/useProductStore';
 import type { ABCData } from '@/types/abc';
 
@@ -12,9 +11,9 @@ const ProductForm = () => {
   { product: { name: "Product C", unitPrice: 50 , unitCost: 10}, quantity: 20 },
 ];
 
-const result = runABCAnalysis(data);
-console.log(result.categoryA);
-console.log("Total items "+result.summary?.totalItems + " and total values "+ result.summary?.totalValue);
+// const result = runABCAnalysis(data);
+// console.log(result.categoryA);
+// console.log("Total items "+result.summary?.totalItems + " and total values "+ result.summary?.totalValue);
   const handleAdd = () => {
     const newProduct = {
       id: String(Date.now()), // unique ID based on timestamp

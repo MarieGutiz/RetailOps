@@ -9,7 +9,7 @@ export interface Product{
     description?: string;
     unitCost: number;
     unitPrice: number;
-    source?: string;
+    source?: string | null;
 }
 
 
@@ -21,5 +21,6 @@ export const productSchema = z.object({
   description: z.string().optional(),
   unitCost: z.number(),
   unitPrice: z.number(),
+  source:z.string().optional()
 })
 export type ProductZ = z.infer<typeof productSchema>;
