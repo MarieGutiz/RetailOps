@@ -1,9 +1,11 @@
 
 import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendABC";
 import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
+import type { AbcResponseDto } from "@/types/abc-backend";
 import type { Product } from "@/types/products";
 import type { ShopType, InventoryState, AnalyticsState, ShopABCState, RunABCOptions, ABCComputationSource } from "@/types/shop";
 import type { SimulatorABCOutput, SimulatorABCResult } from "@/types/simulator";
+import { extractBackendABC } from "@/utils/abc/extractBackendABC";
 import { saveToStorage } from "@/utils/storage";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { create } from "zustand";
@@ -28,8 +30,6 @@ type ShopStore = {
   runABC: (opts: RunABCOptions) => Promise<void>;
   resetABC: () => void;
 };
-
-
 
 export const useShopStore = create<ShopStore>()(
   persist(
@@ -66,11 +66,9 @@ export const useShopStore = create<ShopStore>()(
         simulationType,
         scenario = "Baseline",
       }: RunABCOptions) => {
-        // map transport executionMode to store-safe executionMode
         const storeExecutionMode: ABCComputationSource =
           executionMode === "FRONTEND" ? "FRONTEND" : "BACKEND";
 
-        // set loading state
         set({
           abc: {
             loading: true,
@@ -83,6 +81,7 @@ export const useShopStore = create<ShopStore>()(
         try {
           let output: SimulatorABCOutput;
 
+          /* ───────────────── FRONTEND ABC ───────────────── */
           if (executionMode === "FRONTEND") {
             const { products, inventory } = get();
             if (!inventory) {
@@ -104,26 +103,40 @@ export const useShopStore = create<ShopStore>()(
             });
 
             output = runFrontendABC(abcData, scenario);
-          } else {
+          }
+
+          /* ───────────────── BACKEND ABC ───────────────── */
+          else {
             if (!simulationType) {
               throw new Error("Backend simulation type required");
             }
 
             const { shop } = get();
             output = await runShopABC(shop, simulationType);
+
+            //Check
+            if ("items" in output.result) {
+              const { products, inventory, analytics } =
+                extractBackendABC(output.result as AbcResponseDto);
+
+              set({
+                products,
+                inventory,
+                analytics,
+              });
+            }
           }
 
-          // normalize table for frontend/backend
-          const sortedTable = sortABCTable(output.table);
+          /* ───────────────── COMMON ABC STATE ───────────────── */
 
+          const sortedTable = sortABCTable(output.table);
           const normalizedSummary = normalizeSummary(output.result);
 
-          // set final ABC state
           set({
             abc: {
               loading: false,
               table: sortedTable,
-              summary: normalizedSummary, // normalized summary
+              summary: normalizedSummary,
               executionMode: storeExecutionMode,
               mode: simulationType,
             },
@@ -137,24 +150,25 @@ export const useShopStore = create<ShopStore>()(
             },
           });
         }
-      },
-    }),
-    {
-      name: "shop-storage", // localStorage key
-      storage: createJSONStorage(() => ({
-        getItem: (name) => saveToStorage.getItem(name),
-        setItem: (name, value) => saveToStorage.setItem(name, value),
-        removeItem: (name) => saveToStorage.removeItem(name),
-      })),
-    }
-  )
-);
+    },
+
+        }),
+        {
+          name: "shop-storage", // localStorage key
+          storage: createJSONStorage(() => ({
+            getItem: (name) => saveToStorage.getItem(name),
+            setItem: (name, value) => saveToStorage.setItem(name, value),
+            removeItem: (name) => saveToStorage.removeItem(name),
+          })),
+        }
+      )
+    );
 
 //
 
 
 if (import.meta.env.MODE === "development") {
-  mountStoreDevtool("ProductStore", useShopStore);
+  mountStoreDevtool("ShopStore", useShopStore);
 }
 
 //Helper function
