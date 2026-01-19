@@ -84,15 +84,17 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
     ),
     size: 120,
   },
-    {
-      accessorKey: "category",
-      header: "Category",
-      cell: ({ row }) => (
-        <span className="text-muted-foreground">
-          {row.original.category || "-"}
-        </span>
-      ),
-      size: 140,
+   {
+    accessorKey: "category",
+    header: ({ column }) => (
+      <SortableHeader column={column} label="Category" />
+    ),
+    cell: ({ row }) => (
+      <span className="text-muted-foreground">
+        {row.original.category || "-"}
+      </span>
+    ),
+    size: 140,
     },
     {
       accessorKey: "unitCost",
@@ -149,52 +151,38 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
         const product = row.original
         const inInventory = useInventoryStatus(String(product.id))
 
-        return (
-          <div className="flex items-center justify-between gap-3 lg:gap-0 xl:gap-0 w-full">
-            <div className="shrink-0 sm:mr-0 lg:-mr4 xl:-mr-6">
-              {inInventory ? (
-                <Badge className="bg-green-600 text-white whitespace-nowrap text-[10px] px-2 py-0.5">
-                  In inventory
-                </Badge>
-              ) : (
-                <Badge
-                  variant="secondary"
-                  className="bg-gray-400 text-white whitespace-nowrap text-[10px] px-2 py-0.5"
-                >
-                  Not added
-                </Badge>
-              )}
-            </div>
+      return (
+        <div className="flex items-center justify-center gap-2 min-w-[120px]">
+          <Badge
+            className={`whitespace-nowrap text-[10px] px-2 py-0.5 ${
+              inInventory ? "bg-green-600 text-white" : "bg-gray-400 text-white"
+            }`}
+          >
+            {inInventory ? "In inventory" : "Not added"}
+          </Badge>
 
-            <div className="shrink-0">
-              {inInventory ? (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="jbtn-danger h-7 w-7 p-0 text-xs"
-                  onClick={() => removeFromInventory(String(product.id))}
-                >
-                  ➖
-                </Button>
-              ) : (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="jbtn-passive h-8 w-8 p-0"
-                  onClick={() => {
+          <Button
+            size="sm"
+            variant="ghost"
+            className={`h-7 w-7 p-0 text-xs 
+              ${inInventory? "jbtn-passive" : "jbtn-danger"}`
+            }
+            onClick={() =>
+              inInventory
+                ? removeFromInventory(String(product.id))
+                : (() => {
                     setSelectedProduct(product)
                     setInventoryDialogOpen(true)
-                  }}
-                >
-                  ➕
-                </Button>
-              )}
-            </div>
-          </div>
-        )
-      },
+                  })()
+            }
+          >
+            {inInventory ? "➖" : "➕"}
+          </Button>
+        </div>
+    )
+  },
 
-      size: 320,
+      size: undefined,
     },
     {
       id: "actions",
@@ -277,6 +265,7 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
               <SelectContent>
                 <SelectItem value="name">Name</SelectItem>
                 <SelectItem value="sku">SKU</SelectItem>
+                <SelectItem value="category">Category</SelectItem>
                 <SelectItem value="unitCost">Cost</SelectItem>
                 <SelectItem value="unitPrice">Price</SelectItem>
                 <SelectItem value="inventory">Inventory</SelectItem>

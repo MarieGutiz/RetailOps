@@ -1,11 +1,10 @@
 import { ABC_SCENARIOS } from "@/lib/abc/buildABCTableData";
 import api from "@/services/api/api";
-import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
-import type { SimulationType, AbcResponseDto, AbcItemResultDto, AbcSummaryDto } from "@/types/abc-backend";
+import type { ABCData } from "@/types/abc";
+import type { SimulationType, AbcResponseDto } from "@/types/abc-backend";
 import type { ShopType } from "@/types/shop";
 import type { SimulatorABCOutput } from "@/types/simulator";
 import { mapAbcResponseToTable } from "./mapper/abcBackendMapper";
-import type { Product } from "@/types/products";
 import { ABCAnalysisFrontend } from "@/services/domain/segmentation/ABCAnalysisFrontend";
 
 //Flat ABC
@@ -65,54 +64,4 @@ export async function runShopABC(
     result: data,
     table,
   };
-}
-
-//For the shops generated
-//Extractint the Product[] from the JSON
-export function extractProductsFromAbc(
-  items: AbcItemResultDto[]
-): Product[] {
-  const map = new Map<string, Product>();
-
-  for (const { product } of items) {
-    const key = product.id ?? product.sku;
-    if (!key) continue;
-
-    if (!map.has(key)) {
-      map.set(key, {
-        ...product,
-        source: product.source ?? "BACKEND",
-      });
-    }
-  }
-
-  return Array.from(map.values());
-}
-
-
-//Extract summary 
-
-function backendSummaryToStore(
-  summary: AbcSummaryDto
-): ABCSummary {
-  return {
-    totalValue: summary.totalValue,
-    A: summary.a,
-    B: summary.b,
-    C: summary.c,
-  };
-}
-
-
-//Map to ABC tableRow
-function backendAbcToTable(
-  items: AbcItemResultDto[]
-): ABCTableRow[] {
-  return items.map((item) => ({
-    product: item.product,
-    quantity: item.demandFrequency, // frontend abstraction
-    totalValue: item.salesValue,
-    cumulative: item.cumulativePct,
-    category: item.abcCategoryType,
-  }));
 }
