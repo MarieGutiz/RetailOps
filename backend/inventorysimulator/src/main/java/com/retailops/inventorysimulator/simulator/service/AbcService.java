@@ -140,7 +140,7 @@ public class AbcService {
         AbcSummaryDto summary = AbcSummaryBuilder.build(items);
 
         // Persist simulation metadata only (registered users)
-        persistRun(requestDto, ranked, null); // null because front-end simulation may not need persistence of ABCResult entities
+//        persistRun(requestDto, ranked, null); // null because front-end simulation may not need persistence of ABCResult entities
 
         return new AbcResponseDto(items, summary);
     }
