@@ -5,17 +5,23 @@ import { useInitProductData } from "@/hooks/inventory/initProductData";
 import ProductTable from "./ProductTable";
 import { useShopStore } from "@/store/shop/useShopStore";
 import { useEffect } from "react";
+import { shopId } from "@/types/shop";
+import { useShopProductsById } from "@/hooks/simulator/engines/frontendABC";
+import { useShopProducts } from "@/hooks/shop/useShopProducts";
 
 const ProductLibraryView = () => {
   useInitProductData(); // loads JSON inventory if empty
 
-  const products = useProductStore((s) => s.products);
+  // const products = useProductStore((s) => s.products);
   // const loading = useProductStore((s) => s.loading);
 
   // // load florist products
-   const shop = useShopStore((s) => s.shop);
-  const productsFlorist = useShopStore((s) => s.products);
-  const loading = useShopStore((s) => s.abc.loading);
+  const shop = useShopStore((s) => s.shop);
+  // const productsFlorist = useShopProductsById(shopId("FLORIST"));
+  const { products, analytics, summary, loading } = useShopProducts(shopId("FLORIST"));
+
+
+  // const loading = useShopStore((s) => s.abc.loading);
   const runABC = useShopStore((s) => s.runABC);
 
   // Load products from backend ABC on mount
@@ -32,7 +38,7 @@ const ProductLibraryView = () => {
     fetchProducts();
   }, [shop, runABC]); // re-run if shop changes
 
-  console.log("Product Florist ", productsFlorist)
+  console.log("Product Florist ", products)
   return (
     <div>
       <Card className="shadow-sm">
@@ -46,7 +52,7 @@ const ProductLibraryView = () => {
         </CardHeader>
 
         <CardContent>
-          <ProductTable data={productsFlorist} loading={loading} />
+          <ProductTable data={products} loading={loading} />
         </CardContent>
       </Card>
     </div>

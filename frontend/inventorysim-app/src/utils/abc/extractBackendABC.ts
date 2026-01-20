@@ -5,8 +5,6 @@ import type { Product } from "@/types/products";
 import type { InventoryState, AnalyticsState } from "@/types/shop";
 import { v4 as uuidv4 } from "uuid";
 
-
-
 export function extractBackendABC(response: AbcResponseDto): {
   products: Product[];
   inventory: InventoryState;
