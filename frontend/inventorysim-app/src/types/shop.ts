@@ -4,6 +4,9 @@ import type { SimulationType } from "./abc-backend";
 import type { ABCSummary, ABCTableRow } from "./abc";
 
 export type ShopType = "FLORIST" | "CAFETERIA";
+
+export type ShopId = string & { readonly brand: unique symbol };
+
 export type ABCComputationSource = "FRONTEND" | "BACKEND";
 
 export type InventoryState = {
@@ -31,3 +34,7 @@ export type RunABCOptions = {
   simulationType?: SimulationType;
   scenario?: keyof typeof ABC_SCENARIOS;
 };
+
+export function shopId(value: string): ShopId {
+  return value as ShopId;
+}

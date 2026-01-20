@@ -3,7 +3,7 @@ import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendAB
 import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
 import type { AbcResponseDto } from "@/types/abc-backend";
 import type { Product } from "@/types/products";
-import type { ShopType, InventoryState, AnalyticsState, ShopABCState, RunABCOptions, ABCComputationSource } from "@/types/shop";
+import { type ShopType, type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ABCComputationSource, type ShopId, shopId } from "@/types/shop";
 import type { SimulatorABCOutput, SimulatorABCResult } from "@/types/simulator";
 import { extractBackendABC } from "@/utils/abc/extractBackendABC";
 import { saveToStorage } from "@/utils/storage";
@@ -12,43 +12,94 @@ import { create } from "zustand";
 import {persist, createJSONStorage} from "zustand/middleware"
 
 type ShopStore = {
-  shop: ShopType;
+  shop: ShopId;
+
+  shops: Record<
+    ShopId,
+    {
+      products: Product[];
+      inventory?: InventoryState;
+      analytics?: AnalyticsState;
+    }
+  >;
+
 
   products: Product[];
-
   inventory?: InventoryState;
   analytics?: AnalyticsState;
 
   abc: ShopABCState;
+  hydratedByShop: Partial<Record<ShopId, boolean>>;
 
-  setShop: (shop: ShopType) => void;
+  setShop: (shop: ShopId) => void;
+
   setProducts: (products: Product[]) => void;
-
   setInventory: (inventory: InventoryState) => void;
   setAnalytics: (analytics: AnalyticsState) => void;
 
   runABC: (opts: RunABCOptions) => Promise<void>;
   resetABC: () => void;
+  resetShop: () => void;
 };
 
 export const useShopStore = create<ShopStore>()(
   persist(
     (set, get) => ({
-      shop: "FLORIST",
+      shop: shopId("FLORIST"),
+      shops: {},
 
       products: [],
       inventory: undefined,
       analytics: undefined,
 
+      hydratedByShop: {},
+
       abc: { loading: false },
 
       // --- setters ---
-      setShop: (shop) => set({ shop }),
-      setProducts: (products) => set({ products }),
-      setInventory: (inventory) => set({ inventory }),
-      setAnalytics: (analytics) => set({ analytics }),
+       setShop: (shop) =>
+        set({
+          shop,
+          abc: { loading: false },
+        }),
+
+
+      //Import - prdcs, inventory, analytics
+      setProducts: (products) =>
+        set((state) => ({
+          shops: {
+            ...state.shops,
+            [state.shop]: {
+              ...state.shops[state.shop],
+              products,
+            },
+          },
+        })),
+
+      setInventory: (inventory) =>
+        set((state) => ({
+          shops: {
+            ...state.shops,
+            [state.shop]: {
+              ...state.shops[state.shop],
+              inventory,
+            },
+          },
+        })),
+
+      setAnalytics: (analytics) =>
+        set((state) => ({
+          shops: {
+            ...state.shops,
+            [state.shop]: {
+              ...state.shops[state.shop],
+              analytics,
+            },
+          },
+        })),
 
       resetABC: () =>
+        
         set({
           abc: {
             loading: false,
@@ -60,12 +111,30 @@ export const useShopStore = create<ShopStore>()(
           },
         }),
 
-      // --- main ABC runner ---
+        resetShop: () =>
+          set({
+            products: [],
+            inventory: undefined,
+            analytics: undefined,
+            abc: { loading: false },
+          }),
+
+      // --- main ABC runner ---      
       runABC: async ({
         executionMode,
         simulationType,
         scenario = "Baseline",
       }: RunABCOptions) => {
+
+        const { shop, hydratedByShop } = get();
+
+          if (
+            executionMode === "BACKEND" &&
+            hydratedByShop[shop]
+          ) {
+            return;
+          }
+        
         const storeExecutionMode: ABCComputationSource =
           executionMode === "FRONTEND" ? "FRONTEND" : "BACKEND";
 
@@ -119,11 +188,20 @@ export const useShopStore = create<ShopStore>()(
               const { products, inventory, analytics } =
                 extractBackendABC(output.result as AbcResponseDto);
 
-              set({
-                products,
-                inventory,
-                analytics,
-              });
+              set((state) => ({
+                shops: {
+                  ...state.shops,
+                  [state.shop]: {
+                    products,
+                    inventory,
+                    analytics,
+                  },
+                },
+                hydratedByShop: {
+                  ...state.hydratedByShop,
+                  [state.shop]: true,
+                },
+              }));
             }
           }
 
