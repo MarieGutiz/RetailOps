@@ -3,12 +3,30 @@ import  { ABC_SCENARIOS_META } from "./ABC_SCENARIOS"
 import  { Button } from "@/components/ui/Button"
 
 
-interface InfoProps {
-  scenarioKey: keyof typeof ABC_SCENARIOS_META
+interface InfoContent {
+  title: string
+  theory?: string
+  description: string
+  thresholds?: string
 }
 
-const Info = ({scenarioKey}: InfoProps) => {
-  const scenario = ABC_SCENARIOS_META[scenarioKey]
+// interface InfoProps {
+//   scenarioKey: keyof typeof ABC_SCENARIOS_META
+//   content: InfoContent
+// }
+
+
+type InfoProps =
+  | { scenarioKey: keyof typeof ABC_SCENARIOS_META; content?: never }
+  | { content: InfoContent; scenarioKey?: never }
+
+  
+const Info = ({scenarioKey, content}: InfoProps) => {
+  const scenario = scenarioKey
+    ? ABC_SCENARIOS_META[scenarioKey]
+    : content
+
+  if (!scenario) return null
 
   return (
     <HoverCard>
@@ -24,10 +42,20 @@ const Info = ({scenarioKey}: InfoProps) => {
       </HoverCardTrigger>
 
       <HoverCardContent className="w-64">
+
         <h3 className="text-sm font-semibold">{scenario.title}</h3>
-        <p className="text-xs text-muted-foreground">{scenario.theory}</p>
+
+         {scenario.theory && (
+          <p className="text-xs text-muted-foreground">
+            {scenario.theory}
+          </p>
+        )}
+
         <p className="mt-2 text-xs">{scenario.description}</p>
-        <p className="mt-2 text-xs">{scenario.thresholds}</p>
+
+        {scenario.thresholds && (
+          <p className="mt-2 text-xs">{scenario.thresholds}</p>
+        )}
       </HoverCardContent>
     </HoverCard>
   )

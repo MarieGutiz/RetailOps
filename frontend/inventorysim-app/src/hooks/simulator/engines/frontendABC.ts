@@ -2,11 +2,12 @@ import { ABC_SCENARIOS } from "@/lib/abc/buildABCTableData";
 import api from "@/services/api/api";
 import type { ABCData } from "@/types/abc";
 import type { SimulationType, AbcResponseDto } from "@/types/abc-backend";
-import { shopId, type ShopId, type ShopType } from "@/types/shop";
+import { shopId, type ShopId } from "@/types/shop";
 import type { SimulatorABCOutput } from "@/types/simulator";
 import { mapAbcResponseToTable } from "./mapper/abcBackendMapper";
 import { ABCAnalysisFrontend } from "@/services/domain/segmentation/ABCAnalysisFrontend";
 import { useShopStore } from "@/store/shop/useShopStore";
+import { isAxiosError } from "axios";
 
 //Flat ABC
 export function runFrontendABC(
@@ -53,18 +54,37 @@ export async function runShopABC(
   shopId: string,
   simulationType: SimulationType
 ): Promise<SimulatorABCOutput> {
-  const shopPath = resolveShopPath(shopId);
+   try {
+    const shopPath = resolveShopPath(shopId);
 
-  const { data } = await api.get<AbcResponseDto>(
-    `/simulations/${shopPath}/abc?mode=${simulationType.toUpperCase()}`
-  );
+    const { data } = await api.get<AbcResponseDto>(
+      `/simulations/${shopPath}/abc?mode=${simulationType.toUpperCase()}`
+    );
 
-  const table = mapAbcResponseToTable(data);
+    const table = mapAbcResponseToTable(data);
 
-  return {
-    result: data,
-    table,
-  };
+    return {
+      result: data,
+      table,
+    };
+  } catch (err: unknown) {
+    // Axios-style error narrowing
+    if (isAxiosError(err)) {
+      // Backend down / refused
+      if (!err.response) {
+        throw new Error("Cannot connect to backend");
+      }
+
+      // Backend responded with error
+      throw new Error(
+        err.response.data?.message ??
+          `ABC simulation failed (${err.response.status})`
+      );
+    }
+
+    // Fallback
+    throw new Error("Unexpected error during ABC simulation");
+  }
 }
 
 

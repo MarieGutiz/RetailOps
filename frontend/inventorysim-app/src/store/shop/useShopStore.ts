@@ -3,7 +3,7 @@ import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendAB
 import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
 import type { AbcResponseDto } from "@/types/abc-backend";
 import type { Product } from "@/types/products";
-import { type ShopType, type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ABCComputationSource, type ShopId, shopId } from "@/types/shop";
+import { type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ABCComputationSource, type ShopId, shopId } from "@/types/shop";
 import type { SimulatorABCOutput, SimulatorABCResult } from "@/types/simulator";
 import { extractBackendABC } from "@/utils/abc/extractBackendABC";
 import { saveToStorage } from "@/utils/storage";
@@ -11,25 +11,24 @@ import { mountStoreDevtool } from "simple-zustand-devtools";
 import { create } from "zustand";
 import {persist, createJSONStorage} from "zustand/middleware"
 
-type ShopStore = {
-  shop: ShopId;
 
-  shops: Record<
-    ShopId,
-    {
-      products: Product[];
-      inventory?: InventoryState;
-      analytics?: AnalyticsState;
-    }
-  >;
+export type ShopSlice = {
+  products: Product[]
+  inventory?: InventoryState
+  analytics?: AnalyticsState
+  abc: ShopABCState
+  hydrated: boolean
+}
+
+
+export type ShopStore = {
+  shop: ShopId
+  shops: Record<ShopId, ShopSlice>
 
 
   products: Product[];
   inventory?: InventoryState;
   analytics?: AnalyticsState;
-
-  abc: ShopABCState;
-  hydratedByShop: Partial<Record<ShopId, boolean>>;
 
   setShop: (shop: ShopId) => void;
 
@@ -57,20 +56,25 @@ export const useShopStore = create<ShopStore>()(
       abc: { loading: false },
 
       // --- setters ---
-       setShop: (shop) =>
-        set({
+        /* ───────────── SHOP SWITCH ───────────── */
+      setShop: (shop) =>
+        set((state) => ({
           shop,
-          abc: { loading: false },
-        }),
+          shops: {
+            ...state.shops,
+            [shop]: state.shops[shop] ?? emptyShopSlice(),
+          },
+        })),
 
 
       //Import - prdcs, inventory, analytics
+       /* ───────────── SETTERS (SCOPED) ───────────── */
       setProducts: (products) =>
         set((state) => ({
           shops: {
             ...state.shops,
             [state.shop]: {
-              ...state.shops[state.shop],
+              ...(state.shops[state.shop] ?? emptyShopSlice()),
               products,
             },
           },
@@ -81,7 +85,7 @@ export const useShopStore = create<ShopStore>()(
           shops: {
             ...state.shops,
             [state.shop]: {
-              ...state.shops[state.shop],
+              ...(state.shops[state.shop] ?? emptyShopSlice()),
               inventory,
             },
           },
@@ -92,32 +96,31 @@ export const useShopStore = create<ShopStore>()(
           shops: {
             ...state.shops,
             [state.shop]: {
-              ...state.shops[state.shop],
+              ...(state.shops[state.shop] ?? emptyShopSlice()),
               analytics,
             },
           },
         })),
 
+      /* ───────────── RESETTERS ───────────── */
       resetABC: () =>
-        
-        set({
-          abc: {
-            loading: false,
-            error: undefined,
-            table: undefined,
-            summary: undefined,
-            executionMode: undefined,
-            mode: undefined,
+        set((state) => ({
+          shops: {
+            ...state.shops,
+            [state.shop]: {
+              ...(state.shops[state.shop] ?? emptyShopSlice()),
+              abc: { loading: false },
+            },
           },
-        }),
+        })),
 
-        resetShop: () =>
-          set({
-            products: [],
-            inventory: undefined,
-            analytics: undefined,
-            abc: { loading: false },
-          }),
+      resetShop: () =>
+        set((state) => ({
+          shops: {
+            ...state.shops,
+            [state.shop]: emptyShopSlice(),
+          },
+        })),
 
       // --- main ABC runner ---      
       runABC: async ({
@@ -126,52 +129,41 @@ export const useShopStore = create<ShopStore>()(
         scenario = "Baseline",
       }: RunABCOptions) => {
 
-        const { shop, hydratedByShop } = get();
+        const { shop, shops } = get()
+        const current = shops[shop] ?? emptyShopSlice()
 
-          if (
-            executionMode === "BACKEND" &&
-            hydratedByShop[shop]
-          ) {
-            return;
-          }
-        
-        const storeExecutionMode: ABCComputationSource =
-          executionMode === "FRONTEND" ? "FRONTEND" : "BACKEND";
+        if (executionMode === "BACKEND" && current.hydrated) return
 
-        set({
-          abc: {
-            loading: true,
-            error: undefined,
-            executionMode: storeExecutionMode,
-            mode: simulationType,
+        set((state) => ({
+          shops: {
+            ...state.shops,
+            [shop]: {
+              ...current,
+              abc: {
+                loading: true,
+                executionMode,
+                mode: simulationType,
+              },
+            },
           },
-        });
+        }))
 
         try {
           let output: SimulatorABCOutput;
 
           /* ───────────────── FRONTEND ABC ───────────────── */
           if (executionMode === "FRONTEND") {
-            const { products, inventory } = get();
-            if (!inventory) {
-              throw new Error("Inventory data missing for frontend ABC");
+            if (!current.inventory) {
+              throw new Error("Inventory missing for frontend ABC")
             }
 
-            const abcData: ABCData[] = products.map((p) => {
-              const key = p.id ?? p.sku ?? p.name;
-              if (!key) {
-                throw new Error(
-                  `Product missing identifiers: ${JSON.stringify(p)}`
-                );
-              }
+            const abcData: ABCData[] = current.products.map((p) => ({
+              product: { ...p, source: p.source ?? "LOCAL" },
+              quantity:
+                current.inventory!.quantities[p.id ?? p.sku ?? p.name!] ?? 0,
+            }))
 
-              return {
-                product: { ...p, source: p.source ?? "LOCAL" },
-                quantity: inventory.quantities[key] ?? 0,
-              };
-            });
-
-            output = runFrontendABC(abcData, scenario);
+            output = runFrontendABC(abcData, scenario)
           }
 
           /* ───────────────── BACKEND ABC ───────────────── */
@@ -180,53 +172,59 @@ export const useShopStore = create<ShopStore>()(
               throw new Error("Backend simulation type required");
             }
 
-            const { shop } = get();
-            output = await runShopABC(shop, simulationType);
+            output = await runShopABC(shop, simulationType)
 
-            //Check
             if ("items" in output.result) {
               const { products, inventory, analytics } =
-                extractBackendABC(output.result as AbcResponseDto);
+                extractBackendABC(output.result as AbcResponseDto)
 
               set((state) => ({
                 shops: {
                   ...state.shops,
-                  [state.shop]: {
+                  [shop]: {
+                    ...current,
                     products,
                     inventory,
                     analytics,
+                    hydrated: true,
                   },
                 },
-                hydratedByShop: {
-                  ...state.hydratedByShop,
-                  [state.shop]: true,
-                },
-              }));
+              }))
             }
           }
 
-          /* ───────────────── COMMON ABC STATE ───────────────── */
-
-          const sortedTable = sortABCTable(output.table);
-          const normalizedSummary = normalizeSummary(output.result);
-
-          set({
-            abc: {
-              loading: false,
-              table: sortedTable,
-              summary: normalizedSummary,
-              executionMode: storeExecutionMode,
-              mode: simulationType,
+          set((state) => ({
+            shops: {
+              ...state.shops,
+              [shop]: {
+                ...state.shops[shop],
+                abc: {
+                  loading: false,
+                  table: sortABCTable(output.table),
+                  summary: normalizeSummary(output.result),
+                  executionMode,
+                  mode: simulationType,
+                },
+              },
             },
-          });
+          }))
         } catch (err) {
-          set({
-            abc: {
-              loading: false,
-              error:
-                err instanceof Error ? err.message : "ABC execution failed",
+          set((state) => ({
+            shops: {
+              ...state.shops,
+              [shop]: {
+                ...current,
+                hydrated: true, // prevent retry
+                abc: {
+                  loading: false,
+                  error:
+                    err instanceof Error
+                      ? err.message
+                      : "ABC execution failed",
+                },
+              },
             },
-          });
+          }))
         }
     },
 
@@ -283,3 +281,11 @@ function normalizeSummary(result: SimulatorABCResult): ABCSummary | undefined {
   return undefined;
 }
 
+//Prevent the "undefined" bug
+const emptyShopSlice = (): ShopSlice => ({
+  products: [],
+  inventory: undefined,
+  analytics: undefined,
+  abc: { loading: false },
+  hydrated: false,
+})
