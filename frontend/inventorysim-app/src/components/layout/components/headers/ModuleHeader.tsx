@@ -8,6 +8,7 @@ interface ModuleContainerProps {
   subtitle?: string
   breadcrumbTrail?: { label: string; path?: string }[]
   userCases?: string[]
+    userCasesPlaceholder?: string
   onUserCaseChange?: (value: string) => void
   actions?: ReactNode
 }
@@ -18,6 +19,7 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
       subtitle,
       breadcrumbTrail,
       userCases = [],
+       userCasesPlaceholder = "Select option", 
       onUserCaseChange,
       actions,
 }: ModuleContainerProps) => {
@@ -41,7 +43,7 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
         {userCases?.length > 0 && (
           <Select onValueChange={(value) => onUserCaseChange?.(value)}>
           <SelectTrigger className="toolbar-element btn-flat-btn toolbar-element-md active w-fit sm:w-auto">
-            <SelectValue placeholder="Select user case" />
+            <SelectValue placeholder={userCasesPlaceholder} />
           </SelectTrigger>
 
           <SelectContent>

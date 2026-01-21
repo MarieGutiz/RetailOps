@@ -6,6 +6,7 @@ interface ModuleContainerProps {
   subtitle?: string;
   breadcrumbTrail?: { label: string; path?: string }[];
   userCases?: string[]; // Combo box options
+  userCasesPlaceholder?: string
   onUserCaseChange?: (value: string) => void;
   actions?: ReactNode; // Extra buttons
   children: ReactNode; // Module content
@@ -16,6 +17,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
   subtitle,
   breadcrumbTrail,
   userCases,
+  userCasesPlaceholder,
   onUserCaseChange,
   actions,
   children,
@@ -29,6 +31,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
          subtitle={subtitle}
          breadcrumbTrail={breadcrumbTrail}
          userCases={userCases}
+         userCasesPlaceholder={userCasesPlaceholder}
          onUserCaseChange={onUserCaseChange}
          actions={actions}
        />
