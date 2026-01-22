@@ -78,12 +78,12 @@ export async function runShopABC(
       // Backend responded with error
       throw new Error(
         err.response.data?.message ??
-          `ABC simulation failed (${err.response.status})`
+          `Generated sim shop failed (${err.response.status})`
       );
     }
 
     // Fallback
-    throw new Error("Unexpected error during ABC simulation");
+    throw new Error("Unexpected error - Sim generator shop service is currently unavailable");
   }
 }
 
