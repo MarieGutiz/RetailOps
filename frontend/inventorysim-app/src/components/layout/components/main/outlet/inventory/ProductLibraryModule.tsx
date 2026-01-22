@@ -3,9 +3,10 @@ import ModuleContainer from "../../ModuleContainer"
 import { shopId, type ShopId } from "@/types/shop";
 import { useCurrentShopSlice, useShopProducts } from "@/hooks/shop/useShopProducts";
 import  { useShopStore } from "@/store/shop/useShopStore";
-import { useState } from "react";
+import {  useState } from "react";
 import Info from "@/views/ABCViews/info/Info";
 import { Button } from "@/components/ui/Button";
+import { useApiErrorToast } from "@/services/api/useApiErrorToast";
 
 
 const AUTOGEN_SHOPS = [
@@ -30,15 +31,18 @@ const ProductLibraryModule = () => {
   const [selectedShop, setSelectedShop] = useState(currentShop);
 
   // Hook does ALL data orchestration + error toasts
-  const { products, loading } = useShopProducts(selectedShop);
+  const { products, loading, error } = useShopProducts(selectedShop);
 
   const handleShopChange = (shopId: ShopId) => {
     setSelectedShop(shopId);
     setShop(shopId);
   };
+  // ----- Trigger toast for testing -----
+   useApiErrorToast(error, `Shop: ${selectedShop}`);
+
 
   console.log("inventory ", products, " loading ", loading)
-
+  //Make the user to create a new shop to have its own product store
   return (
     <ModuleContainer
             title="Product Library"

@@ -12,41 +12,37 @@ export function useShopProducts(
 ) {
   const [localError, setLocalError] = useState<unknown>(null);
 
-  const { runABC, shopSlice, ensureShop } = useShopStore(
+  const { runABC, shopSlice } = useShopStore(
     useShallow((s) => ({
       runABC: s.runABC,
       shopSlice: s.shops[id],
-      ensureShop: s.setShop, // reuse initializer
     }))
   );
 
-  /* ───────────── ENSURE SHOP EXISTS ───────────── */
-  useEffect(() => {
-    ensureShop(id);
-  }, [id, ensureShop]);
-
-  // Safe defaults
+  // Safe defaults if shop not initialized yet
   const products = shopSlice?.products ?? [];
   const inventory = shopSlice?.inventory;
   const analytics = shopSlice?.analytics;
   const abc = shopSlice?.abc ?? { loading: false };
   const hydrated = shopSlice?.hydrated ?? false;
 
-  /* ───────────── RUN BACKEND ABC ONCE ───────────── */
+  // ------------------- Run BACKEND ABC once per shop -------------------
   useEffect(() => {
-    if (!shopSlice || hydrated) return;
+    if (hydrated) return;
 
     runABC({
       executionMode: "BACKEND",
       simulationType,
     }).catch((err) => {
-      setLocalError(err);
-      console.error(`Failed to load ABC for shop ${id}:`, err);
+      const msg = err instanceof Error ? err.message : String(err);
+      setLocalError(msg);
+      console.error(`Failed to load sim shop ${id}:`, err);
     });
-  }, [shopSlice, hydrated, simulationType, runABC, id]);
+  }, [hydrated, id, simulationType, runABC]);
 
-  /* ───────────── ERROR TOAST ───────────── */
-  useApiErrorToast(localError ?? abc.error, `Shop: ${id}`);
+  // ------------------- Show toast on error -------------------
+    useApiErrorToast(localError ?? abc.error, `Shop: ${id}`);
+
 
   return {
     products,

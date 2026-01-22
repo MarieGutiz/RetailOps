@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
-import { toast } from "sonner";
-
+import toast from "react-hot-toast";
 /**
  * Automatically shows a toast for ApiError
  * @param error any error object thrown from API calls
@@ -13,7 +12,10 @@ export function useApiErrorToast(
   const shownRef = useRef(false);
 
   useEffect(() => {
-    if (!error || shownRef.current) return;
+    // Reset when error changes
+    shownRef.current = false;
+
+    if (!error) return;
 
     let message = "Unexpected error";
 
@@ -36,3 +38,4 @@ export function useApiErrorToast(
     shownRef.current = true;
   }, [error, context]);
 }
+
