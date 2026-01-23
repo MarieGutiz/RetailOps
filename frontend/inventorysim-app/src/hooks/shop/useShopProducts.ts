@@ -5,17 +5,25 @@ import type { ShopId } from "@/types/shop";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
+interface UseShopProductsOptions {
+  enabled?: boolean;
+  simulationType?: "classic" | "multi";
+}
+
+
 
 export function useShopProducts(
-  id: ShopId,
-  simulationType: "classic" | "multi" = "classic"
+ id: ShopId | null,
+  options?: UseShopProductsOptions
 ) {
+  const { enabled = true, simulationType = "classic" } = options ?? {};
+
   const [localError, setLocalError] = useState<unknown>(null);
 
   const { runABC, shopSlice } = useShopStore(
     useShallow((s) => ({
       runABC: s.runABC,
-      shopSlice: s.shops[id],
+      shopSlice: id ? s.shops[id] : undefined,
     }))
   );
 
@@ -28,6 +36,8 @@ export function useShopProducts(
 
   // ------------------- Run BACKEND ABC once per shop -------------------
   useEffect(() => {
+    if (!id) return;
+    if (!enabled) return;
     if (hydrated) return;
 
     runABC({
@@ -38,10 +48,10 @@ export function useShopProducts(
       setLocalError(msg);
       console.error(`Failed to load sim shop ${id}:`, err);
     });
-  }, [hydrated, id, simulationType, runABC]);
+  }, [id, enabled, hydrated, simulationType, runABC]);
 
   // ------------------- Show toast on error -------------------
-    useApiErrorToast(localError ?? abc.error, `Shop: ${id}`);
+    useApiErrorToast(localError ?? abc.error, id ? `Shop: ${id}` : undefined);
 
 
   return {
@@ -52,8 +62,9 @@ export function useShopProducts(
     summary: abc.summary,
     table: abc.table,
 
-    loading: abc.loading,
+    loading: enabled && abc.loading,
     error: abc.error,
+    hydrated,
   };
 }
 

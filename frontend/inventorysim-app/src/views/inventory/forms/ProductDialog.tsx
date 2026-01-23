@@ -7,6 +7,7 @@ import { Dialog,
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useProductStore } from "@/store/inventory/useProductStore";
 
 interface ProductDialogProps {
   open: boolean
@@ -26,13 +27,23 @@ const ProductDialog = ({
   onChange,
   onSubmit,
 }: ProductDialogProps) => {
-  return (
+  // Get current shop
+  const shopMeta = useProductStore((s) => s.shopMeta);
+
+  return (    
     <Dialog open={open} onOpenChange={onOpenChange} >
     <DialogContent className="j-dialog max-w-md">
       <DialogHeader>
         <DialogTitle className="j-dialog-title text-center">
           {mode === "add" ? "Add New Product" : "Edit Product"}
         </DialogTitle>
+
+        {shopMeta?.name && (
+            <p className="text-center text-sm text-gray-500">
+              Shop: <strong>{shopMeta.name}</strong>
+            </p>
+          )}
+
 
         <DialogDescription className="j-dialog-description text-center">
           {mode === "add"

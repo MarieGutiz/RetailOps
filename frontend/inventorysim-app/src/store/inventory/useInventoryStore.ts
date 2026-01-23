@@ -1,6 +1,15 @@
 import { saveToStorage } from "@/utils/storage";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { mountStoreDevtool } from 'simple-zustand-devtools';
+
+
+type InventoryMeta = {
+  shopId: string;        // ownership, not display
+  lastUpdated: number;   // local edits
+  lastSavedAt: number;   // backend sync
+};
+
 
 export interface InventoryItem {
   productId: string;
@@ -8,61 +17,163 @@ export interface InventoryItem {
 }
 
 interface InventoryStore {
+  //Associated shop metadata
+  shopMeta: InventoryMeta | null;
+  initInventoryForShop: (shopId: string) => void
+
   inventory: InventoryItem[];
   loading: boolean;
+
   addToInventory: (productId: string, quantity: number) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   removeFromInventory: (productId: string) => void;
   clearInventory: () => void;
   setLoading: (loading: boolean) => void;
+
+   isDirty: () => boolean
+  markSaved: () => void;
 }
 
 export const useInventoryStore = create<InventoryStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       inventory: [],
       loading: false,
+      shopMeta: null,
+
 
       setLoading: (loading) => set({ loading }),
 
+      initInventoryForShop: (shopId) => {
+        const now = Date.now()
+
+        set({
+          shopMeta: {
+            shopId,
+            lastUpdated: now,
+            lastSavedAt: now,
+          },
+          inventory: [],
+        })
+      },
+
+
       addToInventory: (productId, quantity) =>
         set((state) => {
+          if (!state.shopMeta) {
+          if (import.meta.env.MODE === "development") {
+            console.warn("Inventory mutation without initialized shop")
+          }
+          return state
+        }
+
+         if (quantity <= 0) return state
+
+          const now = Date.now()
+
           const existing = state.inventory.find(
             (item) => item.productId === productId
-          );
+          )
 
-          if (existing) {
-            return {
-              inventory: state.inventory.map((item) =>
+          const inventory = existing
+            ? state.inventory.map((item) =>
                 item.productId === productId
                   ? { ...item, quantity: item.quantity + quantity }
                   : item
-              ),
-            };
-          }
+              )
+            : [...state.inventory, { productId, quantity }]
 
           return {
-            inventory: [...state.inventory, { productId, quantity }],
-          };
+            inventory,
+            shopMeta: {
+              ...state.shopMeta,
+              lastUpdated: now,
+            },
+          }
         }),
 
+
       updateQuantity: (productId, quantity) =>
-        set((state) => ({
-          inventory: state.inventory.map((item) =>
-            item.productId === productId
-              ? { ...item, quantity }
-              : item
-          ),
-        })),
+        set((state) => {
+          if (!state.shopMeta) {
+          if (import.meta.env.MODE === "development") {
+            console.warn("Inventory mutation without initialized shop")
+          }
+          return state
+        }
+
+          const now = Date.now()
+
+          return {
+            inventory: state.inventory.map((item) =>
+              item.productId === productId
+                ? { ...item, quantity }
+                : item
+            ),
+            shopMeta: {
+              ...state.shopMeta,
+              lastUpdated: now,
+            },
+          }
+        }),
+
 
       removeFromInventory: (productId) =>
-        set((state) => ({
-          inventory: state.inventory.filter(
-            (item) => item.productId !== productId
-          ),
-        })),
-      clearInventory: () => set({ inventory: [] }),
-    }),
+        set((state) => {
+          if (!state.shopMeta) {
+          if (import.meta.env.MODE === "development") {
+            console.warn("Inventory mutation without initialized shop")
+          }
+          return state
+        }
+
+
+          const now = Date.now()
+          return {
+            inventory: state.inventory.filter(
+              (item) => item.productId !== productId
+            ),
+            shopMeta: {
+              ...state.shopMeta,
+              lastUpdated: now,
+            },
+          }
+        }),
+
+      clearInventory: () =>
+        set((state) => {
+          if (!state.shopMeta) return state // guard
+
+          const now = Date.now()
+          return {
+            inventory: [],
+            shopMeta: {
+              ...state.shopMeta,
+              lastUpdated: now,
+            },
+          }
+        }),
+
+
+      markSaved: () => {
+        const { shopMeta } = get()
+        if (!shopMeta) return
+        set({
+          shopMeta: {
+            ...shopMeta,
+            lastSavedAt: Date.now(),
+          },
+        })
+      },
+
+      isDirty: () => {
+        const { shopMeta } = get()
+        if (!shopMeta) return false
+        return shopMeta.lastUpdated > shopMeta.lastSavedAt
+        }
+      
+      }),
+    
     {
       name: "inventory-store",
       storage: createJSONStorage(() => ({
@@ -73,8 +184,17 @@ export const useInventoryStore = create<InventoryStore>()(
       // exclude loading from persistence
       partialize: (state) => ({
         inventory: state.inventory,
+        shopMeta: state.shopMeta,
       }),
 
     }
+    
   )
+  
 );
+
+
+// Devtools
+if (import.meta.env.MODE === "development") {
+  mountStoreDevtool('Inventory Store', useInventoryStore);
+}

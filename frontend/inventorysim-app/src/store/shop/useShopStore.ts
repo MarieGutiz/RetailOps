@@ -3,13 +3,20 @@ import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendAB
 import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
 import type { AbcResponseDto } from "@/types/abc-backend";
 import type { Product } from "@/types/products";
-import { type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ABCComputationSource, type ShopId, shopId } from "@/types/shop";
+import { type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ShopId, shopId } from "@/types/shop";
 import type { SimulatorABCOutput, SimulatorABCResult } from "@/types/simulator";
 import { extractBackendABC } from "@/utils/abc/extractBackendABC";
 import { saveToStorage } from "@/utils/storage";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { create } from "zustand";
 import {persist, createJSONStorage} from "zustand/middleware"
+import { useInventoryStore } from "../inventory/useInventoryStore";
+import { useProductStore } from "../inventory/useProductStore";
+
+//Name your shop
+type CreateShopInput = {
+  name: string;
+};
 
 
 export type ShopSlice = {
@@ -20,9 +27,16 @@ export type ShopSlice = {
   hydrated: boolean
 }
 
-
+export interface ShopMeta {
+  id: ShopId;
+  name: string;
+  createdAt?: number;
+  lastUpdated?: number;
+  lastSavedAt?: number;
+}
 export type ShopStore = {
-  shop: ShopId
+   shop: ShopMeta | null;        // current shop metadata
+  
   shops: Record<ShopId, ShopSlice>
 
 
@@ -30,7 +44,9 @@ export type ShopStore = {
   inventory?: InventoryState;
   analytics?: AnalyticsState;
 
-  setShop: (shop: ShopId) => void;
+  setShop: (shopMeta: ShopMeta) => void;
+  createShop: (input: CreateShopInput) => ShopMeta;
+
 
   setProducts: (products: Product[]) => void;
   setInventory: (inventory: InventoryState) => void;
@@ -44,7 +60,7 @@ export type ShopStore = {
 export const useShopStore = create<ShopStore>()(
   persist(
     (set, get) => ({
-      shop: shopId("FLORIST"),
+      shop: null,   // start null, user must select
       shops: {},
 
       products: [],
@@ -57,70 +73,116 @@ export const useShopStore = create<ShopStore>()(
 
       // --- setters ---
         /* ───────────── SHOP SWITCH ───────────── */
-      setShop: (shop) =>
+       // --- Switch shop ---
+      setShop: (shopMeta: ShopMeta) =>
         set((state) => ({
-          shop,
+          shop: shopMeta,
           shops: {
             ...state.shops,
-            [shop]: state.shops[shop] ?? emptyShopSlice(),
+            [shopMeta.id]: state.shops[shopMeta.id] ?? emptyShopSlice(shopMeta),
           },
         })),
+
+      // --- Create user shop ---
+      createShop: ({ name }): ShopMeta => {
+        const id = shopId(name.toUpperCase().replace(/\s+/g, "_"));
+        const newShop: ShopMeta = {
+          id,
+          name,
+          createdAt: Date.now(),
+          lastUpdated: Date.now(),
+          lastSavedAt: Date.now(),
+        };
+
+        set((state) => {
+          if (state.shops[id]) return state; // avoid duplicates
+          return {
+            shops: {
+              ...state.shops,
+              [id]: emptyShopSlice(newShop),
+            },
+            shop: newShop,
+          };
+        });
+
+        // Reset dependent stores
+        useProductStore.getState().initForShop(newShop);
+        useInventoryStore.getState().initInventoryForShop(id);
+
+        return newShop;
+      },
+  
 
 
       //Import - prdcs, inventory, analytics
        /* ───────────── SETTERS (SCOPED) ───────────── */
-      setProducts: (products) =>
+       setProducts: (products) => {
+        const shopId = get().shop?.id;
+        if (!shopId) return;
         set((state) => ({
           shops: {
             ...state.shops,
-            [state.shop]: {
-              ...(state.shops[state.shop] ?? emptyShopSlice()),
+            [shopId]: {
+              ...(state.shops[shopId] ?? emptyShopSlice()),
               products,
             },
           },
-        })),
+        }));
+      },
 
-      setInventory: (inventory) =>
+      setInventory: (inventory) => {
+        const shopId = get().shop?.id;
+        if (!shopId) return;
         set((state) => ({
           shops: {
             ...state.shops,
-            [state.shop]: {
-              ...(state.shops[state.shop] ?? emptyShopSlice()),
+            [shopId]: {
+              ...(state.shops[shopId] ?? emptyShopSlice()),
               inventory,
             },
           },
-        })),
+        }));
+      },
 
-      setAnalytics: (analytics) =>
+      setAnalytics: (analytics) => {
+        const shopId = get().shop?.id;
+        if (!shopId) return;
         set((state) => ({
           shops: {
             ...state.shops,
-            [state.shop]: {
-              ...(state.shops[state.shop] ?? emptyShopSlice()),
+            [shopId]: {
+              ...(state.shops[shopId] ?? emptyShopSlice()),
               analytics,
             },
           },
-        })),
+        }));
+      },
 
       /* ───────────── RESETTERS ───────────── */
-      resetABC: () =>
+      resetABC: () => {
+        const shopId = get().shop?.id;
+        if (!shopId) return;
         set((state) => ({
           shops: {
             ...state.shops,
-            [state.shop]: {
-              ...(state.shops[state.shop] ?? emptyShopSlice()),
+            [shopId]: {
+              ...(state.shops[shopId] ?? emptyShopSlice()),
               abc: { loading: false },
             },
           },
-        })),
+        }));
+      },
 
-      resetShop: () =>
+      resetShop: () => {
+        const shopId = get().shop?.id;
+        if (!shopId) return;
         set((state) => ({
           shops: {
             ...state.shops,
-            [state.shop]: emptyShopSlice(),
+            [shopId]: emptyShopSlice(get().shop!),
           },
-        })),
+        }));
+      },
 
       // --- main ABC runner ---      
       runABC: async ({
@@ -129,24 +191,23 @@ export const useShopStore = create<ShopStore>()(
         scenario = "Baseline",
       }: RunABCOptions) => {
 
-        const { shop, shops } = get()
-        const current = shops[shop] ?? emptyShopSlice()
+        const shopMeta = get().shop;
+        if (!shopMeta) return;
+        const shopId = shopMeta.id;
+        const current = get().shops[shopId] ?? emptyShopSlice(shopMeta);
 
         if (executionMode === "BACKEND" && current.hydrated) return
 
-        set((state) => ({
+         set((state) => ({
           shops: {
             ...state.shops,
-            [shop]: {
+            [shopId]: {
               ...current,
-              abc: {
-                loading: true,
-                executionMode,
-                mode: simulationType,
-              },
+              abc: { loading: true, executionMode, mode: simulationType },
             },
           },
-        }))
+        }));
+
 
         try {
           let output: SimulatorABCOutput;
@@ -172,7 +233,7 @@ export const useShopStore = create<ShopStore>()(
               throw new Error("Backend simulation type required");
             }
 
-            output = await runShopABC(shop, simulationType)
+            output = await runShopABC(shopId, simulationType)
 
             if ("items" in output.result) {
               const { products, inventory, analytics } =
@@ -181,7 +242,7 @@ export const useShopStore = create<ShopStore>()(
               set((state) => ({
                 shops: {
                   ...state.shops,
-                  [shop]: {
+                  [shopId]: {
                     ...current,
                     products,
                     inventory,
@@ -196,8 +257,8 @@ export const useShopStore = create<ShopStore>()(
           set((state) => ({
             shops: {
               ...state.shops,
-              [shop]: {
-                ...state.shops[shop],
+              [shopId]: {
+                ...state.shops[shopId],
                 abc: {
                   loading: false,
                   table: sortABCTable(output.table),
@@ -212,9 +273,9 @@ export const useShopStore = create<ShopStore>()(
           set((state) => ({
             shops: {
               ...state.shops,
-              [shop]: {
+              [shopId]: {
                 ...current,
-                hydrated: true, // prevent retry
+                hydrated: false, // prevent retry
                 abc: {
                   loading: false,
                   error:
@@ -236,6 +297,27 @@ export const useShopStore = create<ShopStore>()(
             setItem: (name, value) => saveToStorage.setItem(name, value),
             removeItem: (name) => saveToStorage.removeItem(name),
           })),
+
+          // --- Persist only stable state ---
+          partialize: (state) => ({
+            shop: state.shop,
+            shops: Object.fromEntries(
+              Object.entries(state.shops).map(([id, shop]) => [
+                id,
+                {
+                  products: shop.products,
+                  inventory: shop.inventory,
+                  analytics: shop.analytics,
+                  hydrated: shop.hydrated,
+                  // persist only table/summary if you want, not error/loading
+                  abc: {
+                    table: shop.abc.table,
+                    summary: shop.abc.summary,
+                  },
+                },
+              ])
+            ),
+          }),
         }
       )
     );
@@ -282,10 +364,13 @@ function normalizeSummary(result: SimulatorABCResult): ABCSummary | undefined {
 }
 
 //Prevent the "undefined" bug
-const emptyShopSlice = (): ShopSlice => ({
+// Prevent the "undefined" bug
+const emptyShopSlice = (shopMeta?: ShopMeta): ShopSlice & { id?: ShopId; label?: string } => ({
+  id: shopMeta?.id,
+  label: shopMeta?.name,
   products: [],
   inventory: undefined,
   analytics: undefined,
   abc: { loading: false },
   hydrated: false,
-})
+});
