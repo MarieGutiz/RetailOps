@@ -35,7 +35,7 @@ export interface ShopMeta {
   lastSavedAt?: number;
 }
 export type ShopStore = {
-   shop: ShopMeta | null;        // current shop metadata
+  shop: ShopMeta | null;        // current shop metadata
   
   shops: Record<ShopId, ShopSlice>
 

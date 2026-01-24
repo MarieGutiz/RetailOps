@@ -30,8 +30,11 @@ interface InventoryStore {
   clearInventory: () => void;
   setLoading: (loading: boolean) => void;
 
-   isDirty: () => boolean
+  isDirty: () => boolean
   markSaved: () => void;
+
+  isProductInInventory: (productId: string) => boolean
+
 }
 
 export const useInventoryStore = create<InventoryStore>()(
@@ -170,9 +173,19 @@ export const useInventoryStore = create<InventoryStore>()(
         const { shopMeta } = get()
         if (!shopMeta) return false
         return shopMeta.lastUpdated > shopMeta.lastSavedAt
-        }
+        },
+
+      isProductInInventory: (productId) => {
+      const { inventory, shopMeta } = get()
+
+      if (!shopMeta) return false
+
+      return inventory.some(
+        (item) => item.productId === productId
+      )
+      },
       
-      }),
+      }),      
     
     {
       name: "inventory-store",
