@@ -5,7 +5,6 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
-  type SortingState,
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 
@@ -29,18 +28,45 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ProductTableHeaderSkeleton from "./forms/ProductTableHeaderSkeleton";
 import { useInventoryStore } from "@/store/inventory/useInventoryStore";
 import { Badge } from "@/components/ui/badge";
-import { useInventoryStatus } from "./hooks/useInventoryStatus";
 import AddToInventoryDialog from "./forms/AddToInventoryDialog";
 import { useSimulatorStore } from "@/store/user/useSimulatorStore";
+import { useProductTableState } from "./hooks/useProductTableState";
+import type { ShopMeta } from "@/store/shop/useShopStore";
 
 
-const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean }) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [search, setSearch] = useState("");
+type ProductTableProps = {
+  products: Product[];
+  loading?: boolean;
+
+  /** If true, disables actions (autogen shops) */
+  readonly?: boolean;
+
+  /** Needed to bind inventory to a shop */
+  shopId?: string;
+  shopMeta?: ShopMeta;
+};
+
+
+const ProductTable = (
+  {
+  products,
+  loading = false,
+  readonly = false,
+  
+}: ProductTableProps) => {
+
+  /* CENTRALIZED TABLE STATE */
+  const {
+    sorting,
+    setSorting,
+    search,
+    setSearch,
+    pagination,
+    setPagination,
+  } = useProductTableState()
 
   //For inventory status
-  const inventory = useInventoryStore((s) => s.inventory);
-  const removeFromInventory = useInventoryStore((s) => s.removeFromInventory);
+ const { isProductInInventory, removeFromInventory, inventory } = useInventoryStore();
 
   // For Add to inventory dialog
   const [inventoryDialogOpen, setInventoryDialogOpen] = useState(false);
@@ -52,11 +78,11 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
 
   // MEMOIZED FILTERING
   const filteredData = useMemo(() => {
-    return data.filter((p) =>
+    return products.filter((p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.sku?.toLowerCase().includes(search.toLowerCase())
     );
-  }, [data, search]);
+  }, [products, search]);
 
   // MEMOIZED COLUMNS (MOST IMPORTANT!)
   const columns = useMemo<ColumnDef<Product>[]>(() => [
@@ -138,18 +164,12 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
         <SortableHeader column={column} label="Inventory" />
       ),
 
-      // For sorting purposes, we return 1 if in inventory, else 0
-      accessorFn: (row) =>
-        useInventoryStore
-          .getState()
-          .inventory
-          .some(item => item.productId === String(row.id))
-          ? 1
-          : 0,
-
+      // Sorting: only true if inventory is initialized for THIS shop
+      accessorFn: (row) => isProductInInventory(String(row.id)) ? 1 : 0, // use selector
       cell: ({ row }) => {
-        const product = row.original
-        const inInventory = useInventoryStatus(String(product.id))
+        const product = row.original;
+        const inInventory = isProductInInventory(String(product.id)); // use selector
+
 
       return (
         <div className="flex items-center justify-center gap-2 min-w-[120px]">
@@ -187,19 +207,23 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
     {
       id: "actions",
       header: "",
-      cell: ({ row }) => <RowActions product={row.original} />,
+      // cell: ({ row }) => <RowActions product={row.original} />,
+      cell: ({ row }) => (
+        <RowActions
+          product={row.original}
+          readonly={readonly}
+        />
+      ),
+
       enableSorting: false,
       size: 48,
     },
   ], [currency, removeFromInventory]);
 
-
-  // TABLE INSTANCE
-
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 3,
-    });
+  // const [pagination, setPagination] = useState({
+  //   pageIndex: 0,
+  //   pageSize: 3,
+  //   });
     
   const table = useReactTable({
     data: filteredData,
@@ -349,8 +373,13 @@ const ProductTable = ({ data, loading }: { data: Product[]; loading?: boolean })
               <TableCell
                 colSpan={columns.length}
                 className="h-24 text-center text-muted-foreground truncate whitespace-nowrap"
+                style={{ minWidth: 600 }} 
               >
-                No products found.
+                  {search
+                    ? "No products match your search."
+                    : "This shop has no products yet."
+                  }
+
               </TableCell>
             </TableRow>
           )}

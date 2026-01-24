@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
+import {toast} from "sonner";
 /**
  * Automatically shows a toast for ApiError
  * @param error any error object thrown from API calls

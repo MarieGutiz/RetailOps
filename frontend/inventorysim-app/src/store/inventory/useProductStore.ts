@@ -18,7 +18,7 @@ export type UserShopMeta = {
 
 
 interface ProductState {
-  shopMeta: UserShopMeta;//metadata about the shop
+  shopMeta: UserShopMeta | null;//can be null until a shop is created
 
   products: Product[];
   loading: boolean;
@@ -48,13 +48,7 @@ interface ProductState {
 export const useProductStore = create<ProductState>()(
     persist(
          (set, get) => ({
-          shopMeta: {
-            id: "USER_SHOP",
-            name: "My Shop",
-            createdAt: Date.now(),
-            lastUpdated: Date.now(),
-            lastSavedAt: Date.now(),
-          },
+          shopMeta: null,
           products: [],
           isAuthenticated: false,
           loading: false,
@@ -70,6 +64,10 @@ export const useProductStore = create<ProductState>()(
 
     addProduct: (product: Product) => {
         const { products, isAuthenticated, shopMeta } = get();
+        if (!shopMeta) {
+          toast.error("Please create a shop before adding products.");
+          return;
+        }
 
          // Limit guest users to 10 products
         if (!isAuthenticated && products.length >= 10) {
@@ -96,6 +94,7 @@ export const useProductStore = create<ProductState>()(
 
     removeProduct: (name: string) => {
       const { shopMeta } = get();
+      if (!shopMeta) return;
 
         set((state) => ({
             products: state.products.filter((product) => product.name !== name),
@@ -109,6 +108,7 @@ export const useProductStore = create<ProductState>()(
 
     clearProducts: () => {
       const { shopMeta } = get();
+      if (!shopMeta) return;
         set({ products: [],
           shopMeta: {
             ...shopMeta,
@@ -133,9 +133,12 @@ export const useProductStore = create<ProductState>()(
       },
 
       renameShop: (name: string) => {
+        const { shopMeta } = get();
+        if (!shopMeta) return;
+
         set({
           shopMeta: {
-            ...get().shopMeta,
+            ...shopMeta,
             name,
             lastUpdated: Date.now(),
           },
@@ -143,6 +146,8 @@ export const useProductStore = create<ProductState>()(
       },
       markSaved: () => {
         const { shopMeta } = get();
+        if (!shopMeta) return;
+
         set({
           shopMeta: {
             ...shopMeta,
@@ -153,8 +158,8 @@ export const useProductStore = create<ProductState>()(
 
     
     syncToBackend: async () => {
-        const { products, isAuthenticated } = get();
-        if (!isAuthenticated || products.length === 0) return;
+        const { products, isAuthenticated, shopMeta } = get();
+        if (!isAuthenticated || products.length === 0 || !shopMeta) return;
 
         try {
           await api.post("/products/bulk", products);//test end point
