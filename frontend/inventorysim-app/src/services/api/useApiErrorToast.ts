@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-// import toast from "react-hot-toast";
 import {toast} from "sonner";
 /**
  * Automatically shows a toast for ApiError

@@ -63,7 +63,7 @@ export function useShopProducts(
     table: abc.table,
 
     loading: enabled && abc.loading,
-    error: abc.error,
+    error: localError ?? abc.error,
     hydrated,
   };
 }
