@@ -236,6 +236,9 @@ const ProductTable = (
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const pageCount = table.getPageCount()
+  const hasData = pageCount > 0
+
   return (
     <div className="space-y-4">
      {/* Search + Filters */}
@@ -400,7 +403,8 @@ const ProductTable = (
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center">
+      
+      {hasData && (<div className="flex justify-between items-center">
         <div className="text-sm">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
@@ -426,7 +430,7 @@ const ProductTable = (
             Next
           </Button>
         </div>
-      </div>
+      </div> )}
     </div>
     
   );

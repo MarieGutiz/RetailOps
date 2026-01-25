@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/Input";
 import { useShopStore, type ShopMeta } from "@/store/shop/useShopStore";
 import { useState } from "react";
+import { toast } from "sonner";
 
 type Props = {
   open: boolean;
@@ -17,17 +18,23 @@ const CreateShopDialog = ({open, onOpenChange, onCreated}: Props) => {
   const createShop = useShopStore((s) => s.createShop);
 
   const handleCreate = () => {
-    const trimmed = name.trim();
-    if (!trimmed) return;
+  const trimmed = name.trim();
 
-    // createShop now returns ShopMeta 
-    const shopMeta = createShop({ name: trimmed });
+  if (!trimmed) {
+    toast.error("Shop name cannot be empty");
+    return;
+  }
 
-    onCreated?.(shopMeta);
+  const shopMeta = createShop({ name: trimmed });
 
-    setName("");
-    onOpenChange(false);
-  };
+  toast.success(`Shop "${shopMeta.name}" created successfully`);
+
+  onCreated?.(shopMeta);
+
+  setName("");
+  onOpenChange(false);
+};
+
 
 
   return (

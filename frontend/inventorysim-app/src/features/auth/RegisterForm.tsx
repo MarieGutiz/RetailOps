@@ -9,7 +9,7 @@ import Divider from "./ui/Divider"
 import {  useAuth } from "@/hooks/auth/useAuth"
 import FormError from "./ui/FormError"
 import { Controller } from "react-hook-form"
-import toast from "react-hot-toast";
+import {toast} from "sonner";
 import Top from "./ui/Top"
 
 const RegisterForm = () => {
