@@ -38,7 +38,9 @@ const StepCreateShop = ({ onCreated }: { onCreated: (shop: ShopMeta) => void; })
       />
 
       <div className="flex justify-end pt-4">
-        <Button onClick={handleCreate} disabled={!name.trim()}>
+        <Button
+        className="jbtn-btn jbtn-passive"
+         onClick={handleCreate} disabled={!name.trim()}>
           Continue
         </Button>
       </div>

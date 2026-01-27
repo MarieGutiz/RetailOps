@@ -3,13 +3,13 @@ import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendAB
 import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
 import type { AbcResponseDto } from "@/types/abc-backend";
 import type { Product } from "@/types/products";
-import { type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ShopId, shopId } from "@/types/shop";
+import { type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ShopId, shopId, type ShopLifecycle, type ShopSlice, type AutogenShopLifecycle, type UserShopLifecycle } from "@/types/shop";
 import type { SimulatorABCOutput, SimulatorABCResult } from "@/types/simulator";
 import { extractBackendABC } from "@/utils/abc/extractBackendABC";
 import { saveToStorage } from "@/utils/storage";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { create } from "zustand";
-import {persist, createJSONStorage} from "zustand/middleware"
+import { persist, createJSONStorage } from "zustand/middleware"
 import { useInventoryStore } from "../inventory/useInventoryStore";
 import { useProductStore } from "../inventory/useProductStore";
 
@@ -19,24 +19,47 @@ type CreateShopInput = {
 };
 
 
-export type ShopSlice = {
-  products: Product[]
-  inventory?: InventoryState
-  analytics?: AnalyticsState
-  abc: ShopABCState
-  hydrated: boolean
-}
-
-export interface ShopMeta {
+// export type ShopSlice = {
+//   products: Product[]
+//   inventory?: InventoryState
+//   analytics?: AnalyticsState
+//   abc: ShopABCState
+//   hydrated: boolean
+//   lifecycle: ShopLifecycle
+//   kind: "USER" | "AUTOGEN"
+// }
+// --- Shop metadata ---
+export type UserShopMeta = {
   id: ShopId;
   name: string;
-  createdAt?: number;
-  lastUpdated?: number;
-  lastSavedAt?: number;
-}
+  kind: "USER";
+  lifecycle: UserShopLifecycle;
+  createdAt: number;
+  lastUpdated: number;
+  lastSavedAt: number;
+};
+
+export type AutogenShopMeta = {
+  id: ShopId;
+  name: string;
+  kind: "AUTOGEN";
+  lifecycle: AutogenShopLifecycle;
+};
+
+export type ShopMeta = UserShopMeta | AutogenShopMeta;
+
+// export interface ShopMeta {
+//   id: ShopId;
+//   name: string;
+//   createdAt?: number;
+//   lastUpdated?: number;
+//   lastSavedAt?: number;
+//   lifecycle: ShopLifecycle;
+//   kind: "USER" | "AUTOGEN";
+// }
 export type ShopStore = {
   shop: ShopMeta | null;        // current shop metadata
-  
+
   shops: Record<ShopId, ShopSlice>
 
 
@@ -55,6 +78,7 @@ export type ShopStore = {
   runABC: (opts: RunABCOptions) => Promise<void>;
   resetABC: () => void;
   resetShop: () => void;
+  deleteShop: (id: ShopId) => void;
 };
 
 export const useShopStore = create<ShopStore>()(
@@ -64,94 +88,130 @@ export const useShopStore = create<ShopStore>()(
       shops: {},
 
       products: [],
-      inventory: undefined,
-      analytics: undefined,
-
-      hydratedByShop: {},
+      // inventory: undefined,
+      // analytics: undefined,
 
       abc: { loading: false },
 
       // --- setters ---
-        /* ───────────── SHOP SWITCH ───────────── */
-       // --- Switch shop ---
+      /* ───────────── SHOP SWITCH ───────────── */
+      // --- Switch shop ---
       setShop: (shopMeta: ShopMeta) =>
         set((state) => ({
           shop: shopMeta,
           shops: {
             ...state.shops,
-            [shopMeta.id]: state.shops[shopMeta.id] ?? emptyShopSlice(shopMeta),
+            [shopMeta.id]:
+              state.shops[shopMeta.id] ?? emptyShopSlice(shopMeta),
           },
-        })),
+        }))
+      ,
 
       // --- Create user shop ---
-      createShop: ({ name }): ShopMeta => {
-        const id = shopId(name.toUpperCase().replace(/\s+/g, "_"));
-        const newShop: ShopMeta = {
+      createShop: ({ name }): UserShopMeta => {
+        const normalized = name.trim().toUpperCase();
+        const id = shopId(normalized.replace(/\s+/g, "_"));
+
+        // Validate uniqueness
+        const exists = Object.values(get().shops).some(
+          (s) => s.kind === "USER" && s.products.length > 0 && s.kind === "USER"
+        );
+        if (exists) throw new Error(`Shop "${name}" already exists`);
+
+        const meta: UserShopMeta = {
           id,
-          name,
+          name: normalized,
+          kind: "USER",
+          lifecycle: "CREATED",
           createdAt: Date.now(),
           lastUpdated: Date.now(),
           lastSavedAt: Date.now(),
         };
 
-        set((state) => {
-          if (state.shops[id]) return state; // avoid duplicates
-          return {
-            shops: {
-              ...state.shops,
-              [id]: emptyShopSlice(newShop),
-            },
-            shop: newShop,
-          };
-        });
+        // Update store safely
+        set((state) => ({
+          shop: meta as ShopMeta,
+          shops: {
+            ...state.shops,
+            [id]: emptyShopSlice(meta as ShopMeta), // TS now knows slice is correct
+          },
+        }));
 
-        // Reset dependent stores
-        useProductStore.getState().initForShop(newShop);
+        // Initialize dependent stores
+        useProductStore.getState().initForShop(meta);
         useInventoryStore.getState().initInventoryForShop(id);
 
-        return newShop;
+        return meta;
       },
-  
+
 
 
       //Import - prdcs, inventory, analytics
-       /* ───────────── SETTERS (SCOPED) ───────────── */
-       setProducts: (products) => {
-        const shopId = get().shop?.id;
-        if (!shopId) return;
-        set((state) => ({
-          shops: {
-            ...state.shops,
-            [shopId]: {
-              ...(state.shops[shopId] ?? emptyShopSlice()),
-              products,
+      /* ───────────── SETTERS (SCOPED) ───────────── */
+      setProducts: (products) => {
+        const currentShop = get().shop;
+        if (!currentShop) return;
+
+        set((state) => {
+          const slice = state.shops[currentShop.id] ?? emptyShopSlice(currentShop);
+
+          // Determine new lifecycle
+          let newLifecycle = slice.lifecycle
+
+          if (slice.kind === "USER") {
+            if (products.length === 0 && slice.products.length > 0) {
+              newLifecycle = "CREATED"
+            } else if (slice.lifecycle === "CREATED") {
+              newLifecycle = "IMPORTING"
+            }
+          }
+
+
+          return {
+            shops: {
+              ...state.shops,
+              [currentShop.id]: {
+                ...slice,
+                products,
+                lifecycle: newLifecycle,
+              },
             },
-          },
-        }));
+          };
+        });
+
+
       },
 
       setInventory: (inventory) => {
-        const shopId = get().shop?.id;
-        if (!shopId) return;
-        set((state) => ({
-          shops: {
-            ...state.shops,
-            [shopId]: {
-              ...(state.shops[shopId] ?? emptyShopSlice()),
-              inventory,
+        const currentShop = get().shop;
+        if (!currentShop) return;
+
+        set((state) => {
+          const slice = state.shops[currentShop.id] ?? emptyShopSlice(currentShop);
+
+          return {
+            shops: {
+              ...state.shops,
+              [currentShop.id]: {
+                ...slice,
+                inventory,
+                // Advance lifecycle from CREATED → IMPORTING when inventory is added
+                lifecycle: slice.lifecycle === "CREATED" ? "IMPORTING" : slice.lifecycle,
+              },
             },
-          },
-        }));
+          };
+        });
+
       },
 
       setAnalytics: (analytics) => {
-        const shopId = get().shop?.id;
-        if (!shopId) return;
+        const currentShop = get().shop;
+        if (!currentShop) return;
         set((state) => ({
           shops: {
             ...state.shops,
-            [shopId]: {
-              ...(state.shops[shopId] ?? emptyShopSlice()),
+            [currentShop.id]: {
+              ...(state.shops[currentShop.id] ?? emptyShopSlice(currentShop)),
               analytics,
             },
           },
@@ -160,53 +220,97 @@ export const useShopStore = create<ShopStore>()(
 
       /* ───────────── RESETTERS ───────────── */
       resetABC: () => {
-        const shopId = get().shop?.id;
-        if (!shopId) return;
+        const current = get().shop;
+        if (!current) return;
+        const slice = get().shops[current.id];
+        if (!slice) return;
+
         set((state) => ({
           shops: {
             ...state.shops,
-            [shopId]: {
-              ...(state.shops[shopId] ?? emptyShopSlice()),
-              abc: { loading: false },
-            },
+            [current.id]: { ...slice, abc: { loading: false, table: [], summary: undefined, error: undefined } },
+          },
+        }));
+
+
+      },
+
+      resetShop: () => {
+        const currentShop = get().shop;
+        if (!currentShop) return;
+
+        set((state) => ({
+          shops: {
+            ...state.shops,
+            [currentShop.id]: emptyShopSlice(get().shop!),
           },
         }));
       },
 
-      resetShop: () => {
-        const shopId = get().shop?.id;
-        if (!shopId) return;
-        set((state) => ({
-          shops: {
-            ...state.shops,
-            [shopId]: emptyShopSlice(get().shop!),
-          },
-        }));
+      deleteShop: (id: ShopId) => {
+        set((state) => {
+          const slice = state.shops[id];
+          if (!slice || slice.kind === "AUTOGEN") return state;
+
+          return {
+            shops: {
+              ...state.shops,
+              [id]: {
+                ...slice,
+                lifecycle: "DELETED",
+              },
+            },
+            shop: state.shop?.id === id ? null : state.shop,
+          };
+        });
       },
+
 
       // --- main ABC runner ---      
       runABC: async ({
         executionMode,
         simulationType,
+        shopId: explicitShopId,
         scenario = "Baseline",
       }: RunABCOptions) => {
 
-        const shopMeta = get().shop;
-        if (!shopMeta) return;
-        const shopId = shopMeta.id;
-        const current = get().shops[shopId] ?? emptyShopSlice(shopMeta);
+       const currentShopMeta = explicitShopId
+          ? undefined
+          : get().shop;
 
-        if (executionMode === "BACKEND" && current.hydrated) return
+        if (!explicitShopId && !currentShopMeta) return;
 
-         set((state) => ({
-          shops: {
-            ...state.shops,
-            [shopId]: {
-              ...current,
-              abc: { loading: true, executionMode, mode: simulationType },
-            },
-          },
-        }));
+        const shopSlice = explicitShopId
+          ? get().shops[explicitShopId]
+          : get().shops[currentShopMeta!.id]; // safe because we returned above
+
+        if (!shopSlice) return;
+
+
+        const meta = (shopSlice as ShopSlice & { meta: ShopMeta }).meta;
+        if (!meta) return;
+
+        const shopId = meta.id;
+        const current = shopSlice;
+
+        if (executionMode === "BACKEND" && current.hydrated) return;
+
+        const importing =
+          current.kind === "USER"
+            ? ("IMPORTING" as UserShopLifecycle)
+            : ("IMPORTING" as AutogenShopLifecycle);
+
+
+              set((state) => ({
+                shops: {
+                  ...state.shops,
+                  [shopId]: {
+                    ...current,
+                    lifecycle: importing,
+                    abc: { loading: true, executionMode, mode: simulationType },
+                  },
+                },
+              }));
 
 
         try {
@@ -248,6 +352,7 @@ export const useShopStore = create<ShopStore>()(
                     inventory,
                     analytics,
                     hydrated: true,
+                    lifecycle: "READY",
                   },
                 },
               }))
@@ -276,6 +381,7 @@ export const useShopStore = create<ShopStore>()(
               [shopId]: {
                 ...current,
                 hydrated: false, // prevent retry
+                lifecycle: "FAILED", // mark lifecycle as FAILED
                 abc: {
                   loading: false,
                   error:
@@ -287,40 +393,42 @@ export const useShopStore = create<ShopStore>()(
             },
           }))
         }
-    },
+      },
 
-        }),
-        {
-          name: "shop-storage", // localStorage key
-          storage: createJSONStorage(() => ({
-            getItem: (name) => saveToStorage.getItem(name),
-            setItem: (name, value) => saveToStorage.setItem(name, value),
-            removeItem: (name) => saveToStorage.removeItem(name),
-          })),
+    }),
+    {
+      name: "shop-storage", // localStorage key
+      storage: createJSONStorage(() => ({
+        getItem: (name) => saveToStorage.getItem(name),
+        setItem: (name, value) => saveToStorage.setItem(name, value),
+        removeItem: (name) => saveToStorage.removeItem(name),
+      })),
 
-          // --- Persist only stable state ---
-          partialize: (state) => ({
-            shop: state.shop,
-            shops: Object.fromEntries(
-              Object.entries(state.shops).map(([id, shop]) => [
-                id,
-                {
-                  products: shop.products,
-                  inventory: shop.inventory,
-                  analytics: shop.analytics,
-                  hydrated: shop.hydrated,
-                  // persist only table/summary if you want, not error/loading
-                  abc: {
-                    table: shop.abc.table,
-                    summary: shop.abc.summary,
-                  },
-                },
-              ])
-            ),
-          }),
-        }
-      )
-    );
+      // --- Persist only stable state ---
+      partialize: (state) => ({
+        shop: state.shop,
+        shops: Object.fromEntries(
+          Object.entries(state.shops).map(([id, shop]) => [
+            id,
+            {
+              kind: shop.kind,
+              lifecycle: shop.lifecycle,
+              products: shop.products,
+              inventory: shop.inventory,
+              analytics: shop.analytics,
+              hydrated: shop.hydrated,
+              abc: {
+                table: shop.abc.table,
+                summary: shop.abc.summary,
+              },
+            },
+          ])
+        ),
+      }),
+
+    }
+  )
+);
 
 //
 
@@ -364,13 +472,29 @@ function normalizeSummary(result: SimulatorABCResult): ABCSummary | undefined {
 }
 
 //Prevent the "undefined" bug
-// Prevent the "undefined" bug
-const emptyShopSlice = (shopMeta?: ShopMeta): ShopSlice & { id?: ShopId; label?: string } => ({
-  id: shopMeta?.id,
-  label: shopMeta?.name,
-  products: [],
-  inventory: undefined,
-  analytics: undefined,
-  abc: { loading: false },
-  hydrated: false,
-});
+const emptyShopSlice = (meta: ShopMeta): ShopSlice => {
+  if (meta.kind === "USER") {
+    return {
+      kind: "USER",
+      lifecycle: meta.lifecycle,
+      products: [],
+      inventory: undefined,
+      analytics: undefined,
+      abc: { loading: false },
+      hydrated: false,
+      label: meta.name, // automatically use shop name
+    };
+  } else {
+    return {
+      kind: "AUTOGEN",
+      lifecycle: meta.lifecycle as AutogenShopLifecycle,
+      products: [],
+      inventory: undefined,
+      analytics: undefined,
+      abc: { loading: false },
+      hydrated: false,
+      label: meta.name, // automatically use shop name
+    };
+  }
+};
+
