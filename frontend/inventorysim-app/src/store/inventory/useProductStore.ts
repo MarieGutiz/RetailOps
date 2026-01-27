@@ -3,17 +3,18 @@ import type { Product } from "@/types/products";
 import { saveToStorage } from "@/utils/storage";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import {persist, createJSONStorage} from "zustand/middleware"
+import { persist, createJSONStorage } from "zustand/middleware"
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { isTokenValid } from "@/utils/auth";
 
 
-export type UserShopMeta = {
+ type UserShopMeta = {
   id: string;
   name: string;
   createdAt: number;
   lastUpdated: number;
   lastSavedAt: number;
+  kind: "USER"
 };
 
 
@@ -34,7 +35,7 @@ interface ProductState {
   setAuthenticated: (value: boolean) => void;
   initAuth: () => void;
 
-   // Shop metadata
+  // Shop metadata
   initForShop: (shop: { id: string; name: string }) => void
   renameShop: (name: string) => void;
   markSaved: () => void;
@@ -46,30 +47,30 @@ interface ProductState {
  * Zustand store for managing product state and authentication status
  */
 export const useProductStore = create<ProductState>()(
-    persist(
-         (set, get) => ({
-          shopMeta: null,
-          products: [],
-          isAuthenticated: false,
-          loading: false,
+  persist(
+    (set, get) => ({
+      shopMeta: null,
+      products: [],
+      isAuthenticated: false,
+      loading: false,
 
-    setLoading: (value: boolean) => {
+      setLoading: (value: boolean) => {
         set({ loading: value });
-    },
+      },
 
-     initAuth: () => {
+      initAuth: () => {
         const token = saveToStorage.getItem("token");
         set({ isAuthenticated: isTokenValid(token) });
       },
 
-    addProduct: (product: Product) => {
+      addProduct: (product: Product) => {
         const { products, isAuthenticated, shopMeta } = get();
         if (!shopMeta) {
           toast.error("Please create a shop before adding products.");
           return;
         }
 
-         // Limit guest users to 10 products
+        // Limit guest users to 10 products
         if (!isAuthenticated && products.length >= 10) {
           // alert("Guest users can only add up to 10 products.");
 
@@ -83,41 +84,47 @@ export const useProductStore = create<ProductState>()(
           ...products.filter((p) => p.name !== product.name),
           product,
         ];
-        set({ products: updated,
+        set({
+          products: updated,
           shopMeta: {
             ...shopMeta,
             lastUpdated: Date.now(),
           },
 
-         });
-    },
+        });
+      },
 
-    removeProduct: (name: string) => {
-      const { shopMeta } = get();
-      if (!shopMeta) return;
+      removeProduct: (name: string) => {
+        const { shopMeta } = get();
+        if (!shopMeta) return;
 
         set((state) => ({
-            products: state.products.filter((product) => product.name !== name),
-            shopMeta: {
+          products: state.products.filter((product) => product.name !== name),
+          shopMeta: {
             ...shopMeta,
             lastUpdated: Date.now(),
           },
 
         }));
-    },
+      },
 
-    clearProducts: () => {
-      const { shopMeta } = get();
-      if (!shopMeta) return;
-        set({ products: [],
+      clearProducts: () => {
+        const { shopMeta } = get();
+        if (!shopMeta) return;
+        set({
+          products: [],
           shopMeta: {
             ...shopMeta,
             lastUpdated: Date.now(),
           },
-         });
-    },
-     // Shop metadata
-     initForShop: (shop) => {
+        });
+      },
+      // Shop metadata
+      initForShop: (shop) => {
+        if ((shop as any).kind === "AUTOGEN") {
+          console.warn("ProductStore cannot be initialized for AUTOGEN shops");
+          return;
+        }
         const now = Date.now()
 
         set({
@@ -127,6 +134,7 @@ export const useProductStore = create<ProductState>()(
             createdAt: now,
             lastUpdated: now,
             lastSavedAt: now,
+            kind: "USER"
           },
           products: [],
         })
@@ -156,8 +164,8 @@ export const useProductStore = create<ProductState>()(
         });
       },
 
-    
-    syncToBackend: async () => {
+
+      syncToBackend: async () => {
         const { products, isAuthenticated, shopMeta } = get();
         if (!isAuthenticated || products.length === 0 || !shopMeta) return;
 
@@ -169,20 +177,20 @@ export const useProductStore = create<ProductState>()(
         } catch (err) {
           console.error("Failed to sync:", err);
         }
-    },
-    setAuthenticated: (value: boolean) => {
+      },
+      setAuthenticated: (value: boolean) => {
         set({ isAuthenticated: value });
-    },
-}),
-  {
-    name: "product-storage", // key for localStorage
-    storage: createJSONStorage(() => ({
-    getItem: saveToStorage.getItem,
-    setItem: saveToStorage.setItem,
-    removeItem: saveToStorage.removeItem,
-    })),
+      },
+    }),
+    {
+      name: "product-storage", // key for localStorage
+      storage: createJSONStorage(() => ({
+        getItem: saveToStorage.getItem,
+        setItem: saveToStorage.setItem,
+        removeItem: saveToStorage.removeItem,
+      })),
     }
-    )
+  )
 );
 
 if (import.meta.env.MODE === "development") {

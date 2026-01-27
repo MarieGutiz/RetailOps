@@ -8,15 +8,14 @@ import { useShallow } from "zustand/react/shallow";
 interface UseShopProductsOptions {
   enabled?: boolean;
   simulationType?: "classic" | "multi";
+  forceBackend?: boolean; 
 }
-
-
 
 export function useShopProducts(
  id: ShopId | null,
-  options?: UseShopProductsOptions
+options?: UseShopProductsOptions
 ) {
-  const { enabled = true, simulationType = "classic" } = options ?? {};
+  const { enabled = true, simulationType = "classic", forceBackend = false } = options ?? {};
 
   const [localError, setLocalError] = useState<unknown>(null);
 
@@ -33,22 +32,55 @@ export function useShopProducts(
   const analytics = shopSlice?.analytics;
   const abc = shopSlice?.abc ?? { loading: false };
   const hydrated = shopSlice?.hydrated ?? false;
+  const lifecycle = shopSlice?.lifecycle ?? "CREATED";
+
 
   // ------------------- Run BACKEND ABC once per shop -------------------
-  useEffect(() => {
-    if (!id) return;
-    if (!enabled) return;
-    if (hydrated) return;
+  // useEffect(() => {
+  //   if (!id) return;
+  //   if (!enabled) return;
+  //   if (hydrated && !options?.forceBackend) return;
+  //   if (hydrated) return;
 
-    runABC({
-      executionMode: "BACKEND",
-      simulationType,
-    }).catch((err) => {
+  //   runABC({
+  //     executionMode: "BACKEND",
+  //     simulationType,
+  //   }).catch((err) => {
+  //     const msg = err instanceof Error ? err.message : String(err);
+  //     setLocalError(msg);
+  //     console.error(`Failed to load sim shop ${id}:`, err);
+  //   });
+  // }, [id, enabled, hydrated, simulationType, forceBackend, runABC]);
+
+      // Run BACKEND ABC if shop is CREATED or IMPORTING, or if forced
+  // ------------------- Run BACKEND ABC when needed -------------------
+  useEffect(() => {
+  if (!id || !enabled || !shopSlice) return;
+
+  const { hydrated, lifecycle } = shopSlice;
+  const shouldRunBackend =
+    ["CREATED", "IMPORTING"].includes(lifecycle) && (!hydrated || forceBackend);
+
+  if (!shouldRunBackend) return;
+
+  (async () => {
+    try {
+      await runABC({
+        executionMode: "BACKEND",
+        simulationType,
+        shopId: id,
+      });
+    } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       setLocalError(msg);
-      console.error(`Failed to load sim shop ${id}:`, err);
-    });
-  }, [id, enabled, hydrated, simulationType, runABC]);
+      console.error(`Failed to load simulation for shop ${id}:`, err);
+    }
+  })();
+}, [id, enabled, shopSlice, simulationType, forceBackend, runABC]);
+
+
+
+
 
   // ------------------- Show toast on error -------------------
     useApiErrorToast(localError ?? abc.error, id ? `Shop: ${id}` : undefined);
@@ -65,6 +97,7 @@ export function useShopProducts(
     loading: enabled && abc.loading,
     error: localError ?? abc.error,
     hydrated,
+    lifecycle
   };
 }
 

@@ -11,7 +11,9 @@ const StepSuccess = ({ onFinish }: { onFinish: () => void }) => {
         You can now add products and manage inventory.
       </p>
 
-      <Button onClick={onFinish}>
+      <Button
+       className="jbtn-btn jbtn-success"
+       onClick={onFinish}>
         Start managing inventory
       </Button>
     </div>
