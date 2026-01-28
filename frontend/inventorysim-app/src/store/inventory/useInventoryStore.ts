@@ -34,6 +34,8 @@ interface InventoryStore {
   markSaved: () => void;
 
   isProductInInventory: (productId: string) => boolean
+  //By Shop
+  clearInventoryByShop: (shopId: string)=> void;
 
 }
 
@@ -174,6 +176,14 @@ export const useInventoryStore = create<InventoryStore>()(
         if (!shopMeta) return false
         return shopMeta.lastUpdated > shopMeta.lastSavedAt
         },
+
+        clearInventoryByShop: (shopId: string) => {
+          const { shopMeta } = get();
+          if (!shopMeta || shopMeta.shopId !== shopId) return;
+
+          set({ inventory: [], shopMeta: null });
+        },
+
 
       isProductInInventory: (productId) => {
       const { inventory, shopMeta } = get()

@@ -1,4 +1,4 @@
-import type { ShopMeta } from "@/store/shop/useShopStore";
+import { useShopStore, type ShopMeta } from "@/store/shop/useShopStore";
 import type { Product } from "@/types/products";
 import { useState } from "react";
 import { useImportShopProducts } from "../../hooks/useImportShopProducts";
@@ -6,9 +6,11 @@ import { DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/di
 import { AlertDescription, Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/Button";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import type { ShopId } from "@/types/shop";
+import { shopId, type ShopId } from "@/types/shop";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import type { AutogenAvailabilityResult, AutogenLibraryId } from "../../hooks/useBackendAwareness";
+import { useShopProducts } from "@/hooks/shop/useShopProducts";
 
 export type ShopOption = {
   id: ShopId;
@@ -20,34 +22,55 @@ export type ShopOption = {
 
 type Props = {
   shop: ShopMeta;
-  shopOptions?: ShopOption[];
+  autogenIds: AutogenLibraryId[];
+  availability: AutogenAvailabilityResult;
+
+  selectedAutogenId: ShopId | null;
+  onSelectAutogen: (id: ShopId) => void;
   backendUnavailable?: boolean;
   loading: boolean
   onSkip: () => void;
   onImported: () => void;
 };
 
+const EMPTY_PRODUCTS: Product[] = [];
+
+
 const StepImportProducts = ({
   shop,
-  shopOptions = [],
+  autogenIds,
+  availability,
+  selectedAutogenId,
+  onSelectAutogen,
   backendUnavailable,
-  loading = false,
+  loading,
   onSkip,
   onImported,
+
 }: Props) => {
   // Only allow **one selected shop** → use a string instead of array
 
-  const [selected, setSelected] = useState<string | null>(null);
-  const { importProducts } = useImportShopProducts();    
+    const { importProducts } = useImportShopProducts();
 
-  const hasTemplates = shopOptions.length > 0;
+    // Subscribe only to the products array of the selected AUTOGEN shop
+    // const selectedProducts = useShopStore(
+    //   (s) =>
+    //     selectedAutogenId ? s.shops[selectedAutogenId]?.products ?? EMPTY_PRODUCTS : EMPTY_PRODUCTS
+    // );
 
-  const selectedProducts =
-    selected && shopOptions.find((s) => s.id === selected)?.products
-      ? shopOptions.find((s) => s.id === selected)!.products
-      : [];
+    // const selectedProductCount = selectedProducts.length;
+    // const isImportDisabled = backendUnavailable || loading || !selectedAutogenId || selectedProductCount === 0;
+    // const hasTemplates = selectedProductCount > 0;
 
-  const isDisabled = backendUnavailable || loading || selectedProducts.length === 0;
+    // Use hook to get products for selected AUTOGEN shop
+    const autogenData = useShopProducts(selectedAutogenId, { enabled: !!selectedAutogenId });
+    const selectedProducts = autogenData.products;
+
+    const hasTemplates = selectedProducts.length > 0;
+    const isImportDisabled = backendUnavailable || loading || !selectedAutogenId || !hasTemplates;
+
+
+
   return (
     <>
       <DialogHeader>
@@ -89,60 +112,64 @@ const StepImportProducts = ({
         </Alert>
       )}
 
-            {/* 3 Normal happy path */}
-      {!backendUnavailable && hasTemplates && (
+      {/* 3 Normal happy path */}
+       {!backendUnavailable && (
         <RadioGroup
-          value={selected ?? ""}
-          onValueChange={(val) => setSelected(val)}
+          value={selectedAutogenId ?? ""}
+          onValueChange={(val) => onSelectAutogen(val as ShopId)}
           className="space-y-3"
         >
-          {shopOptions.map((shopOpt) => {
-            const disabled = shopOpt.lifecycle === "FAILED" || loading;
+          {autogenIds.map((lib) => {
+            const id = shopId(lib);
+            const info = availability.perLibrary.find((p) => p.lib === lib);
+            const disabled = info?.unavailable || loading;
+
+            // Use getState() for reads that don't need reactivity
+            const productCount = useShopStore.getState().shops[id]?.products.length ?? 0;
 
             return (
               <div
-                key={shopOpt.id}
-                className={`flex justify-between items-center border p-3 rounded transition-all ${
+                key={id}
+                className={`flex justify-between items-center border p-3 rounded ${
                   disabled ? "opacity-50 cursor-not-allowed" : "hover:shadow-md"
                 }`}
               >
                 <div className="flex gap-2 items-center">
                   <RadioGroupItem
-                    value={shopOpt.id}
-                    id={shopOpt.id}
+                    value={id}
+                    id={id}
                     disabled={disabled}
                     className="radio-jbtn"
                   />
-                  <Label htmlFor={shopOpt.id} className={disabled ? "opacity-50" : ""}>
-                    {shopOpt.label}
-                  </Label>
+                  <Label htmlFor={id}>{lib}</Label>
                 </div>
-                <span className="text-sm text-muted-foreground">
-                  {shopOpt.products.length} products
-                </span>
+                <span className="text-sm text-muted-foreground">{productCount} products</span>
               </div>
             );
           })}
         </RadioGroup>
       )}
 
+
+
       <div className="flex justify-end gap-2 pt-4">
         <Button
          variant="ghost"
          onClick={onSkip}
          className="jbtn-btn jbtn-success"
-         disabled={isDisabled}
+        //  disabled={isDisabled}
          >
           Skip
         </Button>
 
         <Button
-          disabled={backendUnavailable || !selected || selectedProducts.length === 0}
           className="jbtn-btn jbtn-passive"
+          disabled={isImportDisabled}
           onClick={() => {
             importProducts(selectedProducts);
             onImported();
           }}
+
         >
           Import selected
         </Button>

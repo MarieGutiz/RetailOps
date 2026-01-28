@@ -8,7 +8,7 @@ import { toast } from "sonner";
 const StepCreateShop = ({ onCreated }: { onCreated: (shop: ShopMeta) => void; }) =>{
   const [name, setName] = useState("");
   const createShop = useShopStore((s) => s.createShop);
-
+  //work availabilty
   const handleCreate = () => {
     const trimmed = name.trim();
     if (!trimmed) {
