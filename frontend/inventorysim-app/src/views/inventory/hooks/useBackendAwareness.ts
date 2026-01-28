@@ -46,45 +46,87 @@ export function useBackendAvailability(
 
 export type AutogenLibraryId = "FLORIST" | "CAFETERIA";
 
-// Hook for AUTOGEN libraries only
+/**
+ * Ensures AUTOGEN shops exist in the store.
+ */
+export function useEnsureAutogenShops(libraries: AutogenLibraryId[]) {
+  const setShop = useShopStore((s) => s.setShop);
+
+  useEffect(() => {
+    libraries.forEach((lib) => {
+      const id = shopId(lib) as ShopId;
+      const slice = useShopStore.getState().shops[id];
+      if (!slice) {
+        setShop({
+          id,
+          name: lib,
+          kind: "AUTOGEN",
+          lifecycle: "CREATED",
+        });
+      }
+    });
+  }, [libraries, setShop]);
+}
+
+/**
+ * Watches AUTOGEN shops and triggers backend ABC fetch.
+ */
+
+export type AutogenAvailabilityEntry = {
+  lib: AutogenLibraryId;
+  lifecycle: "CREATED" | "IMPORTING" | "READY" | "FAILED";
+  unavailable: boolean;
+  available: boolean;
+  loading: boolean;
+};
+
+export type AutogenAvailabilityResult = {
+  unavailable: boolean;
+  checking: boolean;
+  perLibrary: AutogenAvailabilityEntry[];
+};
+
 export function useAutogenAvailability(
   libraries: AutogenLibraryId[],
   enabled: boolean
-) {
-  const [armed, setArmed] = useState(false);
+): AutogenAvailabilityResult {
+
   const shopStore = useShopStore();
-  const fetchedRef = useRef<Set<string>>(new Set()); // Track already fetched AUTOGEN shops
+  const [armed, setArmed] = useState(false);
+  const fetchedRef = useRef<Set<ShopId>>(new Set());
   const errorRef = useRef<unknown>(null);
 
-  // Delay arming the hook
+  // Arm after delay to avoid instant fetch
   useEffect(() => {
     if (!enabled || libraries.length === 0) return;
     const t = setTimeout(() => setArmed(true), 500);
     return () => clearTimeout(t);
   }, [enabled, libraries]);
 
-  // Prepare AUTOGEN slices
-  const slices = useMemo(() => {
+  // Prepare slices
+const slices = useMemo(() => {
   return libraries
     .map((lib) => {
-      const id = shopId(lib) as ShopId; // <-- cast to ShopId
+      const id = shopId(lib) as ShopId;
       const slice = shopStore.shops[id];
 
-      // Only AUTOGEN shops
       if (!slice || slice.kind !== "AUTOGEN") return null;
 
-      return { lib, id, slice, lifecycle: slice.lifecycle };
+      // Narrow lifecycle here
+      const lifecycle = slice.lifecycle as AutogenShopLifecycle;
+
+      return { lib, id, slice, lifecycle };
     })
     .filter(Boolean) as {
       lib: AutogenLibraryId;
       id: ShopId;
       slice: typeof shopStore.shops[ShopId];
-      lifecycle: typeof shopStore.shops[ShopId]["lifecycle"];
+      lifecycle: AutogenShopLifecycle;
     }[];
 }, [libraries, shopStore.shops]);
 
 
-  // Trigger backend ABC fetch safely
+  // Trigger backend ABC fetch
   useEffect(() => {
     if (!armed) return;
 
@@ -101,24 +143,25 @@ export function useAutogenAvailability(
       shopStore
         .runABC({ executionMode: "BACKEND", simulationType: "classic", shopId: id })
         .catch((err) => {
-          // Store error in ref for toast
           errorRef.current = slice?.abc?.error ?? err;
         });
     });
   }, [armed, slices, shopStore]);
 
-  // Show toast when error occurs
+  // Show toast
   useApiErrorToast(errorRef.current, "Autogen Shop");
 
-  // Build availability info
+  // Build availability
   const perLibrary = slices.map(({ lib, slice, lifecycle }) => {
     const abcLoading = slice?.abc?.loading ?? false;
     const abcError = slice?.abc?.error;
-
-    const unavailable = armed && (lifecycle === "FAILED" || !!abcError);
-    const available = armed && lifecycle === "READY";
-
-    return { lib, lifecycle, unavailable, available, loading: abcLoading };
+    return {
+      lib,
+      lifecycle,
+      unavailable: armed && (lifecycle === "FAILED" || !!abcError),
+      available: armed && lifecycle === "READY",
+      loading: abcLoading,
+    };
   });
 
   return {

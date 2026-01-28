@@ -42,6 +42,9 @@ interface ProductState {
 
   // Loading
   setLoading: (value: boolean) => void;
+  //By Shop
+
+  clearProductsByShop: (shopId: string) => void;
 }
 /**
  * Zustand store for managing product state and authentication status
@@ -164,6 +167,12 @@ export const useProductStore = create<ProductState>()(
         });
       },
 
+      clearProductsByShop: (shopId: string) => {
+        const { shopMeta } = get();
+        if (!shopMeta || shopMeta.id !== shopId) return;
+
+        set({ products: [], shopMeta: null });
+      },
 
       syncToBackend: async () => {
         const { products, isAuthenticated, shopMeta } = get();

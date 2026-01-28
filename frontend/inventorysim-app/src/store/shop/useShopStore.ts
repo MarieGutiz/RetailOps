@@ -12,6 +12,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware"
 import { useInventoryStore } from "../inventory/useInventoryStore";
 import { useProductStore } from "../inventory/useProductStore";
+import { toast } from "sonner";
 
 //Name your shop
 type CreateShopInput = {
@@ -64,8 +65,8 @@ export type ShopStore = {
 
 
   products: Product[];
-  inventory?: InventoryState;
-  analytics?: AnalyticsState;
+  // inventory?: InventoryState;
+  // analytics?: AnalyticsState;
 
   setShop: (shopMeta: ShopMeta) => void;
   createShop: (input: CreateShopInput) => ShopMeta;
@@ -78,7 +79,8 @@ export type ShopStore = {
   runABC: (opts: RunABCOptions) => Promise<void>;
   resetABC: () => void;
   resetShop: () => void;
-  deleteShop: (id: ShopId) => void;
+  // deleteShop: (id: ShopId) => void;
+  deleteUserShop: (id: ShopId) => void;
 };
 
 export const useShopStore = create<ShopStore>()(
@@ -90,33 +92,45 @@ export const useShopStore = create<ShopStore>()(
       products: [],
       // inventory: undefined,
       // analytics: undefined,
-
-      abc: { loading: false },
+      // abc: { loading: false },
 
       // --- setters ---
       /* ───────────── SHOP SWITCH ───────────── */
-      // --- Switch shop ---
       setShop: (shopMeta: ShopMeta) =>
-        set((state) => ({
-          shop: shopMeta,
-          shops: {
-            ...state.shops,
-            [shopMeta.id]:
-              state.shops[shopMeta.id] ?? emptyShopSlice(shopMeta),
-          },
-        }))
-      ,
+        set((state) => {
+          const existingSlice = state.shops[shopMeta.id];
+
+          // AUTOGEN shops are idempotent
+          if (shopMeta.kind === "AUTOGEN") {
+            return {
+              shop: shopMeta,
+              shops: existingSlice
+                ? state.shops // already exists → do nothing
+                : {
+                    ...state.shops,
+                    [shopMeta.id]: emptyShopSlice(shopMeta),
+                  },
+            };
+          }
+
+          // USER shop: slice must already exist
+          return {
+            shop: shopMeta,
+          };
+        }),
 
       // --- Create user shop ---
       createShop: ({ name }): UserShopMeta => {
         const normalized = name.trim().toUpperCase();
         const id = shopId(normalized.replace(/\s+/g, "_"));
 
-        // Validate uniqueness
         const exists = Object.values(get().shops).some(
-          (s) => s.kind === "USER" && s.products.length > 0 && s.kind === "USER"
+          (s) => s.kind === "USER" && s.label === normalized
         );
-        if (exists) throw new Error(`Shop "${name}" already exists`);
+
+        if (exists) {
+          throw new Error(`Shop "${name}" already exists`);
+        }
 
         const meta: UserShopMeta = {
           id,
@@ -128,21 +142,20 @@ export const useShopStore = create<ShopStore>()(
           lastSavedAt: Date.now(),
         };
 
-        // Update store safely
         set((state) => ({
-          shop: meta as ShopMeta,
+          shop: meta,
           shops: {
             ...state.shops,
-            [id]: emptyShopSlice(meta as ShopMeta), // TS now knows slice is correct
+            [id]: emptyShopSlice(meta),
           },
         }));
 
-        // Initialize dependent stores
         useProductStore.getState().initForShop(meta);
         useInventoryStore.getState().initInventoryForShop(id);
 
         return meta;
       },
+
 
 
 
@@ -247,23 +260,56 @@ export const useShopStore = create<ShopStore>()(
         }));
       },
 
-      deleteShop: (id: ShopId) => {
-        set((state) => {
-          const slice = state.shops[id];
-          if (!slice || slice.kind === "AUTOGEN") return state;
+      // deleteShop: (id: ShopId) => {
+      //   set((state) => {
+      //     const slice = state.shops[id];
+      //     if (!slice || slice.kind === "AUTOGEN") return state;
 
-          return {
-            shops: {
-              ...state.shops,
-              [id]: {
-                ...slice,
-                lifecycle: "DELETED",
-              },
-            },
-            shop: state.shop?.id === id ? null : state.shop,
-          };
-        });
-      },
+      //     return {
+      //       shops: {
+      //         ...state.shops,
+      //         [id]: {
+      //           ...slice,
+      //           lifecycle: "DELETED",
+      //         },
+      //       },
+      //       shop: state.shop?.id === id ? null : state.shop,
+      //     };
+      //   });
+      // },
+
+      deleteUserShop: (id: ShopId) => {
+      set((state) => {
+        const slice = state.shops[id];
+        if (!slice || slice.kind === "AUTOGEN") return state;
+
+        // mark as deleted
+        const newShops = {
+          ...state.shops,
+          [id]: { ...slice, lifecycle: "DELETED" },
+        };
+
+        // clear selected shop if it's the deleted one
+        const newSelectedShop = state.shop?.id === id ? null : state.shop;
+
+        return {
+          shops: newShops,
+          shop: newSelectedShop,
+        };
+      });
+
+      // clear associated products
+      // useProductStore.getState().clearProducts();
+      useProductStore.getState().clearProductsByShop(id)
+
+      // clear inventory
+      // useInventoryStore.getState().clearInventory();
+      useInventoryStore.getState().clearInventoryByShop(id);
+
+      toast.success("Shop and its products/inventory deleted");
+},
+
+
 
 
       // --- main ABC runner ---      
@@ -287,10 +333,11 @@ export const useShopStore = create<ShopStore>()(
         if (!shopSlice) return;
 
 
-        const meta = (shopSlice as ShopSlice & { meta: ShopMeta }).meta;
-        if (!meta) return;
+        const shopId = explicitShopId ?? currentShopMeta!.id;
 
-        const shopId = meta.id;
+        // if (!meta) return;
+
+        // const shopId = meta.id;
         const current = shopSlice;
 
         if (executionMode === "BACKEND" && current.hydrated) return;
@@ -394,6 +441,26 @@ export const useShopStore = create<ShopStore>()(
           }))
         }
       },
+
+      ensureAutogenShop: (id: ShopId, name: string) =>
+        set((state) => {
+          if (state.shops[id]) return state;
+
+          const meta: AutogenShopMeta = {
+            id,
+            name,
+            kind: "AUTOGEN",
+            lifecycle: "CREATED",
+          };
+
+          return {
+            shops: {
+              ...state.shops,
+              [id]: emptyShopSlice(meta),
+            },
+          };
+        }),
+
 
     }),
     {
