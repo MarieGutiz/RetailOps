@@ -10,6 +10,7 @@ interface ModuleContainerProps {
   userCases?: string[]
     userCasesPlaceholder?: string
   onUserCaseChange?: (value: string) => void
+  renderUserCaseItem?: (label: string) => ReactNode // optional custom render per item
   actions?: ReactNode
 }
 
@@ -21,6 +22,7 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
       userCases = [],
        userCasesPlaceholder = "Select option", 
       onUserCaseChange,
+      renderUserCaseItem,
       actions,
 }: ModuleContainerProps) => {
   return (
@@ -49,7 +51,7 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
           <SelectContent>
             {userCases.map((uc, i) => (
               <SelectItem key={i} value={uc}>
-                {uc}
+                {renderUserCaseItem ? renderUserCaseItem(uc) : uc}
               </SelectItem>
             ))}
           </SelectContent>

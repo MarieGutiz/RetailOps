@@ -81,6 +81,7 @@ export type ShopStore = {
   resetShop: () => void;
   // deleteShop: (id: ShopId) => void;
   deleteUserShop: (id: ShopId) => void;
+  ensureAutogenShop: (id: ShopId, name: string) => void;
 };
 
 export const useShopStore = create<ShopStore>()(
@@ -96,28 +97,39 @@ export const useShopStore = create<ShopStore>()(
 
       // --- setters ---
       /* ───────────── SHOP SWITCH ───────────── */
+      // setShop: (shopMeta: ShopMeta) =>
+      //   set((state) => {
+      //     const existingSlice = state.shops[shopMeta.id];
+
+      //     // AUTOGEN shops are idempotent
+      //     if (shopMeta.kind === "AUTOGEN") {
+      //       return {
+      //         shop: shopMeta,
+      //         shops: existingSlice
+      //           ? state.shops // already exists → do nothing
+      //           : {
+      //               ...state.shops,
+      //               [shopMeta.id]: emptyShopSlice(shopMeta),
+      //             },
+      //       };
+      //     }
+
+      //     // USER shop: slice must already exist
+      //     return {
+      //       shop: shopMeta,
+      //     };
+      //   }
+      // ),
       setShop: (shopMeta: ShopMeta) =>
         set((state) => {
-          const existingSlice = state.shops[shopMeta.id];
-
-          // AUTOGEN shops are idempotent
-          if (shopMeta.kind === "AUTOGEN") {
-            return {
-              shop: shopMeta,
-              shops: existingSlice
-                ? state.shops // already exists → do nothing
-                : {
-                    ...state.shops,
-                    [shopMeta.id]: emptyShopSlice(shopMeta),
-                  },
-            };
+          if (shopMeta.kind === "AUTOGEN" && !state.shops[shopMeta.id]) {
+            console.warn("AUTOGEN shop selected before ensureAutogenShop", shopMeta.id);
+            return state;
           }
 
-          // USER shop: slice must already exist
-          return {
-            shop: shopMeta,
-          };
+          return { shop: shopMeta };
         }),
+
 
       // --- Create user shop ---
       createShop: ({ name }): UserShopMeta => {
