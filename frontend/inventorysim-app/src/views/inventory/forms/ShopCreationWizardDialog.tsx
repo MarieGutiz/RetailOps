@@ -12,12 +12,14 @@ import { Loader2 } from "lucide-react";
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onShopCreated: (shop: ShopMeta) => void;
 };
 
 
 const ShopCreationWizardDialog = ({ 
   open,
-  onOpenChange
+  onOpenChange,
+  onShopCreated
  }: Props) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [shop, setShop] = useState<ShopMeta | null>(null);
@@ -57,6 +59,7 @@ const ShopCreationWizardDialog = ({
           {step === 1 && (
           <StepCreateShop
             onCreated={(shop) => {
+              onShopCreated(shop); // communicate upward
               setShop(shop);
               setStep(2);
             }}

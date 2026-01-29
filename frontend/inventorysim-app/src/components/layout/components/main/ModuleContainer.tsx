@@ -10,6 +10,7 @@ interface ModuleContainerProps {
   onUserCaseChange?: (value: string) => void;
   actions?: ReactNode; // Extra buttons
   children: ReactNode; // Module content
+  renderUserCaseItem?: (label: string) => ReactNode // optional custom render per item
 }
 
 const ModuleContainer: React.FC<ModuleContainerProps> = ({
@@ -21,6 +22,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
   onUserCaseChange,
   actions,
   children,
+  renderUserCaseItem
 }) => {
    return (
     <div  className="flex-1 flex flex-col px-3 py-4 sm:p-6 bg-gray-50 min-h-full">
@@ -34,6 +36,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
          userCasesPlaceholder={userCasesPlaceholder}
          onUserCaseChange={onUserCaseChange}
          actions={actions}
+         renderUserCaseItem={renderUserCaseItem}
        />
       {/* Module content - mount it here */}
       <main className="flex-1 bg-white rounded-lg shadow p-4 min-h-[400px]">
