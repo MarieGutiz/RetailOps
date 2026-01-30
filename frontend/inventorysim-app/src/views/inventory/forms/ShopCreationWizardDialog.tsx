@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ShopCreationStepper from "./ShopCreationStepper";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ShopMeta } from "@/store/shop/useShopStore";
 import StepCreateShop from "./steps/StepCreateShop";
 import StepImportProducts, { type ShopOption } from "./steps/StepImportProducts";
@@ -42,6 +42,24 @@ const ShopCreationWizardDialog = ({
   const backendUnavailable = availability.unavailable;
   const anyLoading = availability.checking;
 
+ ///Check
+    // Auto-advance to step 2 when shop is created
+  useEffect(() => {
+    if (shop) {
+      setStep(2);
+    }
+  }, [shop]);
+
+  // Auto-advance to step 3 when products are imported or skipped
+  const handleImportFinished = () => setStep(3);
+
+  // Handler for when the shop is created in step 1
+  const handleShopCreated = (newShop: ShopMeta) => {
+    setShop(newShop);
+    onShopCreated(newShop); // notify parent
+    setSelectedAutogenId(null); // reset any previous autogen selection
+  };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -56,7 +74,7 @@ const ShopCreationWizardDialog = ({
         >
         <ShopCreationStepper step={step} />
 
-          {step === 1 && (
+          {/* {step === 1 && (
           <StepCreateShop
             onCreated={(shop) => {
               onShopCreated(shop); // communicate upward
@@ -64,7 +82,12 @@ const ShopCreationWizardDialog = ({
               setStep(2);
             }}
           />
+        )} */}
+         {/* Step 1: Create shop */}
+        {step === 1 && (
+          <StepCreateShop onCreated={handleShopCreated} />
         )}
+
 
         {/* Step 2 */}
         {step === 2 && shop && (
@@ -83,8 +106,8 @@ const ShopCreationWizardDialog = ({
               onSelectAutogen={setSelectedAutogenId}
               loading={anyLoading}
               backendUnavailable={backendUnavailable}
-              onSkip={() => setStep(3)}
-              onImported={() => setStep(3)}
+              onSkip={handleImportFinished}
+              onImported={handleImportFinished}
             />
           </div>
         )}

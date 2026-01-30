@@ -62,6 +62,7 @@ export type ShopLifecycle = UserShopLifecycle | AutogenShopLifecycle;
 
 // --- Shop slice ---
 export type UserShopSlice = {
+  
   kind: "USER";
   lifecycle: UserShopLifecycle;
   products: Product[];
@@ -70,6 +71,10 @@ export type UserShopSlice = {
   abc: ShopABCState;
   hydrated: boolean;
   label?: string;
+
+  createdAt: number;
+  lastUpdated: number;
+  lastSavedAt: number;
 };
 
 export type AutogenShopSlice = {
@@ -81,6 +86,10 @@ export type AutogenShopSlice = {
   abc: ShopABCState;
   hydrated: boolean;
   label?: string;
+
+  createdAt: number,    // add timestamps
+  lastUpdated: number,
+  lastSavedAt: number,
 };
 
 export type ShopSlice = UserShopSlice | AutogenShopSlice;
