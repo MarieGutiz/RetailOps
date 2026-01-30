@@ -3,7 +3,6 @@ import AddProduct from "./forms/AddProduct";
 import type { Product } from "@/types/products";
 import ProductTable from "./ProductTable";
 import type { ShopMeta } from "@/store/shop/useShopStore";
-import { useSelectedShop } from "@/hooks/shop/useSelectedShop";
 
 
 

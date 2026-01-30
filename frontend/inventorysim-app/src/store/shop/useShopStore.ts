@@ -3,7 +3,7 @@ import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendAB
 import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
 import type { AbcResponseDto } from "@/types/abc-backend";
 import type { Product } from "@/types/products";
-import { type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ShopId, shopId, type ShopLifecycle, type ShopSlice, type AutogenShopLifecycle, type UserShopLifecycle } from "@/types/shop";
+import { type InventoryState, type AnalyticsState, type ShopABCState, type RunABCOptions, type ShopId, shopId, type ShopLifecycle, type ShopSlice, type AutogenShopLifecycle, type UserShopLifecycle, type AutogenShopSlice } from "@/types/shop";
 import type { SimulatorABCOutput, SimulatorABCResult } from "@/types/simulator";
 import { extractBackendABC } from "@/utils/abc/extractBackendABC";
 import { saveToStorage } from "@/utils/storage";
@@ -18,7 +18,6 @@ import { toast } from "sonner";
 type CreateShopInput = {
   name: string;
 };
-
 
 // export type ShopSlice = {
 //   products: Product[]
@@ -45,6 +44,10 @@ export type AutogenShopMeta = {
   name: string;
   kind: "AUTOGEN";
   lifecycle: AutogenShopLifecycle;
+
+  createdAt: number;
+  lastUpdated: number;
+  lastSavedAt: number;
 };
 
 export type ShopMeta = UserShopMeta | AutogenShopMeta;
@@ -69,7 +72,7 @@ export type ShopStore = {
   // analytics?: AnalyticsState;
 
   setShop: (shopMeta: ShopMeta) => void;
-  createShop: (input: CreateShopInput) => ShopMeta;
+  createShop: (input: CreateShopInput) => UserShopMeta;
 
 
   setProducts: (products: Product[]) => void;
@@ -79,9 +82,12 @@ export type ShopStore = {
   runABC: (opts: RunABCOptions) => Promise<void>;
   resetABC: () => void;
   resetShop: () => void;
-  // deleteShop: (id: ShopId) => void;
+  
+  // selectShop(id: ShopId | null): void;
   deleteUserShop: (id: ShopId) => void;
   ensureAutogenShop: (id: ShopId, name: string) => void;
+  ensureAndSelectAutogenShop: (id: ShopId, label: string) => void;
+
 };
 
 export const useShopStore = create<ShopStore>()(
@@ -167,8 +173,6 @@ export const useShopStore = create<ShopStore>()(
 
         return meta;
       },
-
-
 
 
       //Import - prdcs, inventory, analytics
@@ -290,37 +294,44 @@ export const useShopStore = create<ShopStore>()(
       //   });
       // },
 
+    //   deleteUserShop: (id: ShopId) => {
+    //   set((state) => {
+    //     const slice = state.shops[id];
+    //     if (!slice || slice.kind !== "USER") return state;
+
+    //     const { [id]: _, ...remaining } = state.shops;
+
+    //     return {
+    //       shops: remaining,
+    //       shop: state.shop?.id === id ? null : state.shop,
+    //     };
+    //     });
+
+    //     useProductStore.getState().clearProductsByShop(id);
+    //     useInventoryStore.getState().clearInventoryByShop(id);
+
+    //    toast.success("Shop deleted");
+    // },
+
       deleteUserShop: (id: ShopId) => {
-      set((state) => {
-        const slice = state.shops[id];
-        if (!slice || slice.kind === "AUTOGEN") return state;
+        set((state) => {
+          const slice = state.shops[id];
+          if (!slice || slice.kind !== "USER") return state;
 
-        // mark as deleted
-        const newShops = {
-          ...state.shops,
-          [id]: { ...slice, lifecycle: "DELETED" },
-        };
+          const { [id]: __deleted, ...remaining } = state.shops;
 
-        // clear selected shop if it's the deleted one
-        const newSelectedShop = state.shop?.id === id ? null : state.shop;
+          return {
+            shops: remaining,
+            shop: state.shop?.id === id ? null : state.shop,
+          };
+        });
 
-        return {
-          shops: newShops,
-          shop: newSelectedShop,
-        };
-      });
+        // Hard cleanup in other stores
+        useProductStore.getState().clearProductsByShop(id);
+        useInventoryStore.getState().clearInventoryByShop(id);
 
-      // clear associated products
-      // useProductStore.getState().clearProducts();
-      useProductStore.getState().clearProductsByShop(id)
-
-      // clear inventory
-      // useInventoryStore.getState().clearInventory();
-      useInventoryStore.getState().clearInventoryByShop(id);
-
-      toast.success("Shop and its products/inventory deleted");
-},
-
+        toast.success("Shop deleted permanently");
+      },
 
 
 
@@ -453,25 +464,111 @@ export const useShopStore = create<ShopStore>()(
           }))
         }
       },
+      
+     // --- ENSURE AUTOGEN SHOP EXISTS ---
+ensureAutogenShop: (id: ShopId, label: string) => {
+  set((state) => {
+    // If shop already exists, do nothing
+    if (state.shops[id]) return state;
 
-      ensureAutogenShop: (id: ShopId, name: string) =>
-        set((state) => {
-          if (state.shops[id]) return state;
+    // Create a new AUTOGEN slice
+    const now = Date.now();
 
-          const meta: AutogenShopMeta = {
-            id,
-            name,
+    const newSlice: AutogenShopSlice = {
+      kind: "AUTOGEN",
+      lifecycle: "CREATED", // always valid CommonLifecycle
+      products: [],
+      inventory: undefined,
+      analytics: undefined,
+      abc: { loading: false },
+      hydrated: false,
+      label, // label is always provided
+
+      createdAt: now,
+      lastUpdated: now,
+      lastSavedAt: now,
+
+    };
+
+    return {
+      shops: {
+        ...state.shops,
+        [id]: newSlice,
+      },
+    };
+  });
+},
+
+    // --- ENSURE AND SELECT AUTOGEN SHOP ---
+    ensureAndSelectAutogenShop: (id: ShopId, label: string) => {
+      set((state) => {
+        // Ensure shop slice exists
+        let slice = state.shops[id] as AutogenShopSlice | undefined;
+
+        const now = Date.now()
+
+        if (!slice) {
+          slice = {
             kind: "AUTOGEN",
             lifecycle: "CREATED",
-          };
+            products: [],
+            inventory: undefined,
+            analytics: undefined,
+            abc: { loading: false },
+            hydrated: false,
+            label,
 
-          return {
-            shops: {
-              ...state.shops,
-              [id]: emptyShopSlice(meta),
-            },
+            createdAt: now,
+            lastUpdated: now,
+            lastSavedAt: now,
+
           };
-        }),
+          state.shops[id] = slice;
+        }
+
+        // Set current shop using full ShopMeta
+        // Set current shop using full AutogenShopMeta
+        state.shop = {
+          kind: "AUTOGEN",
+          id,
+          name: slice.label ?? label,
+          lifecycle: slice.lifecycle,
+          createdAt: slice.createdAt,
+          lastUpdated: slice.lastUpdated,
+          lastSavedAt: slice.lastSavedAt,
+        };
+
+
+        return state;
+      });
+    },
+
+
+
+
+      // ensureAutogenShop: (id: ShopId, label: string) => {
+      //   set((state) => {
+      //     if (state.shops[id]) return state;
+
+      //     return {
+      //       shops: {
+      //         ...state.shops,
+      //         [id]: {
+      //           kind: "AUTOGEN",
+      //           lifecycle: "CREATED",
+      //           products: [],
+      //           inventory: undefined,
+      //           analytics: undefined,
+      //           abc: { loading: false },
+      //           hydrated: false,
+      //           label,
+      //         },
+      //       },
+      //     };
+      //   });
+      // }
+      
+
 
 
     }),
@@ -485,24 +582,31 @@ export const useShopStore = create<ShopStore>()(
 
       // --- Persist only stable state ---
       partialize: (state) => ({
-        shop: state.shop,
-        shops: Object.fromEntries(
-          Object.entries(state.shops).map(([id, shop]) => [
-            id,
-            {
-              kind: shop.kind,
-              lifecycle: shop.lifecycle,
-              products: shop.products,
-              inventory: shop.inventory,
-              analytics: shop.analytics,
-              hydrated: shop.hydrated,
-              abc: {
-                table: shop.abc.table,
-                summary: shop.abc.summary,
-              },
-            },
-          ])
-        ),
+        // shop: state.shop,
+        // shops: Object.fromEntries(
+        //   Object.entries(state.shops).map(([id, shop]) => [
+        //     id,
+        //     {
+        //       kind: shop.kind,
+        //       lifecycle: shop.lifecycle,
+        //       label: shop.label,
+        //       products: shop.products,
+        //       inventory: shop.inventory,
+        //       analytics: shop.analytics,
+        //       hydrated: shop.hydrated,
+        //       abc: {
+        //         table: shop.abc.table,
+        //         summary: shop.abc.summary,
+        //       },
+        //     },
+        //   ])
+        // ),
+          shop: state.shop?.kind === "USER" ? state.shop : null,
+          shops: Object.fromEntries(
+            Object.entries(state.shops).filter(
+              ([, shop]) => shop.kind === "USER"
+            )
+          ),
       }),
 
     }
@@ -552,6 +656,9 @@ function normalizeSummary(result: SimulatorABCResult): ABCSummary | undefined {
 
 //Prevent the "undefined" bug
 const emptyShopSlice = (meta: ShopMeta): ShopSlice => {
+
+  const now = Date.now()
+
   if (meta.kind === "USER") {
     return {
       kind: "USER",
@@ -562,6 +669,10 @@ const emptyShopSlice = (meta: ShopMeta): ShopSlice => {
       abc: { loading: false },
       hydrated: false,
       label: meta.name, // automatically use shop name
+
+      createdAt: meta.createdAt ?? now,
+      lastUpdated: meta.lastUpdated ?? now,
+      lastSavedAt: meta.lastSavedAt ?? now,
     };
   } else {
     return {
@@ -573,6 +684,10 @@ const emptyShopSlice = (meta: ShopMeta): ShopSlice => {
       abc: { loading: false },
       hydrated: false,
       label: meta.name, // automatically use shop name
+
+      createdAt: meta.createdAt ?? now,
+      lastUpdated: meta.lastUpdated ?? now,
+      lastSavedAt: meta.lastSavedAt ?? now,
     };
   }
 };

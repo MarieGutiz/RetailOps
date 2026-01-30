@@ -9,14 +9,14 @@ import ShopCreationWizardDialog from "@/views/inventory/forms/ShopCreationWizard
 
 import { Button } from "@/components/ui/Button";
 
-import { shopId, type ShopId } from "@/types/shop";
+import { shopId } from "@/types/shop";
 import { useShopProducts } from "@/hooks/shop/useShopProducts";
-import { useShopStore } from "@/store/shop/useShopStore";
+import { useShopStore, type ShopMeta } from "@/store/shop/useShopStore";
 import { useProductStore } from "@/store/inventory/useProductStore";
 
 import { useSelectedShop } from "@/hooks/shop/useSelectedShop";
 import { useInventoryStore } from "@/store/inventory/useInventoryStore";
-import { Trash2 } from "lucide-react";
+import { HousePlusIcon } from "lucide-react";
 import { isUserShopMeta, shopSliceToMeta } from "@/store/shop/adapter";
 
 /* ───────────────── AUTOGEN DEFINITIONS ───────────────── */
@@ -33,13 +33,6 @@ const PRODUCT_LIBRARY_INFO = {
     "You are managing the product catalog for the selected shop. Switch shops using the selector above to explore different inventories or create your own shop.",
 };
 
-/* ───────────────── TYPES ───────────────── */
-
-// type LibrarySelection =
-//   | { kind: "AUTOGEN"; shopId: ShopId }
-//   | { kind: "USER" ; shopId: ShopId }
-//   | null;
-
 /* ───────────────── COMPONENT ───────────────── */
 
 const ProductLibraryModule = () => {
@@ -47,11 +40,10 @@ const ProductLibraryModule = () => {
   // const [selection, setSelection] = useState<LibrarySelection>(null);
 
 
-  const { shops, setShop, deleteUserShop, ensureAutogenShop } = useShopStore(
+  const { shops, setShop, ensureAutogenShop } = useShopStore(
     useShallow((s) => ({
        shops: s.shops,
        setShop: s.setShop,
-       deleteUserShop: s.deleteUserShop,
        ensureAutogenShop: s.ensureAutogenShop,
       }))
   );
@@ -59,7 +51,7 @@ const ProductLibraryModule = () => {
 
   const userProducts = useProductStore((s) => s.products);
 
-    const { selectedId, shop: selectedSlice, selectShop } = useSelectedShop();
+  const { selectedId, shop: selectedSlice, selectShop } = useSelectedShop();
 
 
     /* ───────────── Initialize + ensure AUTOGEN shops ───────────── */
@@ -111,67 +103,98 @@ const ProductLibraryModule = () => {
   const showServiceUnavailable =
     selection?.kind === "AUTOGEN" && autogen.lifecycle === "FAILED";
 
+     /* ───────────── User shop list ───────────── */
+  const userShopMetas = useMemo(() => {
+    return Object.entries(shops)
+      .filter(([_, s]) => s.kind === "USER" && s.lifecycle !== "DELETED")
+      .map(([id, s]) => shopSliceToMeta(shopId(id), s))
+      .filter(isUserShopMeta)
+      .sort((a, b) => b.createdAt - a.createdAt); // newest first
+  }, [shops]);
 
-  const selectUserShopByLabel = (label: string) => {
-    const entry = Object.entries(shops).find(
-      ([, s]) => s.kind === "USER" && s.label === label
-    );
-    if (!entry) return;
+  const userShopLabels = userShopMetas.map((s) => s.name);
 
-    const [id, slice] = entry;
-    const shId = shopId(id);
+  /* ───────────── Selection helpers ───────────── */
 
-    setShop(shopSliceToMeta(shId, slice));
-    selectShop(shId);
+ const selectUserShopByLabel = (label: string) => {
+  const entry = Object.entries(shops).find(([_, s]) => s.kind === "USER" && s.label === label);
+  if (!entry) return;
 
-    useProductStore.getState().initForShop({ id, name: slice.label! });
-    useInventoryStore.getState().initInventoryForShop(id);
-  };
+  const [id, slice] = entry;
+  const shId = shopId(id);
+  
+  const sh = shopSliceToMeta(shId, slice)
+  setShop(sh); // pass ShopMeta
+  useSelectedShop().selectShop(sh); // selects via ShopMeta id
 
-  const handleDeleteUserShop = (label: string) => {
-    const entry = Object.entries(shops).find(
-      ([, s]) => s.kind === "USER" && s.label === label
-    );
-    if (!entry) return;
+  useProductStore.getState().initForShop({ id, name: slice.label! });
+  useInventoryStore.getState().initInventoryForShop(id);
+};
 
-    const [id] = entry;
-    deleteUserShop(shopId(id));
 
-    useProductStore.getState().clearProductsByShop(label);
-    useInventoryStore.getState().clearInventoryByShop(shopId(id));
-  };
+
 
   /* ───────────── Wizard callback ───────────── */
 
-  const handleShopCreated = (shop: { id: ShopId; name: string }) => {
-    const entry = Object.entries(shops).find(
-      ([, s]) => s.kind === "USER" && s.label === shop.name
-    );
-    if (!entry) return;
+  // const handleShopCreated = (shop: { id: ShopId; name: string }) => {
+  //   // const entry = Object.entries(shops).find(
+  //   //   ([, s]) => s.kind === "USER" && s.label === shop.name
+  //   // );
+  //   // if (!entry) return;
 
-    const [id, slice] = entry;
-    const shId = shopId(id);
-    selectShop(shId);
-    setShop(shopSliceToMeta(shId, slice));
+  //   // const [id, slice] = entry;
+  //   // const shId = shopId(id);
+  //   // selectShop(shId);
+  //   // setShop(shopSliceToMeta(shId, slice));
 
-    useProductStore.getState().initForShop({
-      id: shop.id,
-      name: shop.name,
-    });
+  //   // useProductStore.getState().initForShop({
+  //   //   id: shop.id,
+  //   //   name: shop.name,
+  //   // });
+  //   // useInventoryStore.getState().initInventoryForShop(shop.id);
+  //   //  selectShop(shop.id);
+
+  //   //   setShop({
+  //   //     id: shop.id,
+  //   //     name: shop.name,
+  //   //     kind: "USER",
+  //   //     lifecycle: "CREATED",
+  //   //     createdAt: Date.now(),
+  //   //     lastUpdated: Date.now(),
+  //   //     lastSavedAt: Date.now(),
+  //   //   });
+
+  //   //   useProductStore.getState().initForShop(shop);
+  //   //   useInventoryStore.getState().initInventoryForShop(shop.id);
+
+  // };
+/* ───────────── Wizard callback ───────────── */
+  const handleShopCreated = (shop: ShopMeta) => {
+    // Add shop to store
+    setShop(shop);
+
+    // Select immediately
+    
+    selectShop(shop);
+
+    useProductStore.getState().initForShop(shop);
     useInventoryStore.getState().initInventoryForShop(shop.id);
-  };
 
+    // setWizardOpen(false); // auto-close wizard
+  };
 
     /* ───────────── Ghost shop guard ───────────── */
 
-    useEffect(() => {
-    if (!selectedId) return;
-    const slice = shops[selectedId];
-    if (!slice || slice.lifecycle === "DELETED") {
-      selectShop(null);
-      useProductStore.getState().clearProducts();
-    }
-  }, [shops, selectedId, selectShop]);
+  //   useEffect(() => {
+  //   if (!selectedId) return;
+  //   const slice = shops[selectedId];
+  //   if (!slice || slice.lifecycle === "DELETED") {
+  //     selectShop(null);
+  //     useProductStore.getState().clearProducts();
+  //   }
+  // }, [shops, selectedId, selectShop]);
+
+
 
 
 
@@ -184,14 +207,25 @@ const ProductLibraryModule = () => {
   //         .filter((label): label is string => !!label)
   //     )
   // );
- const userShopLabels = useMemo(() => {
-  return Object.entries(shops)
-    .filter(([_, s]) => s.kind === "USER" && s.lifecycle !== "DELETED")
-    .map(([id, s]) => shopSliceToMeta(shopId(id), s))
-    .filter(isUserShopMeta) // type guard
-    .sort((a, b) => b.createdAt - a.createdAt)
-    .map((s) => s.name);
-}, [shops]);
+//  const userShopLabels = useMemo(() => {
+//   return Object.entries(shops)
+//     .filter(([_, s]) => s.kind === "USER" && s.lifecycle !== "DELETED")
+//     .map(([id, s]) => shopSliceToMeta(shopId(id), s))
+//     .filter(isUserShopMeta) // type guard
+//     .sort((a, b) => b.createdAt - a.createdAt)
+//     .map((s) => s.name);
+// }, [shops]);
+
+
+// useEffect(() => {
+//   if (
+//     selection?.kind === "AUTOGEN" &&
+//     autogen.lifecycle === "FAILED" &&
+//     userShopLabels.length > 0
+//   ) {
+//     selectShop(null);
+//   }
+// }, [selection, autogen.lifecycle, userShopLabels]);
 
   /* ───────────────── RENDER ───────────────── */
 
@@ -211,15 +245,26 @@ const ProductLibraryModule = () => {
       userCasesPlaceholder="Import data shop"
       onUserCaseChange={(label) => {          
         const auto = AUTOGEN_SHOPS.find((s) => s.label === label);
-          if (auto) {
-            ensureAutogenShop(auto.id, auto.label); // guarantee existence ??
-            selectShop(auto.id);
-            return;
-          }
+           if (auto) {
+        // Ensure slice exists
+        ensureAutogenShop(auto.id, auto.label);
 
-          selectUserShopByLabel(label);
+        // Select shop using full ShopMeta with timestamps
+          const now = Date.now();
+          selectShop({
+            id: auto.id,
+            name: auto.label,
+            kind: "AUTOGEN",
+            lifecycle: "CREATED",
+            createdAt: now,
+            lastUpdated: now,
+            lastSavedAt: now,
+          });
+          return;
+        }
 
-
+        // Otherwise, select a user shop by label
+        selectUserShopByLabel(label);
 
       }}
       renderUserCaseItem={(label) => {
@@ -228,13 +273,9 @@ const ProductLibraryModule = () => {
           return (
             <div className="flex items-center justify-between w-full">
               <span>{label}</span>
-              <Trash2
+              <HousePlusIcon
                 size={16}
                 className="text-red-500 ml-2 cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteUserShop(label);
-                }}
               />
             </div>
           );
@@ -254,6 +295,7 @@ const ProductLibraryModule = () => {
           <Button className="toolbar-element jbtn-flat-btn toolbar-element-md">
             Inventory
           </Button>
+
         </>
       }
     >
@@ -269,11 +311,7 @@ const ProductLibraryModule = () => {
       )}
       
       <ProductLibraryView
-       ShopMeta={
-          selectedId && selectedSlice
-            ? shopSliceToMeta(selectedId, selectedSlice)
-            : undefined
-        }
+       ShopMeta={selectedSlice ?? undefined} 
         products={productsToShow}
         loading={loading}
         readonly={readonly}
