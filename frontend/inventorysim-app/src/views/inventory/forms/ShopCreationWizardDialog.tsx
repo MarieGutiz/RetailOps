@@ -42,23 +42,25 @@ const ShopCreationWizardDialog = ({
   const backendUnavailable = availability.unavailable;
   const anyLoading = availability.checking;
 
- ///Check
-    // Auto-advance to step 2 when shop is created
+   // Reset wizard when dialog closes
   useEffect(() => {
-    if (shop) {
-      setStep(2);
+    if (!open) {
+      setStep(1);
+      setShop(null);
+      setSelectedAutogenId(null);
     }
-  }, [shop]);
+  }, [open]);
 
-  // Auto-advance to step 3 when products are imported or skipped
-  const handleImportFinished = () => setStep(3);
-
-  // Handler for when the shop is created in step 1
   const handleShopCreated = (newShop: ShopMeta) => {
     setShop(newShop);
-    onShopCreated(newShop); // notify parent
-    setSelectedAutogenId(null); // reset any previous autogen selection
+    onShopCreated(newShop);
+    setStep(2);
   };
+
+  const handleImportFinished = () => {
+    setStep(3);
+  };
+
 
 
   return (
@@ -73,16 +75,6 @@ const ShopCreationWizardDialog = ({
           "
         >
         <ShopCreationStepper step={step} />
-
-          {/* {step === 1 && (
-          <StepCreateShop
-            onCreated={(shop) => {
-              onShopCreated(shop); // communicate upward
-              setShop(shop);
-              setStep(2);
-            }}
-          />
-        )} */}
          {/* Step 1: Create shop */}
         {step === 1 && (
           <StepCreateShop onCreated={handleShopCreated} />

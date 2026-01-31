@@ -5,10 +5,10 @@ import { useEffect } from "react";
 import { testFloristFlowLocal, testShopABCLive } from "@/hooks/simulator/engines/testFloristFlow";
 
 const DashboardOverviewModule = () => {
-  useEffect(() => {
-   testFloristFlowLocal();
-  // testShopABCLive("FLORIST", "classic");
-}, []);
+//   useEffect(() => {
+//    testFloristFlowLocal();
+//   // testShopABCLive("FLORIST", "classic");
+// }, []);
   return (
     <ModuleContainer
       title="Dashboard Overview"

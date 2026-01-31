@@ -8,6 +8,7 @@ interface ModuleContainerProps {
   userCases?: string[]; // Combo box options
   userCasesPlaceholder?: string
   onUserCaseChange?: (value: string) => void;
+  selectedUserCase?: string | null;
   actions?: ReactNode; // Extra buttons
   children: ReactNode; // Module content
   renderUserCaseItem?: (label: string) => ReactNode // optional custom render per item
@@ -20,6 +21,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
   userCases,
   userCasesPlaceholder,
   onUserCaseChange,
+  selectedUserCase,
   actions,
   children,
   renderUserCaseItem
@@ -35,6 +37,7 @@ const ModuleContainer: React.FC<ModuleContainerProps> = ({
          userCases={userCases}
          userCasesPlaceholder={userCasesPlaceholder}
          onUserCaseChange={onUserCaseChange}
+         selectedUserCase={selectedUserCase}
          actions={actions}
          renderUserCaseItem={renderUserCaseItem}
        />

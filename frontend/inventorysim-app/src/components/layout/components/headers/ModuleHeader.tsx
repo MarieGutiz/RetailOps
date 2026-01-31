@@ -8,7 +8,8 @@ interface ModuleContainerProps {
   subtitle?: string
   breadcrumbTrail?: { label: string; path?: string }[]
   userCases?: string[]
-    userCasesPlaceholder?: string
+  userCasesPlaceholder?: string
+  selectedUserCase?: string | null;
   onUserCaseChange?: (value: string) => void
   renderUserCaseItem?: (label: string) => ReactNode // optional custom render per item
   actions?: ReactNode
@@ -20,7 +21,8 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
       subtitle,
       breadcrumbTrail,
       userCases = [],
-       userCasesPlaceholder = "Select option", 
+      userCasesPlaceholder = "Select option",
+      selectedUserCase,
       onUserCaseChange,
       renderUserCaseItem,
       actions,
@@ -43,7 +45,10 @@ const ModuleHeader:React.FC<ModuleContainerProps>= ({
       {/* Right side → now using the ModuleHeaderActions component */}
       <ModuleHeaderActions>
         {userCases?.length > 0 && (
-          <Select onValueChange={(value) => onUserCaseChange?.(value)}>
+          <Select
+          value={selectedUserCase ?? undefined}   // CONTROLLED
+          onValueChange={(value) => onUserCaseChange?.(value)}
+           >
           <SelectTrigger className="toolbar-element btn-flat-btn toolbar-element-md active w-fit sm:w-auto">
             <SelectValue placeholder={userCasesPlaceholder} />
           </SelectTrigger>
