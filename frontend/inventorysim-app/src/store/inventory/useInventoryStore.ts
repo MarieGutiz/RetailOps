@@ -49,8 +49,25 @@ export const useInventoryStore = create<InventoryStore>()(
 
       setLoading: (loading) => set({ loading }),
 
+      // initInventoryForShop: (shopId) => {
+      //   const now = Date.now()
+
+      //   set({
+      //     shopMeta: {
+      //       shopId,
+      //       lastUpdated: now,
+      //       lastSavedAt: now,
+      //     },
+      //     inventory: [],
+      //   })
+      // },
       initInventoryForShop: (shopId) => {
-        const now = Date.now()
+        const { shopMeta } = get();
+
+        // same shop → do nothing
+        if (shopMeta?.shopId === shopId) return;
+
+        const now = Date.now();
 
         set({
           shopMeta: {
@@ -59,7 +76,7 @@ export const useInventoryStore = create<InventoryStore>()(
             lastSavedAt: now,
           },
           inventory: [],
-        })
+        });
       },
 
 

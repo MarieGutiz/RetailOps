@@ -22,7 +22,7 @@ const GlobalHeader = ({
     const { selectedId, shop: selectedSlice, selectShop } = useSelectedShop();
     const isUserShop = selectedSlice?.kind === "USER";
 
-    console.log("usershop ", isUserShop, "select slice ", selectedSlice);
+    // console.log("usershop ", isUserShop, "select slice ", selectedSlice);
 
   return (
     <header className="w-full h-14 bg-[#e8f3f6] border-b shadow-sm flex items-center justify-between px-4">

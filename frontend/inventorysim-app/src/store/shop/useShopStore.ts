@@ -13,6 +13,7 @@ import { persist, createJSONStorage } from "zustand/middleware"
 import { useInventoryStore } from "../inventory/useInventoryStore";
 import { useProductStore } from "../inventory/useProductStore";
 import { toast } from "sonner";
+import { shopSliceToMeta } from "./adapter";
 
 //Name your shop
 type CreateShopInput = {
@@ -89,7 +90,7 @@ export type ShopStore = {
   ensureAndSelectAutogenShop: (id: ShopId, label: string) => void;
 
 };
-
+//The store creates ShopMeta.
 export const useShopStore = create<ShopStore>()(
   persist(
     (set, get) => ({
@@ -127,13 +128,19 @@ export const useShopStore = create<ShopStore>()(
       //   }
       // ),
       setShop: (shopMeta: ShopMeta) =>
-        set((state) => {
-          if (shopMeta.kind === "AUTOGEN" && !state.shops[shopMeta.id]) {
-            console.warn("AUTOGEN shop selected before ensureAutogenShop", shopMeta.id);
+          set((state) => {
+          const slice = state.shops[shopMeta.id];
+
+          if (!slice) {
+            console.warn("Attempted to select non-existing shop", shopMeta.id);
             return state;
           }
 
-          return { shop: shopMeta };
+          // Always normalize meta from slice
+          const normalized = shopSliceToMeta(shopMeta.id, slice);
+
+          return { shop: normalized };
+
         }),
 
 
