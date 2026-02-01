@@ -60,7 +60,6 @@ export async function runShopABC(
     const { data } = await api.get<AbcResponseDto>(
       `/simulations/${shopPath}/abc?mode=${simulationType.toUpperCase()}`
     );
-   console.log("data ABC ",data)
     const table = mapAbcResponseToTable(data);
 
     return {

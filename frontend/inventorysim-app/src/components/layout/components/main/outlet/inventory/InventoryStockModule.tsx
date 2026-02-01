@@ -5,7 +5,6 @@ import ParetoCurveView from "@/views/ABCViews/plots/ParetoCurveView"
 import { useABCHover, useABCInput, useLoadABC } from "@/hooks/simulator/modules/abc/hooks/useABCInput"
 import { ABC_SCENARIOS } from "@/lib/abc/buildABCTableData"
 import { useInventoryStore } from "@/store/inventory/useInventoryStore"
-import { useProductStore } from "@/store/inventory/useProductStore"
 import { useMemo, useState } from "react"
 import { buildParetoData } from "@/lib/abc/buildParetoData"
 import type { InventoryRow } from "@/types/inventory"
@@ -13,6 +12,7 @@ import InventoryStockView from "@/views/inventory/InventoryStockView"
 import { Button } from "@/components/ui/Button"
 import Info from "@/views/ABCViews/info/Info"
 import { ABCAnalysisFrontend } from "@/services/domain/segmentation/ABCAnalysisFrontend"
+import { useShopInventoryProducts } from "@/hooks/shop/useShopInventoryProducts"
 
 const InventoryStockModule = () => {
   useLoadABC(100)
@@ -20,9 +20,14 @@ const InventoryStockModule = () => {
     useState<keyof typeof ABC_SCENARIOS>("Baseline")
 
   const abcInput = useABCInput()
-  const products = useProductStore(s => s.products)
-  const inventory = useInventoryStore(s => s.inventory)
-  const loading = useInventoryStore(s => s.loading)
+  
+  // const products = useProductStore(s => s.products)
+  // const inventory = useInventoryStore(s => s.inventory)
+  // const loading = useInventoryStore(s => s.loading)
+   
+  const { products, inventory, loading } = useShopInventoryProducts();
+
+  console.log("Products ", products , "  inventory ", inventory)
 
   // 1. Central ABC computation
   const { table: abcTableData, summary: abcSummary } = useMemo(

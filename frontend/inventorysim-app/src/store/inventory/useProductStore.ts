@@ -30,6 +30,7 @@ interface ProductState {
   clearProducts: () => void;
   syncToBackend: () => Promise<void>;
 
+
   // Auth awareness (kept intentionally)
   isAuthenticated: boolean;
   setAuthenticated: (value: boolean) => void;
@@ -37,14 +38,18 @@ interface ProductState {
 
   // Shop metadata
   initForShop: (shop: { id: string; name: string }) => void
+  initSimulationForShop: (shop: { id: string; name: string; products?: Product[] , kind?:string}) => void
+
   renameShop: (name: string) => void;
   markSaved: () => void;
 
   // Loading
   setLoading: (value: boolean) => void;
   //By Shop
-
+  
+  productsByShopId: (shopId: string) => Product[];
   clearProductsByShop: (shopId: string) => void;
+
 }
 /**
  * Zustand store for managing product state and authentication status
@@ -124,10 +129,10 @@ export const useProductStore = create<ProductState>()(
       },
       // Shop metadata
       initForShop: (shop) => {
-        if ((shop as any).kind === "AUTOGEN") {
-          console.warn("ProductStore cannot be initialized for AUTOGEN shops");
-          return;
-        }
+        // if ((shop as any).kind === "AUTOGEN") {
+        //   console.warn("ProductStore cannot be initialized for AUTOGEN shops");
+        //   return;
+        // } //Not anymore
         const now = Date.now()
 
         set({
@@ -141,6 +146,21 @@ export const useProductStore = create<ProductState>()(
           },
           products: [],
         })
+      },
+
+       initSimulationForShop: (shop) => {
+        const now = Date.now();
+        set({
+          shopMeta: {
+            id: shop.id,
+            name: shop.name,
+            createdAt: now,
+            lastUpdated: now,
+            lastSavedAt: now,
+            kind: "USER",
+          },
+          products: shop.products ?? [],
+        });
       },
 
       renameShop: (name: string) => {
@@ -167,12 +187,20 @@ export const useProductStore = create<ProductState>()(
         });
       },
 
+
       clearProductsByShop: (shopId: string) => {
         const { shopMeta } = get();
         if (!shopMeta || shopMeta.id !== shopId) return;
 
         set({ products: [], shopMeta: null });
       },
+      
+        productsByShopId: (shopId: string) => {
+        const { shopMeta, products } = get();
+        if (!shopMeta || shopMeta.id !== shopId) return [];
+        return products;
+      },
+      
 
       syncToBackend: async () => {
         const { products, isAuthenticated, shopMeta } = get();

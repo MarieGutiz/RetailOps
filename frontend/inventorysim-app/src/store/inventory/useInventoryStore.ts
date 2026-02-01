@@ -19,7 +19,7 @@ export interface InventoryItem {
 interface InventoryStore {
   //Associated shop metadata
   shopMeta: InventoryMeta | null;
-  initInventoryForShop: (shopId: string) => void
+  initInventoryForShop: (shopId: string) => void  
 
   inventory: InventoryItem[];
   loading: boolean;
@@ -36,6 +36,7 @@ interface InventoryStore {
   isProductInInventory: (productId: string) => boolean
   //By Shop
   clearInventoryByShop: (shopId: string)=> void;
+  inventoryByShopId: (shopId:string) => InventoryItem[]
 
 }
 
@@ -114,6 +115,11 @@ export const useInventoryStore = create<InventoryStore>()(
           }
         }),
 
+       inventoryByShopId: (shopId: string) => {
+        const { shopMeta, inventory } = get();
+        if (!shopMeta || shopMeta.shopId !== shopId) return [];
+        return inventory;
+      },
 
       updateQuantity: (productId, quantity) =>
         set((state) => {

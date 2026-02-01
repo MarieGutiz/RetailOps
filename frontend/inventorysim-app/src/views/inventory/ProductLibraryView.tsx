@@ -6,7 +6,11 @@ import type { ShopMeta } from "@/store/shop/useShopStore";
 import { useInventoryStore } from "@/store/inventory/useInventoryStore";
 import { useEffect } from "react";
 
-
+/**
+ * ShopStore owns shop identity and lifecycle.
+ * ProductStore & InventoryStore own simulation state.
+ * UI components never initialize domain state.
+ */
 
 export type ProductLibrarySource =
   | "manual"
@@ -34,16 +38,6 @@ const ProductLibraryView = ({
   loading = false,
   isAutogen
 }: ProductLibraryViewProps) => {
-
-  // useInitProductData(); // loads JSON inventory if empty
-  const initInventoryForShop =
-  useInventoryStore((s) => s.initInventoryForShop);
-
-  useEffect(() => {
-    if (shopMeta?.id) {
-      initInventoryForShop(shopMeta.id);
-    }
-  }, [shopMeta?.id, initInventoryForShop]);
 
 
   return (

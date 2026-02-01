@@ -473,38 +473,38 @@ export const useShopStore = create<ShopStore>()(
       },
       
      // --- ENSURE AUTOGEN SHOP EXISTS ---
-ensureAutogenShop: (id: ShopId, label: string) => {
-  set((state) => {
-    // If shop already exists, do nothing
-    if (state.shops[id]) return state;
+    ensureAutogenShop: (id: ShopId, label: string) => {
+      set((state) => {
+        // If shop already exists, do nothing
+        if (state.shops[id]) return state;
 
-    // Create a new AUTOGEN slice
-    const now = Date.now();
+        // Create a new AUTOGEN slice
+        const now = Date.now();
 
-    const newSlice: AutogenShopSlice = {
-      kind: "AUTOGEN",
-      lifecycle: "CREATED", // always valid CommonLifecycle
-      products: [],
-      inventory: undefined,
-      analytics: undefined,
-      abc: { loading: false },
-      hydrated: false,
-      label, // label is always provided
+        const newSlice: AutogenShopSlice = {
+          kind: "AUTOGEN",
+          lifecycle: "CREATED", // always valid CommonLifecycle
+          products: [],
+          inventory: undefined,
+          analytics: undefined,
+          abc: { loading: false },
+          hydrated: false,
+          label, // label is always provided
 
-      createdAt: now,
-      lastUpdated: now,
-      lastSavedAt: now,
+          createdAt: now,
+          lastUpdated: now,
+          lastSavedAt: now,
 
-    };
+        };
 
-    return {
-      shops: {
-        ...state.shops,
-        [id]: newSlice,
-      },
-    };
-  });
-},
+        return {
+          shops: {
+            ...state.shops,
+            [id]: newSlice,
+          },
+        };
+      });
+    },
 
     // --- ENSURE AND SELECT AUTOGEN SHOP ---
     ensureAndSelectAutogenShop: (id: ShopId, label: string) => {
@@ -588,33 +588,56 @@ ensureAutogenShop: (id: ShopId, label: string) => {
       })),
 
       // --- Persist only stable state ---
+      // partialize: (state) => ({
+      //   // shop: state.shop,
+      //   // shops: Object.fromEntries(
+      //   //   Object.entries(state.shops).map(([id, shop]) => [
+      //   //     id,
+      //   //     {
+      //   //       kind: shop.kind,
+      //   //       lifecycle: shop.lifecycle,
+      //   //       label: shop.label,
+      //   //       products: shop.products,
+      //   //       inventory: shop.inventory,
+      //   //       analytics: shop.analytics,
+      //   //       hydrated: shop.hydrated,
+      //   //       abc: {
+      //   //         table: shop.abc.table,
+      //   //         summary: shop.abc.summary,
+      //   //       },
+      //   //     },
+      //   //   ])
+      //   // ),
+      //     shop: state.shop?.kind === "USER" ? state.shop : null,
+      //     shops: Object.fromEntries(
+      //       Object.entries(state.shops).filter(
+      //         ([, shop]) => shop.kind === "USER"
+      //       )
+      //     ),
+      // }),
       partialize: (state) => ({
-        // shop: state.shop,
-        // shops: Object.fromEntries(
-        //   Object.entries(state.shops).map(([id, shop]) => [
-        //     id,
-        //     {
-        //       kind: shop.kind,
-        //       lifecycle: shop.lifecycle,
-        //       label: shop.label,
-        //       products: shop.products,
-        //       inventory: shop.inventory,
-        //       analytics: shop.analytics,
-        //       hydrated: shop.hydrated,
-        //       abc: {
-        //         table: shop.abc.table,
-        //         summary: shop.abc.summary,
-        //       },
-        //     },
-        //   ])
-        // ),
-          shop: state.shop?.kind === "USER" ? state.shop : null,
-          shops: Object.fromEntries(
-            Object.entries(state.shops).filter(
-              ([, shop]) => shop.kind === "USER"
-            )
-          ),
+        shop: state.shop,
+        shops: Object.fromEntries(
+          Object.entries(state.shops).map(([id, shop]) => [
+            id,
+            {
+              kind: shop.kind,
+              lifecycle: shop.lifecycle,
+              label: shop.label,
+              products: shop.products,
+              inventory: shop.inventory,
+              analytics: shop.analytics,
+              hydrated: shop.hydrated,
+              autogenHydrated: shop.kind === "AUTOGEN" ? shop.hydrated : undefined,
+              abc: shop.abc,
+              createdAt: shop.createdAt,
+              lastUpdated: shop.lastUpdated,
+              lastSavedAt: shop.lastSavedAt,
+            },
+          ])
+        ),
       }),
+
 
     }
   )
