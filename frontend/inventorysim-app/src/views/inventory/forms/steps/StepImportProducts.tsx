@@ -1,6 +1,5 @@
 import { useShopStore, type ShopMeta } from "@/store/shop/useShopStore";
 import type { Product } from "@/types/products";
-import { useState } from "react";
 import { useImportShopProducts } from "../../hooks/useImportShopProducts";
 import { DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDescription, Alert, AlertTitle } from "@/components/ui/alert";
@@ -51,16 +50,6 @@ const StepImportProducts = ({
   // Only allow **one selected shop** → use a string instead of array
 
     const { importProducts } = useImportShopProducts();
-
-    // Subscribe only to the products array of the selected AUTOGEN shop
-    // const selectedProducts = useShopStore(
-    //   (s) =>
-    //     selectedAutogenId ? s.shops[selectedAutogenId]?.products ?? EMPTY_PRODUCTS : EMPTY_PRODUCTS
-    // );
-
-    // const selectedProductCount = selectedProducts.length;
-    // const isImportDisabled = backendUnavailable || loading || !selectedAutogenId || selectedProductCount === 0;
-    // const hasTemplates = selectedProductCount > 0;
 
     // Use hook to get products for selected AUTOGEN shop
     const autogenData = useShopProducts(selectedAutogenId, { enabled: !!selectedAutogenId });

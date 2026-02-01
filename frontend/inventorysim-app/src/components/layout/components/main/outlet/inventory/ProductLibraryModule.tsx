@@ -18,6 +18,7 @@ import { useSelectedShop } from "@/hooks/shop/useSelectedShop";
 import { useInventoryStore } from "@/store/inventory/useInventoryStore";
 import { HousePlusIcon } from "lucide-react";
 import { isUserShopMeta, shopSliceToMeta } from "@/store/shop/adapter";
+import { useInitSimulationStores } from "@/hooks/shop/useInitSimulationStores";
 
 /* ───────────────── AUTOGEN DEFINITIONS ───────────────── */
 
@@ -42,14 +43,23 @@ const ProductLibraryModule = () => {
   // const [selection, setSelection] = useState<LibrarySelection>(null);
 
 
-  const { shops, setShop, ensureAutogenShop } = useShopStore(
+  // const { shops, setShop, ensureAutogenShop } = useShopStore(
+  //   useShallow((s) => ({
+  //      shops: s.shops,
+  //      setShop: s.setShop,
+  //      ensureAutogenShop: s.ensureAutogenShop,
+  //     }))
+  // );
+
+    const { shops, ensureAndSelectAutogenShop, ensureAutogenShop } = useShopStore(
     useShallow((s) => ({
-       shops: s.shops,
-       setShop: s.setShop,
-       ensureAutogenShop: s.ensureAutogenShop,
-      }))
+      shops: s.shops,
+      ensureAndSelectAutogenShop: s.ensureAndSelectAutogenShop,
+      ensureAutogenShop: s.ensureAutogenShop
+    }))
   );
 
+  // const shops = useShopStore(s => s.shops);
 
   const userProducts = useProductStore((s) => s.products);
   
@@ -60,13 +70,16 @@ const ProductLibraryModule = () => {
     selectShop,
   } = useSelectedShop();
 
+  
 
 
     /* ───────────── Initialize + ensure AUTOGEN shops ───────────── */
   useEffect(() => {
       AUTOGEN_SHOPS.forEach((s) => ensureAutogenShop(s.id, s.label));
     }, [ensureAutogenShop]);
-
+//  useEffect(() => {
+//       AUTOGEN_SHOPS.forEach((s) => ensureAndSelectAutogenShop(s.id, s.label));
+//     }, [ensureAndSelectAutogenShop]);
     ///New shop, new selection
 
     useEffect(() => {
@@ -82,6 +95,7 @@ const ProductLibraryModule = () => {
   }, [selectedId, selectedSlice]);
 
 
+  
   /* ───────────── AUTOGEN data ───────────── */
 
   const autogenShopId =
@@ -91,6 +105,12 @@ const ProductLibraryModule = () => {
     enabled: !!autogenShopId,
     forceBackend: true,
   });
+
+  /* ───────────── Store initialization  ───────────── */
+  useInitSimulationStores(
+    selectedShop,
+    selection?.kind === "AUTOGEN" ? autogen.products : userProducts
+  );
 
 
   /* ───────────── View state ───────────── */
@@ -139,18 +159,21 @@ const ProductLibraryModule = () => {
     const meta = shopSliceToMeta(shopId(id), slice);
 
     selectShop(meta);
-    useProductStore.getState().initForShop(meta);
-    useInventoryStore.getState().initInventoryForShop(meta.id);
+    // useProductStore.getState().initForShop(meta);
+    // useInventoryStore.getState().initInventoryForShop(meta.id);
 };
 
   const selectAutogenByLabel = (label: string) => {
     const def = AUTOGEN_SHOPS.find((s) => s.label === label);
     if (!def) return;
 
-    ensureAutogenShop(def.id, def.label);
+    // ensureAutogenShop(def.id, def.label);
+    // ensureAndSelectAutogenShop(def.id, def.label);
+    useShopStore.getState().ensureAndSelectAutogenShop(def.id, def.label);
+
 
     const slice = useShopStore.getState().shops[def.id];
-    if (!slice) return;
+    if (!slice) return;   
 
     selectShop(shopSliceToMeta(def.id, slice));
   };
