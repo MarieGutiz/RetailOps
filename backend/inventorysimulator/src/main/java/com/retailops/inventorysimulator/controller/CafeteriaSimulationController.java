@@ -17,9 +17,8 @@
 
 package com.retailops.inventorysimulator.controller;
 
-
 import com.retailops.inventorysimulator.simulator.dto.AbcResponseDto;
-import com.retailops.inventorysimulator.simulator.autogenshop.abc.service.FloristSimulationAbcService;
+import com.retailops.inventorysimulator.simulator.autogenshop.abc.service.CafeteriaSimulationAbcService;
 import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,17 +27,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/simulations/florist")
+@RequestMapping("/api/simulations/cafeteria")
 @RequiredArgsConstructor
-public class FloristSimulationController {
 
-    private final FloristSimulationAbcService floristSimulationService;
-
+public class CafeteriaSimulationController {
+    public final CafeteriaSimulationAbcService cafeteriaSimulationService;
     @GetMapping("/abc")
     public AbcResponseDto runFloristAbc(@RequestParam(defaultValue = "ABC_CLASSIC") String mode) {
         SimulationType simType = SimulationType.fromString(mode);
-        return floristSimulationService.runFloristAbc(simType);
+        return cafeteriaSimulationService.runCafeteriaAbc(simType);
     }
-
 
 }

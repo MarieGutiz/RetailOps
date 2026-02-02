@@ -1,11 +1,14 @@
 
 package com.retailops.inventorysimulator.simulator;
 
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+@Component
 public class EoqCalculator {
 
     // EOQ = sqrt( (2 * D * S) / H )

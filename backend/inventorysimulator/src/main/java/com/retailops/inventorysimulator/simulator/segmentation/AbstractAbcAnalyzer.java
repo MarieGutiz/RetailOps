@@ -18,8 +18,8 @@
 package com.retailops.inventorysimulator.simulator.segmentation;
 
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
-import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcAnalyzer;
-import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcRankedItem;
+import com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer.AbcAnalyzer;
+import com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer.AbcRankedItem;
 
 import java.math.BigDecimal;
 import java.util.List;

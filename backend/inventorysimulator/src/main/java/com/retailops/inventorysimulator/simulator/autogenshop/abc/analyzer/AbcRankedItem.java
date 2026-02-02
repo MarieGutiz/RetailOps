@@ -15,10 +15,10 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer;
+package com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer;
 
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
-import com.retailops.inventorysimulator.util.ABCCategoryType;
+import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 
 import java.math.BigDecimal;
 

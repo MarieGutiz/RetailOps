@@ -7,7 +7,7 @@ import com.retailops.inventorysimulator.service.ProductService;
 import com.retailops.inventorysimulator.service.SimulationServiceModel;
 import com.retailops.inventorysimulator.simulator.dto.NewsVendorRequest;
 import com.retailops.inventorysimulator.simulator.dto.NewsVendorResponse;
-import com.retailops.inventorysimulator.util.SimulationType;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

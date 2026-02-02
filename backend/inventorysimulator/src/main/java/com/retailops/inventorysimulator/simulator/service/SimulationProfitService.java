@@ -9,7 +9,7 @@ import com.retailops.inventorysimulator.service.SimulationServiceModel;
 import com.retailops.inventorysimulator.simulator.dto.ProfitRequest;
 import com.retailops.inventorysimulator.simulator.dto.ProfitResponse;
 import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
-import com.retailops.inventorysimulator.util.SimulationType;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;

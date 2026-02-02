@@ -19,7 +19,7 @@ package com.retailops.inventorysimulator.simulator;
 
 
 import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
-import com.retailops.inventorysimulator.simulator.generator.MonteCarloCafeteriaGenerator;
+import com.retailops.inventorysimulator.simulator.generator.CafeteriaEOQMonteCarloGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,12 +38,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MonteCarloCafeteriaGeneratorTest {
 
     @Autowired
-    private MonteCarloCafeteriaGenerator generator;
+    private CafeteriaEOQMonteCarloGenerator generator;
 
 
     @BeforeEach
     void setup() {
-        generator = new MonteCarloCafeteriaGenerator(42L); // deterministic
+        generator = new CafeteriaEOQMonteCarloGenerator(42L); // deterministic
     }
 
     @Test
@@ -108,8 +108,8 @@ public class MonteCarloCafeteriaGeneratorTest {
 
     @Test
     void shouldGenerateCafeteriaMonteCarloSamples() {
-        MonteCarloCafeteriaGenerator generator =
-                new MonteCarloCafeteriaGenerator(42L);
+        CafeteriaEOQMonteCarloGenerator generator =
+                new CafeteriaEOQMonteCarloGenerator(42L);
 
         List<EoqMonteCarloSample> samples = generator.generateMonteCarlo();
 

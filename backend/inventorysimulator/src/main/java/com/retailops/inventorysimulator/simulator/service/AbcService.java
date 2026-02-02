@@ -11,12 +11,12 @@ import com.retailops.inventorysimulator.simulator.dto.AbcItemResultDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcResponseDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcSummaryDto;
-import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcAnalyzer;
-import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcRankedItem;
+import com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer.AbcAnalyzer;
+import com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer.AbcRankedItem;
 import com.retailops.inventorysimulator.simulator.generator.mapper.AbcResultMapper;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerStrategy;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcSummaryBuilder;
-import com.retailops.inventorysimulator.util.SimulationType;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

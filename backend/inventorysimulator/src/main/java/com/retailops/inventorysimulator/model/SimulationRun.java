@@ -1,7 +1,7 @@
 package com.retailops.inventorysimulator.model;
 
 
-import com.retailops.inventorysimulator.util.SimulationType;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -19,7 +19,7 @@ package com.retailops.inventorysimulator.simulator.generator;
 
 import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.simulator.dto.MonteCarloItemDto;
-import com.retailops.inventorysimulator.util.FloristCategoryType;
+import com.retailops.inventorysimulator.util.types.autogen.FloristCategoryType;
 import com.retailops.inventorysimulator.util.distribution.Normal;
 import org.springframework.stereotype.Service;
 
@@ -41,16 +41,16 @@ import static com.retailops.inventorysimulator.simulator.segmentation.AbcSummary
  * @author Mariela
  */
 @Service
-public class MonteCarloFloristGenerator implements  MonteCarloGenerator<MonteCarloItemDto> {
+public class FloristAbcMonteCarloGenerator implements  MonteCarloGenerator<MonteCarloItemDto> {
 
     private final Random random;
 
-    public MonteCarloFloristGenerator() {
+    public FloristAbcMonteCarloGenerator() {
         this.random = new Random();
     }
 
     // constructor for testcases
-    public MonteCarloFloristGenerator(long seed) {
+    public FloristAbcMonteCarloGenerator(long seed) {
         this.random = new Random(seed);
     }
 

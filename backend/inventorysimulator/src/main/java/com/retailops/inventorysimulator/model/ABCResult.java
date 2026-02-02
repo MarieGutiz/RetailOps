@@ -2,7 +2,7 @@
 
 package com.retailops.inventorysimulator.model;
 
-import com.retailops.inventorysimulator.util.ABCCategoryType;
+import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 import jakarta.persistence.*;
 import lombok.*;
 
