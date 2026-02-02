@@ -19,7 +19,7 @@ package com.retailops.inventorysimulator.simulator.segmentation;
 
 import com.retailops.inventorysimulator.simulator.dto.AbcItemResultDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcSummaryDto;
-import com.retailops.inventorysimulator.util.ABCCategoryType;
+import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

@@ -22,14 +22,14 @@ import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.MonteCarloItemDto;
-import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcAnalyzer;
-import com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer.AbcRankedItem;
-import com.retailops.inventorysimulator.simulator.generator.MonteCarloFloristGenerator;
+import com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer.AbcAnalyzer;
+import com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer.AbcRankedItem;
+import com.retailops.inventorysimulator.simulator.generator.FloristAbcMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.generator.mapper.MonteCarloABCMapper;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerClassic;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerMulti;
-import com.retailops.inventorysimulator.util.ABCCategoryType;
-import com.retailops.inventorysimulator.util.SimulationType;
+import com.retailops.inventorysimulator.util.types.ABCCategoryType;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,13 +49,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MonteCarloFloristAbcGeneratorTest {
 
     @Autowired
-    private MonteCarloFloristGenerator generator;
+    private FloristAbcMonteCarloGenerator generator;
     private AbcAnalyzerClassic classicAnalyzer;
     private AbcAnalyzerMulti multiAnalyzer;
 
     @BeforeEach
     void setup() {
-        generator = new MonteCarloFloristGenerator(42L); // fixed seed
+        generator = new FloristAbcMonteCarloGenerator(42L); // fixed seed
         classicAnalyzer = new AbcAnalyzerClassic();
         multiAnalyzer = new AbcAnalyzerMulti();
     }

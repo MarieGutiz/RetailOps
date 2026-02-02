@@ -15,16 +15,16 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.floristshop.abc.service;
+package com.retailops.inventorysimulator.simulator.autogenshop.abc.service;
 
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcResponseDto;
 import com.retailops.inventorysimulator.simulator.dto.MonteCarloItemDto;
-import com.retailops.inventorysimulator.simulator.generator.MonteCarloFloristGenerator;
+import com.retailops.inventorysimulator.simulator.generator.FloristAbcMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.generator.mapper.MonteCarloABCMapper;
 import com.retailops.inventorysimulator.simulator.service.AbcService;
-import com.retailops.inventorysimulator.util.SimulationType;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,15 +32,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FloristSimulationService {
+public class FloristSimulationAbcService {
 
-    private final MonteCarloFloristGenerator generator;
+    private final FloristAbcMonteCarloGenerator generatorFlorist;
     private final AbcService abcService;
 
     public AbcResponseDto runFloristAbc(SimulationType mode) {
 
         // 1. Generate florist inventory (Monte Carlo)
-        List<MonteCarloItemDto> inventory = generator.generateInventory();
+        List<MonteCarloItemDto> inventory = generatorFlorist.generateInventory();
 
         // 2. Map Monte Carlo items to ABC input items
         List<AbcItemDto> abcItems = MonteCarloABCMapper.toAbcItems(inventory);
@@ -55,5 +55,6 @@ public class FloristSimulationService {
         // 4. Run ABC simulation (no DB persistence required)
         return abcService.runAbcsim(request);
     }
+
 
 }

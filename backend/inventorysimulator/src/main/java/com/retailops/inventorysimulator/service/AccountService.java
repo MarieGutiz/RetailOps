@@ -19,7 +19,7 @@ package com.retailops.inventorysimulator.service;
 
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.security.dto.RegisterRequest;
-import com.retailops.inventorysimulator.util.AuthProviderType;
+import com.retailops.inventorysimulator.util.types.AuthProviderType;
 
 import java.util.Optional;
 

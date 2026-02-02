@@ -21,7 +21,7 @@ import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.repository.AccountRepository;
 import com.retailops.inventorysimulator.security.dto.RegisterRequest;
-import com.retailops.inventorysimulator.util.AuthProviderType;
+import com.retailops.inventorysimulator.util.types.AuthProviderType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

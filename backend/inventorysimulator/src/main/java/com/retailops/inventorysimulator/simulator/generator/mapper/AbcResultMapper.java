@@ -19,7 +19,7 @@ package com.retailops.inventorysimulator.simulator.generator.mapper;
 
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemResultDto;
-import com.retailops.inventorysimulator.util.ABCCategoryType;
+import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 
 import java.math.BigDecimal;
 

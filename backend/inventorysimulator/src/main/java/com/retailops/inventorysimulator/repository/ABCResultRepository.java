@@ -9,8 +9,7 @@
 package com.retailops.inventorysimulator.repository;
 
 import com.retailops.inventorysimulator.model.ABCResult;
-import com.retailops.inventorysimulator.util.ABCCategoryType;
-import lombok.RequiredArgsConstructor;
+import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

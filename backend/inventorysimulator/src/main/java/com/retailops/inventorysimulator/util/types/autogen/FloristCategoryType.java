@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2025
+ *  * Copyright (c) 2026
  *  * Author: Mariela Paola Gutierrez
  *  * Repository: https://github.com/mariegutiz
  *  *
@@ -15,8 +15,11 @@
  *
  */
 
-package com.retailops.inventorysimulator.util;
+package com.retailops.inventorysimulator.util.types.autogen;
 
-public enum AuthProviderType {
-    LOCAL, GOOGLE, GITHUB
+public enum FloristCategoryType {
+    FRESH_FLOWERS,
+    DECORATIVE_CONTAINERS,
+    FLORAL_SUPPLIES,
+    PLANT_CARE_PRODUCTS
 }

@@ -18,7 +18,7 @@
 package com.retailops.inventorysimulator.repository;
 
 import com.retailops.inventorysimulator.model.Account;
-import com.retailops.inventorysimulator.util.AuthProviderType;
+import com.retailops.inventorysimulator.util.types.AuthProviderType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

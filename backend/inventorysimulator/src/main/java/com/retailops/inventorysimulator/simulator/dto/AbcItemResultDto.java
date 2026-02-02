@@ -1,7 +1,7 @@
 package com.retailops.inventorysimulator.simulator.dto;
 
 import com.retailops.inventorysimulator.model.Product;
-import com.retailops.inventorysimulator.util.ABCCategoryType;
+import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

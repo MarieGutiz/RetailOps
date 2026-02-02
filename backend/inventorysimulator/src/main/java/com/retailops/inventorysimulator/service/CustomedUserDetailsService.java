@@ -21,7 +21,7 @@ import com.retailops.inventorysimulator.exception.AuthException;
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.dto.LoginRequest;
-import com.retailops.inventorysimulator.util.AuthProviderType;
+import com.retailops.inventorysimulator.util.types.AuthProviderType;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,7 +3,7 @@ package com.retailops.inventorysimulator.service;
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.repository.SimulationRepository;
 import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
-import com.retailops.inventorysimulator.util.SimulationType;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

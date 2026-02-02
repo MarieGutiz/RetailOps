@@ -27,49 +27,72 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
-/**
- *
- * Generates synthetic inventory data for a cafeteria using Monte Carlo simulation.
- *
- * Annual demand, setup cost, and holding cost parameters are stochastically sampled
- * to reflect realistic operational uncertainty in food service environments.
- * Demand is modeled using normal distributions centered around expected yearly
- * consumption, while cost parameters are drawn from bounded uniform ranges
- * to simulate supplier price variability and ordering policies.
- * <p>
- * This generator produces abstract EOQ input samples independent of any persisted
- * product entities. A dedicated adapter layer is responsible for binding simulated
- * samples to concrete products within the system.
- * <p>
- * Reproducibility of experiments is supported through optional fixed random seeds,
- * enabling deterministic test cases and comparative analysis.
- * @author Mariela
- */
 @Service
-public class MonteCarloCafeteriaGenerator implements  MonteCarloGenerator<EoqMonteCarloSample> {
-
+public class FloristEOQMonteCarloGenerator implements  MonteCarloGenerator<EoqMonteCarloSample>{
     private final Random random;
 
-    public MonteCarloCafeteriaGenerator() {
+    public FloristEOQMonteCarloGenerator() {
         this.random = new Random();
     }
 
-    public MonteCarloCafeteriaGenerator(long seed) {
+    public FloristEOQMonteCarloGenerator(long seed) {
         this.random = new Random(seed);
     }
 
     @Override
     public List<EoqMonteCarloSample> generateMonteCarlo() {
+
         List<EoqMonteCarloSample> items = new ArrayList<>();
 
-        items.add(generateItem("Coffee Beans", 3600, 300, 16, 22, 40, 60, 0.25));
-        items.add(generateItem("Milk", 18000, 1500, 0.7, 1.1, 20, 30, 0.30));
-        items.add(generateItem("Cups", 50000, 3000, 0.04, 0.08, 15, 25, 0.15));
-        items.add(generateItem("Sugar", 2000, 200, 0.6, 0.9, 25, 35, 0.20));
+        // Fresh flowers → high holding cost (perishable)
+        items.add(generateItem(
+                "Roses",
+                8000, 1800,
+                1.5, 3.0,
+                15, 30,
+                0.55
+        ));
+
+        items.add(generateItem(
+                "Tulips",
+                6000, 1400,
+                1.2, 2.5,
+                12, 25,
+                0.50
+        ));
+
+        // Decorative containers → durable goods
+        items.add(generateItem(
+                "Premium Vase",
+                400, 120,
+                18, 30,
+                40, 70,
+                0.18
+        ));
+
+        // Consumables / supplies
+        items.add(generateItem(
+                "Floral Foam",
+                12000, 2500,
+                0.4, 1.0,
+                20, 35,
+                0.30
+        ));
+
+        items.add(generateItem(
+                "Flower Food",
+                18000, 3000,
+                0.05, 0.15,
+                15, 30,
+                0.28
+        ));
 
         return items;
     }
+
+    /* =========================
+       HELPERS
+       ========================= */
 
     private EoqMonteCarloSample generateItem(
             String name,
@@ -79,11 +102,12 @@ public class MonteCarloCafeteriaGenerator implements  MonteCarloGenerator<EoqMon
             double maxUnitCost,
             double minOrderCost,
             double maxOrderCost,
-            double holdingRate) {
+            double holdingRate
+    ) {
 
         int demand = Math.max(
                 (int) Math.round(Normal.normal(meanDemand, stdDev)),
-                meanDemand / 2
+                meanDemand / 3
         );
 
         BigDecimal unitCost = randomRange(minUnitCost, maxUnitCost);

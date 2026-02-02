@@ -15,14 +15,14 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.floristshop.abc.analyzer;
+package com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer;
 
 import com.retailops.inventorysimulator.model.ABCResult;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemResultDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerStrategy;
-import com.retailops.inventorysimulator.util.ABCCategoryType;
+import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

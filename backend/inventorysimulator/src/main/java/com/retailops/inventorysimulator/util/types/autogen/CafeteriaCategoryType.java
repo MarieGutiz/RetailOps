@@ -15,11 +15,11 @@
  *
  */
 
-package com.retailops.inventorysimulator.util;
+package com.retailops.inventorysimulator.util.types.autogen;
 
-public enum FloristCategoryType {
-    FRESH_FLOWERS,
-    DECORATIVE_CONTAINERS,
-    FLORAL_SUPPLIES,
-    PLANT_CARE_PRODUCTS
+public enum CafeteriaCategoryType {
+    BEVERAGES,          // coffee beans, tea
+    DAIRY,              // milk
+    CONSUMABLES,        // cups, napkins
+    INGREDIENTS         // sugar, cocoa
 }

@@ -1,6 +1,6 @@
 package com.retailops.inventorysimulator.model;
 
-import com.retailops.inventorysimulator.util.AuthProviderType;
+import com.retailops.inventorysimulator.util.types.AuthProviderType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;

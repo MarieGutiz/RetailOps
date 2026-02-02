@@ -1,7 +1,7 @@
 package com.retailops.inventorysimulator.repository;
 
 import com.retailops.inventorysimulator.model.SimulationRun;
-import com.retailops.inventorysimulator.util.SimulationType;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
