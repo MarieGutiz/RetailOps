@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static com.retailops.inventorysimulator.simulator.EoqCalculator.calculateEOQ;
+import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.calculateEOQ;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

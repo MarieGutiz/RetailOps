@@ -33,9 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class CafeteriaSimulationController {
     public final CafeteriaSimulationAbcService cafeteriaSimulationService;
     @GetMapping("/abc")
-    public AbcResponseDto runFloristAbc(@RequestParam(defaultValue = "ABC_CLASSIC") String mode) {
+    public AbcResponseDto runFloristAbc(
+            @RequestParam(defaultValue = "ABC_CLASSIC") String mode,
+            @RequestParam String simId) {
         SimulationType simType = SimulationType.fromString(mode);
-        return cafeteriaSimulationService.runCafeteriaAbc(simType);
+        return cafeteriaSimulationService.runCafeteriaAbc(simType, simId);
     }
 
 }

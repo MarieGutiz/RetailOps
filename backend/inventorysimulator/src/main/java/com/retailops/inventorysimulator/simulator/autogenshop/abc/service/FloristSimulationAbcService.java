@@ -37,10 +37,10 @@ public class FloristSimulationAbcService {
     private final FloristAbcMonteCarloGenerator generatorFlorist;
     private final AbcService abcService;
 
-    public AbcResponseDto runFloristAbc(SimulationType mode) {
+    public AbcResponseDto runFloristAbc(SimulationType mode, String simId) {
 
         // 1. Generate florist inventory (Monte Carlo)
-        List<MonteCarloItemDto> inventory = generatorFlorist.generateInventory();
+        List<MonteCarloItemDto> inventory = generatorFlorist.generateInventory(simId, "Florist");
 
         // 2. Map Monte Carlo items to ABC input items
         List<AbcItemDto> abcItems = MonteCarloABCMapper.toAbcItems(inventory);

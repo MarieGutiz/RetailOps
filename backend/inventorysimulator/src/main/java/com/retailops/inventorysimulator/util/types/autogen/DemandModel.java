@@ -15,21 +15,9 @@
  *
  */
 
-package com.retailops.inventorysimulator.util;
+package com.retailops.inventorysimulator.util.types.autogen;
 
-import lombok.RequiredArgsConstructor;
-
-import java.util.Objects;
-
-@RequiredArgsConstructor
-public class SeedFactory {
-
-    public static long catalogSeed(
-            String simId,
-            String shopName,
-            String shopType
-    ) {
-        return Objects.hash(simId, shopName, shopType);
-    }
-
+public enum DemandModel {
+    NORMAL,
+    UNIFORM
 }

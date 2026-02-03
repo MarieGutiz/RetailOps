@@ -15,21 +15,11 @@
  *
  */
 
-package com.retailops.inventorysimulator.util;
+package com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist;
 
-import lombok.RequiredArgsConstructor;
+import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.BaseFloristMonteCarloGenerator;
 
-import java.util.Objects;
+public class AbcMonteCarloGenerator extends BaseFloristMonteCarloGenerator {
 
-@RequiredArgsConstructor
-public class SeedFactory {
-
-    public static long catalogSeed(
-            String simId,
-            String shopName,
-            String shopType
-    ) {
-        return Objects.hash(simId, shopName, shopType);
-    }
 
 }

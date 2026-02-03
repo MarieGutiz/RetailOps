@@ -37,10 +37,10 @@ public class CafeteriaSimulationAbcService {
     private final AbcService abcService;
 
 
-    public AbcResponseDto runCafeteriaAbc(SimulationType mode) {
+    public AbcResponseDto runCafeteriaAbc(SimulationType mode,String simId) {
 
         // 1. Generate cafeteria inventory (Monte Carlo)
-        List<MonteCarloItemDto> inventory = generatorCaf.generateInventory();
+        List<MonteCarloItemDto> inventory = generatorCaf.generateInventory(simId,"Cafeteria");
 
         // 2. Map Monte Carlo items to ABC input items
         List<AbcItemDto> abcItems = MonteCarloABCMapper.toAbcItems(inventory);
