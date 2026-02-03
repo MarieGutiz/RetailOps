@@ -8,6 +8,7 @@ import { mapAbcResponseToTable } from "./mapper/abcBackendMapper";
 import { ABCAnalysisFrontend } from "@/services/domain/segmentation/ABCAnalysisFrontend";
 import { useShopStore } from "@/store/shop/useShopStore";
 import { isAxiosError } from "axios";
+import { getOrCreateSimId } from "@/utils/simulation";
 
 //Flat ABC
 export function runFrontendABC(
@@ -56,10 +57,22 @@ export async function runShopABC(
 ): Promise<SimulatorABCOutput> {
    try {
     const shopPath = resolveShopPath(shopId);
+    const simId = getOrCreateSimId(shopId);
 
-    const { data } = await api.get<AbcResponseDto>(
-      `/simulations/${shopPath}/abc?mode=${simulationType.toUpperCase()}`
+    // const { data } = await api.get<AbcResponseDto>(
+    //   `/simulations/${shopPath}/abc?mode=${simulationType.toUpperCase()}`
+    // );
+        const { data } = await api.get<AbcResponseDto>(
+      `/simulations/${shopPath}/abc`,
+      {
+        params: {
+          mode: simulationType.toUpperCase(),
+          simId
+        }
+      }
     );
+
+    
     const table = mapAbcResponseToTable(data);
 
     return {
