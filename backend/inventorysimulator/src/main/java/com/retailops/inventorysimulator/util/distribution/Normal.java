@@ -21,6 +21,11 @@ public class Normal {
         return mean + stdDev * random.nextGaussian();
     }
 
+    public static double normal(double mean, double stdDev, Random random) {
+        return mean + stdDev * random.nextGaussian();
+    }
+
+
     /**
      * Generate multiple normal-distributed samples.
      */

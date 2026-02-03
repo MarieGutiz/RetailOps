@@ -16,7 +16,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
-import static com.retailops.inventorysimulator.simulator.CriticalRatioCalculator.calculateCriticalRatio;
+import static com.retailops.inventorysimulator.util.calculator.CriticalRatioCalculator.calculateCriticalRatio;
 
 /**
  * Service class for managing the News Vendor(behind the idea).

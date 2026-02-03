@@ -17,7 +17,6 @@
 
 package com.retailops.inventorysimulator.simulator.autogenshop.eoq.service;
 
-import com.retailops.inventorysimulator.simulator.dto.EoqRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
 import com.retailops.inventorysimulator.simulator.generator.CafeteriaEOQMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
@@ -27,7 +26,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.retailops.inventorysimulator.simulator.EoqCalculator.calculateEOQ;
+import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.calculateEOQ;
 
 @Service
 @RequiredArgsConstructor

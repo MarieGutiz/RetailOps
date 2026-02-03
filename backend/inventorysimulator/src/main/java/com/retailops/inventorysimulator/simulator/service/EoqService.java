@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static com.retailops.inventorysimulator.simulator.EoqCalculator.calculateEOQ;
+import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.calculateEOQ;
 
 @Service
 @RequiredArgsConstructor

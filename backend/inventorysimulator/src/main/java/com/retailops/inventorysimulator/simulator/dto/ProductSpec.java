@@ -15,21 +15,13 @@
  *
  */
 
-package com.retailops.inventorysimulator.util;
+package com.retailops.inventorysimulator.simulator.dto;
 
-import lombok.RequiredArgsConstructor;
+public record ProductSpec(
+        String name,
+        String category,
+        double minUnitCost,
+        double maxUnitCost,
+        double markup
+) {}
 
-import java.util.Objects;
-
-@RequiredArgsConstructor
-public class SeedFactory {
-
-    public static long catalogSeed(
-            String simId,
-            String shopName,
-            String shopType
-    ) {
-        return Objects.hash(simId, shopName, shopType);
-    }
-
-}

@@ -35,9 +35,11 @@ public class FloristSimulationController {
     private final FloristSimulationAbcService floristSimulationService;
 
     @GetMapping("/abc")
-    public AbcResponseDto runFloristAbc(@RequestParam(defaultValue = "ABC_CLASSIC") String mode) {
+    public AbcResponseDto runFloristAbc(
+            @RequestParam(defaultValue = "ABC_CLASSIC") String mode,
+            @RequestParam String simId) {
         SimulationType simType = SimulationType.fromString(mode);
-        return floristSimulationService.runFloristAbc(simType);
+        return floristSimulationService.runFloristAbc(simType, simId);
     }
 
 
