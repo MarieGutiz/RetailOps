@@ -17,6 +17,8 @@
 
 package com.retailops.inventorysimulator.simulator.autogenshop.abc.service;
 
+import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.MonteCarloFactory;
+import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist.FloristAbcMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcResponseDto;
@@ -33,26 +35,31 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CafeteriaSimulationAbcService {
-    private final CafeteriaAbcMonteCarloGenerator generatorCaf;
+    private final MonteCarloFactory factory;
     private final AbcService abcService;
 
 
     public AbcResponseDto runCafeteriaAbc(SimulationType mode,String simId) {
 
-        // 1. Generate cafeteria inventory (Monte Carlo)
-        List<MonteCarloItemDto> inventory = generatorCaf.generateInventory(simId,"Cafeteria");
+        // 1. Create generator for THIS request
+        FloristAbcMonteCarloGenerator generator =
+                factory.abc(simId, "Cafeteria");
 
-        // 2. Map Monte Carlo items to ABC input items
+        // 2. Generate florist inventory (Monte Carlo)
+//        List<MonteCarloItemDto> inventory = generatorFlorist.generateInventory(simId, "Florist");
+        List<MonteCarloItemDto> inventory = generator.generateInventory();
+
+        // 3. Map Monte Carlo items to ABC input items
         List<AbcItemDto> abcItems = MonteCarloABCMapper.toAbcItems(inventory);
 
-        // 3. Build ABC request
+        // 4. Build ABC request
         AbcRequestDto request = new AbcRequestDto(
                 abcItems,
                 "cafeteria-demo",
                 mode
         );
 
-        // 4. Run ABC simulation (no DB persistence required)
+        // 5. Run ABC simulation (no DB persistence required)
         return abcService.runAbcsim(request);
     }
 

@@ -17,53 +17,95 @@
 
 package com.retailops.inventorysimulator.util.types.autogen;
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
+
+
+@RequiredArgsConstructor
+@Getter
 public enum CafeteriaProductSpec {
+
+    /* =========================
+       A ITEMS – CORE REVENUE
+       ========================= */
 
     COFFEE_BEANS(
             "Coffee Beans",
             CafeteriaCategoryType.BEVERAGES,
-            16, 22,
+            DemandModel.NORMAL,
+            900, 180,
+            16.0, 22.0,
             1.4
     ),
 
     MILK(
             "Milk",
             CafeteriaCategoryType.DAIRY,
+            DemandModel.NORMAL,
+            1200, 250,
             0.7, 1.1,
             1.3
     ),
 
-    CUPS(
-            "Cups",
-            CafeteriaCategoryType.CONSUMABLES,
-            0.04, 0.08,
-            1.2
-    ),
+    /* =========================
+       B ITEMS – SUPPORTING
+       ========================= */
 
     SUGAR(
             "Sugar",
             CafeteriaCategoryType.INGREDIENTS,
+            DemandModel.UNIFORM,
+            2000, 3500,
             0.6, 0.9,
+            1.2
+    ),
+
+    /* =========================
+       C ITEMS – LOW VALUE
+       ========================= */
+
+    CUPS(
+            "Cups",
+            CafeteriaCategoryType.CONSUMABLES,
+            DemandModel.UNIFORM,
+            6000, 10000,
+            0.04, 0.08,
             1.2
     );
 
-    public final String name;
-    public final CafeteriaCategoryType category;
-    public final double minUnitCost;
-    public final double maxUnitCost;
-    public final double markup;
+    /* =========================
+       FIELDS
+       ========================= */
 
-    CafeteriaProductSpec(
-            String name,
-            CafeteriaCategoryType category,
-            double minUnitCost,
-            double maxUnitCost,
-            double markup
-    ) {
-        this.name = name;
-        this.category = category;
-        this.minUnitCost = minUnitCost;
-        this.maxUnitCost = maxUnitCost;
-        this.markup = markup;
+    private final String name;
+    private final CafeteriaCategoryType category;
+    private final DemandModel demandModel;
+
+    private final int demandMeanOrMin;
+    private final int demandStdOrMax;
+
+    private final double minCost;
+    private final double maxCost;
+    private final double markup;
+
+    /* =========================
+       FACTORY
+       ========================= */
+
+    public static CafeteriaProductSpec fromName(
+            @NotBlank(message = "Product name is required") String name) {
+
+        return Arrays.stream(values())
+                .filter(spec -> spec.name.equalsIgnoreCase(name.trim()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Unknown CafeteriaProductSpec name: " + name
+                        )
+                );
     }
+
 }

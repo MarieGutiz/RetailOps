@@ -1,0 +1,69 @@
+/*
+ *
+ *  * Copyright (c) 2026
+ *  * Author: Mariela Paola Gutierrez
+ *  * Repository: https://github.com/mariegutiz
+ *  *
+ *  * Licensed under the MIT License. You may obtain a copy of the License at:
+ *  *     https://opensource.org/licenses/MIT
+ *  *
+ *  *
+ *  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ *
+ *
+ */
+
+package com.retailops.inventorysimulator.util.types.autogen;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.Arrays;
+
+@Getter
+@AllArgsConstructor
+public enum FloristEoqPolicy {
+
+    ORCHIDS(
+            FloristProductSpec.ORCHIDS,
+            15.0, 30.0,     // setup cost range
+            0.55            // holding rate
+    ),
+
+    ROSES(
+            FloristProductSpec.ROSES,
+            15.0, 30.0,
+            0.55
+    ),
+
+    PREMIUM_VASE(
+            FloristProductSpec.PREMIUM_VASE,
+            40.0, 70.0,
+            0.18
+    ),
+
+    FLORAL_FOAM(
+            FloristProductSpec.FLORAL_FOAM,
+            20.0, 35.0,
+            0.30
+    );
+
+    private final FloristProductSpec product;
+    private final double minOrderCost;
+    private final double maxOrderCost;
+    private final double holdingRate;
+
+    public static FloristEoqPolicy forProduct(FloristProductSpec spec) {
+        return Arrays.stream(values())
+                .filter(p -> p.product == spec)
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalStateException(
+                                "No EOQ policy for " + spec.name()
+                        )
+                );
+    }
+
+}

@@ -15,10 +15,9 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.autogenshop.productcatalog;
+package com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria;
 
 import com.retailops.inventorysimulator.model.Product;
-import com.retailops.inventorysimulator.util.SeedFactory;
 import com.retailops.inventorysimulator.util.types.autogen.CafeteriaProductSpec;
 import org.springframework.stereotype.Service;
 
@@ -29,56 +28,59 @@ import java.util.List;
 import java.util.Random;
 
 import static com.retailops.inventorysimulator.simulator.segmentation.AbcSummaryBuilder.buildSku;
+import static com.retailops.inventorysimulator.simulator.segmentation.AbcSummaryBuilder.randomCost;
+
+
+/**
+ * Generates the product catalog for a Cafeteria shop.
+ * <p>
+ * Each product's cost is randomly determined within its defined range,
+ * and the unit price is calculated using the specified markup.
+ */
 
 @Service
 public class CafeteriaProductCatalogGenerator {
 
-    public List<Product> generate(String simId, String shopName) {
-        long seed = SeedFactory.catalogSeed(simId, shopName, "CAFETERIA");
-        Random random = new Random(seed);
-
+    /**
+     * Generates the full cafeteria product catalog.
+     *
+     * @param random Random instance for deterministic or stochastic generation
+     * @return list of products
+     */
+    public List<Product> generateCatalog(Random random) {
         List<Product> products = new ArrayList<>();
-
         for (CafeteriaProductSpec spec : CafeteriaProductSpec.values()) {
             products.add(buildProduct(spec, random));
         }
-
         return products;
     }
 
-    private Product buildProduct(
-            CafeteriaProductSpec spec,
-            Random random
-    ) {
+    /**
+     * Builds a single product instance from a CafeteriaProductSpec.
+     *
+     * @param spec   product specification
+     * @param random Random instance
+     * @return generated Product
+     */
+    private Product buildProduct(CafeteriaProductSpec spec, Random random) {
         BigDecimal unitCost = randomCost(
-                spec.minUnitCost,
-                spec.maxUnitCost,
+                spec.getMinCost(),
+                spec.getMaxCost(),
                 random
         );
 
         BigDecimal unitPrice = unitCost
-                .multiply(BigDecimal.valueOf(spec.markup))
+                .multiply(BigDecimal.valueOf(spec.getMarkup()))
                 .setScale(2, RoundingMode.HALF_UP);
 
         Product p = new Product();
-        p.setName(spec.name);
-        p.setSku(buildSku("CAF", spec.name));
-        p.setCategory(spec.category.name());
+        p.setName(spec.getName());
+        p.setSku(buildSku("CAF", spec.getName()));
+        p.setCategory(spec.getCategory().name());
         p.setUnitCost(unitCost);
         p.setUnitPrice(unitPrice);
-        p.setDescription(spec.category + " cafeteria item");
+        p.setDescription(spec.getCategory() + " cafeteria item");
 
         return p;
     }
-
-    private BigDecimal randomCost(
-            double min,
-            double max,
-            Random random
-    ) {
-        double value = min + random.nextDouble() * (max - min);
-        return BigDecimal.valueOf(value)
-                .setScale(2, RoundingMode.HALF_UP);
-    }
-
 }
