@@ -17,8 +17,11 @@
 
 package com.retailops.inventorysimulator.util.types.autogen;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
@@ -127,4 +130,18 @@ public enum FloristProductSpec {
     private final double minCost;
     private final double maxCost;
     private final double markup;
+
+    public static FloristProductSpec fromName(
+            @NotBlank(message = "Product name is required") String name) {
+
+        return Arrays.stream(values())
+                .filter(spec -> spec.name.equalsIgnoreCase(name.trim()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Unknown FloristProductSpec name: " + name
+                        )
+                );
+
+    }
 }

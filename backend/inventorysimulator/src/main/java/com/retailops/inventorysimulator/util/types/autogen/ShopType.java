@@ -15,11 +15,10 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist;
+package com.retailops.inventorysimulator.util.types.autogen;
 
-import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.BaseFloristMonteCarloGenerator;
-
-public class AbcMonteCarloGenerator extends BaseFloristMonteCarloGenerator {
-
-
+public enum ShopType {
+    FLORIST,
+    CAFETERIA
 }
+

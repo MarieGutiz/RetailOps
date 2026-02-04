@@ -24,6 +24,7 @@ import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Random;
 
 public class AbcSummaryBuilder {
 
@@ -77,6 +78,14 @@ public class AbcSummaryBuilder {
         return prefix + "-" + name
                 .toUpperCase()
                 .replaceAll("[^A-Z0-9]", "");
+    }
+
+    /**
+     * Generates a random cost between min and max, rounded to 2 decimals.
+     */
+    public static BigDecimal randomCost(double min, double max, Random random) {
+        double value = min + random.nextDouble() * (max - min);
+        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
     }
 
 }

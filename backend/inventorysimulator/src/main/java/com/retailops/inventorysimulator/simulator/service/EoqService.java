@@ -7,11 +7,13 @@ import com.retailops.inventorysimulator.service.ProductService;
 import com.retailops.inventorysimulator.service.SimulationServiceModel;
 import com.retailops.inventorysimulator.simulator.dto.EoqRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
+import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
 import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.calculateEOQ;
@@ -19,39 +21,90 @@ import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.cal
 @Service
 @RequiredArgsConstructor
 public class EoqService {
-    final SimulationServiceModel simulationServiceModel;
-    final ProductService productService;
+    private final SimulationServiceModel simulationServiceModel;
+    private final ProductService productService;
 
-    public EoqResponseDto runEoq(EoqRequestDto eoqRequestDto) {
-        Product product = productService.getProduct(eoqRequestDto.productId())
-                .orElseThrow(() -> new ProductNotFoundException(eoqRequestDto.productId()));
+    // =========================
+    // Public API (requests)
+    // =========================
 
-        //BigDecimal eoq = Math.sqrt((2 * eoqRequestDto.demand().multiply(eoqRequestDto.cost()) ) / eoqRequestDto.holdingCost());
-        BigDecimal eoq = calculateEOQ(eoqRequestDto.demand(),
-                                    eoqRequestDto.cost(),
-                                    eoqRequestDto.holdingCost());
+    public EoqResponseDto runEoq(EoqRequestDto request) {
 
-        if(eoqRequestDto.saveToHistory()){
-            SimulationRun run = new SimulationRun();
-            run.setSimulationType(SimulationType.EOQ);
-            run.setProductName(product.getName());
-            run.setDemand(eoqRequestDto.demand());
-            run.setSetupCost(eoqRequestDto.cost());
-            run.setHoldingCost(eoqRequestDto.holdingCost());
-            run.setEoq(eoq);
-            run.setUsername(eoqRequestDto.username());
-            run.setRunAt(LocalDateTime.now());
+        Product product = productService.getProduct(request.productId())
+                .orElseThrow(() -> new ProductNotFoundException(request.productId()));
 
-            simulationServiceModel.save(run);
-        }
-
-        return new EoqResponseDto(
+        EoqResponseDto response = calculateCommon(
                 product.getName(),
-                eoqRequestDto.demand(),
-                eoqRequestDto.cost(),
-                eoqRequestDto.holdingCost(),
-                eoq
+                request.demand(),
+                request.cost(),
+                request.holdingCost()
         );
 
+        if (request.saveToHistory()) {
+            saveToHistory(
+                    product.getName(),
+                    request,
+                    response.eoq()
+            );
+        }
+
+        return response;
     }
+
+
+    public EoqResponseDto calculate(EoqMonteCarloSample sample) {
+
+        return calculateCommon(
+                sample.productLabel(),
+                sample.demand(),
+                sample.setupCost(),
+                sample.holdingCost()
+        );
+    }
+
+    // =========================
+    // Common calculation core
+    // =========================
+
+    private EoqResponseDto calculateCommon(
+            String productName,
+            BigInteger demand,
+            BigDecimal setupCost,
+            BigDecimal holdingCost
+    ) {
+
+        BigDecimal eoq = calculateEOQ(demand, setupCost, holdingCost);
+
+        return new EoqResponseDto(
+                productName,
+                demand,
+                setupCost,
+                holdingCost,
+                eoq
+        );
+    }
+
+    // =========================
+    // History persistence
+    // =========================
+
+    private void saveToHistory(
+            String productName,
+            EoqRequestDto request,
+            BigDecimal eoq
+    ) {
+
+        SimulationRun run = new SimulationRun();
+        run.setSimulationType(SimulationType.EOQ);
+        run.setProductName(productName);
+        run.setDemand(request.demand());
+        run.setSetupCost(request.cost());
+        run.setHoldingCost(request.holdingCost());
+        run.setEoq(eoq);
+        run.setUsername(request.username());
+        run.setRunAt(LocalDateTime.now());
+
+        simulationServiceModel.save(run);
+    }
+
 }

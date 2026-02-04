@@ -200,98 +200,98 @@ public class CafeteriaAbcMonteCarloGenerator {
 //        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
 //    }
 
-    public List<MonteCarloItemDto> generateInventory(String simId, String shopName) {
-        // Seed per catalog so unitCost is deterministic per product
-        long seed = SeedFactory.catalogSeed(simId, shopName, "CAFETERIA_ABC");
-        Random seededRandom = new Random(seed);
-
-        List<MonteCarloItemDto> items = new ArrayList<>();
-
-        // Normal-demand items (A/B)
-        items.add(normalItem(
-                CafeteriaProductSpec.COFFEE_BEANS,
-                3600, 300,
-                seededRandom
-        ));
-
-        items.add(normalItem(
-                CafeteriaProductSpec.MILK,
-                18000, 1500,
-                seededRandom
-        ));
-
-        // Uniform-demand items (C)
-        items.add(uniformItem(
-                CafeteriaProductSpec.CUPS,
-                40000, 60000,
-                seededRandom
-        ));
-
-        items.add(uniformItem(
-                CafeteriaProductSpec.SUGAR,
-                1800, 2400,
-                seededRandom
-        ));
-
-        return items;
-    }
-
-    /* =========================
-       HELPERS
-       ========================= */
-
-    private MonteCarloItemDto normalItem(
-            CafeteriaProductSpec spec,
-            int mean,
-            int stdDev,
-            Random rand
-    ) {
-        int demand = Math.max((int) Math.round(Normal.normal(mean, stdDev)), mean / 2);
-        return buildItem(spec, demand, rand);
-    }
-
-    private MonteCarloItemDto uniformItem(
-            CafeteriaProductSpec spec,
-            int minDemand,
-            int maxDemand,
-            Random rand
-    ) {
-        int demand = rand.nextInt(maxDemand - minDemand + 1) + minDemand;
-        return buildItem(spec, demand, rand);
-    }
-
-    private MonteCarloItemDto buildItem(
-            CafeteriaProductSpec spec,
-            int demand,
-            Random rand
-    ) {
-        BigDecimal unitCost = randomCost(spec.minUnitCost, spec.maxUnitCost, rand);
-        BigDecimal unitPrice = unitCost
-                .multiply(BigDecimal.valueOf(spec.markup))
-                .setScale(2, RoundingMode.HALF_UP);
-
-        BigDecimal salesValue = unitPrice.multiply(BigDecimal.valueOf(demand));
-
-        Product product = new Product();
-        product.setName(spec.name);
-        product.setSku(buildSku("CAF", spec.name));
-        product.setCategory(spec.category.name());
-        product.setUnitCost(unitCost);
-        product.setUnitPrice(unitPrice);
-        product.setDescription(spec.category + " cafeteria item");
-
-        MonteCarloItemDto dto = new MonteCarloItemDto();
-        dto.setProduct(product);
-        dto.setDemandFrequency(BigInteger.valueOf(demand));
-        dto.setSalesValue(salesValue);
-
-        return dto;
-    }
-
-    private BigDecimal randomCost(double min, double max, Random rand) {
-        double value = min + rand.nextDouble() * (max - min);
-        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
-    }
+//    public List<MonteCarloItemDto> generateInventory(String simId, String shopName) {
+//        // Seed per catalog so unitCost is deterministic per product
+//        long seed = SeedFactory.catalogSeed(simId, shopName, "CAFETERIA_ABC");
+//        Random seededRandom = new Random(seed);
+//
+//        List<MonteCarloItemDto> items = new ArrayList<>();
+//
+//        // Normal-demand items (A/B)
+//        items.add(normalItem(
+//                CafeteriaProductSpec.COFFEE_BEANS,
+//                3600, 300,
+//                seededRandom
+//        ));
+//
+//        items.add(normalItem(
+//                CafeteriaProductSpec.MILK,
+//                18000, 1500,
+//                seededRandom
+//        ));
+//
+//        // Uniform-demand items (C)
+//        items.add(uniformItem(
+//                CafeteriaProductSpec.CUPS,
+//                40000, 60000,
+//                seededRandom
+//        ));
+//
+//        items.add(uniformItem(
+//                CafeteriaProductSpec.SUGAR,
+//                1800, 2400,
+//                seededRandom
+//        ));
+//
+//        return items;
+//    }
+//
+//    /* =========================
+//       HELPERS
+//       ========================= */
+//
+//    private MonteCarloItemDto normalItem(
+//            CafeteriaProductSpec spec,
+//            int mean,
+//            int stdDev,
+//            Random rand
+//    ) {
+//        int demand = Math.max((int) Math.round(Normal.normal(mean, stdDev)), mean / 2);
+//        return buildItem(spec, demand, rand);
+//    }
+//
+//    private MonteCarloItemDto uniformItem(
+//            CafeteriaProductSpec spec,
+//            int minDemand,
+//            int maxDemand,
+//            Random rand
+//    ) {
+//        int demand = rand.nextInt(maxDemand - minDemand + 1) + minDemand;
+//        return buildItem(spec, demand, rand);
+//    }
+//
+//    private MonteCarloItemDto buildItem(
+//            CafeteriaProductSpec spec,
+//            int demand,
+//            Random rand
+//    ) {
+//        BigDecimal unitCost = randomCost(spec.minUnitCost, spec.maxUnitCost, rand);
+//        BigDecimal unitPrice = unitCost
+//                .multiply(BigDecimal.valueOf(spec.markup))
+//                .setScale(2, RoundingMode.HALF_UP);
+//
+//        BigDecimal salesValue = unitPrice.multiply(BigDecimal.valueOf(demand));
+//
+//        Product product = new Product();
+//        product.setName(spec.name);
+//        product.setSku(buildSku("CAF", spec.name));
+//        product.setCategory(spec.category.name());
+//        product.setUnitCost(unitCost);
+//        product.setUnitPrice(unitPrice);
+//        product.setDescription(spec.category + " cafeteria item");
+//
+//        MonteCarloItemDto dto = new MonteCarloItemDto();
+//        dto.setProduct(product);
+//        dto.setDemandFrequency(BigInteger.valueOf(demand));
+//        dto.setSalesValue(salesValue);
+//
+//        return dto;
+//    }
+//
+//    private BigDecimal randomCost(double min, double max, Random rand) {
+//        double value = min + rand.nextDouble() * (max - min);
+//        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
+//    }
 
 
 
