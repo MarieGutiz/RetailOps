@@ -18,7 +18,7 @@
 package com.retailops.inventorysimulator.simulator.autogenshop.abc.service;
 
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.AbstractShopMonteCarloGenerator;
-import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.MonteCarloFactory;
+import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.AbcResponseDto;
@@ -31,9 +31,19 @@ import java.util.List;
 
 public abstract class AbstractShopSimulationAbcService<TGenerator extends AbstractShopMonteCarloGenerator<?>> {
 
-    protected MonteCarloFactory factory;  // injected
+    protected MonteCarloFactory factory;  // injected here!
 
-    protected AbcService abcService;      // injected
+    protected AbcService abcService;      // injected here!
+
+
+    protected AbstractShopSimulationAbcService(
+            MonteCarloFactory factory,
+            AbcService abcService
+    ) {
+        this.factory = factory;
+        this.abcService = abcService;
+    }
+
 
     /**
      * Run the ABC simulation for a specific shop.

@@ -15,7 +15,7 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.autogenshop.productcatalog;
+package com.retailops.inventorysimulator.simulator.autogenshop;
 
 import com.retailops.inventorysimulator.util.SeedFactory;
 import com.retailops.inventorysimulator.util.types.autogen.ShopType;

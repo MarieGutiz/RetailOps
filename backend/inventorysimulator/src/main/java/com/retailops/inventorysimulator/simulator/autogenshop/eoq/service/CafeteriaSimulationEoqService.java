@@ -17,35 +17,25 @@
 
 package com.retailops.inventorysimulator.simulator.autogenshop.eoq.service;
 
-import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
-import com.retailops.inventorysimulator.simulator.generator.CafeteriaEOQMonteCarloGenerator;
-import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
+import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
+import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaEOQMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.service.EoqService;
-import lombok.RequiredArgsConstructor;
+import com.retailops.inventorysimulator.util.types.autogen.ShopType;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.calculateEOQ;
-import static java.util.stream.Collectors.toList;
 
 @Service
-@RequiredArgsConstructor
-public class CafeteriaSimulationEoqService {
-  private final CafeteriaEOQMonteCarloGenerator cafeteriaEOQMonteCarloGenerator;
-  private final EoqService  eoqService;
+public class CafeteriaSimulationEoqService extends AbstractShopSimulationEOQService<CafeteriaEOQMonteCarloGenerator> {
 
+  public CafeteriaSimulationEoqService(
+          MonteCarloFactory monteCarloFactory,
+          EoqService eoqService) {
+       super(monteCarloFactory, eoqService);
 
-    public List<EoqResponseDto> runCafeteriaEOQ() {
-        //Obtain inventory
-       return cafeteriaEOQMonteCarloGenerator
-                .generateMonteCarlo()
-                .stream()
-                .map(eoqService::calculate)
-                .toList();
-    }
+  }
 
-
-
-    }
+  @Override
+  protected CafeteriaEOQMonteCarloGenerator createGenerator(String simId) {
+    return factory.eoqCafeteria(simId, ShopType.CAFETERIA.toString());
+  }
+}

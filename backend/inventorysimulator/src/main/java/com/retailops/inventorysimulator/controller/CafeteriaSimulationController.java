@@ -17,8 +17,10 @@
 
 package com.retailops.inventorysimulator.controller;
 
+import com.retailops.inventorysimulator.simulator.autogenshop.eoq.service.CafeteriaSimulationEoqService;
 import com.retailops.inventorysimulator.simulator.dto.AbcResponseDto;
 import com.retailops.inventorysimulator.simulator.autogenshop.abc.service.CafeteriaSimulationAbcService;
+import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
 import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,18 +28,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/simulations/cafeteria")
 @RequiredArgsConstructor
 
 public class CafeteriaSimulationController {
     public final CafeteriaSimulationAbcService cafeteriaSimulationService;
+    public final CafeteriaSimulationEoqService  cafeteriaSimulationEoqService;
+
     @GetMapping("/abc")
-    public AbcResponseDto runFloristAbc(
+    public AbcResponseDto runCafeteriaAbc(
             @RequestParam(defaultValue = "ABC_CLASSIC") String mode,
             @RequestParam String simId) {
-        SimulationType simType = SimulationType.fromString(mode);
-        return cafeteriaSimulationService.runCafeteriaAbc(simType, simId);
+        try {
+            SimulationType simType = SimulationType.fromString(mode);
+            return cafeteriaSimulationService.runAbc(simType, simId);
+        }catch (IllegalArgumentException ex) {
+            // This will be caught by GlobalExceptionHandler.handleGeneral
+            throw new RuntimeException("Invalid simulation mode: " + mode, ex);
+        }
+    }
+
+    @GetMapping("/eoq")
+    public List<EoqResponseDto> runCafeteriaEoq(@RequestParam String simId) throws
+            Exception {
+        return  cafeteriaSimulationEoqService.runEOQ(simId);
+
     }
 
 }

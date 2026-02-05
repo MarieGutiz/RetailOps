@@ -18,30 +18,23 @@
 package com.retailops.inventorysimulator.simulator.autogenshop.eoq.service;
 
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist.FloristEOQMonteCarloGenerator;
-import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.MonteCarloFactory;
-import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
+import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
 import com.retailops.inventorysimulator.simulator.service.EoqService;
-import lombok.RequiredArgsConstructor;
+import com.retailops.inventorysimulator.util.types.autogen.ShopType;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-@RequiredArgsConstructor
-public class FloristSimulationEoqService {
+public class FloristSimulationEOQService extends AbstractShopSimulationEOQService<FloristEOQMonteCarloGenerator> {
 
-    private final MonteCarloFactory factory;
-    private final EoqService  eoqService;
+    public FloristSimulationEOQService(
+            MonteCarloFactory monteCarloFactory,
+            EoqService eoqService) {
+        super(monteCarloFactory, eoqService);
 
-    public List<EoqResponseDto> runFloristEOQ(String simId) {
-        // 1. Create generator for THIS request
-        FloristEOQMonteCarloGenerator generator =
-                factory.eoq(simId, "Florist");
+    }
 
-         return  generator
-                 .generate()
-                 .stream()
-                 .map(eoqService :: calculate)
-                 .toList();
+    @Override
+    protected FloristEOQMonteCarloGenerator createGenerator(String simId) {
+        return factory.eoqFlorist(simId, ShopType.FLORIST.toString());
     }
 }
