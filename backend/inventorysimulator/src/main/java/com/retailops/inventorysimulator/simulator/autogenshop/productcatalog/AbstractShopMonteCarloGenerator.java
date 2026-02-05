@@ -19,6 +19,7 @@ package com.retailops.inventorysimulator.simulator.autogenshop.productcatalog;
 
 
 import com.retailops.inventorysimulator.model.Product;
+import com.retailops.inventorysimulator.simulator.autogenshop.BaseSeedMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.dto.MonteCarloItemDto;
 import com.retailops.inventorysimulator.util.distribution.Normal;
 import com.retailops.inventorysimulator.util.types.autogen.DemandModel;

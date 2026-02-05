@@ -18,10 +18,12 @@
 package com.retailops.inventorysimulator.util.calculator;
 
 import com.retailops.inventorysimulator.model.Product;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+@Component
 public class CriticalRatioCalculator {
 
     public static BigDecimal calculateCriticalRatio(Product product) {

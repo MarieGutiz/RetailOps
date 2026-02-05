@@ -15,9 +15,10 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.autogenshop.productcatalog;
+package com.retailops.inventorysimulator.simulator.autogenshop;
 
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaAbcMonteCarloGenerator;
+import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaEOQMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaProductCatalogGenerator;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist.FloristAbcMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist.FloristEOQMonteCarloGenerator;
@@ -41,7 +42,7 @@ public class MonteCarloFactory {
     private final CafeteriaProductCatalogGenerator cafeteriaProductCatalogGenerator;
 
     //florist
-    public FloristAbcMonteCarloGenerator abc(
+    public FloristAbcMonteCarloGenerator abcFlorist(
             String simId,
             String shopName
     ) {
@@ -52,7 +53,7 @@ public class MonteCarloFactory {
         );
     }
 
-    public FloristEOQMonteCarloGenerator eoq(
+    public FloristEOQMonteCarloGenerator eoqFlorist(
             String simId,
             String shopName
     ) {
@@ -85,23 +86,23 @@ public class MonteCarloFactory {
                 cafeteriaProductCatalogGenerator
         );
     }
-//
-//    /**
-//     * Create an EOQ Monte Carlo generator for a cafeteria shop.
-//     *
-//     * @param simId    simulation identifier
-//     * @param shopName shop name
-//     * @return Cafeteria EOQ Monte Carlo generator
-//     */
-//    public CafeteriaEOQMonteCarloGenerator eoqCafeteria(
-//            String simId,
-//            String shopName
-//    ) {
-//        return new CafeteriaEOQMonteCarloGenerator(
-//                simId,
-//                shopName,
-//                cafeteriaProductCatalogGenerator
-//        );
-//    }
+
+    /**
+     * Create an EOQ Monte Carlo generator for a cafeteria shop.
+     *
+     * @param simId    simulation identifier
+     * @param shopName shop name
+     * @return Cafeteria EOQ Monte Carlo generator
+     */
+    public CafeteriaEOQMonteCarloGenerator eoqCafeteria(
+            String simId,
+            String shopName
+    ) {
+        return new CafeteriaEOQMonteCarloGenerator(
+                simId,
+                shopName,
+                cafeteriaProductCatalogGenerator
+        );
+    }
 
 }

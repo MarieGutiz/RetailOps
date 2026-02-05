@@ -31,7 +31,6 @@ public class FloristAbcMonteCarloGenerator extends AbstractShopMonteCarloGenerat
 
     private final FloristProductCatalogGenerator catalogGenerator;
 
-
     /**
      * Constructor.
      *

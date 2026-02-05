@@ -18,106 +18,120 @@
 package com.retailops.inventorysimulator.simulator;
 
 
+import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaEOQMonteCarloGenerator;
+import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaProductCatalogGenerator;
 import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
-import com.retailops.inventorysimulator.simulator.generator.CafeteriaEOQMonteCarloGenerator;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
+import com.retailops.inventorysimulator.util.types.autogen.CafeteriaProductSpec;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
+import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.calculateEOQ;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 @SpringBootTest
-public class MonteCarloCafeteriaGeneratorTest {
+class CafeteriaEOQMonteCarloGeneratorTest {
+
+    private static final String SIM_ID = "SIM-CAFETERIA-EOQ-001";
+    private static final String SHOP_NAME = "Cafeteria";
 
     @Autowired
-    private CafeteriaEOQMonteCarloGenerator generator;
-  /// Fix this part
+    private CafeteriaProductCatalogGenerator catalog;
 
-    @BeforeEach
-    void setup() {
-        generator = new CafeteriaEOQMonteCarloGenerator(42L); // deterministic
+    @Test
+    void shouldBeDeterministicAcrossGeneratorInstances() {
+
+        CafeteriaEOQMonteCarloGenerator gen1 =
+                new CafeteriaEOQMonteCarloGenerator(
+                        SIM_ID,
+                        SHOP_NAME,
+                        catalog
+                );
+
+        CafeteriaEOQMonteCarloGenerator gen2 =
+                new CafeteriaEOQMonteCarloGenerator(
+                        SIM_ID,
+                        SHOP_NAME,
+                        catalog
+                );
+
+        List<EoqMonteCarloSample> firstRun = gen1.generate();
+        List<EoqMonteCarloSample> secondRun = gen2.generate();
+
+        assertThat(firstRun)
+                .usingRecursiveComparison()
+                .isEqualTo(secondRun);
     }
 
     @Test
     void cafeteriaGenerator_shouldProduceStableInventory() {
-        List<EoqMonteCarloSample> samples = generator.generateMonteCarlo();
 
-        assertThat(samples).hasSize(4);
+        CafeteriaEOQMonteCarloGenerator generator =
+                new CafeteriaEOQMonteCarloGenerator(
+                        SIM_ID,
+                        SHOP_NAME,
+                        catalog
+                );
+
+        List<EoqMonteCarloSample> samples = generator.generate();
+
+        assertThat(samples)
+                .hasSize(CafeteriaProductSpec.values().length);
 
         samples.forEach(sample -> {
             assertThat(sample.productLabel()).isNotBlank();
-
-            assertThat(sample.demand())
-                    .isNotNull()
-                    .isGreaterThan(BigInteger.ZERO);
-
-            assertThat(sample.setupCost())
-                    .isNotNull()
-                    .isGreaterThan(BigDecimal.ZERO);
-
-            assertThat(sample.holdingCost())
-                    .isNotNull()
-                    .isGreaterThan(BigDecimal.ZERO);
+            assertThat(sample.demand()).isPositive();
+            assertThat(sample.setupCost()).isPositive();
+            assertThat(sample.holdingCost()).isPositive();
         });
     }
 
     @Test
     void cafeteriaGenerator_shouldProduceReasonableEOQValues() {
-        List<EoqMonteCarloSample> samples = generator.generateMonteCarlo();
 
-        for (EoqMonteCarloSample sample : samples) {
+        CafeteriaEOQMonteCarloGenerator generator =
+                new CafeteriaEOQMonteCarloGenerator(
+                        SIM_ID,
+                        SHOP_NAME,
+                        catalog
+                );
+
+        List<EoqMonteCarloSample> samples = generator.generate();
+
+        samples.forEach(sample -> {
             BigDecimal eoq = calculateEOQ(
                     sample.demand(),
                     sample.setupCost(),
                     sample.holdingCost()
             );
 
-            assertThat(eoq)
-                    .isNotNull()
-                    .isGreaterThan(BigDecimal.ZERO);
-        }
-    }
-
-    /**
-     * EOQ = sqrt((2 * D * S) / H)
-     */
-    private BigDecimal calculateEOQ(
-            BigInteger demand,
-            BigDecimal setupCost,
-            BigDecimal holdingCost) {
-
-        BigDecimal numerator = setupCost
-                .multiply(BigDecimal.valueOf(2))
-                .multiply(new BigDecimal(demand));
-
-        BigDecimal ratio = numerator.divide(
-                holdingCost, 8, BigDecimal.ROUND_HALF_UP
-        );
-
-        return BigDecimal.valueOf(Math.sqrt(ratio.doubleValue()))
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
+            assertThat(eoq).isPositive();
+        });
     }
 
     @Test
-    void shouldGenerateCafeteriaMonteCarloSamples() {
-        CafeteriaEOQMonteCarloGenerator generator =
-                new CafeteriaEOQMonteCarloGenerator(42L);
+    void differentSimId_shouldProduceDifferentSamples() {
 
-        List<EoqMonteCarloSample> samples = generator.generateMonteCarlo();
+        CafeteriaEOQMonteCarloGenerator gen1 =
+                new CafeteriaEOQMonteCarloGenerator(
+                        "SIM-1",
+                        SHOP_NAME,
+                        catalog
+                );
 
-        assertThat(samples).isNotEmpty();
+        CafeteriaEOQMonteCarloGenerator gen2 =
+                new CafeteriaEOQMonteCarloGenerator(
+                        "SIM-2",
+                        SHOP_NAME,
+                        catalog
+                );
 
-        samples.forEach(sample ->
-                log.info("Generated EOQ sample: {}", sample)
-        );
+        assertThat(gen1.generate())
+                .isNotEqualTo(gen2.generate());
     }
+
 
 }

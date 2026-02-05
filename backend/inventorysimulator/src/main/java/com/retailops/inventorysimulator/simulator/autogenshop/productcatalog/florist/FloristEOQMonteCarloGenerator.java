@@ -18,19 +18,16 @@
 package com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist;
 
 import com.retailops.inventorysimulator.model.Product;
-import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.BaseSeedMonteCarloGenerator;
-import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
-import com.retailops.inventorysimulator.util.distribution.Normal;
+import com.retailops.inventorysimulator.simulator.autogenshop.AbstractShopEoqMonteCarloGenerator;
+import com.retailops.inventorysimulator.util.types.autogen.DemandModel;
 import com.retailops.inventorysimulator.util.types.autogen.FloristEoqPolicy;
 import com.retailops.inventorysimulator.util.types.autogen.FloristProductSpec;
 import com.retailops.inventorysimulator.util.types.autogen.ShopType;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.List;
 
-public class FloristEOQMonteCarloGenerator extends BaseSeedMonteCarloGenerator {
+public class FloristEOQMonteCarloGenerator extends AbstractShopEoqMonteCarloGenerator<
+        FloristProductSpec,
+        FloristEoqPolicy> {
 
     private final FloristProductCatalogGenerator catalog;
 
@@ -43,70 +40,51 @@ public class FloristEOQMonteCarloGenerator extends BaseSeedMonteCarloGenerator {
         this.catalog = catalog;
     }
 
-    public List<EoqMonteCarloSample> generate() {
-
-        // 1. Deterministic catalog (same as ABC)
-        List<Product> products = catalog.generateCatalog(this.random);
-
-        // 2. Decorate with EOQ randomness
-        return products.stream()
-                .map(this::toEoqSample)
-                .toList();
+    @Override
+    protected List<Product> getCatalog() {
+        return catalog.generateCatalog(this.random);
     }
 
-    private EoqMonteCarloSample toEoqSample(Product product) {
-
-        FloristProductSpec spec =
-                FloristProductSpec.fromName(product.getName());
-
-        FloristEoqPolicy policy =
-                FloristEoqPolicy.forProduct(spec);
-
-        int demand = generateDemand(spec);
-
-        BigDecimal setupCost = randomRange(
-                policy.getMinOrderCost(),
-                policy.getMaxOrderCost()
-        );
-
-        BigDecimal holdingCost = product.getUnitCost()
-                .multiply(BigDecimal.valueOf(policy.getHoldingRate()))
-                .setScale(4, RoundingMode.HALF_UP);
-
-        return new EoqMonteCarloSample(
-                product.getName(),
-                BigInteger.valueOf(demand),
-                setupCost,
-                holdingCost
-        );
+    @Override
+    protected FloristProductSpec resolveSpec(Product product) {
+        return FloristProductSpec.fromName(product.getName());
     }
 
-    private int generateDemand(FloristProductSpec spec) {
-        return switch (spec.getDemandModel()) {
-            case NORMAL -> Math.max(
-                    (int) Math.round(
-                            Normal.normal(
-                                    spec.getDemandMeanOrMin(),
-                                    spec.getDemandStdOrMax(),
-                                    random
-                            )
-                    ),
-                    spec.getDemandMeanOrMin() / 3
-            );
-            case UNIFORM -> random.nextInt(
-                    spec.getDemandStdOrMax()
-                            - spec.getDemandMeanOrMin()
-            ) + spec.getDemandMeanOrMin();
-        };
+    @Override
+    protected FloristEoqPolicy resolvePolicy(FloristProductSpec spec) {
+        return FloristEoqPolicy.forProduct(spec);
     }
 
-
-    private BigDecimal randomRange(double min, double max) {
-        double value = min + random.nextDouble() * (max - min);
-        return BigDecimal
-                .valueOf(value)
-                .setScale(2, RoundingMode.HALF_UP);
+    @Override
+    protected DemandModel getDemandModel(FloristProductSpec spec) {
+        return spec.getDemandModel();
     }
+
+    @Override
+    protected int getDemandMeanOrMin(FloristProductSpec spec) {
+        return spec.getDemandMeanOrMin();
+    }
+
+    @Override
+    protected int getDemandStdOrMax(FloristProductSpec spec) {
+        return spec.getDemandStdOrMax();
+    }
+
+    @Override
+    protected double getHoldingRate(FloristEoqPolicy policy) {
+        return policy.getHoldingRate();
+    }
+
+    @Override
+    protected double getMinOrderCost(FloristEoqPolicy policy) {
+        return policy.getMinOrderCost();
+    }
+
+    @Override
+    protected double getMaxOrderCost(FloristEoqPolicy policy) {
+        return policy.getMaxOrderCost();
+    }
+
 
 
 
