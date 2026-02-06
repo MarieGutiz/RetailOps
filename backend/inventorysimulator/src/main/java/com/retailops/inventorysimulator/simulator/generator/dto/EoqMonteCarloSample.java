@@ -15,7 +15,7 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.generator;
+package com.retailops.inventorysimulator.simulator.generator.dto;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

@@ -18,7 +18,7 @@
 package com.retailops.inventorysimulator.simulator.autogenshop;
 
 import com.retailops.inventorysimulator.model.Product;
-import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
+import com.retailops.inventorysimulator.simulator.generator.dto.EoqMonteCarloSample;
 import com.retailops.inventorysimulator.util.distribution.Normal;
 import com.retailops.inventorysimulator.util.types.autogen.DemandModel;
 import com.retailops.inventorysimulator.util.types.autogen.ShopType;

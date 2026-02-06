@@ -15,11 +15,18 @@
  *
  */
 
-package com.retailops.inventorysimulator.util.types.autogen;
+package com.retailops.inventorysimulator.simulator.dto;
 
-public enum ShopType {
-    FLORIST,
-    CAFETERIA,
-    GENERIC_NEWSVENDOR
+import com.retailops.inventorysimulator.model.Product;
+
+import java.math.BigDecimal;
+
+public record NewsvendorContext(
+        Product product,
+        BigDecimal price,
+        BigDecimal cost,
+        BigDecimal salvageValue,
+        BigDecimal criticalRatio
+
+) {
 }
-
