@@ -20,7 +20,7 @@ package com.retailops.inventorysimulator.simulator;
 
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaEOQMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaProductCatalogGenerator;
-import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
+import com.retailops.inventorysimulator.simulator.generator.dto.EoqMonteCarloSample;
 import com.retailops.inventorysimulator.util.types.autogen.CafeteriaProductSpec;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

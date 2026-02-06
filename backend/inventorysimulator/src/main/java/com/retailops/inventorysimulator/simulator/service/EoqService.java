@@ -7,7 +7,7 @@ import com.retailops.inventorysimulator.service.ProductService;
 import com.retailops.inventorysimulator.service.SimulationServiceModel;
 import com.retailops.inventorysimulator.simulator.dto.EoqRequestDto;
 import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
-import com.retailops.inventorysimulator.simulator.generator.EoqMonteCarloSample;
+import com.retailops.inventorysimulator.simulator.generator.dto.EoqMonteCarloSample;
 import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

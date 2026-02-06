@@ -37,4 +37,19 @@ public class CriticalRatioCalculator {
         // Critical ratio = Cu / (Cu + Co), rounded to 4 decimals
         return Cu.divide(Cu.add(Co), 4, RoundingMode.HALF_UP);
     }
+
+    public BigDecimal calculate(
+            BigDecimal price,
+            BigDecimal cost,
+            BigDecimal salvageValue
+    ) {
+        BigDecimal Cu = price.subtract(cost);          // underage cost
+        BigDecimal Co = cost.subtract(salvageValue);   // overage cost
+
+        return Cu.divide(
+                Cu.add(Co),
+                4,
+                RoundingMode.HALF_UP
+        );
+    }
 }
