@@ -2,9 +2,11 @@ package com.retailops.inventorysimulator.controller;
 
 
 import com.retailops.inventorysimulator.simulator.dto.*;
+import com.retailops.inventorysimulator.simulator.service.AbcService;
 import com.retailops.inventorysimulator.simulator.service.EoqService;
 import com.retailops.inventorysimulator.simulator.service.NewsvendorService;
 import com.retailops.inventorysimulator.simulator.service.SimulationProfitService;
+import com.retailops.inventorysimulator.util.types.SimulationType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class SimulationController {
 
     private final SimulationProfitService simulationService;
-    private final NewsvendorService newsVendorSimulatorService;
+    private final AbcService  abcService;
     private final EoqService eoqService;
 
     @PostMapping("/profit")
@@ -36,6 +38,6 @@ public class SimulationController {
         return eoqService.runEoq(requestDto);
     }
 
-    //calculate abc Multi-classic
+
 
 }
