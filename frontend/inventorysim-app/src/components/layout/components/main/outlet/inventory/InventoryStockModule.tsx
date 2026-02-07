@@ -10,7 +10,7 @@ import { buildParetoData } from "@/lib/abc/buildParetoData"
 import type { InventoryRow } from "@/types/inventory"
 import InventoryStockView from "@/views/inventory/InventoryStockView"
 import { Button } from "@/components/ui/Button"
-import Info from "@/views/ABCViews/info/Info"
+import Info from "@/views/helpers/Info"
 import { ABCAnalysisFrontend } from "@/services/domain/segmentation/ABCAnalysisFrontend"
 import { useShopInventoryProducts } from "@/hooks/shop/useShopInventoryProducts"
 

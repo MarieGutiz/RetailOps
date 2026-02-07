@@ -20,7 +20,7 @@ package com.retailops.inventorysimulator.simulator;
 import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaProductCatalogGenerator;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist.FloristProductCatalogGenerator;
-import com.retailops.inventorysimulator.simulator.generator.components.NewsvendorMonteCarloGenerator;
+import com.retailops.inventorysimulator.simulator.generator.model.newsvendor.NewsvendorMonteCarloGenerator;
 import com.retailops.inventorysimulator.util.types.autogen.ShopType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

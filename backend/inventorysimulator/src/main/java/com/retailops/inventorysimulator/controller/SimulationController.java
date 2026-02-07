@@ -31,14 +31,6 @@ public class SimulationController {
         return  simulationService.getHistory(user, page, size);
     }
 
-    @PostMapping("/newsvendor")
-    public NewsvendorResponse simulateNewsvendor(
-            @Valid @RequestBody NewsvendorRequest request,
-            @RequestParam String simId,
-            @RequestParam String shopName) {
-        return newsVendorSimulatorService.simulate(request, simId, shopName);
-    }
-
     @PostMapping("/eoq")
     public EoqResponseDto simulateEOQ(@Valid @RequestBody EoqRequestDto requestDto) {
         return eoqService.runEoq(requestDto);

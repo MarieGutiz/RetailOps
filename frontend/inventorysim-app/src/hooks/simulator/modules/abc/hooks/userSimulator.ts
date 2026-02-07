@@ -8,50 +8,54 @@ import { runBackendABC } from "@/hooks/simulator/engines/backendABC";
 import { useFeatureFlags } from "./useFeatureFlags";
 import {  runShopABC } from "@/hooks/simulator/engines/frontendABC";
 import { useShopStore } from "@/store/shop/useShopStore";
+import { toast } from "sonner";
 
 export function useSimulator() {
-  const { user } = useUserStore();
-  const { advancedABC } = useFeatureFlags();
-  const { shop } = useShopStore(); // shop-aware now
+  // const { user } = useUserStore();
+  // const { advancedABC } = useFeatureFlags();
+  // const { shop } = useShopStore(); // shop-aware now
 
-  async function runABC(
-    products: Product[],
-    scenario: keyof typeof ABC_SCENARIOS
-  ): Promise<SimulatorABCOutput> {
+  // async function runABC(
+  //   products: Product[],
+  //   scenario: keyof typeof ABC_SCENARIOS
+  // ): Promise<SimulatorABCOutput> {
 
-    const executionMode = resolveABCMode(user.userType, scenario);
+  //   const executionMode = resolveABCMode(user.userType, scenario);
 
-    switch (executionMode) {
-      //Use with small samples
-      case "FRONTEND":{
-          // return runFrontendABC(products, scenario);
-         console.log("run")
-      }
-      // Send samples to server to be process
-      case "BACKEND": {
-        const backendMode = resolveBackendMode(
-          executionMode,
-          { advanced: advancedABC }
-        );
+  //   switch (executionMode) {
+  //     //Use with small samples
+  //     case "FRONTEND":{
+  //         // return runFrontendABC(products, scenario);
+  //        console.log("run")
+  //     }
+  //     // Send samples to server to be process
+  //     case "BACKEND": {
+  //       const backendMode = resolveBackendMode(
+  //         executionMode,
+  //         { advanced: advancedABC }
+  //       );
 
-        return runBackendABC(products, user, backendMode);
-      }
-      //Placeholder shops
-      case "BACKEND_PUBLIC": {
-        const backendMode = resolveBackendMode(
-          executionMode,
-          { advanced: advancedABC }
-        );
+  //       return runBackendABC(products, user, backendMode);
+  //     }
+  //     //Placeholder shops
+  //     case "BACKEND_PUBLIC": {
+  //       const backendMode = resolveBackendMode(
+  //         executionMode,
+  //         { advanced: advancedABC }
+  //       );
+  //       if (!shop) {
+  //         toast.error("Shop information is missing. Please select a shop to run the ABC analysis.");
+  //         throw new Error("Shop information is required for BACKEND_PUBLIC mode");
+  //       }
+  //       return runShopABC(shop.name, backendMode);
+  //     }
 
-        return runShopABC(shop, backendMode);
-      }
+  //     default:
+  //       throw new Error("Unsupported ABC execution mode");
+  //   }
+  // }
 
-      default:
-        throw new Error("Unsupported ABC execution mode");
-    }
-  }
-
-  return { runABC };
+  // return { runABC };
 }
 
 
