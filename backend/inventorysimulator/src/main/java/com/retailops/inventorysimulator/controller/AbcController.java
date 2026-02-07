@@ -25,15 +25,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/simulations/abc")
+@RequestMapping("/api/simulations")
 @RequiredArgsConstructor
 public class AbcController {
 
     private final AbcService abcService;
 
-    @PostMapping("/analyze")
-    public ResponseEntity<AbcResponseDto> runAbc(@RequestBody AbcRequestDto dto) {
-        AbcResponseDto response = abcService.runAbc(dto);
+    /**
+     *
+     *
+     *  Executes an ABC analysis simulation.
+     *
+     * This endpoint receives the input data required for ABC classification
+     * and delegates the computation to the service layer. The result contains
+     * items categorized into A, B, and C classes.
+     *
+     * @param dto -> AbcRequestDto
+     * @param simId -> simulation Id
+     * @return An ABC analysis - either with classic or multi
+     */
+    @PostMapping("/abc")
+    public ResponseEntity<AbcResponseDto> runAbc(
+            @RequestBody AbcRequestDto dto,
+            @RequestParam String simId) {
+        AbcResponseDto response = abcService.runAbc(dto, simId);
         return ResponseEntity.ok(response);
     }
 

@@ -37,7 +37,9 @@ public class AbcService {
      * Run ABC analysis (backend) and return frontend-ready DTO.
      * Persistence happens internally for registered users.
      */
-    public AbcResponseDto runAbc(AbcRequestDto requestDto) {
+    public AbcResponseDto runAbc(AbcRequestDto requestDto, String simId) {
+
+       if(simId == null) {return null;}
 
         AbcAnalyzerStrategy analyzer = resolveAnalyzer(requestDto.mode());
 
