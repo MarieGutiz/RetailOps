@@ -7,7 +7,7 @@ import com.retailops.inventorysimulator.service.SimulationServiceModel;
 import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
 import com.retailops.inventorysimulator.simulator.dto.NewsvendorRequest;
 import com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse;
-import com.retailops.inventorysimulator.simulator.generator.components.NewsvendorMonteCarloGenerator;
+import com.retailops.inventorysimulator.simulator.generator.model.newsvendor.NewsvendorMonteCarloGenerator;
 import com.retailops.inventorysimulator.util.calculator.CriticalRatioCalculator;
 import com.retailops.inventorysimulator.util.distribution.Normal;
 import com.retailops.inventorysimulator.util.types.SimulationType;
@@ -234,6 +234,24 @@ public class NewsvendorService {
 
         return histogram; // can be serialized to JSON
     }
+
+    //Check for chart points
+    public Map<Double, Double> normalPDF(
+            BigDecimal mean, BigDecimal stdDev, double min, double max, double step, String simId
+    ) {
+
+        if(simId == null) {return null;}
+        Map<Double, Double> pdf = new LinkedHashMap<>();
+        double mu = mean.doubleValue();
+        double sigma = stdDev.doubleValue();
+        for (double x = min; x <= max; x += step) {
+            double y = (1 / (sigma * Math.sqrt(2 * Math.PI)))
+                    * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+            pdf.put(x, y);
+        }
+        return pdf;
+    }
+
 
 
 }

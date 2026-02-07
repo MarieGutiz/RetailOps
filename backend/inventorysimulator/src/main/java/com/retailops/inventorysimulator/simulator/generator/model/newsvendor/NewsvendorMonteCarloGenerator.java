@@ -15,7 +15,7 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.generator.components;
+package com.retailops.inventorysimulator.simulator.generator.model.newsvendor;
 
 import com.retailops.inventorysimulator.simulator.autogenshop.BaseSeedMonteCarloGenerator;
 import com.retailops.inventorysimulator.util.distribution.Normal;

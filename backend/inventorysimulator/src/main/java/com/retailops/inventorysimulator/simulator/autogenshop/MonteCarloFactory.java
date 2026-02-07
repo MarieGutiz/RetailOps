@@ -24,7 +24,7 @@ import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.flo
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist.FloristEOQMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist.FloristProductCatalogGenerator;
 
-import com.retailops.inventorysimulator.simulator.generator.components.NewsvendorMonteCarloGenerator;
+import com.retailops.inventorysimulator.simulator.generator.model.newsvendor.NewsvendorMonteCarloGenerator;
 import com.retailops.inventorysimulator.util.types.autogen.ShopType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

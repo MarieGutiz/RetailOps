@@ -1,5 +1,5 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import  { ABC_SCENARIOS_META } from "./ABC_SCENARIOS"
+import  { ABC_SCENARIOS_META } from "../ABCViews/info/ABC_SCENARIOS"
 import  { Button } from "@/components/ui/Button"
 
 
@@ -9,12 +9,6 @@ interface InfoContent {
   description: string
   thresholds?: string
 }
-
-// interface InfoProps {
-//   scenarioKey: keyof typeof ABC_SCENARIOS_META
-//   content: InfoContent
-// }
-
 
 type InfoProps =
   | { scenarioKey: keyof typeof ABC_SCENARIOS_META; content?: never }

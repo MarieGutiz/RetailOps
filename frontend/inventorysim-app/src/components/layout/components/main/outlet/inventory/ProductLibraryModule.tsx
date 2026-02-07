@@ -3,7 +3,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import ModuleContainer from "../../ModuleContainer";
 import ProductLibraryView from "@/views/inventory/ProductLibraryView";
-import Info from "@/views/ABCViews/info/Info";
+import Info from "@/views/helpers/Info";
 import ServiceUnavailable from "@/views/inventory/forms/ServiceUnavailable";
 import ShopCreationWizardDialog from "@/views/inventory/forms/ShopCreationWizardDialog";
 
@@ -41,16 +41,6 @@ const ProductLibraryModule = () => {
   const [ackAutogenFailure, setAckAutogenFailure] = useState(false);
 
   // const [selection, setSelection] = useState<LibrarySelection>(null);
-
-
-  // const { shops, setShop, ensureAutogenShop } = useShopStore(
-  //   useShallow((s) => ({
-  //      shops: s.shops,
-  //      setShop: s.setShop,
-  //      ensureAutogenShop: s.ensureAutogenShop,
-  //     }))
-  // );
-
     const { shops, ensureAndSelectAutogenShop, ensureAutogenShop } = useShopStore(
     useShallow((s) => ({
       shops: s.shops,
@@ -59,7 +49,6 @@ const ProductLibraryModule = () => {
     }))
   );
 
-  // const shops = useShopStore(s => s.shops);
 
   const userProducts = useProductStore((s) => s.products);
   
@@ -68,9 +57,7 @@ const ProductLibraryModule = () => {
     shop: selectedShop,
     selectedSlice,
     selectShop,
-  } = useSelectedShop();
-
-  
+  } = useSelectedShop(); 
 
 
     /* ───────────── Initialize + ensure AUTOGEN shops ───────────── */

@@ -207,7 +207,7 @@ export const useProductStore = create<ProductState>()(
         if (!isAuthenticated || products.length === 0 || !shopMeta) return;
 
         try {
-          await api.post("/products/bulk", products);//test end point
+         // await api.post("/products/bulk", products);//test end point
           get().markSaved();
 
           console.log("Products synced to backend");
