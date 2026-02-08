@@ -1,6 +1,8 @@
 import { Outlet } from "react-router-dom";
 
 const SimModuleLayout = () => {
+    console.log("SimModuleLayout rendered at", location.pathname);
+
   return (
     <div className="flex flex-col h-full">
       {/* Simulation-level header / context */}

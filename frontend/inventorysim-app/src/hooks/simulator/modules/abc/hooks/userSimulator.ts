@@ -1,63 +1,92 @@
-// src/hooks/useSimulator.ts
-import type { Product } from "@/types/products";
-import type { SimulatorABCOutput } from "@/types/simulator";
-import { ABC_SCENARIOS } from "@/lib/abc/buildABCTableData";
-import { useUserStore } from "@/store/user/useUserStore";
-import { resolveABCMode, resolveBackendMode } from "@/hooks/simulator/engines/types/resolveABCMode";
-import { runBackendABC } from "@/hooks/simulator/engines/backendABC";
-import { useFeatureFlags } from "./useFeatureFlags";
-import {  runShopABC } from "@/hooks/simulator/engines/frontendABC";
-import { useShopStore } from "@/store/shop/useShopStore";
-import { toast } from "sonner";
+import { fetchNewsvendorMarkers, fetchNormalPdf, simulateNewsvendor } from "@/services/api/newsvendor.api";
+import type { NewsvendorResponse, NewsvendorMarkers, NewsvendorRequest, NormalPdfRequest } from "@/types/newsvendor-backend";
+import { getOrCreateSimId } from "@/utils/simulation";
+import { useState, useMemo } from "react";
 
-export function useSimulator() {
-  // const { user } = useUserStore();
-  // const { advancedABC } = useFeatureFlags();
-  // const { shop } = useShopStore(); // shop-aware now
+interface UseNewsvendorSimulatorResult {
+  simId: string;
+  isRunning: boolean;
+  error: string | null;
 
-  // async function runABC(
-  //   products: Product[],
-  //   scenario: keyof typeof ABC_SCENARIOS
-  // ): Promise<SimulatorABCOutput> {
+  response: NewsvendorResponse | null;
+  markers: NewsvendorMarkers | null;
+  pdf: Record<number, number> | null;
 
-  //   const executionMode = resolveABCMode(user.userType, scenario);
+  hasResult: boolean;
 
-  //   switch (executionMode) {
-  //     //Use with small samples
-  //     case "FRONTEND":{
-  //         // return runFrontendABC(products, scenario);
-  //        console.log("run")
-  //     }
-  //     // Send samples to server to be process
-  //     case "BACKEND": {
-  //       const backendMode = resolveBackendMode(
-  //         executionMode,
-  //         { advanced: advancedABC }
-  //       );
-
-  //       return runBackendABC(products, user, backendMode);
-  //     }
-  //     //Placeholder shops
-  //     case "BACKEND_PUBLIC": {
-  //       const backendMode = resolveBackendMode(
-  //         executionMode,
-  //         { advanced: advancedABC }
-  //       );
-  //       if (!shop) {
-  //         toast.error("Shop information is missing. Please select a shop to run the ABC analysis.");
-  //         throw new Error("Shop information is required for BACKEND_PUBLIC mode");
-  //       }
-  //       return runShopABC(shop.name, backendMode);
-  //     }
-
-  //     default:
-  //       throw new Error("Unsupported ABC execution mode");
-  //   }
-  // }
-
-  // return { runABC };
+  run: (request: NewsvendorRequest) => Promise<void>;
 }
+//Use as
+//const { shop } = useSelectedShop();
+//const simulator = useSimulator(shop!.id, shop!.name);
 
+export function useSimulator(
+  shopId: string,
+  shopName: string
+): UseNewsvendorSimulatorResult {
+  const simId = useMemo(() => getOrCreateSimId(shopId), [shopId]);
 
+  const [isRunning, setIsRunning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const [response, setResponse] = useState<NewsvendorResponse | null>(null);
+  const [markers, setMarkers] = useState<NewsvendorMarkers | null>(null);
+  const [pdf, setPdf] = useState<Record<number, number> | null>(null);
 
+  const run = async (request: NewsvendorRequest) => {
+    try {
+      setIsRunning(true);
+      setError(null);
+
+      /* ───────────── Core simulation ───────────── */
+      const res = await simulateNewsvendor(
+        request,
+        simId,
+        shopName
+      );
+
+      setResponse(res);
+
+      /* ───────────── Markers for charts ───────────── */
+      const markerRes = await fetchNewsvendorMarkers({
+        simId,
+        meanDemand: request.meanDemand,
+        orderQuantity: res.optimalOrderQuantity,
+        criticalRatio: res.criticalRatio,
+      });
+
+      setMarkers(markerRes);
+
+      /* ───────────── Normal PDF overlay ───────────── */
+      const pdfRequest: NormalPdfRequest = {
+        mean: request.meanDemand,
+        stdDev: request.stdDeviation,
+        min: Math.max(0, request.meanDemand - 4 * request.stdDeviation),
+        max: request.meanDemand + 4 * request.stdDeviation,
+        step: Math.max(1, request.stdDeviation / 10),
+      };
+
+      const pdfRes = await fetchNormalPdf(pdfRequest, simId);
+      setPdf(pdfRes);
+
+    } catch (err) {
+      console.error(err);
+      setError("Newsvendor simulation failed");
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  return {
+    simId,
+    isRunning,
+    error,
+
+    response,
+    markers,
+    pdf,
+
+    hasResult: !!response,
+    run,
+  };
+}
