@@ -18,6 +18,8 @@ import InventoryStockModule from '@/components/layout/components/main/outlet/inv
 import DashboardSettingModule from '@/components/layout/components/main/outlet/dashboard/DashboardSettingModule'
 import DashboardOverviewModule from '@/components/layout/components/main/outlet/dashboard/DashboardOverviewModule'
 import DashboardModuleLayout from '@/components/layout/components/main/outlet/dashboard/DashboardModuleLayout'
+import SimModuleLayout from '@/components/layout/components/main/outlet/simulations/SimModuleLayout'
+import NewsvendorModule from '@/components/layout/components/main/outlet/simulations/NewsvendorModule'
 
 
 const Approutes = () => {
@@ -48,6 +50,11 @@ const Approutes = () => {
             <Route path="stock" element={<InventoryStockModule />} />
           </Route>
 
+          {/* Simulation module */}
+          <Route path="simulations" element={<SimModuleLayout />}>
+            <Route index element={<Navigate to="newsvendor" replace/>}/>
+             <Route path="newsvendor" element={<NewsvendorModule />}/>          
+          </Route>
         </Route>
        </Route>
 

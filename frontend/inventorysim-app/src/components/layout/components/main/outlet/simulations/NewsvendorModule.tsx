@@ -3,6 +3,7 @@ import { useSelectedShop } from "@/hooks/shop/useSelectedShop";
 import { useMemo } from "react";
 import ModuleContainer from "../../ModuleContainer";
 import Info from "@/views/helpers/Info";
+import { useSimulator } from "@/hooks/simulator/modules/abc/hooks/userSimulator";
 
 const NEWSVENDOR_INFO = {
   title: "Newsvendor Model",
@@ -14,18 +15,24 @@ const NEWSVENDOR_INFO = {
 const NewsvendorModule = () => {
   const { shop: selectedShop } = useSelectedShop();
 
-  const selectedUserCase = selectedShop?.name ?? null;
+  if (!selectedShop) return null; //Create a message
+
+  const simulator = useSimulator(selectedShop.id, selectedShop.name);
+
+  const selectedUserCase = selectedShop.name;
+
 
   const breadcrumbTrail = useMemo(
     () => [
       { label: "Dashboard", path: "/dashboard" },
-      { label: "Simulation", path: "/dashboard/simulation" },
+      { label: "Simulation", path: "/dashboard/simulations/newsvendor" },
       { label: "Newsvendor" },
     ],
     []
   );
-
+ console.log("Rendering NewsvendorModule with simulator state:")
   return (
+   
     <ModuleContainer
       title="Newsvendor Simulation"
       subtitle="Optimize single-period inventory decisions under uncertainty"

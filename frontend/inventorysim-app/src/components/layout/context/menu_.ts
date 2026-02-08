@@ -1,4 +1,23 @@
-import { LayoutDashboardIcon, ClipboardListIcon, PlayCircleIcon, BarChartIcon, FileTextIcon, LayersIcon, UsersIcon, DatabaseIcon, CalculatorIcon, ActivityIcon, ScaleIcon, SettingsIcon, SearchIcon, CommandIcon, HelpCircleIcon, FileIcon, NotebookIcon, PackagePlus, BarChart3, Settings, View } from "lucide-react";
+import {
+   LayoutDashboardIcon,
+   ClipboardListIcon,
+   PlayCircleIcon,
+   BarChartIcon,
+   FileTextIcon,
+   UsersIcon,
+   DatabaseIcon,
+   CalculatorIcon,
+   ActivityIcon,
+   ScaleIcon,
+   SettingsIcon,
+   SearchIcon,
+   CommandIcon,
+   HelpCircleIcon,
+   NotebookIcon,
+   PackagePlus,
+   BarChart3,
+   Settings,
+   View } from "lucide-react";
 
 
 export const data_menu = {
@@ -46,12 +65,52 @@ export const data_menu = {
 
     },
     {
-      title: "Simulations",
-      id: "simulations",
-      url: "#",
-      icon: PlayCircleIcon,
-      subitems: [],
-    },
+    title: "Simulations",
+    id: "simulations",
+    icon: PlayCircleIcon,
+    subitems: [
+      {
+        title: "Newsvendor",
+        id: "newsvendor",
+        url: "/dashboard/simulations/newsvendor",
+        icon: ActivityIcon,
+        // subitems: [
+        //   {
+        //     title: "Run Simulation",
+        //     url: "/dashboard/simulations/newsvendor/run",
+        //   },
+        //   {
+        //     title: "Results",
+        //     url: "/dashboard/simulations/newsvendor/results",
+        //   },
+        //   {
+        //     title: "Analytics",
+        //     url: "/dashboard/simulations/newsvendor/analytics",
+        //   },
+        //   {
+        //     title: "History",
+        //     url: "/dashboard/simulations/newsvendor/history",
+        //   },
+        // ],
+      },
+      {
+        title: "EOQ",
+        id: "sim-eoq",
+        icon: CalculatorIcon,
+        // subitems: [
+        //   {
+        //     title: "Run EOQ",
+        //     url: "/dashboard/simulations/eoq/run",
+        //   },
+        //   {
+        //     title: "Compare Scenarios",
+        //     url: "/dashboard/simulations/eoq/compare",
+        //   },
+        // ],
+      },
+    ],
+  }
+,
     {
       title: "Analytics",
       url: "#",
@@ -63,13 +122,6 @@ export const data_menu = {
       id: "reports",
       url: "#",
       icon: FileTextIcon,
-      subitems: [],
-    },
-    {
-      title: "Scenarios",
-      id: "scenarios",
-      url: "#",
-      icon: LayersIcon,
       subitems: [],
     },
     {
@@ -143,11 +195,6 @@ export const data_menu = {
       name: "Data Product Library",
       url: "#",
       icon: DatabaseIcon,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: FileIcon,
     },
     {
       name: "Simulation Notes",

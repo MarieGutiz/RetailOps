@@ -11,3 +11,8 @@ export function getOrCreateSimId(shopId: string): string {
 
   return simId;
 }
+
+
+export function resetSimId(shopId: string) {
+  saveToStorage.removeItem(`simId:${shopId}`);
+}

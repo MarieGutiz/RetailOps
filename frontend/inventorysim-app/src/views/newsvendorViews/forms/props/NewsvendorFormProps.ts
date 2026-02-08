@@ -1,6 +1,6 @@
 import type { NewsvendorRequest } from "@/types/newsvendor-backend";
 
-interface NewsvendorFormProps {
+export interface NewsvendorFormProps {
   productId: string;
   productName: string;
 
@@ -8,3 +8,8 @@ interface NewsvendorFormProps {
   onSubmit: (request: NewsvendorRequest) => void;
   disabled?: boolean;
 }
+
+type NewsvendorFormState = Omit<
+  NewsvendorRequest,
+  "productId" | "productName" | "username"
+>;
