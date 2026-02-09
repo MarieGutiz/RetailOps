@@ -56,7 +56,6 @@ public class NewsvendorService {
     private final SimulationServiceModel simulationServiceModel;
     private final MonteCarloFactory monteCarloFactory;
     private final CriticalRatioCalculator criticalRatioCalculator;
-    private final NewsvendorDomainService newsvendorDomainService;
 
     /**
      * Run a Newsvendor simulation.
@@ -72,13 +71,21 @@ public class NewsvendorService {
             String shopName
     ) {
 
-        // 1 Compute Critical Ratio analytically
-        BigDecimal criticalRatio =
-                criticalRatioCalculator.calculate(
-                        request.price(),
-                        request.cost(),
-                        request.salvageValue()
-                );
+        // 1 Compute Critical Ratio (mode-aware)
+        BigDecimal criticalRatio = switch (request.mode()) {
+
+            case CLASSIC -> CriticalRatioCalculator.calculateBasic(
+                    request.price(),
+                    request.cost()
+            );
+
+            case ADVANCED -> CriticalRatioCalculator.calculateAdvanced(
+                    request.price(),
+                    request.cost(),
+                    request.salvageValue(),
+                    request.penalty()
+            );
+        };
 
         // 2 Compute optimal order quantity Q*
         int Qstar = computeOptimalQuantity(
@@ -102,11 +109,20 @@ public class NewsvendorService {
                 request.stdDeviation(),
                 request.price(),
                 request.cost(),
-                request.salvageValue(),
+                request.salvageValue(),   // ignored economically in CLASSIC
                 request.simulationRuns()
         );
 
-        // 5 Persist simulation run if requested
+        // 5 Compute achieved service level
+        BigDecimal serviceLevel = BigDecimal.valueOf(
+                Normal.normalCDF(
+                        Qstar,
+                        request.meanDemand().doubleValue(),
+                        request.stdDeviation().doubleValue()
+                )
+        );
+
+        // 6 Persist simulation run if requested
         if (request.saveToHistory()) {
             SimulationRun sim = SimulationRun.builder()
                     .productName(
@@ -125,16 +141,16 @@ public class NewsvendorService {
             simulationServiceModel.save(sim);
         }
 
-        // 6 Return response
+        // 7 Return response
         return new NewsvendorResponse(
                 request.productName(),
                 criticalRatio,
                 BigInteger.valueOf(Qstar),
                 BigDecimal.valueOf(expectedProfit),
-                null
+                serviceLevel
         );
-
     }
+
 
     /**
      * Compute the optimal order quantity Q* using the critical ratio

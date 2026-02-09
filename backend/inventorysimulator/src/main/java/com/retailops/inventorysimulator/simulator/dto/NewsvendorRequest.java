@@ -1,5 +1,6 @@
 package com.retailops.inventorysimulator.simulator.dto;
 
+import com.retailops.inventorysimulator.util.types.NewsvendorMode;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
@@ -32,6 +33,13 @@ public record NewsvendorRequest(
         @NotNull
         @DecimalMin(value = "0.0")
         BigDecimal salvageValue,
+
+        @NotNull
+        @DecimalMin(value = "0.0")
+        BigDecimal penalty,
+
+        @NotNull
+        NewsvendorMode mode,
 
         int simulationRuns,
 

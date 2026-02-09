@@ -26,30 +26,73 @@ import java.math.RoundingMode;
 @Component
 public class CriticalRatioCalculator {
 
-    public static BigDecimal calculateCriticalRatio(Product product) {
-        // Costs
-        BigDecimal unitPrice = product.getUnitPrice();
-        BigDecimal unitCost  = product.getUnitCost();
-
-        BigDecimal Cu = unitPrice.subtract(unitCost); // underage cost
-        BigDecimal Co = unitCost;                     // overage cost
-
-        // Critical ratio = Cu / (Cu + Co), rounded to 4 decimals
-        return Cu.divide(Cu.add(Co), 4, RoundingMode.HALF_UP);
+    /**
+     * BASIC Critical Ratio
+     *
+     * Assumptions:
+     * - No salvage value
+     * - No penalty for unmet demand
+     *
+     * CS (underage cost) = p - c
+     * CE (overage cost)  = c
+     *
+     * CR = CS / (CS + CE)
+     */
+    public static BigDecimal calculateBasic(Product product) {
+        return calculateBasic(
+                product.getUnitPrice(),
+                product.getUnitCost()
+        );
     }
 
-    public BigDecimal calculate(
+    public static BigDecimal calculateBasic(
+            BigDecimal price,
+            BigDecimal cost
+    ) {
+        BigDecimal underageCost = price.subtract(cost); // CS = p - c
+        BigDecimal overageCost  = cost;                 // CE = c
+
+        return criticalRatio(underageCost, overageCost);
+    }
+
+    /**
+     * ADVANCED Critical Ratio
+     *
+     * With salvage value and penalty:
+     *
+     * CS (underage cost) = p - c + B
+     * CE (overage cost)  = c - g
+     *
+     * CR = (p - c + B) / (p + B - g)
+     */
+    public static BigDecimal calculateAdvanced(
             BigDecimal price,
             BigDecimal cost,
-            BigDecimal salvageValue
+            BigDecimal salvageValue,
+            BigDecimal penalty
     ) {
-        BigDecimal Cu = price.subtract(cost);          // underage cost
-        BigDecimal Co = cost.subtract(salvageValue);   // overage cost
+        BigDecimal underageCost = price
+                .subtract(cost)
+                .add(penalty);          // CS = p - c + B
 
-        return Cu.divide(
-                Cu.add(Co),
+        BigDecimal overageCost = cost
+                .subtract(salvageValue); // CE = c - g
+
+        return criticalRatio(underageCost, overageCost);
+    }
+
+    /**
+     * Shared CR formula
+     */
+    private static BigDecimal criticalRatio(
+            BigDecimal underageCost,
+            BigDecimal overageCost
+    ) {
+        return underageCost.divide(
+                underageCost.add(overageCost),
                 4,
                 RoundingMode.HALF_UP
         );
     }
 }
+
