@@ -5,6 +5,7 @@ import api from "./api";
  * Run a single Newsvendor simulation
  * → returns optimal Q, expected profit, service level, CR
  */
+//Check if loggin -> saveToHistory
 export const simulateNewsvendor = async (
   data: NewsvendorRequest,
   simId: string,

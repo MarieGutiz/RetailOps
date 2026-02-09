@@ -1,4 +1,5 @@
 
+export type NewsvendorMode = "CLASSIC" | "ADVANCED";
 
 export interface NewsvendorRequest {
   productId: string;
@@ -9,12 +10,17 @@ export interface NewsvendorRequest {
 
   price: number;
   cost: number;
+
   salvageValue: number;
+  penalty: number;
+
+  mode: NewsvendorMode;
 
   simulationRuns: number;
 
   saveToHistory: boolean;
-  username?: string; // optional, backend defaults to "guest"
+  username?: string; // backend defaults to "guest"
+
 }
 
 export interface NewsvendorResponse {
@@ -54,3 +60,5 @@ export interface NewsvendorMarkers {
   orderQuantity: number;
   criticalRatio: number;
 }
+
+
