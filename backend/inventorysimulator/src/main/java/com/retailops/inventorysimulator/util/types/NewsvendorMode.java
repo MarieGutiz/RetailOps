@@ -15,18 +15,9 @@
  *
  */
 
-package com.retailops.inventorysimulator.simulator.dto;
+package com.retailops.inventorysimulator.util.types;
 
-import com.retailops.inventorysimulator.model.Product;
-
-import java.math.BigDecimal;
-
-public record NewsvendorContext(
-        Product product,
-        BigDecimal price,
-        BigDecimal cost,
-        BigDecimal salvageValue,
-        BigDecimal criticalRatio
-
-) {
+public enum NewsvendorMode {
+    CLASSIC,
+    ADVANCED
 }
