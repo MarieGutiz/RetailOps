@@ -4,6 +4,9 @@ import { useMemo } from "react";
 import ModuleContainer from "../../ModuleContainer";
 import Info from "@/views/helpers/Info";
 import { useSimulator } from "@/hooks/simulator/modules/abc/hooks/userSimulator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import NewsvendorForm from "@/views/newsvendorViews/forms/NewsvendorForm";
+import NoSelectShop from "@/views/helpers/NoSelectShop";
 
 const NEWSVENDOR_INFO = {
   title: "Newsvendor Model",
@@ -15,13 +18,6 @@ const NEWSVENDOR_INFO = {
 const NewsvendorModule = () => {
   const { shop: selectedShop } = useSelectedShop();
 
-  if (!selectedShop) return null; //Create a message
-
-  const simulator = useSimulator(selectedShop.id, selectedShop.name);
-
-  const selectedUserCase = selectedShop.name;
-
-
   const breadcrumbTrail = useMemo(
     () => [
       { label: "Dashboard", path: "/dashboard" },
@@ -30,9 +26,26 @@ const NewsvendorModule = () => {
     ],
     []
   );
- console.log("Rendering NewsvendorModule with simulator state:")
+
+  //  NO SHOP SELECTED 
+  if (!selectedShop) {
+    return (
+      <ModuleContainer
+        title="Newsvendor Simulation"
+        subtitle="Optimize single-period inventory decisions under uncertainty"
+        breadcrumbTrail={breadcrumbTrail}
+      >
+        <NoSelectShop />
+      </ModuleContainer>
+    );
+  }
+
+  
+  //  SHOP EXISTS → LOAD SIMULATOR
+  const simulator = useSimulator(selectedShop.id, selectedShop.name);
+  const selectedUserCase = selectedShop.name;
+
   return (
-   
     <ModuleContainer
       title="Newsvendor Simulation"
       subtitle="Optimize single-period inventory decisions under uncertainty"
@@ -41,41 +54,48 @@ const NewsvendorModule = () => {
       actions={
         <>
           <Info content={NEWSVENDOR_INFO} />
-          <Button className="toolbar-element jbtn-flat-btn toolbar-element-md">
+          <Button
+            className="toolbar-element jbtn-flat-btn toolbar-element-md"
+            disabled={simulator.isRunning}
+          >
             Run simulation
           </Button>
         </>
       }
     >
-      {/* ───────────── INPUT SECTION ───────────── */}
-      <section className="mb-6">
-        <h3 className="text-md font-semibold mb-2">Model Parameters</h3>
+      <Tabs defaultValue="parameters" className="w-full">
+        <TabsList>
+          <TabsTrigger value="parameters">Parameters</TabsTrigger>
+          <TabsTrigger value="results" disabled={!simulator.hasResult}>
+            Results
+          </TabsTrigger>
+          <TabsTrigger value="distribution" disabled={!simulator.hasResult}>
+            Distribution
+          </TabsTrigger>
+        </TabsList>
 
-        {/* Placeholder for form */}
-        <div className="text-sm text-muted-foreground">
-          Demand distribution, pricing, and simulation settings will be configured here.
-        </div>
-      </section>
+        {/* ───────────── PARAMETERS ───────────── */}
+        <TabsContent value="parameters" className="mt-4">
+          <NewsvendorForm
+            onSubmit={simulator.run}
+            disabled={simulator.isRunning}
+          />
+        </TabsContent>
 
-      {/* ───────────── RESULTS SECTION ───────────── */}
-      <section className="mb-6">
-        <h3 className="text-md font-semibold mb-2">Results</h3>
+        {/* ───────────── RESULTS ───────────── */}
+        <TabsContent value="results" className="mt-4">
+          <div className="text-sm text-muted-foreground">
+            Results will appear here after running the simulation.
+          </div>
+        </TabsContent>
 
-        {/* Placeholder for KPIs */}
-        <div className="text-sm text-muted-foreground">
-          Optimal order quantity, critical ratio, and expected profit will appear here.
-        </div>
-      </section>
-
-      {/* ───────────── VISUALIZATION SECTION ───────────── */}
-      <section>
-        <h3 className="text-md font-semibold mb-2">Demand Distribution</h3>
-
-        {/* Placeholder for PDF / markers */}
-        <div className="text-sm text-muted-foreground">
-          Normal distribution curve with mean, order quantity, and critical ratio markers.
-        </div>
-      </section>
+        {/* ───────────── DISTRIBUTION ───────────── */}
+        <TabsContent value="distribution" className="mt-4">
+          <div className="text-sm text-muted-foreground">
+            Demand distribution and markers will appear here.
+          </div>
+        </TabsContent>
+      </Tabs>
     </ModuleContainer>
   );
 };

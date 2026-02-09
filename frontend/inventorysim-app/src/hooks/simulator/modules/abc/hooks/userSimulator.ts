@@ -1,7 +1,9 @@
 import { fetchNewsvendorMarkers, fetchNormalPdf, simulateNewsvendor } from "@/services/api/newsvendor.api";
+import { useProductStore } from "@/store/inventory/useProductStore";
 import type { NewsvendorResponse, NewsvendorMarkers, NewsvendorRequest, NormalPdfRequest } from "@/types/newsvendor-backend";
 import { getOrCreateSimId } from "@/utils/simulation";
 import { useState, useMemo } from "react";
+import { toast } from "sonner";
 
 interface UseNewsvendorSimulatorResult {
   simId: string;
@@ -19,11 +21,14 @@ interface UseNewsvendorSimulatorResult {
 //Use as
 //const { shop } = useSelectedShop();
 //const simulator = useSimulator(shop!.id, shop!.name);
+// const isAuthenticated = useProductStore((s) => s.isAuthenticated);
 
 export function useSimulator(
   shopId: string,
   shopName: string
 ): UseNewsvendorSimulatorResult {
+  const isAuthenticated = useProductStore((s) => s.isAuthenticated);
+
   const simId = useMemo(() => getOrCreateSimId(shopId), [shopId]);
 
   const [isRunning, setIsRunning] = useState(false);
@@ -38,9 +43,19 @@ export function useSimulator(
       setIsRunning(true);
       setError(null);
 
+      const sanitizedRequest: NewsvendorRequest = {
+      ...request,
+      saveToHistory: isAuthenticated ? request.saveToHistory : false,
+    };
+
+    if (!isAuthenticated && request.saveToHistory) {
+      toast.error("Register to save simulations to history.");
+    }
+
+
       /* ───────────── Core simulation ───────────── */
       const res = await simulateNewsvendor(
-        request,
+        sanitizedRequest,
         simId,
         shopName
       );
