@@ -7,11 +7,24 @@ import { useEffect, useMemo, useState } from "react";
 import { Label } from "@/components/ui/label";
 import Info from "@/views/helpers/Info";
 import { useProductStore } from "@/store/inventory/useProductStore";
-import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import { useShopInventoryProducts } from "@/hooks/shop/useShopInventoryProducts";
 import ProductCard from "@/views/inventory/forms/ProductCard";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { type NewsvendorFormValues, newsvendorSchema } from "./props/newsvendor.schema";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import AdvancedNewsvendorSection from "./AdvancedNewsvendorSection";
 
 
 const MEAN_DEMAND_INFO = {
@@ -28,17 +41,17 @@ const STD_DEV_INFO = {
     "This measures how much demand fluctuates around the average. A higher value means demand is less predictable.",
 };
 
-const SALVAGE_INFO = {
-  title: "Salvage Value",
-  description:
-    "If leftover products can be sold or reused, enable this. Otherwise, units are wasted.",
-};
+// const SALVAGE_INFO = {
+//   title: "Salvage Value",
+//   description:
+//     "If leftover products can be sold or reused, enable this. Otherwise, units are wasted.",
+// };
 
-const PENALTY_INFO = {
-  title: "Penalty Cost",
-  description:
-    "If unsatisfied demand incurs a penalty (e.g., lost sale or backorder), enable this flag and set the cost.",
-};
+// const PENALTY_INFO = {
+//   title: "Penalty Cost",
+//   description:
+//     "If unsatisfied demand incurs a penalty (e.g., lost sale or backorder), enable this flag and set the cost.",
+// };
 
 
 const NewsvendorForm = ({
@@ -52,19 +65,19 @@ const NewsvendorForm = ({
   const isAuthenticated = useProductStore((s) => s.isAuthenticated);
 
   // ───────────── Form state ─────────────
-  const [form, setForm] = useState<
-  Omit<NewsvendorRequest, "productId" | "productName" | "username">
->({
-  meanDemand: 0,
-  stdDeviation: 0,
-  price: 0,
-  cost: 0,
-  salvageValue: 0,
-  penalty: 0,
-  mode: "CLASSIC",
-  simulationRuns: defaultRuns,
-  saveToHistory: false,
-});
+//   const [form, setForm] = useState<
+//   Omit<NewsvendorRequest, "productId" | "productName" | "username">
+// >({
+//   meanDemand: 0,
+//   stdDeviation: 0,
+//   price: 0,
+//   cost: 0,
+//   salvageValue: 0,
+//   penalty: 0,
+//   mode: "CLASSIC",
+//   simulationRuns: defaultRuns,
+//   saveToHistory: false,
+// });
 
   const [selectedProduct, setSelectedProduct] = useState<{
   id: string;
@@ -76,27 +89,38 @@ const NewsvendorForm = ({
   category?:string;
 } | null>(null);
 
+  const [search, setSearch] = useState("");
 
-  
-  // ───────────── Reset saveToHistory for guests ─────────────
-  useEffect(() => {
-    if (!isAuthenticated && form.saveToHistory) {
-      setForm((prev) => ({ ...prev, saveToHistory: false }));
-    }
-  }, [isAuthenticated, form.saveToHistory]);
+  // ───────────── React Hook Form ─────────────
+  const form = useForm<NewsvendorFormValues>({
+    resolver: zodResolver(newsvendorSchema),
+    defaultValues: {
+      meanDemand: 0,
+      stdDeviation: 0,
+      price: 0,
+      cost: 0,
+      salvageValue: 0,
+      penalty: 0,
+      simulationRuns: defaultRuns,
+      saveToHistory: false,
+      mode: "CLASSIC",
+    },
+  });
+
+  const { register, handleSubmit, setValue, watch, formState } = form;
+  const { errors } = formState;
 
   // ───────────── Product Options ─────────────
   const productOptions = useMemo(() => {
     if (!products || !inventory) return [];
     return inventory
-      .map((inv) => {
-        const prod = products.find((p) => p.id === inv.productId);
+      .map(inv => {
+        const prod = products.find(p => p.id === inv.productId);
         if (!prod) return null;
-        return { 
+        return {
           id: prod.id,
           name: prod.name,
-          quantity:
-          inv.quantity,
+          quantity: inv.quantity,
           price: prod.unitPrice,
           cost: prod.unitCost,
           sku: prod.sku,
@@ -106,50 +130,55 @@ const NewsvendorForm = ({
       .filter(Boolean) as typeof selectedProduct[];
   }, [products, inventory]);
 
-  // ───────────── Auto-fill cost/price on product selection ─────────────
-  useEffect(() => {
-    if (selectedProduct) {
-      setForm((prev) => ({
-        ...prev,
-        price: selectedProduct.price ?? prev.price,
-        cost: selectedProduct.cost ?? prev.cost,
-      }));
-    }
-  }, [selectedProduct]);
-
-  // ───────────── Form Update ─────────────
-  const update = <K extends keyof typeof form>(key: K, value: typeof form[K]) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
-
-  // ───────────── Submit ─────────────
-  const handleSubmit = () => {
-    if (!selectedProduct) {
-      toast.error("Please select a product first.");
-      return;
-    }
-
-    if (!isAuthenticated && form.saveToHistory) {
-      toast.error("Register to save simulations to history.");
-    }
-
-    onSubmit({
-      productId: selectedProduct.id,
-      productName: selectedProduct.name,
-      ...form,
-      saveToHistory: isAuthenticated ? form.saveToHistory : false,
-    });
-  };
-
-  const [search, setSearch] = useState("");
   const filteredProducts = useMemo(() => {
-  return productOptions.filter((p) =>
-    `${p?.sku ?? ""} ${p?.name}`
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
-}, [productOptions, search]);
+    return productOptions.filter(p =>
+      `${p?.sku ?? ""} ${p?.name}`.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [productOptions, search]);
 
+  // ───────────── Autofill price & cost ─────────────
+  useEffect(() => {
+    if (!selectedProduct) return;
+    if (selectedProduct.price != null) setValue("price", selectedProduct.price);
+    if (selectedProduct.cost != null) setValue("cost", selectedProduct.cost);
+  }, [selectedProduct, setValue]);
+
+  // ───────────── Guest protection ─────────────
+  useEffect(() => {
+    if (!isAuthenticated && watch("saveToHistory")) {
+      setValue("saveToHistory", false);
+    }
+  }, [isAuthenticated, watch, setValue]);
+
+  
+  // ───────────── Submit ─────────────
+ const submit = (values: NewsvendorFormValues) => {
+  if (!selectedProduct) {
+    toast.error("Please select a product first.");
+    return;
+  }
+
+  const payload: NewsvendorRequest = {
+    // productId: selectedProduct.id,
+    productName: selectedProduct.name,
+
+    meanDemand: values.meanDemand,
+    stdDeviation: values.stdDeviation,
+    price: values.price,
+    cost: values.cost,
+
+    // force numeric contract here
+    salvageValue: values.salvageValue ?? 0,
+    penalty: values.penalty ?? 0,
+
+    mode: values.mode,
+    simulationRuns: values.simulationRuns,
+    saveToHistory: isAuthenticated ? values.saveToHistory : false,
+  };
+    console.log("Submitting payload:", payload); // <-- debug log
+
+  onSubmit(payload);
+};
 
    return (
       <Card>
@@ -162,121 +191,99 @@ const NewsvendorForm = ({
       </CardHeader>
 
       <CardContent>
-        <form
-          className="flex flex-col md:flex-row gap-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-        >
-        {/* ===== LEFT PANEL: Product Selection ===== */}
-        <div className="md:w-1/3 flex flex-col gap-4">
+        <form className="flex flex-col md:flex-row gap-6" onSubmit={handleSubmit(submit)}>
+          {/* ===== LEFT PANEL: Product Selection ===== */}
+          <div className="md:w-1/3 flex flex-col gap-4">
+            <Label>Select a product</Label>
+            <Input
+              placeholder={loading ? "Loading products..." : "Search by SKU or name"}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              disabled={loading}
+            />
 
-          <Label>Product</Label>
+            {productOptions.length === 0 ? (
+              <div className="border rounded-md p-6 text-sm text-muted-foreground text-center space-y-2">
+                <p className="font-medium text-foreground">Inventory is empty</p>
+                <p>You can start by adding products in the <span className="font-medium">Product Library</span>.</p>
+              </div>
+            ) : (
+              <>
+                <div className="border rounded-md overflow-hidden">
+                  <div className="max-h-[260px] overflow-y-auto">
 
-          {/* Search */}
-          <Input
-            placeholder={loading ? "Loading products..." : "Search by SKU or name"}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            disabled={loading}
-          />
-
-          {productOptions.length === 0 ? (
-            <div className="border rounded-md p-6 text-sm text-muted-foreground text-center space-y-2">
-              <p className="font-medium text-foreground">Inventory is empty</p>
-              <p>
-                You can start by adding products in the{" "}
-                <span className="font-medium">Product Library</span>.
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Table container */}
-              <div className="border rounded-md overflow-hidden">
-                <div className="max-h-[260px] overflow-y-auto">
-                  <table className="w-full text-sm">
-                    <thead className="sticky top-0 bg-muted/50 z-10">
-                      <tr className="text-muted-foreground">
-                        <th className="w-10 px-2 py-2"></th>
-                        <th className="px-2 py-2 text-left">SKU</th>
-                        <th className="px-2 py-2 text-left">Product</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
+                   <Table className="text-sm">
+                    <TableHeader>
+                      <TableRow className="sticky top-0 bg-muted/50 z-10 text-muted-foreground">
+                        <TableHead className="w-10 px-2 py-2"></TableHead>
+                        <TableHead className="px-2 py-2 text-left">SKU</TableHead>
+                        <TableHead className="px-2 py-2 text-left">Product</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                       {filteredProducts.map((prod) => (
-                        <tr
+                        <TableRow
                           key={prod?.id}
                           onClick={() => setSelectedProduct(prod)}
                           className={`cursor-pointer transition-colors hover:bg-muted/50 ${
                             selectedProduct?.id === prod?.id ? "bg-muted" : ""
                           }`}
                         >
-                          <td className="px-2 py-2">
+                          <TableCell className="px-2 py-2">
                             <input
                               type="radio"
                               name="selectedProduct"
                               checked={selectedProduct?.id === prod?.id}
                               onChange={() => setSelectedProduct(prod)}
                             />
-                          </td>
-                          <td className="px-2 py-2 font-mono text-xs">
+                          </TableCell>
+                          <TableCell className="px-2 py-2 font-mono text-xs">
                             {prod?.sku || "—"}
-                          </td>
-                          <td className="px-2 py-2">{prod?.name}</td>
-                        </tr>
+                          </TableCell>
+                          <TableCell className="px-2 py-2">{prod?.name}</TableCell>
+                        </TableRow>
                       ))}
 
                       {filteredProducts.length === 0 && (
-                        <tr>
-                          <td
-                            colSpan={3}
-                            className="px-4 py-6 text-center text-sm text-muted-foreground"
-                          >
+                        <TableRow>
+                          <TableCell colSpan={3} className="px-4 py-6 text-center text-sm text-muted-foreground">
                             No products match your search
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       )}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
+                  </div>
                 </div>
-              </div>
 
-              {/* Fixed breathing space before card */}
-              <div className="pt-6">
-                {selectedProduct && (
-                  <ProductCard
-                    name={selectedProduct.name}
-                    stock={selectedProduct.quantity}
-                    sku={selectedProduct.sku}
-                    category={selectedProduct.category}
-                  />
-                )}
-              </div>
-            </>
-          )}
-        </div>
+                <div className="pt-6">
+                  {selectedProduct && (
+                    <ProductCard
+                      name={selectedProduct.name}
+                      stock={selectedProduct.quantity}
+                      sku={selectedProduct.sku}
+                      category={selectedProduct.category}
+                    />
+                  )}
+                </div>
+              </>
+            )}
+          </div>
 
-
-
-
-         {/* ===== RIGHT PANEL: Newsvendor Parameters ===== */}
+          {/* ===== RIGHT PANEL: Newsvendor Parameters ===== */}
           <div className="md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-4">
-
             {/* Mean Demand */}
             <div className="space-y-2">
               <div className="flex items-center gap-1">
                 <Label htmlFor="meanDemand">Typical Daily Demand</Label>
                 <Info content={MEAN_DEMAND_INFO} />
               </div>
-              <Input
-                id="meanDemand"
-                type="number"
-                value={form.meanDemand}
-                onChange={(e) => update("meanDemand", Number(e.target.value))}
-                disabled={disabled || !selectedProduct}
-              />
+              <Input 
+              id="meanDemand"
+              step={1}
+              type="number" {...register("meanDemand", { valueAsNumber: true })}
+              disabled={!selectedProduct || disabled} />
+              {errors.meanDemand && <p className="text-xs text-destructive">{errors.meanDemand.message}</p>}
             </div>
 
             {/* Std Deviation */}
@@ -286,120 +293,81 @@ const NewsvendorForm = ({
                 <Info content={STD_DEV_INFO} />
               </div>
               <Input
-                id="stdDeviation"
-                type="number"
-                value={form.stdDeviation}
-                onChange={(e) => update("stdDeviation", Number(e.target.value))}
-                disabled={disabled || !selectedProduct}
-              />
+               id="stdDeviation"
+               step={1}
+               type="number" {...register("stdDeviation", { valueAsNumber: true })} 
+               disabled={!selectedProduct || disabled} />
+              {errors.stdDeviation && <p className="text-xs text-destructive">{errors.stdDeviation.message}</p>}
             </div>
 
             {/* Price */}
             <div className="space-y-2">
               <Label htmlFor="price">Selling Price</Label>
               <Input
-                id="price"
-                type="number"
-                value={form.price}
-                onChange={(e) => update("price", Number(e.target.value))}
-                disabled={disabled || !selectedProduct}
-              />
+               id="price"
+               step="any"
+               type="number" {...register("price", { valueAsNumber: true })}
+               disabled={!selectedProduct || disabled} />
+              {errors.price && <p className="text-xs text-destructive">{errors.price.message}</p>}
             </div>
 
             {/* Cost */}
             <div className="space-y-2">
               <Label htmlFor="cost">Unit Cost</Label>
-              <Input
-                id="cost"
-                type="number"
-                value={form.cost}
-                onChange={(e) => update("cost", Number(e.target.value))}
-                disabled={disabled || !selectedProduct}
-              />
+              <Input 
+              id="cost"
+              step="any"
+              type="number" {...register("cost", { valueAsNumber: true })}
+              disabled={!selectedProduct || disabled} />
+              {errors.cost && <p className="text-xs text-destructive">{errors.cost.message}</p>}
             </div>
 
-            {/* ===== Advanced Divider ===== */}
+            {/* Advanced Divider */}
             <div className="md:col-span-2 pt-4">
               <Separator />
-              <Label className="mt-2 block text-sm text-muted-foreground italic">
-                Advanced Newsvendor Settings
-              </Label>
+               <AdvancedNewsvendorSection
+                  register={register}
+                  watch={watch}
+                  setValue={setValue}
+                  errors={errors}
+                  disabled={disabled}
+                  selectedProduct={!!selectedProduct}
+                  />
             </div>
 
-            {/* Salvage Value */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-1">
-                <Label htmlFor="salvageValue">Salvage Value</Label>
-                <Info content={SALVAGE_INFO} />
-              </div>
-              <Input
-                id="salvageValue"
-                type="number"
-                value={form.salvageValue}
-                onChange={(e) => update("salvageValue", Number(e.target.value))}
-                disabled={disabled || !selectedProduct}
-              />
-            </div>
 
-            {/* Penalty Cost */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-1">
-                <Label htmlFor="penalty">Penalty Cost</Label>
-                <Info content={PENALTY_INFO} />
-              </div>
-              <Input
-                id="penalty"
-                type="number"
-                value={form.penalty}
-                onChange={(e) => update("penalty", Number(e.target.value))}
-                disabled={disabled || !selectedProduct}
-              />
-            </div>
-
-            {/* ===== More Settings Divider ===== */}
+            {/* Simulation Divider */}
             <div className="md:col-span-2 pt-4">
               <Separator />
-              <Label className="mt-2 block text-sm text-muted-foreground italic">
-                Simulation Settings
-              </Label>
+              <Label className="mt-2 block text-sm text-muted-foreground italic">Simulation Settings</Label>
             </div>
 
-            {/* Simulation Runs + Save to History */}
             <div className="md:col-span-2 flex flex-col md:flex-row md:items-end gap-4">
               <div className="space-y-2 w-[200px]">
                 <Label htmlFor="simulationRuns">Simulation Runs</Label>
-                <Input
-                  id="simulationRuns"
-                  type="number"
-                  value={form.simulationRuns}
-                  onChange={(e) => update("simulationRuns", Number(e.target.value))}
-                  disabled={disabled || !selectedProduct}
-                />
+                <Input id="simulationRuns" type="number" {...register("simulationRuns", { valueAsNumber: true })} disabled={!selectedProduct || disabled} />
+                {errors.simulationRuns && <p className="text-xs text-destructive">{errors.simulationRuns.message}</p>}
               </div>
 
               <div className="flex items-center gap-2 pb-2">
                 <input
                   id="saveToHistory"
                   type="checkbox"
-                  checked={form.saveToHistory}
-                  onChange={(e) => update("saveToHistory", e.target.checked)}
+                  {...register("saveToHistory")}
                   disabled={!isAuthenticated || disabled || !selectedProduct}
                   className="h-4 w-4 rounded border-muted"
                 />
-                <Label htmlFor="saveToHistory" className="text-sm">
-                  Save to history
-                </Label>
+                <Label htmlFor="saveToHistory" className="text-sm">Save to history</Label>
               </div>
             </div>
 
             {/* Submit */}
             <div className="md:col-span-2 flex justify-end pt-2">
-              <Button type="submit" disabled={disabled || !selectedProduct}>
+              <Button type="submit" disabled={!selectedProduct || disabled} className="toolbar-element jbtn-flat-btn toolbar-element-md active">
                 Run Newsvendor
               </Button>
             </div>
           </div>
-
         </form>
       </CardContent>
     </Card>

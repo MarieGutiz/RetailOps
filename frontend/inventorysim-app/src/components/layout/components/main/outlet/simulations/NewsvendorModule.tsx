@@ -7,6 +7,7 @@ import { useSimulator } from "@/hooks/simulator/modules/abc/hooks/userSimulator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NewsvendorForm from "@/views/newsvendorViews/forms/NewsvendorForm";
 import NoSelectShop from "@/views/helpers/NoSelectShop";
+import ResultsPanel from "@/views/newsvendorViews/ResultsPanel/ResultsPanel";
 
 const NEWSVENDOR_INFO = {
   title: "Newsvendor Model",
@@ -84,10 +85,15 @@ const NewsvendorModule = () => {
 
         {/* ───────────── RESULTS ───────────── */}
         <TabsContent value="results" className="mt-4">
-          <div className="text-sm text-muted-foreground">
-            Results will appear here after running the simulation.
-          </div>
+          {simulator.response ? (
+            <ResultsPanel result={simulator.response} />
+          ) : (
+            <div className="text-sm text-muted-foreground">
+              Run the simulation to see results.
+            </div>
+          )}
         </TabsContent>
+
 
         {/* ───────────── DISTRIBUTION ───────────── */}
         <TabsContent value="distribution" className="mt-4">

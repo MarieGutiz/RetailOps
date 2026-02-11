@@ -1,6 +1,13 @@
 import type { NewsvendorMarkers, NewsvendorMarkersRequest, NewsvendorRequest, NewsvendorResponse, NormalPdfRequest } from "@/types/newsvendor-backend";
 import api from "./api";
 
+
+/**
+ * Base path for simulator module
+ * Matches backend: /api/simulator/newsvendor
+ */
+const SIMULATOR_BASE = "/simulator";
+const NEWSVENDOR_BASE = `${SIMULATOR_BASE}/newsvendor`
 /**
  * Run a single Newsvendor simulation
  * → returns optimal Q, expected profit, service level, CR
@@ -13,7 +20,7 @@ export const simulateNewsvendor = async (
 ): Promise<NewsvendorResponse> => {
   try {
     const response = await api.post(
-      "/api/newsvendor/newsvendor",
+      NEWSVENDOR_BASE,
       data,
       {
         params: { simId, shopName },
@@ -39,7 +46,7 @@ export const batchNewsvendorSimulation = async (
 ): Promise<Record<number, number>> => {
   try {
     const response = await api.post(
-      "/api/newsvendor/batch",
+      `${NEWSVENDOR_BASE}/batch`,
       data,
       {
         params: { simId, shopName, minQ, maxQ },
@@ -62,7 +69,7 @@ export const fetchNormalPdf = async (
 ): Promise<Record<number, number>> => {
   try {
     const response = await api.post(
-      "/api/newsvendor/pdf",
+       `${NEWSVENDOR_BASE}/pdf`,
       data,
       {
         params: { simId },
@@ -87,7 +94,7 @@ export const fetchProfitDistribution = async (
 ): Promise<Record<number, number>> => {
   try {
     const response = await api.post(
-      "/api/newsvendor/profit-distribution",
+        `${NEWSVENDOR_BASE}/profit-distribution`,
       data,
       {
         params: { orderQuantity, simId, shopName },
@@ -109,7 +116,7 @@ export const fetchNewsvendorMarkers = async (
 ): Promise<NewsvendorMarkers> => {
   try {
     const response = await api.post(
-      "/api/newsvendor/markers",
+        `${NEWSVENDOR_BASE}/markers`,
       data
     );
     return response.data;

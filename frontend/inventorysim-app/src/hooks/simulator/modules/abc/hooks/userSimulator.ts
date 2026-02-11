@@ -39,7 +39,9 @@ export function useSimulator(
   const [pdf, setPdf] = useState<Record<number, number> | null>(null);
 
   const run = async (request: NewsvendorRequest) => {
+    
     try {
+       console.log("Simulator running with request:", request); 
       setIsRunning(true);
       setError(null);
 
@@ -59,7 +61,7 @@ export function useSimulator(
         simId,
         shopName
       );
-
+      console.log("Response ", res)
       setResponse(res);
 
       /* ───────────── Markers for charts ───────────── */

@@ -2,7 +2,7 @@
 export type NewsvendorMode = "CLASSIC" | "ADVANCED";
 
 export interface NewsvendorRequest {
-  productId: string;
+  // productId: string;
   productName: string;
 
   meanDemand: number;
