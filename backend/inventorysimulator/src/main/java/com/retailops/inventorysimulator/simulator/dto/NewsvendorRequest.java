@@ -9,9 +9,6 @@ import java.math.BigDecimal;
 public record NewsvendorRequest(
 
         @NotNull
-        Long productId,
-
-        @NotNull
         String productName,
 
         @NotNull
