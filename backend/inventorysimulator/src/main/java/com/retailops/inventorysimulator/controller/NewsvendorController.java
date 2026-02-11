@@ -27,13 +27,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/newsvendor")
+@RequestMapping("/api/simulator/newsvendor")
 @RequiredArgsConstructor
 public class NewsvendorController {
 
     private final NewsvendorService newsvendorService;
 
-    @PostMapping("/newsvendor")
+    @PostMapping
     public NewsvendorResponse simulateNewsvendor(
             @Valid @RequestBody NewsvendorRequest request,
             @RequestParam String simId,
