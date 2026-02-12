@@ -14,6 +14,8 @@ interface UseNewsvendorSimulatorResult {
   markers: NewsvendorMarkers | null;
   pdf: Record<number, number> | null;
 
+  lastRequest: NewsvendorRequest | null;
+
   hasResult: boolean;
 
   run: (request: NewsvendorRequest) => Promise<void>;
@@ -37,6 +39,9 @@ export function useSimulator(
   const [response, setResponse] = useState<NewsvendorResponse | null>(null);
   const [markers, setMarkers] = useState<NewsvendorMarkers | null>(null);
   const [pdf, setPdf] = useState<Record<number, number> | null>(null);
+
+  const [lastRequest, setLastRequest] = useState<NewsvendorRequest | null>(null);
+
 
   const run = async (request: NewsvendorRequest) => {
     
@@ -66,13 +71,17 @@ export function useSimulator(
 
       /* ───────────── Markers for charts ───────────── */
       const markerRes = await fetchNewsvendorMarkers({
-        simId,
+        // simId,
         meanDemand: request.meanDemand,
         orderQuantity: res.optimalOrderQuantity,
         criticalRatio: res.criticalRatio,
       });
 
       setMarkers(markerRes);
+
+      //Set last request
+      setLastRequest(request);
+
 
       /* ───────────── Normal PDF overlay ───────────── */
       const pdfRequest: NormalPdfRequest = {
@@ -102,6 +111,8 @@ export function useSimulator(
     response,
     markers,
     pdf,
+
+    lastRequest,
 
     hasResult: !!response,
     run,

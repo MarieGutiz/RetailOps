@@ -152,7 +152,7 @@ export class PrimeLayoutController {
   //Reset my providever to initial state
 
   resetDesktopState() {
-    console.log("Resetting desktop state to defaults.");
+    // console.log("Resetting desktop state to defaults.");
     this.isMobile = false;
     this.openMobile = false;
 
