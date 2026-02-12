@@ -46,8 +46,6 @@ export interface NormalPdfRequest {
 
 
 export interface NewsvendorMarkersRequest {
-  simId: string;
-
   meanDemand: number;
   orderQuantity: number;
 
