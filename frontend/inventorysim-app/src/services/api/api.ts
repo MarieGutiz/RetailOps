@@ -36,7 +36,7 @@ api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     const apiError = !error.response
-      ? new ApiError("Cannot connect to backend", "NETWORK_ERROR")
+      ? new ApiError("Cannot connect to backend, please try again later.", "NETWORK_ERROR")
       : error.response.status === 404
       ? new ApiError("Endpoint not found", "NOT_FOUND", error.response.status)
       : error.response.status >= 500

@@ -38,7 +38,7 @@ export const simulateNewsvendor = async (
  * → Q vs expected profit (for profit curve)
  */
 export const batchNewsvendorSimulation = async (
-  data: NewsvendorMarkersRequest,
+  data: NewsvendorRequest,
   simId: string,
   shopName: string,
   minQ: number,
