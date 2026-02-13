@@ -1,4 +1,5 @@
 import { fetchNewsvendorMarkers, fetchNormalPdf, simulateNewsvendor } from "@/services/api/newsvendor.api";
+import { useApiErrorToast } from "@/services/api/useApiErrorToast";
 import { useProductStore } from "@/store/inventory/useProductStore";
 import type { NewsvendorResponse, NewsvendorMarkers, NewsvendorRequest, NormalPdfRequest } from "@/types/newsvendor-backend";
 import { getOrCreateSimId } from "@/utils/simulation";
@@ -23,7 +24,7 @@ interface UseNewsvendorSimulatorResult {
 //Use as
 //const { shop } = useSelectedShop();
 //const simulator = useSimulator(shop!.id, shop!.name);
-// const isAuthenticated = useProductStore((s) => s.isAuthenticated);
+// const isAuthenticated = useProductStore((s) => s.isAuthenticated);useApiErrorToast
 
 export function useSimulator(
   shopId: string,
@@ -34,14 +35,15 @@ export function useSimulator(
   const simId = useMemo(() => getOrCreateSimId(shopId), [shopId]);
 
   const [isRunning, setIsRunning] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
 
   const [response, setResponse] = useState<NewsvendorResponse | null>(null);
   const [markers, setMarkers] = useState<NewsvendorMarkers | null>(null);
   const [pdf, setPdf] = useState<Record<number, number> | null>(null);
 
   const [lastRequest, setLastRequest] = useState<NewsvendorRequest | null>(null);
-
+ 
+  useApiErrorToast(error, "Simulator Error");
 
   const run = async (request: NewsvendorRequest) => {
     
@@ -67,20 +69,29 @@ export function useSimulator(
         shopName
       );
       console.log("Response ", res)
+      // Set last request first
+      setLastRequest(request);
+
+      // Then set response
       setResponse(res);
+      //Watch markers
+
+      console.log("Sending markers request:", {
+      meanDemand: request.meanDemand,
+      orderQuantity: res.optimalOrderQuantity,
+      criticalRatio: res.criticalRatio,
+    });
+
 
       /* ───────────── Markers for charts ───────────── */
       const markerRes = await fetchNewsvendorMarkers({
-        // simId,
+        simId,
         meanDemand: request.meanDemand,
         orderQuantity: res.optimalOrderQuantity,
         criticalRatio: res.criticalRatio,
       });
 
       setMarkers(markerRes);
-
-      //Set last request
-      setLastRequest(request);
 
 
       /* ───────────── Normal PDF overlay ───────────── */
@@ -97,7 +108,7 @@ export function useSimulator(
 
     } catch (err) {
       console.error(err);
-      setError("Newsvendor simulation failed");
+      setError(err);
     } finally {
       setIsRunning(false);
     }
@@ -106,7 +117,7 @@ export function useSimulator(
   return {
     simId,
     isRunning,
-    error,
+    error: error ? String(error) : null,
 
     response,
     markers,
@@ -114,7 +125,7 @@ export function useSimulator(
 
     lastRequest,
 
-    hasResult: !!response,
+    hasResult: !!response && !!lastRequest,
     run,
   };
 }

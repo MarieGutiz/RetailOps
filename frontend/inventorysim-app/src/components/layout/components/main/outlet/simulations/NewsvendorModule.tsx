@@ -65,6 +65,9 @@ const NewsvendorModule = () => {
     // Call simulator.run with formData if provided, otherwise use last known inputs
     await simulator.run(formData);
   };
+  console.log("response:", simulator.response);
+  console.log("lastRequest:", simulator.lastRequest);
+
 
   return (
     <ModuleContainer
@@ -140,11 +143,13 @@ const NewsvendorModule = () => {
       {/* DISTRIBUTION */}
       <TabsContent value="distribution" className="mt-4">
         
-          {simulator.response && simulator.lastRequest? (
+          {
+          simulator.response &&
+          simulator.lastRequest &&
+          simulator.pdf ? (
             <DistributionPanel 
                 response={simulator.response}
                 request={simulator.lastRequest}
-                pdf={simulator.pdf}
                 simId={simulator.simId}
                 shopName={selectedShop.name}
             />

@@ -1,5 +1,5 @@
 import { batchNewsvendorSimulation } from "@/services/api/newsvendor.api";
-import type { NewsvendorMarkersRequest } from "@/types/newsvendor-backend";
+import type { NewsvendorMarkersRequest, NewsvendorRequest } from "@/types/newsvendor-backend";
 import { useState, useEffect } from "react";
 import {
   LineChart,
@@ -14,7 +14,7 @@ import {
 
 
 interface Props {
-  request: NewsvendorMarkersRequest;
+  request: NewsvendorRequest;
   simId: string;
   shopName: string;
   optimalQ: number;
