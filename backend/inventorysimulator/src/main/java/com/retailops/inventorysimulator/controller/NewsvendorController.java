@@ -91,7 +91,7 @@ public class NewsvendorController {
      * @return  Returns a profit frequency distribution (histogram) for a fixed order quantity Q*.
      */
     @PostMapping("/profit-distribution")
-    public Map<Integer, Integer> profitDistribution(
+    public ProfitDistributionResult profitDistribution(
             @Valid @RequestBody NewsvendorRequest request,
             @RequestParam int orderQuantity,
             @RequestParam String simId,
