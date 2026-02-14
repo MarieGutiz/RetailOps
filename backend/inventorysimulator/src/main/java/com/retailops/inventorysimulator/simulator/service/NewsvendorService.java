@@ -7,6 +7,7 @@ import com.retailops.inventorysimulator.service.SimulationServiceModel;
 import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
 import com.retailops.inventorysimulator.simulator.dto.NewsvendorRequest;
 import com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse;
+import com.retailops.inventorysimulator.simulator.dto.ProfitDistributionResult;
 import com.retailops.inventorysimulator.simulator.generator.model.newsvendor.NewsvendorMonteCarloGenerator;
 import com.retailops.inventorysimulator.util.calculator.CriticalRatioCalculator;
 import com.retailops.inventorysimulator.util.distribution.Normal;
@@ -223,7 +224,7 @@ public class NewsvendorService {
      * @param shopName
      * @return Gives a frequency map of profits, good for charting.
      */
-    public Map<Integer, Integer> profitDistribution(
+    public ProfitDistributionResult profitDistribution(
             NewsvendorRequest request,
             int Qstar,
             String simId,
@@ -234,7 +235,17 @@ public class NewsvendorService {
 
         Map<Integer, Integer> histogram = new TreeMap<>();
 
-        for (int i = 0; i < request.simulationRuns(); i++) {
+        int runs = request.simulationRuns();
+        int bucketSize = 10;//Bigger buckets for better plot
+
+        double sum = 0;
+        double sumSq = 0;
+        int lossCount = 0;
+
+        double minProfit = Double.MAX_VALUE;
+        double maxProfit = Double.MIN_VALUE;
+
+        for (int i = 0; i < runs; i++) {
             double profit = generator.simulate(
                     Qstar,
                     request.meanDemand(),
@@ -244,16 +255,48 @@ public class NewsvendorService {
                     request.salvageValue(),
                     1  // single run
             );
-            int bucket = (int) Math.round(profit);
-            histogram.put(bucket, histogram.getOrDefault(bucket, 0) + 1);
+            // Update stats
+            sum += profit;
+            sumSq += profit * profit;
+
+            if (profit < 0) {
+                lossCount++;
+            }
+
+            minProfit = Math.min(minProfit, profit);
+            maxProfit = Math.max(maxProfit, profit);
+
+            // Bucket logic
+            int bucket = ((int) Math.floor(profit / bucketSize)) * bucketSize;
+
+            histogram.put(bucket,
+                    histogram.getOrDefault(bucket, 0) + 1);
+
         }
 
-        return histogram; // can be serialized to JSON
+        double expected = sum / runs;
+        double variance = (sumSq / runs) - (expected * expected);
+        double probabilityOfLoss = (double) lossCount / runs;
+
+        return new ProfitDistributionResult(
+                histogram,
+                expected,
+                variance,
+                probabilityOfLoss,
+                minProfit,
+                maxProfit
+        );
+        // can be serialized to JSON
     }
 
     //Check for chart points
     public Map<Double, Double> normalPDF(
-            BigDecimal mean, BigDecimal stdDev, double min, double max, double step, String simId
+            BigDecimal mean,
+            BigDecimal stdDev,
+            double min,
+            double max,
+            double step,
+            String simId
     ) {
 
         if(simId == null) {return null;}
