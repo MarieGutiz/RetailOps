@@ -1,4 +1,4 @@
-import type { NewsvendorMarkers, NewsvendorMarkersRequest, NewsvendorRequest, NewsvendorResponse, NormalPdfRequest } from "@/types/newsvendor-backend";
+import type { NewsvendorMarkers, NewsvendorMarkersRequest, NewsvendorRequest, NewsvendorResponse, NormalPdfRequest, ProfitDistributionResult } from "@/types/newsvendor-backend";
 import api from "./api";
 
 
@@ -91,7 +91,7 @@ export const fetchProfitDistribution = async (
   orderQuantity: number,
   simId: string,
   shopName: string
-): Promise<Record<number, number>> => {
+): Promise<ProfitDistributionResult> => {
   try {
     const response = await api.post(
         `${NEWSVENDOR_BASE}/profit-distribution`,

@@ -57,7 +57,7 @@ export const DemandPdfChartDemo = ({ mean, stdDeviation, optimalQ }: Props) => {
         margin={{ top: 20, right: 30, bottom: 20, left: 0 }}
         >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="demand" />
+        <XAxis dataKey="demand" type="number"/>
         <YAxis />
         <Tooltip />
 
@@ -71,11 +71,12 @@ export const DemandPdfChartDemo = ({ mean, stdDeviation, optimalQ }: Props) => {
         />
 
         {/* Full bell curve */}
-        <Area type="monotone" dataKey="density" stroke="#10b981" fill="none" dot={false} />
+        {/* <Area type="monotone" dataKey="density" stroke="#10b981" fill="none" dot={false} /> */}
+            {/* <Area type="monotone" dataKey="shaded" fill="#3b82f6" fillOpacity={0.25} stroke="none" /> */}
+            <Area type="monotone" dataKey="density" stroke="#10b981" fill="none" dot={true} />
 
-        {/* Reference lines (rendered last so they appear on top) */}
-        <ReferenceLine x={mean} stroke="orange" label="Mean" isFront={true} />
-        <ReferenceLine x="10" stroke="red" label="Q*" isFront={true} />
+            <ReferenceLine x={mean} stroke="orange" label="Mean" isFront={true} />
+            <ReferenceLine x={optimalQ} stroke="red" label="Q*" isFront={true} />
         </AreaChart>
 
     </div>

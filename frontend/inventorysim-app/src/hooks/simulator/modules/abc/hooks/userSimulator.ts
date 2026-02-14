@@ -21,10 +21,6 @@ interface UseNewsvendorSimulatorResult {
 
   run: (request: NewsvendorRequest) => Promise<void>;
 }
-//Use as
-//const { shop } = useSelectedShop();
-//const simulator = useSimulator(shop!.id, shop!.name);
-// const isAuthenticated = useProductStore((s) => s.isAuthenticated);useApiErrorToast
 
 export function useSimulator(
   shopId: string,

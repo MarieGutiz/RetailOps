@@ -1,19 +1,17 @@
 
 import { fetchNormalPdf } from "@/services/api/newsvendor.api";
+import { useApiErrorToast } from "@/services/api/useApiErrorToast";
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  LineChart,
-  Line,
+  AreaChart,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
   ReferenceLine,
   ResponsiveContainer,
-  ReferenceArea,
   Area,
-  Label,
 } from "recharts";
 
 
@@ -24,12 +22,13 @@ interface Props {
   simId: string;
   criticalRatio: number;
 }
-type Mode = "PDF" | "CDF";
 
 interface ChartPoint {
   demand: number;
   density: number;
+  shadedDensity?: number;
 }
+
 
 
 const DemandPdfChart = ({ 
@@ -51,97 +50,168 @@ const DemandPdfChart = ({
     */
    
       
-  //   const [data, setData] = useState<
-  //   {
-  //     demand: number;
-  //     density: number;
-  //     safeZone: number;
-  //     riskZone: number;
-  //     cumulative: number;
-  //   }[]
-  // >([]);
-    const [data, setData] = useState<ChartPoint[]>([]);
+  const [data, setData] = useState<ChartPoint[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!mean || !stdDeviation || stdDeviation <= 0) return;
+    if (!mean || !stdDeviation || stdDeviation <= 0) {
+      setError("Invalid distribution parameters.");
+      return;
+    }
 
-    const min = mean - 4 * stdDeviation;
-    const max = mean + 4 * stdDeviation;
-    const step = (max - min) / 100;
+    // const min = mean - 4 * stdDeviation;
+    // const max = mean + 4 * stdDeviation;
+    // const step = (max - min) / 100;
+    const min = Math.floor(mean - 4 * stdDeviation);
+    const max = Math.ceil(mean + 4 * stdDeviation);
+    const step = 1; // integer demand
 
-    fetchNormalPdf(
-      {
-        mean,
-        stdDev: stdDeviation,
-        min,
-        max,
-        step,
-      },
-      simId
-    )
-      .then((result) => {
-        const formatted = Object.entries(result).map(
-          ([d, density]) => ({
-            demand: Number(d),
-            density: Number(density),
-          })
+
+    const loadPdf = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const result = await fetchNormalPdf(
+          {
+            mean,
+            stdDev: stdDeviation,
+            min,
+            max,
+            step,
+          },
+          simId
         );
 
+        const formatted: ChartPoint[] = Object.entries(result)
+        .map(([d, density]) => ({
+          demand: Math.round(Number(d)), // enforce integer
+          density: Number(density),
+        }))
+        .sort((a, b) => a.demand - b.demand);
+
+
         setData(formatted);
-      })
-      .catch(console.error);
+      } catch (err) {
+        console.error(err);
+
+        const message =
+          "Unable to load demand distribution. Please try again.";
+
+        setError(message);
+
+      // Toast notification
+      useApiErrorToast(error, "Simulator Error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPdf();
   }, [mean, stdDeviation, simId]);
 
-  // Create shaded area up to optimalQ
+  // Shading up to optimalQ
   const shadedData = useMemo(() => {
-    return data.map((point) => ({
-      ...point,
-      shadedDensity:
-        point.demand <= optimalQ ? point.density : 0,
-    }));
-  }, [data, optimalQ]);
-  console.log("optimalQ:", optimalQ);
-  console.log("data range:", data[0]?.demand, "to", data[data.length - 1]?.demand);
+  const qInt = Math.floor(optimalQ);
+
+  return data.map((point) => ({
+    ...point,
+    shadedDensity:
+      point.demand <= qInt
+        ? point.density
+        : null,
+      }));
+    }, [data, optimalQ]);
 
 
   return (
-    <div className="h-[350px]">
+    <div className="h-[350px] flex flex-col">
       <h3 className="font-semibold mb-2">
         Demand Distribution (Normal PDF)
       </h3>
 
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={shadedData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="demand" />
-          <YAxis />
-          <Tooltip />
+      {/* Loading */}
+      {loading && (
+        <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
+          Computing normal distribution...
+        </div>
+      )}
 
-          {/* Shaded area under the bell up to Q* */}
-          <Area
-            type="monotone"
-            dataKey="shadedDensity"
-            fill="#3b82f6"
-            fillOpacity={0.25}
-            stroke="none"
-          />
+      {/* Error Panel */}
+      {error && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+            {error}
+          </div>
+        </div>
+      )}
 
-          {/*  Bell curve */}
-          <Line
-            type="monotone"
-            dataKey="density"
-            stroke="#10b981"
-            dot={false}
-          />
+      {/* Chart */}
+      {!loading && !error && shadedData.length > 0 && (
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={shadedData}>
+            <CartesianGrid strokeDasharray="3 3" />
 
-          <ReferenceLine x={mean} stroke="orange" label="Mean" />
-          <ReferenceLine x={optimalQ} stroke="red" label="Q*" />
-        </LineChart>
-      </ResponsiveContainer>
+           <XAxis
+              dataKey="demand"
+              type="number"
+              domain={["dataMin", "dataMax"]}
+              tickFormatter={(v) => Math.round(v).toString()}
+            />
+            <YAxis type="number" />
 
+            <Tooltip
+              formatter={(value: number, name: string) => {
+                const labelMap: Record<string, string> = {
+                  density: "Probability Density",
+                  shadedDensity: "Cumulative Area (≤ Q*)",
+                };
+
+                return [value.toFixed(5), labelMap[name] || name];
+              }}
+              labelFormatter={(label) =>
+                  `Demand: ${Math.round(Number(label))} units`
+                }
+            />
+
+
+            {/* Shaded area up to Q* */}
+            <Area
+              type="monotone"
+              dataKey="shadedDensity"
+              stroke="none"
+              fill="#3b82f6"
+              fillOpacity={0.25}
+              isAnimationActive={false}
+            />
+
+            {/* Full curve */}
+            <Area
+              type="monotone"
+              dataKey="density"
+              stroke="#10b981"
+              fill="none"
+              dot={false}
+              isAnimationActive={false}
+            />
+
+            {/* Reference lines */}
+            <ReferenceLine x={Math.round(mean)} stroke="orange" label="Mean" />
+            <ReferenceLine x={Math.floor(optimalQ)} stroke="red" label="Q*" />
+          </AreaChart>
+        </ResponsiveContainer>
+      )}
+
+      {/* Empty state */}
+      {!loading && !error && shadedData.length === 0 && (
+        <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
+          No distribution data available.
+        </div>
+      )}
     </div>
-  );
 
+  );
 
 
 }
