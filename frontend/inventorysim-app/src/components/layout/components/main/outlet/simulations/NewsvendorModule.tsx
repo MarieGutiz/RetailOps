@@ -65,8 +65,8 @@ const NewsvendorModule = () => {
     // Call simulator.run with formData if provided, otherwise use last known inputs
     await simulator.run(formData);
   };
-  console.log("response:", simulator.response);
-  console.log("lastRequest:", simulator.lastRequest);
+  // console.log("response:", simulator.response);
+  // console.log("lastRequest:", simulator.lastRequest);
 
 
   return (
@@ -81,9 +81,9 @@ const NewsvendorModule = () => {
           <Button
             className="toolbar-element jbtn-flat-btn toolbar-element-md"
             disabled={simulator.isRunning}
-            onClick={() => handleRunSimulation()}
+            // onClick={() => handleRunSimulation()}
           >
-            Run simulation
+           Run EOQ
           </Button>
         </>
       }

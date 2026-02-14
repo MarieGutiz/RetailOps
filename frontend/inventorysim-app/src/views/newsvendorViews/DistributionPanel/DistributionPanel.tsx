@@ -23,8 +23,8 @@ const DistributionPanel = ({
   return (
     <div className="space-y-10">
 
-      <Ver />
-      {/* <ProfitCurveChart
+      {/* <Ver /> */}
+      <ProfitCurveChart
         request={request}
         simId={simId}
         shopName={shopName}
@@ -38,14 +38,14 @@ const DistributionPanel = ({
           optimalQ={optimalQ}
           simId={simId}
           criticalRatio={response.criticalRatio}
-      /> */}
+      />
      
-      {/* <ProfitDistributionChart
+      <ProfitDistributionChart
         request={request}
         optimalQ={optimalQ}
         simId={simId}
         shopName={shopName}
-      /> */}
+      />
     </div>
   );
 

@@ -61,3 +61,11 @@ export interface NewsvendorMarkers {
 }
 
 
+export interface ProfitDistributionResult {
+  histogram: Record<number, number>;  // profit bucket -> frequency
+  expectedProfit: number;
+  variance: number;
+  probabilityOfLoss: number;
+  minProfit: number;
+  maxProfit: number;
+}
