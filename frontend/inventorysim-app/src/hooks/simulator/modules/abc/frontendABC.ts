@@ -4,7 +4,7 @@ import type { ABCData } from "@/types/abc";
 import type { SimulationType, AbcResponseDto } from "@/types/abc-backend";
 import { shopId, type ShopId } from "@/types/shop";
 import type { SimulatorABCOutput } from "@/types/simulator";
-import { mapAbcResponseToTable } from "./mapper/abcBackendMapper";
+import { mapAbcResponseToTable } from "../../engines/mapper/abcBackendMapper";
 import { ABCAnalysisFrontend } from "@/services/domain/segmentation/ABCAnalysisFrontend";
 import { useShopStore } from "@/store/shop/useShopStore";
 import { isAxiosError } from "axios";

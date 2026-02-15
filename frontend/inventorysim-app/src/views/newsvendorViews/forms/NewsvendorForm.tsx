@@ -23,7 +23,6 @@ import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type NewsvendorFormValues, newsvendorSchema } from "./props/newsvendor.schema";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import AdvancedNewsvendorSection from "./AdvancedNewsvendorSection";
 
 
@@ -41,18 +40,6 @@ const STD_DEV_INFO = {
     "This measures how much demand fluctuates around the average. A higher value means demand is less predictable.",
 };
 
-// const SALVAGE_INFO = {
-//   title: "Salvage Value",
-//   description:
-//     "If leftover products can be sold or reused, enable this. Otherwise, units are wasted.",
-// };
-
-// const PENALTY_INFO = {
-//   title: "Penalty Cost",
-//   description:
-//     "If unsatisfied demand incurs a penalty (e.g., lost sale or backorder), enable this flag and set the cost.",
-// };
-
 
 const NewsvendorForm = ({
   defaultRuns = 10_000,
@@ -65,19 +52,6 @@ const NewsvendorForm = ({
   const isAuthenticated = useProductStore((s) => s.isAuthenticated);
 
   // ───────────── Form state ─────────────
-//   const [form, setForm] = useState<
-//   Omit<NewsvendorRequest, "productId" | "productName" | "username">
-// >({
-//   meanDemand: 0,
-//   stdDeviation: 0,
-//   price: 0,
-//   cost: 0,
-//   salvageValue: 0,
-//   penalty: 0,
-//   mode: "CLASSIC",
-//   simulationRuns: defaultRuns,
-//   saveToHistory: false,
-// });
 
   const [selectedProduct, setSelectedProduct] = useState<{
   id: string;

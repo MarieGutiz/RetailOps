@@ -68,45 +68,19 @@ export const data_menu = {
     title: "Simulations",
     id: "simulations",
     icon: PlayCircleIcon,
+    url: "/dashboard/simulations/newsvendor",
     subitems: [
       {
         title: "Newsvendor",
         id: "newsvendor",
         url: "/dashboard/simulations/newsvendor",
         icon: ActivityIcon,
-        // subitems: [
-        //   {
-        //     title: "Run Simulation",
-        //     url: "/dashboard/simulations/newsvendor/run",
-        //   },
-        //   {
-        //     title: "Results",
-        //     url: "/dashboard/simulations/newsvendor/results",
-        //   },
-        //   {
-        //     title: "Analytics",
-        //     url: "/dashboard/simulations/newsvendor/analytics",
-        //   },
-        //   {
-        //     title: "History",
-        //     url: "/dashboard/simulations/newsvendor/history",
-        //   },
-        // ],
       },
       {
         title: "EOQ",
         id: "sim-eoq",
-        icon: CalculatorIcon,
-        // subitems: [
-        //   {
-        //     title: "Run EOQ",
-        //     url: "/dashboard/simulations/eoq/run",
-        //   },
-        //   {
-        //     title: "Compare Scenarios",
-        //     url: "/dashboard/simulations/eoq/compare",
-        //   },
-        // ],
+        url: "#",
+        icon: CalculatorIcon,        
       },
     ],
   }

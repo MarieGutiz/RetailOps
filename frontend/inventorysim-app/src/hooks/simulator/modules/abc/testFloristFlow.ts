@@ -1,7 +1,7 @@
 import type { ABCTableRow } from "@/types/abc";
 import type { AbcResponseDto, SimulationType } from "@/types/abc-backend";
-import {  mapAbcResponseToTable } from "./mapper/abcBackendMapper";
 import type { ShopType } from "@/types/shop";
+import { mapAbcResponseToTable } from "../../engines/mapper/abcBackendMapper";
 import { runShopABC } from "./frontendABC";
 
 const floristMockResponse: AbcResponseDto = {

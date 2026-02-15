@@ -1,5 +1,5 @@
 
-import { runFrontendABC, runShopABC } from "@/hooks/simulator/engines/frontendABC";
+import { runFrontendABC, runShopABC } from "@/hooks/simulator/modules/abc/frontendABC";
 import type { ABCData, ABCSummary, ABCTableRow } from "@/types/abc";
 import type { AbcResponseDto } from "@/types/abc-backend";
 import type { Product } from "@/types/products";

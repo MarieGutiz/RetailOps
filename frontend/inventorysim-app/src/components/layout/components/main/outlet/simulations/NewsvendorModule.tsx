@@ -3,12 +3,15 @@ import { useSelectedShop } from "@/hooks/shop/useSelectedShop";
 import { useEffect, useMemo, useState } from "react";
 import ModuleContainer from "../../ModuleContainer";
 import Info from "@/views/helpers/Info";
-import { useSimulator } from "@/hooks/simulator/modules/abc/hooks/userSimulator";
+import { useSimulator } from "@/hooks/simulator/userSimulator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NewsvendorForm from "@/views/newsvendorViews/forms/NewsvendorForm";
 import NoSelectShop from "@/views/helpers/NoSelectShop";
 import ResultsPanel from "@/views/newsvendorViews/ResultsPanel/ResultsPanel";
 import DistributionPanel from "@/views/newsvendorViews/DistributionPanel/DistributionPanel";
+import { toast } from "sonner";
+import { useHydratedSimulator } from "@/hooks/simulator/modules/newsvendors/hooks/useHydratedSimulator";
+import { useSimulationStore } from "@/store/simulations/useSimulationStore";
 
 const NEWSVENDOR_INFO = {
   title: "Newsvendor Model",
@@ -44,27 +47,35 @@ const NewsvendorModule = () => {
 
   
   //  SHOP EXISTS → LOAD SIMULATOR
-  const simulator = useSimulator(selectedShop.id, selectedShop.name);
+  // const simulator = useSimulator(selectedShop.id, selectedShop.name);
   const selectedUserCase = selectedShop.name;
+
+   // Hydrate simulator & last simulated product
+  const { simulator, lastSimulatedProduct } = useHydratedSimulator(selectedShop.id, selectedShop.name);
+
 
     // Controlled Tabs state
   const [activeTab, setActiveTab] = useState("parameters");
 
-  // Auto-switch to Results after simulation
+   // Auto-switch to Results if previous run exists
   useEffect(() => {
-    if (simulator.hasResult) {
+    if (lastSimulatedProduct && simulator.response) {
       setActiveTab("results");
     }
-  }, [simulator.hasResult]);
+  }, [lastSimulatedProduct, simulator.response]);
 
   // Unified run function
   const handleRunSimulation = async (formData?: any) => {
-    // Optional: reset tab to parameters while running
-    setActiveTab("parameters");
+    if (!formData.productName) {
+      toast.error("Simulation request missing productName");
+      return console.error("Simulation request missing productName");
+    }
 
-    // Call simulator.run with formData if provided, otherwise use last known inputs
+    setActiveTab("parameters");
     await simulator.run(formData);
   };
+
+  const storeState = useSimulationStore.getState();
   // console.log("response:", simulator.response);
   // console.log("lastRequest:", simulator.lastRequest);
 
@@ -80,15 +91,24 @@ const NewsvendorModule = () => {
           <Info content={NEWSVENDOR_INFO} />
           <Button
             className="toolbar-element jbtn-flat-btn toolbar-element-md"
-            disabled={simulator.isRunning}
-            // onClick={() => handleRunSimulation()}
+            disabled={simulator.isRunning || !simulator.lastRequest}
+            onClick={() => simulator.lastRequest && handleRunSimulation(simulator.lastRequest)}
           >
-           Run EOQ
+            Run Last Simulation
           </Button>
         </>
       }
     >
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs 
+       value={activeTab}
+       onValueChange={setActiveTab}
+       className="
+          bg-white/70 backdrop-blur-sm shadow-md 
+          rounded-lg p-1 
+          flex flex-wrap sm:flex-nowrap 
+          gap-2 
+          border border-gray-200
+        ">
       {/* Tab Holder */}
       <TabsList className="bg-white/70 backdrop-blur-sm shadow-md rounded-lg p-1 flex gap-2 border border-gray-200">
         <TabsTrigger
@@ -102,7 +122,7 @@ const NewsvendorModule = () => {
 
         <TabsTrigger
           value="results"
-          disabled={!simulator.hasResult}
+           disabled={!lastSimulatedProduct}
           className={`px-4 py-2 rounded-md transition-colors ${
             activeTab === "results" ? "jbtn-success shadow-inner" : "hover:bg-gray-100"
           }`}
@@ -111,14 +131,29 @@ const NewsvendorModule = () => {
         </TabsTrigger>
 
         <TabsTrigger
-          value="distribution"
-          disabled={!simulator.hasResult}
-          className={`px-4 py-2 rounded-md transition-colors ${
-            activeTab === "distribution" ? "jbtn-success shadow-inner" : "hover:bg-gray-100"
-          }`}
-        >
-          Distribution
-        </TabsTrigger>
+            value="distribution"
+            disabled={!simulator.hasResult}
+            className={`
+              relative px-4 py-2 rounded-md transition-colors
+              ${activeTab === "distribution"
+                ? "jbtn-success shadow-inner"
+                : "hover:bg-gray-100"
+              }
+            `}
+          >
+            Distribution
+
+            {simulator.hasResult && activeTab !== "distribution" && (
+              <span className="
+                absolute -top-1 -right-1
+                h-3 w-3
+                rounded-full
+                bg-emerald-500
+                animate-pulse
+              " />
+            )}
+          </TabsTrigger>
+
       </TabsList>
 
       {/* PARAMETERS */}
@@ -131,8 +166,12 @@ const NewsvendorModule = () => {
 
       {/* RESULTS */}
       <TabsContent value="results" className="mt-4">
-        {simulator.response ? (
-          <ResultsPanel result={simulator.response} />
+         {lastSimulatedProduct &&
+          storeState.newsvendorSimulations[selectedShop.id]?.[lastSimulatedProduct] ? (
+            <ResultsPanel
+              result={storeState.newsvendorSimulations[selectedShop.id][lastSimulatedProduct].response}
+            />
+
         ) : (
           <div className="text-sm text-muted-foreground">
             Run the simulation to see results.
