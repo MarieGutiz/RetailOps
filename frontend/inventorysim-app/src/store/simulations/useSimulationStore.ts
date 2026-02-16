@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import type { NewsvendorRequest, NewsvendorResponse } from "@/types/newsvendor-backend";
-import type { EoqResponse } from "@/types/eoq-backend";
+import type { EoqRequest, EoqResponse } from "@/types/eoq-backend";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { saveToStorage } from "@/utils/storage";
@@ -15,6 +15,7 @@ export interface NewsvendorSimulationEntry {
 
 export interface EoqSimulationEntry {
   response: EoqResponse;
+  request: EoqRequest;
   createdAt: string;
 }
 
@@ -109,7 +110,7 @@ export const useSimulationStore = create<SimulationStore>()(
         })),
     }),
     {
-      name: "sim-storage", // 🔑 localStorage key
+      name: "sim-storage", // localStorage key
       storage: createJSONStorage(() => ({
         getItem: saveToStorage.getItem,
         setItem: saveToStorage.setItem,
