@@ -1,11 +1,9 @@
-import { fetchNewsvendorMarkers, fetchNormalPdf, simulateNewsvendor } from "@/services/api/newsvendor.api";
-import { useApiErrorToast } from "@/services/api/useApiErrorToast";
-import { useProductStore } from "@/store/inventory/useProductStore";
+import { useSimulationBase } from "@/hooks/simulator/useSimulationBase";
+import { simulateNewsvendor, fetchNewsvendorMarkers, fetchNormalPdf } from "@/services/api/newsvendor.api";
 import { useSimulationStore } from "@/store/simulations/useSimulationStore";
 import type { NewsvendorResponse, NewsvendorMarkers, NewsvendorRequest, NormalPdfRequest } from "@/types/newsvendor-backend";
-import { getOrCreateSimId } from "@/utils/simulation";
-import { useState, useMemo, useEffect } from "react";
-import { toast } from "sonner";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 interface UseNewsvendorSimulatorResult {
   simId: string;
@@ -22,31 +20,48 @@ interface UseNewsvendorSimulatorResult {
 
   run: (request: NewsvendorRequest) => Promise<void>;
 
- newsvendorSimulations: Record<string, Record<string, { request: NewsvendorRequest; response: NewsvendorResponse }>>;
-
+  newsvendorSimulations: Record<
+    string,
+    Record<string, { request: NewsvendorRequest; response: NewsvendorResponse }>
+  >;
 }
 
-export function useSimulator(shopId: string, shopName: string, productName?: string): UseNewsvendorSimulatorResult {
-  const isAuthenticated = useProductStore((s) => s.isAuthenticated);
-  const simId = useMemo(() => getOrCreateSimId(shopId), [shopId]);
+export function useNewsvendorSimulator(
+  shopId: string,
+  shopName: string,
+  productName?: string
+): UseNewsvendorSimulatorResult {
 
-  const [isRunning, setIsRunning] = useState(false);
-  const [error, setError] = useState<unknown>(null);
+  const {
+    simId,
+    isRunning,
+    error,
+    setIsRunning,
+    setError,
+    sanitizeRequest,
+  } = useSimulationBase<NewsvendorRequest>(
+    shopId,
+    "Newsvendor Simulator Error"
+  );
+
   const [response, setResponse] = useState<NewsvendorResponse | null>(null);
   const [markers, setMarkers] = useState<NewsvendorMarkers | null>(null);
   const [pdf, setPdf] = useState<Record<number, number> | null>(null);
   const [lastRequest, setLastRequest] = useState<NewsvendorRequest | null>(null);
 
-  const addNewsvendorSimulation = useSimulationStore((s) => s.addNewsvendorSimulation);
-  const newsvendorSimulations = useSimulationStore((s) => s.newsvendorSimulations);
+  const addNewsvendorSimulation = useSimulationStore(
+    (s) => s.addNewsvendorSimulation
+  );
+  const newsvendorSimulations = useSimulationStore(
+    (s) => s.newsvendorSimulations
+  );
 
-  useApiErrorToast(error, "Simulator Error");
-
-  // ─────────── Load last persisted simulation for the product ───────────
+  // ─────────── Hydrate last persisted simulation ───────────
   useEffect(() => {
     if (!productName) return;
 
     const lastSim = newsvendorSimulations[shopId]?.[productName];
+
     if (lastSim) {
       setResponse(lastSim.response);
       setLastRequest(lastSim.request);
@@ -63,22 +78,19 @@ export function useSimulator(shopId: string, shopName: string, productName?: str
       setIsRunning(true);
       setError(null);
 
-      const sanitizedRequest: NewsvendorRequest = {
-        ...request,
-        saveToHistory: isAuthenticated ? request.saveToHistory : false,
-      };
+      const sanitizedRequest = sanitizeRequest(request);
 
-      if (!isAuthenticated && request.saveToHistory) {
-        toast.error("Register to save simulations to history.");
-      }
-
-      // ───────────── Core simulation ─────────────
-      const res = await simulateNewsvendor(sanitizedRequest, simId, shopName);
+      // ───────── Core Simulation ─────────
+      const res = await simulateNewsvendor(
+        sanitizedRequest,
+        simId,
+        shopName
+      );
 
       setLastRequest(request);
       setResponse(res);
 
-      // Push to global store (persisted)
+      // Persist to global store
       addNewsvendorSimulation(shopId, request.productName, {
         request,
         response: res,
@@ -86,16 +98,17 @@ export function useSimulator(shopId: string, shopName: string, productName?: str
         createdAt: new Date().toISOString(),
       });
 
-      // ───────────── Markers ─────────────
+      // ───────── Markers ─────────
       const markerRes = await fetchNewsvendorMarkers({
         simId,
         meanDemand: request.meanDemand,
         orderQuantity: res.optimalOrderQuantity,
         criticalRatio: res.criticalRatio,
       });
+
       setMarkers(markerRes);
 
-      // ───────────── PDF ─────────────
+      // ───────── PDF ─────────
       const pdfRequest: NormalPdfRequest = {
         mean: request.meanDemand,
         stdDev: request.stdDeviation,
@@ -103,6 +116,7 @@ export function useSimulator(shopId: string, shopName: string, productName?: str
         max: request.meanDemand + 4 * request.stdDeviation,
         step: Math.max(1, request.stdDeviation / 10),
       };
+
       const pdfRes = await fetchNormalPdf(pdfRequest, simId);
       setPdf(pdfRes);
 
@@ -117,14 +131,13 @@ export function useSimulator(shopId: string, shopName: string, productName?: str
   return {
     simId,
     isRunning,
-    error: error ? String(error) : null,
+    error,
     response,
     markers,
     pdf,
     lastRequest,
     hasResult: !!response && !!lastRequest,
     run,
-    newsvendorSimulations
+    newsvendorSimulations,
   };
 }
-

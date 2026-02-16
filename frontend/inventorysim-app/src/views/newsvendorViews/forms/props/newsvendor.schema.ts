@@ -1,21 +1,5 @@
-// validation/newsvendor.schema.ts
 import { z } from "zod";
 
-// export const newsvendorSchema = z.object({
-//   meanDemand: z.number().positive("Mean demand must be greater than 0"),
-//   stdDeviation: z.number().nonnegative("Standard deviation cannot be negative"),
-
-//   price: z.number().positive("Price must be greater than 0"),
-//   cost: z.number().positive("Cost must be greater than 0"),
-
-//   salvageValue: z.number().nonnegative(),
-//   penalty: z.number().nonnegative(),
-
-//   simulationRuns: z.number().int().min(100, "Minimum 100 runs"),
-//   saveToHistory: z.boolean(),
-
-//   mode: z.literal("CLASSIC"),
-// });
 
 export const newsvendorSchema = z
   .object({

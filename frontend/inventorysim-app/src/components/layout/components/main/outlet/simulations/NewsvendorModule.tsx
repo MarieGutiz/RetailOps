@@ -3,14 +3,13 @@ import { useSelectedShop } from "@/hooks/shop/useSelectedShop";
 import { useEffect, useMemo, useState } from "react";
 import ModuleContainer from "../../ModuleContainer";
 import Info from "@/views/helpers/Info";
-import { useSimulator } from "@/hooks/simulator/userSimulator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NewsvendorForm from "@/views/newsvendorViews/forms/NewsvendorForm";
 import NoSelectShop from "@/views/helpers/NoSelectShop";
 import ResultsPanel from "@/views/newsvendorViews/ResultsPanel/ResultsPanel";
 import DistributionPanel from "@/views/newsvendorViews/DistributionPanel/DistributionPanel";
 import { toast } from "sonner";
-import { useHydratedSimulator } from "@/hooks/simulator/modules/newsvendors/hooks/useHydratedSimulator";
+import { useHydratedNewsvendorSimulator } from "@/hooks/simulator/modules/newsvendors/hooks/useHydratedNewsvendorSimulator";
 import { useSimulationStore } from "@/store/simulations/useSimulationStore";
 
 const NEWSVENDOR_INFO = {
@@ -51,7 +50,7 @@ const NewsvendorModule = () => {
   const selectedUserCase = selectedShop.name;
 
    // Hydrate simulator & last simulated product
-  const { simulator, lastSimulatedProduct } = useHydratedSimulator(selectedShop.id, selectedShop.name);
+  const { simulator, lastSimulatedProduct } = useHydratedNewsvendorSimulator(selectedShop.id, selectedShop.name);
 
 
     // Controlled Tabs state
