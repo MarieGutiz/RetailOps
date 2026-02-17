@@ -87,7 +87,6 @@ export const HorizonSetting = () => {
 const policyOptions = [
   { value: "EOQ", label: "EOQ" },
   { value: "Newsvendor", label: "Newsvendor" },
-  { value: "JIT", label: "Just-In-Time" },
 ] as const;
 
 type Policy = typeof policyOptions[number]["value"];

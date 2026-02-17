@@ -4,7 +4,7 @@ import { saveToStorage } from "@/utils/storage";
 type Currency = "$" | "€" | "₿" | "£";
 type Unit = "pcs" | "kg" | "liters";
 type Horizon = "7" | "30" | "90";
-type StockPolicy = "EOQ" | "Newsvendor" | "JIT";
+type StockPolicy = "EOQ" | "Newsvendor";
 
 interface SimulatorSettings {
   currency: Currency;
@@ -40,7 +40,7 @@ export const useSimulatorStore = create<SimulatorSettings>((set) => {
 
   const loadStockPolicy = (): StockPolicy => {
     const val = saveToStorage.getItem("stockPolicy") as StockPolicy | null;
-    return val === "EOQ" || val === "Newsvendor" || val === "JIT" ? val : "EOQ";
+    return val === "EOQ" || val === "Newsvendor" ? val : "EOQ";
   };
 
   const loadShowAdvanced = (): boolean =>
