@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import type { EoqFormProps } from "./props/EoqFormProps";
 import { eoqSchema, type EoqFormValues } from "./props/Eoq.schema";
 import { Label } from "@/components/ui/label";
+import ProductCard from "@/views/inventory/forms/ProductCard";
 
 const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) => {
   const isAuthenticated = useProductStore((s) => s.isAuthenticated);
@@ -20,9 +21,11 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
   const [selectedProduct, setSelectedProduct] = useState<{
     id: string;
     name: string;
+    quantity?: number;
+    price?: number;
     cost?: number;
-    sku?: string;
-    category?: string;
+    sku?:string;
+    category?:string;
   } | null>(null);
 
   const [search, setSearch] = useState("");
@@ -121,43 +124,70 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
             />
 
             {productOptions.length === 0 ? (
-              <div className="border rounded-md p-6 text-sm text-muted-foreground text-center">
-                Inventory is empty
+              <div className="border rounded-md p-6 text-sm text-muted-foreground text-center space-y-2">
+                <p className="font-medium text-foreground">Inventory is empty</p>
+                <p>You can start by adding products in the <span className="font-medium">Product Library</span>.</p>
               </div>
             ) : (
-              <div className="border rounded-md overflow-hidden max-h-[260px] overflow-y-auto">
-                <Table className="text-sm">
-                  <TableHeader>
-                    <TableRow className="sticky top-0 bg-muted/50 z-10 text-muted-foreground">
-                      <TableHead className="w-10 px-2 py-2"></TableHead>
-                      <TableHead className="px-2 py-2 text-left">SKU</TableHead>
-                      <TableHead className="px-2 py-2 text-left">Product</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredProducts.map((prod) => (
-                      <TableRow
-                        key={prod?.id}
-                        onClick={() => setSelectedProduct(prod)}
-                        className={`cursor-pointer transition-colors hover:bg-muted/50 ${
-                          selectedProduct?.id === prod?.id ? "bg-muted" : ""
-                        }`}
-                      >
-                        <TableCell className="px-2 py-2">
-                          <input
-                            type="radio"
-                            name="selectedProduct"
-                            checked={selectedProduct?.id === prod?.id}
-                            onChange={() => setSelectedProduct(prod)}
-                          />
-                        </TableCell>
-                        <TableCell className="px-2 py-2 font-mono text-xs">{prod?.sku || "—"}</TableCell>
-                        <TableCell className="px-2 py-2">{prod?.name}</TableCell>
+              <>
+                <div className="border rounded-md overflow-hidden">
+                  <div className="max-h-[260px] overflow-y-auto">
+
+                   <Table className="text-sm">
+                    <TableHeader>
+                      <TableRow className="sticky top-0 bg-muted/50 z-10 text-muted-foreground">
+                        <TableHead className="w-10 px-2 py-2"></TableHead>
+                        <TableHead className="px-2 py-2 text-left">SKU</TableHead>
+                        <TableHead className="px-2 py-2 text-left">Product</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredProducts.map((prod) => (
+                        <TableRow
+                          key={prod?.id}
+                          onClick={() => setSelectedProduct(prod)}
+                          className={`cursor-pointer transition-colors hover:bg-muted/50 ${
+                            selectedProduct?.id === prod?.id ? "bg-muted" : ""
+                          }`}
+                        >
+                          <TableCell className="px-2 py-2">
+                            <input
+                              type="radio"
+                              name="selectedProduct"
+                              checked={selectedProduct?.id === prod?.id}
+                              onChange={() => setSelectedProduct(prod)}
+                            />
+                          </TableCell>
+                          <TableCell className="px-2 py-2 font-mono text-xs">
+                            {prod?.sku || "—"}
+                          </TableCell>
+                          <TableCell className="px-2 py-2">{prod?.name}</TableCell>
+                        </TableRow>
+                      ))}
+
+                      {filteredProducts.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={3} className="px-4 py-6 text-center text-sm text-muted-foreground">
+                            No products match your search
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                  </div>
+                </div>
+
+                <div className="pt-6">
+                  {selectedProduct && (
+                    <ProductCard
+                      name={selectedProduct.name}
+                      stock={selectedProduct.quantity}
+                      sku={selectedProduct.sku}
+                      category={selectedProduct.category}
+                    />
+                  )}
+                </div>
+              </>
             )}
           </div>
 

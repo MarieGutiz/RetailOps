@@ -72,14 +72,14 @@ export const data_menu = {
     subitems: [
       {
         title: "Newsvendor",
-        id: "newsvendor",
+        id: "sim-newsvendor",
         url: "/dashboard/simulations/newsvendor",
         icon: ActivityIcon,
       },
       {
         title: "EOQ",
         id: "sim-eoq",
-        url: "#",
+        url: "/dashboard/simulations/eoq",
         icon: CalculatorIcon,        
       },
     ],

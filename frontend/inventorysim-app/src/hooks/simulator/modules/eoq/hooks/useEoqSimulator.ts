@@ -1,5 +1,6 @@
 import { useSimulationBase } from "@/hooks/simulator/useSimulationBase";
 import { simulateEoq, fetchEoqCurve } from "@/services/api/eoq.api";
+import { useApiErrorToast } from "@/services/api/useApiErrorToast";
 import { useSimulationStore } from "@/store/simulations/useSimulationStore";
 import type { EoqResponse, EoqCurveResponse, EoqRequest } from "@/types/eoq-backend";
 import { useState, useEffect } from "react";
@@ -98,6 +99,7 @@ export function useEoqSimulator(
       setCurve(curveRes);
 
     } catch (err) {
+      useApiErrorToast(error, "EOQ Simulator Error");
       console.error(err);
       setError(err);
     } finally {
