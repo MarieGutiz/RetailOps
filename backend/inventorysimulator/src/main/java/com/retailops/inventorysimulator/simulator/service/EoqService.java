@@ -1,7 +1,6 @@
 package com.retailops.inventorysimulator.simulator.service;
 
 import com.retailops.inventorysimulator.exception.ProductNameNotFoundException;
-import com.retailops.inventorysimulator.exception.ProductNotFoundException;
 import com.retailops.inventorysimulator.model.Product;
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.service.ProductService;
@@ -20,11 +19,43 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.calculateEOQ;
+
+/**
+ * Service class for managing the Economic Order Quantity (EOQ) model.
+ *
+ * The EOQ model determines the optimal order quantity Q*
+ * that minimizes total annual inventory cost under deterministic demand.
+ *
+ * Assumptions:
+ *  - Constant annual demand (D)
+ *  - Constant setup/ordering cost (S)
+ *  - Constant holding cost per unit per year (H)
+ *  - Instantaneous replenishment
+ *  - No shortages allowed
+ *
+ * Core formula:
+ *
+ *      Q* = sqrt( (2 * D * S) / H )
+ *
+ * Where:
+ *  D = Annual demand
+ *  S = Setup (ordering) cost per order
+ *  H = Holding cost per unit per year
+ *
+ * Total Cost Function:
+ *
+ *      TC(Q) = (D / Q) * S + (Q / 2) * H
+ *
+ * This service:
+ *  - Computes optimal EOQ
+ *  - Derives economic indicators (cost breakdown, cycle time, orders/year)
+ *  - Optionally persists simulation history
+ *  - Generates cost curves for visualization
+ */
+
 
 @Service
 @RequiredArgsConstructor
@@ -32,17 +63,22 @@ public class EoqService {
     private final SimulationServiceModel simulationServiceModel;
     private final ProductService productService;
 
-    // =========================
-    // Public API (requests)
-    // =========================
-
-    public EoqResponseDto runEoq(EoqRequestDto request) {
-
-        Product product = productService.findByName(request.productName())
-                .orElseThrow(() -> new ProductNameNotFoundException(request.productName()));
+    /**
+     * Executes an EOQ calculation.
+     *
+     * @param request input parameters including demand,
+     *                setup cost, and holding cost
+     * @return EoqResponseDto containing the calculated EOQ
+     *         and related cost metrics
+     */
+    public EoqResponseDto runEoq(
+            EoqRequestDto request,
+            String simId,
+            String shopName) {
+        if(simId ==null && shopName==null)return null;
 
         EoqResponseDto response = calculateCommon(
-                product.getName(),
+                request.productName(),
                 request.demand(),
                 request.cost(),
                 request.holdingCost()
@@ -50,7 +86,7 @@ public class EoqService {
 
         if (request.saveToHistory()) {
             saveToHistory(
-                    product.getName(),
+                    request.productName(),
                     request,
                     response.eoq()
             );
@@ -60,20 +96,17 @@ public class EoqService {
     }
 
 
-    public EoqResponseDto calculate(EoqMonteCarloSample sample) {
 
-        return calculateCommon(
-                sample.productLabel(),
-                sample.demand(),
-                sample.setupCost(),
-                sample.holdingCost()
-        );
-    }
-
-    // =========================
-    // Common calculation core
-    // =========================
-
+    /**
+     * Performs the core EOQ calculation and derives
+     * related inventory metrics.
+     *
+     * @param productName name of the product
+     * @param demand annual demand
+     * @param setupCost setup cost per order
+     * @param holdingCost holding cost per unit
+     * @return EoqResponseDto containing EOQ and cost details
+     */
     private EoqResponseDto calculateCommon(
             String productName,
             BigInteger demand,
@@ -83,19 +116,38 @@ public class EoqService {
 
         BigDecimal eoq = calculateEOQ(demand, setupCost, holdingCost);
 
+        // Derived metrics
+        BigDecimal demandDecimal = new BigDecimal(demand);
+        BigDecimal orderingCost = demandDecimal.divide(eoq, 10, RoundingMode.HALF_UP)
+                .multiply(setupCost);
+        BigDecimal holdingCostTotal = eoq.divide(BigDecimal.valueOf(2), 10, RoundingMode.HALF_UP)
+                .multiply(holdingCost);
+        BigDecimal totalCost = orderingCost.add(holdingCostTotal);
+        BigDecimal numberOfOrders = demandDecimal.divide(eoq, 10, RoundingMode.HALF_UP);
+        BigDecimal cycleTime = eoq.divide(demandDecimal, 10, RoundingMode.HALF_UP);
+
         return new EoqResponseDto(
                 productName,
                 demand,
                 setupCost,
                 holdingCost,
-                eoq
+                eoq,
+                orderingCost,
+                holdingCostTotal,
+                totalCost,
+                numberOfOrders,
+                cycleTime
         );
+
     }
 
-    // =========================
-    // History persistence
-    // =========================
-
+    /**
+     * Persists EOQ calculation results.
+     *
+     * @param productName name of the product
+     * @param request original request data
+     * @param eoq calculated economic order quantity
+     */
     private void saveToHistory(
             String productName,
             EoqRequestDto request,
@@ -115,6 +167,18 @@ public class EoqService {
         simulationServiceModel.save(run);
     }
 
+    /**
+     * Generates cost curve data for different order quantities.
+     *
+     * Calculates ordering cost, holding cost,
+     * and total cost for a range of Q values.
+     *
+     * @param demand annual demand
+     * @param setupCost setup cost per order
+     * @param holdingCost holding cost per unit
+     * @return EoqCurveResponseDto containing optimal EOQ
+     *         and cost curve points
+     */
     public EoqCurveResponseDto generateCostCurve(
             BigInteger demand,
             BigDecimal setupCost,
@@ -163,6 +227,22 @@ public class EoqService {
         return new EoqCurveResponseDto(optimalQ, curve);
     }
 
+    /**
+     *
+     * @param sample EoqMonteCarlo sample dto
+     * @return EoqResponseDto containing the calculated EOQ
+     *         and related cost metrics
+
+     */
+    public EoqResponseDto calculate(EoqMonteCarloSample sample) {
+
+        return calculateCommon(
+                sample.productLabel(),
+                sample.demand(),
+                sample.setupCost(),
+                sample.holdingCost()
+        );
+    }
 
 
 }

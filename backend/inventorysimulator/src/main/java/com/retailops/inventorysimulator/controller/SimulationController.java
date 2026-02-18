@@ -32,12 +32,4 @@ public class SimulationController {
                                              @RequestParam(defaultValue = "10") int size){
         return  simulationService.getHistory(user, page, size);
     }
-
-    @PostMapping("/eoq")
-    public EoqResponseDto simulateEOQ(@Valid @RequestBody EoqRequestDto requestDto) {
-        return eoqService.runEoq(requestDto);
-    }
-
-
-
 }

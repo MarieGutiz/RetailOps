@@ -25,7 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/simulations")
+@RequestMapping("/api/simulator/abc")
 @RequiredArgsConstructor
 public class AbcController {
 
@@ -44,7 +44,7 @@ public class AbcController {
      * @param simId -> simulation Id
      * @return An ABC analysis - either with classic or multi
      */
-    @PostMapping("/abc")
+    @PostMapping
     public ResponseEntity<AbcResponseDto> runAbc(
             @RequestBody AbcRequestDto dto,
             @RequestParam String simId) {

@@ -156,11 +156,14 @@ public class NewsvendorService {
     /**
      * Compute the optimal order quantity Q* using the critical ratio
      * and the cumulative distribution function (CDF) of a normal distribution.
+     * Selects the smallest integer Q such that:
      *
-     * The smallest integer Q such that:
-     *      Φ((Q - μ) / σ) ≥ Cr
+     *      CDF(Q) >= criticalRatio
      *
-     * is selected.
+     * @param mean mean demand
+     * @param stdDev demand standard deviation
+     * @param criticalRatio computed critical ratio
+     * @return optimal order quantity
      */
     public int computeOptimalQuantity(
             BigDecimal mean,
@@ -179,7 +182,7 @@ public class NewsvendorService {
     }
 
     /**
-     *
+     * Executes multiple simulations for a range of order quantities.
      * @param request
      * @param simId
      * @param shopName
@@ -217,6 +220,9 @@ public class NewsvendorService {
 
 
     /**
+     * Generates a profit distribution using Monte Carlo simulation.
+     *
+     * Calculates summary statistics and a histogram of profit outcomes for a fixed order quantity.
      *
      * @param request
      * @param Qstar
@@ -289,7 +295,18 @@ public class NewsvendorService {
         // can be serialized to JSON
     }
 
-    //Check for chart points
+    /**
+     * Generates normal probability density function (PDF) values
+     * for a given range.
+     *
+     * @param mean mean of the distribution
+     * @param stdDev standard deviation
+     * @param min lower bound of x range
+     * @param max upper bound of x range
+     * @param step step size for x values
+     * @param simId simulation identifier
+     * @return map of x to PDF value
+     */
     public Map<Double, Double> normalPDF(
             BigDecimal mean,
             BigDecimal stdDev,
