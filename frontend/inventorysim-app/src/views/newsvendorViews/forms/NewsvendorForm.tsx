@@ -337,7 +337,9 @@ const NewsvendorForm = ({
 
             {/* Submit */}
             <div className="md:col-span-2 flex justify-end pt-2">
-              <Button type="submit" disabled={!selectedProduct || disabled} className="toolbar-element jbtn-flat-btn toolbar-element-md active">
+              <Button type="submit"
+               disabled={!selectedProduct || disabled}
+               className="toolbar-element jbtn-flat-btn toolbar-element-md active">
                 Run Newsvendor
               </Button>
             </div>

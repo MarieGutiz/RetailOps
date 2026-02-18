@@ -78,7 +78,7 @@ export function useEoqSimulator(
         simId,
         shopName
       );
-
+      console.log("response eoq "+ res);
       setLastRequest(request);
       setResponse(res);
 

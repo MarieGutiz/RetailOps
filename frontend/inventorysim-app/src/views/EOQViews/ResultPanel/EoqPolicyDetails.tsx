@@ -1,8 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { EoqResponse } from "@/types/eoq-backend";
 
 interface Props {
-  result: any;
+  result: EoqResponse;
 }
+//Fix
+//Uncaught TypeError: Cannot read properties of undefined (reading 'toFixed')
+//    at EoqPolicyDetails (EoqPolicyDetails.tsx:25:32)
+//{result.demandRate.toFixed(2)} units/year
+
 
 const EoqPolicyDetails: React.FC<Props> = ({ result }) => {
   return (
@@ -22,14 +28,14 @@ const EoqPolicyDetails: React.FC<Props> = ({ result }) => {
         <div>
           <p className="text-sm text-muted-foreground">Demand Rate</p>
           <p className="text-lg font-semibold">
-            {result.demandRate.toFixed(2)} units/year
+            {result.demand.toFixed(2)} units/year
           </p>
         </div>
 
         <div>
           <p className="text-sm text-muted-foreground">Order Cost</p>
           <p className="text-lg font-semibold">
-            € {result.orderCost.toFixed(2)}
+            € {result.setupCost.toFixed(2)}
           </p>
         </div>
 
@@ -38,7 +44,7 @@ const EoqPolicyDetails: React.FC<Props> = ({ result }) => {
             Holding Cost per Unit
           </p>
           <p className="text-lg font-semibold">
-            € {result.holdingCostPerUnit.toFixed(2)}
+            € {result.holdingCost.toFixed(2)}
           </p>
         </div>
       </CardContent>

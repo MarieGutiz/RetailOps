@@ -10,6 +10,7 @@ import ModuleContainer from "../../ModuleContainer";
 import Info from "@/views/helpers/Info";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EoqResultsPanel from "@/views/EOQViews/ResultPanel/EoqResultsPanel";
+import EoqCostBreakdownPanel from "@/views/EOQViews/CostBreakdownPanel/EoqCostBreakdownPanel";
 
 const EOQ_INFO = {
   title: "Economic Order Quantity (EOQ)",
@@ -43,34 +44,45 @@ const EoqModule = () => {
     );
   }
 
-  const selectedUserCase = selectedShop.name;
+   const selectedUserCase = selectedShop.name;
 
-  // Hydrate simulator
-  const { simulator, lastSimulatedProduct } =
-    useHydratedEoqSimulator(selectedShop.id, selectedShop.name);
+    // Hydrate simulator
+    const { simulator, lastSimulatedProduct } =
+      useHydratedEoqSimulator(selectedShop.id, selectedShop.name);
 
-  const [activeTab, setActiveTab] = useState("parameters");
+    const [activeTab, setActiveTab] = useState("parameters");
 
-  // Auto-switch to results if previous simulation exists
-  useEffect(() => {
-    if (lastSimulatedProduct && simulator.response) {
-      setActiveTab("results");
-    }
-  }, [lastSimulatedProduct, simulator.response]);
+    // Auto-switch to results if previous simulation exists
+    useEffect(() => {
+      if (lastSimulatedProduct && simulator.response) {
+        setActiveTab("results");
+      }
+    }, [lastSimulatedProduct, simulator.response]);
 
-  const handleRunSimulation = async (formData?: any) => {
-    if (!formData.productName) {
-      toast.error("Simulation request missing productName");
-      return console.error("Simulation request missing productName");
-    }
+    const handleRunSimulation = async (formData?: any) => {
+      if (!formData.productName) {
+        toast.error("Simulation request missing productName");
+        return console.error("Simulation request missing productName");
+      }
 
-    setActiveTab("parameters");
-    await simulator.run(formData);
-  };
+      setActiveTab("parameters");
+      await simulator.run(formData);
+    };
 
-  const eoqSimulations = useSimulationStore(
-  (state) => state.eoqSimulations
-);
+    const eoqSimulations = useSimulationStore(
+    (state) => state.eoqSimulations
+  );
+
+  const currentResult =
+    lastSimulatedProduct &&
+    eoqSimulations[selectedShop.id]?.[lastSimulatedProduct]?.response;
+
+  // Validation: only show results if EOQ and totalCost are positive numbers
+  const isValidResult =
+    currentResult &&
+    currentResult.eoq > 0 &&
+    currentResult.totalCost > 0 &&
+    currentResult.numberOfOrders > 0;
 
 
   return (
@@ -165,37 +177,30 @@ const EoqModule = () => {
 
         {/* RESULTS */}
         <TabsContent value="results" className="mt-4">
-          {lastSimulatedProduct &&
-          eoqSimulations[selectedShop.id]?.[lastSimulatedProduct] ? (
-            <EoqResultsPanel
-              result={
-                eoqSimulations[selectedShop.id][
-                  lastSimulatedProduct
-                ].response
-              }
-            />
+          {isValidResult ? (
+            <EoqResultsPanel result={currentResult} />
           ) : (
             <div className="text-sm text-muted-foreground">
-              Run the simulation to see EOQ results.
+              Run the simulation to see valid EOQ results.
             </div>
           )}
         </TabsContent>
 
-
         {/* COST BREAKDOWN */}
         <TabsContent value="costs" className="mt-4">
-          {/* {simulator.response && simulator.lastRequest ? (
+          {isValidResult && simulator.hasResult ? (
             <EoqCostBreakdownPanel
-              response={simulator.response}
-              request={simulator.lastRequest}
-              shopName={selectedShop.name}
+              curve={simulator.curve ?? null}
+              isLoading={simulator.isRunning}
+              error={simulator.error ?? null}
             />
           ) : (
             <div className="text-sm text-muted-foreground">
-              Cost structure visualization will appear here.
+              Run the simulation to generate the EOQ cost curve.
             </div>
-          )} */}
+          )}
         </TabsContent>
+
       </Tabs>
     </ModuleContainer>
   );

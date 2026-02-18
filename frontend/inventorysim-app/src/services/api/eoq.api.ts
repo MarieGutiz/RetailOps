@@ -28,7 +28,7 @@ export const simulateEoq = async (
         params: { simId, shopName },
       }
     );
-
+    
     return response.data;
   } catch (error) {
     console.error("Error simulating EOQ:", error);
