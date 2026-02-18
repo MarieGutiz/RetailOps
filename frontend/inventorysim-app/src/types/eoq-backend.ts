@@ -9,13 +9,26 @@ export interface EoqRequest {
   username?: string;
 }
 
+// export interface EoqResponse {
+//   product: string;
+//   demand: number;        
+//   setupCost: number;     
+//   holdingCost: number;   
+//   eoq: number;
+// }
 export interface EoqResponse {
   product: string;
-  demand: number;        
-  setupCost: number;     
-  holdingCost: number;   
+  demand: number;
+  setupCost: number;
+  holdingCost: number;
   eoq: number;
+  orderingCost: number;
+  holdingCostTotal: number;
+  totalCost: number;
+  numberOfOrders: number;
+  cycleTime: number;
 }
+
 
 export interface EoqCurvePoint {
   quantity: number;        // Q

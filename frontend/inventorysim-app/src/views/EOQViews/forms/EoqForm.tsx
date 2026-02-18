@@ -46,16 +46,18 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
   const { register, handleSubmit, setValue, watch, formState } = form;
   const { errors } = formState;
 
-  // ───────── Product Options ─────────
+   // ───────────── Product Options ─────────────
   const productOptions = useMemo(() => {
     if (!products || !inventory) return [];
     return inventory
-      .map((inv) => {
-        const prod = products.find((p) => p.id === inv.productId);
+      .map(inv => {
+        const prod = products.find(p => p.id === inv.productId);
         if (!prod) return null;
         return {
           id: prod.id,
           name: prod.name,
+          quantity: inv.quantity,
+          price: prod.unitPrice,
           cost: prod.unitCost,
           sku: prod.sku,
           category: prod.category,
@@ -65,7 +67,7 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
   }, [products, inventory]);
 
   const filteredProducts = useMemo(() => {
-    return productOptions.filter((p) =>
+    return productOptions.filter(p =>
       `${p?.sku ?? ""} ${p?.name}`.toLowerCase().includes(search.toLowerCase())
     );
   }, [productOptions, search]);
@@ -241,7 +243,9 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
             </div>
 
             <div className="md:col-span-2 flex justify-end pt-2">
-              <Button type="submit" disabled={!selectedProduct || disabled}>
+              <Button type="submit"
+               disabled={!selectedProduct || disabled}
+               className="toolbar-element jbtn-flat-btn toolbar-element-md active">
                 Run EOQ
               </Button>
             </div>
