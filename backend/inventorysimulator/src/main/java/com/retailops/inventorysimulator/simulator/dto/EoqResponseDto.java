@@ -8,6 +8,12 @@ public record EoqResponseDto(
         BigInteger demand,
         BigDecimal setupCost,
         BigDecimal holdingCost,
-        BigDecimal eoq)
+        BigDecimal eoq,
+        BigDecimal orderingCost,
+        BigDecimal holdingCostTotal,
+        BigDecimal totalCost,
+        BigDecimal numberOfOrders,
+        BigDecimal cycleTime
+)
 {
 }

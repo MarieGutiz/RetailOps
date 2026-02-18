@@ -24,10 +24,7 @@ import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
 import com.retailops.inventorysimulator.simulator.service.EoqService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/simulator/eoq")
@@ -42,9 +39,11 @@ public class EoqController {
      */
     @PostMapping
     public EoqResponseDto simulateEoq(
-            @Valid @RequestBody EoqRequestDto request
+            @Valid @RequestBody EoqRequestDto request,
+            @RequestParam String simId,
+            @RequestParam String shopName
     ) {
-        return eoqService.runEoq(request);
+        return eoqService.runEoq(request, simId, shopName);
     }
 
     /**

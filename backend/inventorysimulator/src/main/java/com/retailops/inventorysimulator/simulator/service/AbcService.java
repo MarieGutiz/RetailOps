@@ -22,6 +22,32 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+/**
+ * Service class for performing ABC Inventory Classification.
+ * <p>
+ * ABC analysis segments inventory items based on their relative
+ * contribution to total value (typically annual consumption value).
+ * <p>
+ * Economic Principle:
+ *
+ *  A-items → High value, low quantity (~70–80% of value, ~10–20% of items)
+ *  B-items → Moderate importance (~15–25% of value)
+ *  C-items → Low value, high quantity (~5% of value)
+ * <p>
+ * Items are:
+ *  1. Ranked by descending value contribution
+ *  2. Cumulative percentage calculated
+ *  3. Categorized into A / B / C based on threshold rules
+ * <p>
+ * This service:
+ *  - Selects appropriate segmentation strategy (classic or multi-criteria)
+ *  - Performs ranking and categorization
+ *  - Builds summary metrics
+ *  - Optionally persists results for analytics and reporting
+ * <p>
+ * Unlike EOQ (optimization) and Newsvendor (probabilistic),
+ * ABC is a prioritization model for managerial focus.
+ */
 
 
 @Service
@@ -33,17 +59,22 @@ public class AbcService {
     private final List<AbcAnalyzerStrategy> analyzers;
     private final ObjectMapper objectMapper;
 
+
     /**
-     * Run ABC analysis (backend) and return frontend-ready DTO.
-     * Persistence happens internally for registered users.
+     * Executes ABC analysis and returns ranked items and summary data.
+     *
+     * @param requestDto input data containing items and analysis mode
+     * @param simId simulation identifier
+     * @return AbcResponseDto containing categorized items and summary
      */
+
     public AbcResponseDto runAbc(AbcRequestDto requestDto, String simId) {
 
        if(simId == null) {return null;}
 
         AbcAnalyzerStrategy analyzer = resolveAnalyzer(requestDto.mode());
 
-        // 1. Analyze
+        // 1. Analyze,perform value-based ranking and segmentation
         List<AbcRankedItem> ranked = analyzer.analyze(requestDto);
 
         // 2. Map to persistence entities
@@ -68,8 +99,12 @@ public class AbcService {
         return new AbcResponseDto(items, summary);
     }
 
+
     /**
-     * Resolve analyzer by type (classic / multi)
+     * Selects the appropriate ABC analysis strategy.
+     *
+     * @param type simulation type
+     * @return matching AbcAnalyzerStrategy
      */
     private AbcAnalyzerStrategy resolveAnalyzer(SimulationType type) {
         return analyzers.stream()
@@ -79,7 +114,12 @@ public class AbcService {
     }
 
     /**
-     * Persist simulation run + ABCResult entities
+     * Persists simulation run and corresponding ABC results
+     * for registered users.
+     *
+     * @param requestDto input request
+     * @param rankedItems ranked analysis results
+     * @param results mapped persistence entities
      */
     private void persistRun(
             AbcRequestDto requestDto,
@@ -117,9 +157,11 @@ public class AbcService {
         abcResultRepository.saveAll(results);
     }
 
-
     /**
-     * Run ABC analysis for frontend simulation: returns mapped DTOs + summary.
+     * Executes ABC analysis without persisting results.
+     *
+     * @param requestDto input data
+     * @return AbcResponseDto containing categorized items and summary
      */
     public AbcResponseDto runAbcsim(AbcRequestDto requestDto) {
 
@@ -140,10 +182,6 @@ public class AbcService {
 
         // Build summary
         AbcSummaryDto summary = AbcSummaryBuilder.build(items);
-
-        // Persist simulation metadata only (registered users)
-//        persistRun(requestDto, ranked, null); // null because front-end simulation may not need persistence of ABCResult entities
-
         return new AbcResponseDto(items, summary);
     }
 
