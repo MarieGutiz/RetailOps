@@ -1,16 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { EoqResponse } from "@/types/eoq-backend";
+import { formatDecimal, formatInt } from "@/views/newsvendorViews/forms/props/useCurrency";
 
 interface Props {
   result: EoqResponse;
+  format: (value: number) => string;
 }
-//Fix
-//Uncaught TypeError: Cannot read properties of undefined (reading 'toFixed')
-//    at EoqPolicyDetails (EoqPolicyDetails.tsx:25:32)
-//{result.demandRate.toFixed(2)} units/year
 
-
-const EoqPolicyDetails: React.FC<Props> = ({ result }) => {
+const EoqPolicyDetails: React.FC<Props> = ({ result, format }) => {
   return (
     <Card className="rounded-2xl shadow-sm">
       <CardHeader>
@@ -21,21 +18,21 @@ const EoqPolicyDetails: React.FC<Props> = ({ result }) => {
         <div>
           <p className="text-sm text-muted-foreground">Cycle Time</p>
           <p className="text-lg font-semibold">
-            {result.cycleTime.toFixed(2)} time units
+            {formatDecimal(result.cycleTime)} years
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-muted-foreground">Demand Rate</p>
+          <p className="text-sm text-muted-foreground">Demand</p>
           <p className="text-lg font-semibold">
-            {result.demand.toFixed(2)} units/year
+            {formatInt(result.demand)} units/year
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-muted-foreground">Order Cost</p>
+          <p className="text-sm text-muted-foreground">Setup Cost</p>
           <p className="text-lg font-semibold">
-            € {result.setupCost.toFixed(2)}
+            {format(result.setupCost ?? 0)}
           </p>
         </div>
 
@@ -44,12 +41,13 @@ const EoqPolicyDetails: React.FC<Props> = ({ result }) => {
             Holding Cost per Unit
           </p>
           <p className="text-lg font-semibold">
-            € {result.holdingCost.toFixed(2)}
+            {format(result.holdingCost ?? 0)}
           </p>
         </div>
       </CardContent>
     </Card>
   );
+
 
 }
 

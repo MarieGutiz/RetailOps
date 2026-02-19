@@ -1,10 +1,13 @@
 import type { EoqCurveResponse } from '@/types/eoq-backend';
+import { useCurrency } from '@/views/newsvendorViews/forms/props/useCurrency';
 import React from 'react'
 import { 
     CartesianGrid,
     Legend,
     Line,
     LineChart,
+    ReferenceArea,
+    ReferenceDot,
     ReferenceLine,
     ResponsiveContainer,
     Tooltip,
@@ -16,7 +19,19 @@ interface Props {
 }
 
 const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
+  const { format } = useCurrency();
+  
   if (!curve || !curve.curvePoints?.length) return null;
+
+  const optimalQ = (curve.optimalQuantity ?? 0);
+  const bandWidth = optimalQ * 0.01; // 3% band
+
+    const optimalPoint = curve.curvePoints.reduce((prev, curr) =>
+    Math.abs(curr.quantity - optimalQ) <
+    Math.abs(prev.quantity - optimalQ)
+      ? curr
+      : prev
+   );
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -24,32 +39,48 @@ const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
         <CartesianGrid strokeDasharray="3 3" />
 
         <XAxis
+          type="number"
           dataKey="quantity"
+          domain={["dataMin", "dataMax"]}
           tick={{ fontSize: 12 }}
+          tickFormatter={(value: number) =>
+            Math.round(value).toString()
+          }
           label={{
             value: "Order Quantity (Q)",
             position: "insideBottom",
-            offset: -5,
+            offset: 1,
           }}
         />
 
+
         <YAxis
           tick={{ fontSize: 12 }}
+          tickFormatter={(value) => format(value)}
           label={{
-            value: "Annual Cost (€)",
+            value: "Annual Cost",
             angle: -90,
             position: "insideLeft",
+            offset: 1,
           }}
         />
 
         <Tooltip
-          formatter={(value: number) => `€ ${value.toFixed(2)}`}
+          formatter={(value: number) => format(value)}
           labelFormatter={(label) =>
-            `Quantity: ${Number(label).toFixed(2)}`
+            `Quantity: ${Math.round(Number(label))}`
           }
         />
 
         <Legend />
+
+        <ReferenceArea
+          x1={optimalQ - bandWidth}
+          x2={optimalQ + bandWidth}
+          fill="#dc2626"
+          fillOpacity={0.06}
+        />
+
 
         <Line
           type="monotone"
@@ -77,23 +108,43 @@ const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
           stroke="#10b981"
           strokeWidth={3}
           dot={false}
-          name="Total Cost"
           isAnimationActive={false}
-        />
-
-        <ReferenceLine
-          x={curve.optimalQuantity}
-          stroke="#000"
-          strokeDasharray="4 4"
-          label={{
-            value: "EOQ",
-            position: "top",
+          name="Total Cost"
+          activeDot={{
+            r: 6,
           }}
         />
+
+
+        {/*  Q* Vertical Reference Line */}
+        <ReferenceLine
+          x={optimalQ}
+          stroke="#dc2626"
+          strokeWidth={2}
+          strokeDasharray="6 4"
+          label={{
+            value: `Q* = ${Math.round(optimalQ)}`,
+            position: "top",
+            fill: "#dc2626",
+            fontSize: 12,
+          }}
+        />
+
+        <ReferenceDot
+          x={optimalPoint.quantity}
+          y={optimalPoint.totalCost}
+          r={6}
+          fill="#dc2626"
+          stroke="#ffffff"
+          strokeWidth={2}
+        />
+
+
       </LineChart>
     </ResponsiveContainer>
   );
 };
+
 
 
 

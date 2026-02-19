@@ -2,12 +2,15 @@ import type { EoqResponse } from "@/types/eoq-backend";
 import EoqCostAnalysis from "./EoqCostAnalysis";
 import EoqPolicyDetails from "./EoqPolicyDetails";
 import EoqSummaryCards from "./EoqSummaryCards";
+import { useCurrency } from "@/views/newsvendorViews/forms/props/useCurrency";
 
 export interface EoqResultsPanelProps {
   result: EoqResponse
 }
 
 const EoqResultsPanel: React.FC<EoqResultsPanelProps> = ({ result }) => {
+    const { format } = useCurrency();
+
   if (!result) {
     return (
       <div className="text-sm text-muted-foreground">
@@ -18,9 +21,9 @@ const EoqResultsPanel: React.FC<EoqResultsPanelProps> = ({ result }) => {
 
   return (
     <div className="space-y-6">
-      <EoqSummaryCards result={result} />
-      <EoqPolicyDetails result={result} />
-      <EoqCostAnalysis result={result} />
+      <EoqSummaryCards result={result} format={format} />
+      <EoqPolicyDetails result={result} format={format} />
+      <EoqCostAnalysis result={result} format={format} />
     </div>
   );
 };
