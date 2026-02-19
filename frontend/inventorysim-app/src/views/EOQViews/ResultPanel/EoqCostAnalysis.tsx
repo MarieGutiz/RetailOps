@@ -3,9 +3,10 @@ import type { EoqResponse } from "@/types/eoq-backend";
 
 interface Props {
   result: EoqResponse;
+  format: (value: number) => string;
 }
 
-const EoqCostAnalysis: React.FC<Props> = ({ result }) => {
+const EoqCostAnalysis: React.FC<Props> = ({ result, format }) => {
   return (
     <Card className="rounded-2xl shadow-sm">
       <CardHeader>
@@ -16,20 +17,20 @@ const EoqCostAnalysis: React.FC<Props> = ({ result }) => {
         <div className="flex justify-between">
           <span className="text-muted-foreground">Ordering Cost</span>
           <span className="font-semibold">
-            € {result.orderingCost.toFixed(2)}
+            {format(result.orderingCost ?? 0)}
           </span>
         </div>
 
         <div className="flex justify-between">
           <span className="text-muted-foreground">Holding Cost</span>
           <span className="font-semibold">
-            € {result.holdingCost.toFixed(2)}
+            {format(result.holdingCostTotal ?? 0)}
           </span>
         </div>
 
         <div className="border-t pt-3 flex justify-between text-lg font-bold">
           <span>Total Cost</span>
-          <span>€ {result.totalCost.toFixed(2)}</span>
+          <span>{format(result.totalCost ?? 0)}</span>
         </div>
       </CardContent>
     </Card>

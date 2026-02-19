@@ -6,7 +6,7 @@ import Info from "@/views/helpers/Info";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NewsvendorForm from "@/views/newsvendorViews/forms/NewsvendorForm";
 import NoSelectShop from "@/views/helpers/NoSelectShop";
-import ResultsPanel from "@/views/newsvendorViews/ResultsPanel/ResultsPanel";
+import ResultsPanel from "@/views/newsvendorViews/ResultsPanel/NewsvendorResultsPanel";
 import DistributionPanel from "@/views/newsvendorViews/DistributionPanel/DistributionPanel";
 import { toast } from "sonner";
 import { useHydratedNewsvendorSimulator } from "@/hooks/simulator/modules/newsvendors/hooks/useHydratedNewsvendorSimulator";

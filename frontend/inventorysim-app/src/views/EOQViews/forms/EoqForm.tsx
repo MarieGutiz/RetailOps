@@ -13,6 +13,30 @@ import type { EoqFormProps } from "./props/EoqFormProps";
 import { eoqSchema, type EoqFormValues } from "./props/Eoq.schema";
 import { Label } from "@/components/ui/label";
 import ProductCard from "@/views/inventory/forms/ProductCard";
+import Info from "@/views/helpers/Info";
+
+
+const DEMAND_INFO = {
+  title: "Annual Demand",
+  theory: "D parameter",
+  description:
+    "This is the total number of units demanded per year. EOQ assumes demand is constant and known.",
+};
+
+const SETUP_COST_INFO = {
+  title: "Setup / Ordering Cost",
+  theory: "S parameter",
+  description:
+    "This is the fixed cost incurred every time you place an order. It does not depend on order size.",
+};
+
+const HOLDING_COST_INFO = {
+  title: "Holding Cost per Unit",
+  theory: "H parameter",
+  description:
+    "This is the annual cost of holding one unit in inventory, including storage, capital, and risk costs.",
+};
+
 
 const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) => {
   const isAuthenticated = useProductStore((s) => s.isAuthenticated);
@@ -196,7 +220,11 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
           {/* ===== RIGHT PANEL: EOQ Parameters ===== */}
           <div className="md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="demand">Demand (D)</Label>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="demand">Demand (D)</Label>
+                <Info content={DEMAND_INFO} />
+              </div>
+
               <Input
                 id="demand"
                 type="number"
@@ -208,7 +236,11 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="cost">Setup Cost (S)</Label>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="cost">Setup Cost (S)</Label>
+                <Info content={SETUP_COST_INFO} />
+              </div>
+
               <Input
                 id="cost"
                 type="number"
@@ -220,7 +252,11 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="holdingCost">Holding Cost (H)</Label>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="holdingCost">Holding Cost (H)</Label>
+                <Info content={HOLDING_COST_INFO} />
+              </div>
+
               <Input
                 id="holdingCost"
                 type="number"

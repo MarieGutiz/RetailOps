@@ -1,15 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { formatInt } from "../forms/props/useCurrency";
 
 interface ResultsSummaryProps {
   result: {
     optimalOrderQuantity: number
     expectedProfit: number
     serviceLevel: number
-  }
+  };
+  format: (value: number) => string;
 }
 
-const ResultsSummary = ({result} : ResultsSummaryProps) => {
-    return (
+const ResultsSummary = ({result, format} : ResultsSummaryProps) => {
+      return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Recommended Order Quantity</CardTitle>
@@ -19,26 +21,31 @@ const ResultsSummary = ({result} : ResultsSummaryProps) => {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Large order quantity */}
+        {/* Order quantity */}
         <div className="text-4xl font-bold text-center">
-          {result.optimalOrderQuantity} units
+          {formatInt(result.optimalOrderQuantity)} units
         </div>
 
         {/* Metrics */}
         <div className="space-y-2 text-sm">
           <div className="flex items-center justify-between">
             <span>Expected profit</span>
-            <span className="font-medium">€{result.expectedProfit.toFixed(2)}</span>
+            <span className="font-medium">
+              {format(result.expectedProfit ?? 0)}
+            </span>
           </div>
 
           <div className="flex items-center justify-between">
             <span>Chance of meeting customer demand</span>
-            <span className="font-medium">{(result.serviceLevel * 100).toFixed(0)}%</span>
+            <span className="font-medium">
+              {Math.round((result.serviceLevel ?? 0) * 100)}%
+            </span>
           </div>
         </div>
       </CardContent>
     </Card>
   );
+
 
 }
 
