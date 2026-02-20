@@ -18,6 +18,9 @@
 package com.retailops.inventorysimulator.simulator.inventory;
 
 import com.retailops.inventorysimulator.model.Product;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,8 +35,20 @@ import java.math.BigInteger;
 @AllArgsConstructor
 public abstract class InventoryItemBase {
 
+//    private Product product;
+//
+//    private BigInteger demandFrequency;
+//    private BigDecimal salesValue;
+
+    @NotNull(message = "Product is required")
     private Product product;
 
+    @NotNull(message = "Demand frequency is required")
+    @PositiveOrZero(message = "Demand frequency must be zero or greater")
     private BigInteger demandFrequency;
+
+    @NotNull(message = "Sales value is required")
+    @DecimalMin(value = "0.0", inclusive = false,
+            message = "Sales value must be greater than zero")
     private BigDecimal salesValue;
 }

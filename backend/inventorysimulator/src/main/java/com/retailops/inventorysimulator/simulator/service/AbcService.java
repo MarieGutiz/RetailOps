@@ -68,9 +68,9 @@ public class AbcService {
      * @return AbcResponseDto containing categorized items and summary
      */
 
-    public AbcResponseDto runAbc(AbcRequestDto requestDto, String simId) {
+    public AbcResponseDto runAbc(AbcRequestDto requestDto, String simId, String shopName) {
 
-       if(simId == null) {return null;}
+        if(simId ==null && shopName==null)return null;
 
         AbcAnalyzerStrategy analyzer = resolveAnalyzer(requestDto.mode());
 
@@ -126,6 +126,11 @@ public class AbcService {
             List<AbcRankedItem> rankedItems,
             List<ABCResult> results
     ) {
+
+        // Must explicitly request saving
+        if (!requestDto.saveToHistory()) {
+            return;
+        }
         //Do not persist guests
         if (requestDto.username() == null ||
                 requestDto.username().isBlank() ||

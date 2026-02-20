@@ -61,28 +61,5 @@ public class CafeteriaSimulationAbcService extends
     }
 
 
-//    public AbcResponseDto runCafeteriaAbc(SimulationType mode,String simId) {
-//
-//        // 1. Create generator for THIS request
-//        FloristAbcMonteCarloGenerator generator =
-//                factory.abc(simId, "Cafeteria");
-//
-//        // 2. Generate florist inventory (Monte Carlo)
-////        List<MonteCarloItemDto> inventory = generatorFlorist.generateInventory(simId, "Florist");
-//        List<MonteCarloItemDto> inventory = generator.generateInventory();
-//
-//        // 3. Map Monte Carlo items to ABC input items
-//        List<AbcItemDto> abcItems = MonteCarloABCMapper.toAbcItems(inventory);
-//
-//        // 4. Build ABC request
-//        AbcRequestDto request = new AbcRequestDto(
-//                abcItems,
-//                "cafeteria-demo",
-//                mode
-//        );
-//
-//        // 5. Run ABC simulation (no DB persistence required)
-//        return abcService.runAbcsim(request);
-//    }
 
 }

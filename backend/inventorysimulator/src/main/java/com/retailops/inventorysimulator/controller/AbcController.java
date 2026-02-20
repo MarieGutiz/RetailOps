@@ -47,8 +47,9 @@ public class AbcController {
     @PostMapping
     public ResponseEntity<AbcResponseDto> runAbc(
             @RequestBody AbcRequestDto dto,
-            @RequestParam String simId) {
-        AbcResponseDto response = abcService.runAbc(dto, simId);
+            @RequestParam String simId,
+            @RequestParam String shopName) {
+        AbcResponseDto response = abcService.runAbc(dto, simId, shopName);
         return ResponseEntity.ok(response);
     }
 
