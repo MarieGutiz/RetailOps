@@ -73,7 +73,8 @@ public abstract class AbstractShopSimulationAbcService<TGenerator extends Abstra
         AbcRequestDto request = new AbcRequestDto(
                 abcItems,
                 getDemoName(),
-                mode
+                mode,
+                false // I don't want to persist auto-gen
         );
 
         return abcService.runAbcsim(request);
