@@ -4,7 +4,9 @@ import type { EoqRequest, EoqResponse } from "@/types/eoq-backend";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { saveToStorage } from "@/utils/storage";
+import type { AbcRequestDto, AbcResponseDto } from "@/types/abc-backend";
 
+// ─── Simulation Entry Types ───
 
 export interface NewsvendorSimulationEntry {
   request: NewsvendorRequest;
@@ -19,10 +21,19 @@ export interface EoqSimulationEntry {
   createdAt: string;
 }
 
+export interface AbcSimulationEntry {
+  request: AbcRequestDto;
+  response: AbcResponseDto;
+  createdAt: string;
+}
+
+// ─── Store Interface ───
 interface SimulationStore {
   // shopId → productName → simulation
   newsvendorSimulations: Record<string, Record<string, NewsvendorSimulationEntry>>;
   eoqSimulations: Record<string, Record<string, EoqSimulationEntry>>;
+  abcSimulations: Record<string, Record<string, AbcSimulationEntry>>;
+
 
   addNewsvendorSimulation: (
     shopId: string,
@@ -36,6 +47,13 @@ interface SimulationStore {
     entry: EoqSimulationEntry
   ) => void;
 
+  addAbcSimulation: (
+    shopId: string,
+    product: string,
+    entry: AbcSimulationEntry
+  ) => void;
+
+
   clearSimulationsForShop: (shopId: string) => void;
   clearSimulationsForProduct: (shopId: string, product: string) => void;
   clearAllSimulations: () => void;
@@ -46,6 +64,8 @@ export const useSimulationStore = create<SimulationStore>()(
     (set) => ({
       newsvendorSimulations: {},
       eoqSimulations: {},
+      abcSimulations: {},
+
 
       // ─── Newsvendor ───
       addNewsvendorSimulation: (shopId, product, entry) =>
@@ -71,17 +91,24 @@ export const useSimulationStore = create<SimulationStore>()(
           },
         })),
 
+      // ─── ABC ───
+      addAbcSimulation: (shopId, product, entry) =>
+        set((state) => ({
+          abcSimulations: {
+            ...state.abcSimulations,
+            [shopId]: {
+              ...state.abcSimulations[shopId],
+              [product]: entry,
+            },
+          },
+        })),
+
       // ─── Clear ───
       clearSimulationsForShop: (shopId) =>
         set((state) => ({
-          newsvendorSimulations: {
-            ...state.newsvendorSimulations,
-            [shopId]: {},
-          },
-          eoqSimulations: {
-            ...state.eoqSimulations,
-            [shopId]: {},
-          },
+          newsvendorSimulations: { ...state.newsvendorSimulations, [shopId]: {} },
+          eoqSimulations: { ...state.eoqSimulations, [shopId]: {} },
+          abcSimulations: { ...state.abcSimulations, [shopId]: {} },
         })),
 
       clearSimulationsForProduct: (shopId, product) =>
@@ -90,16 +117,13 @@ export const useSimulationStore = create<SimulationStore>()(
             state.newsvendorSimulations[shopId] || {};
           const { [product]: __, ...remainingEOQ } =
             state.eoqSimulations[shopId] || {};
+          const { [product]: ___, ...remainingABC } =
+            state.abcSimulations[shopId] || {};
 
           return {
-            newsvendorSimulations: {
-              ...state.newsvendorSimulations,
-              [shopId]: remainingNewsvendor,
-            },
-            eoqSimulations: {
-              ...state.eoqSimulations,
-              [shopId]: remainingEOQ,
-            },
+            newsvendorSimulations: { ...state.newsvendorSimulations, [shopId]: remainingNewsvendor },
+            eoqSimulations: { ...state.eoqSimulations, [shopId]: remainingEOQ },
+            abcSimulations: { ...state.abcSimulations, [shopId]: remainingABC },
           };
         }),
 
@@ -107,8 +131,9 @@ export const useSimulationStore = create<SimulationStore>()(
         set(() => ({
           newsvendorSimulations: {},
           eoqSimulations: {},
+          abcSimulations: {},
         })),
-    }),
+      }),
     {
       name: "sim-storage", // localStorage key
       storage: createJSONStorage(() => ({
@@ -121,7 +146,7 @@ export const useSimulationStore = create<SimulationStore>()(
 );
 
 
-// 🛠 Devtools (only in development)
+//  Devtools (only in development)
 if (import.meta.env.MODE === "development") {
   mountStoreDevtool("sim store", useSimulationStore);
 }

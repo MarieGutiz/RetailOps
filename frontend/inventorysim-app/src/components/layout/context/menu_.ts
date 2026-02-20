@@ -17,7 +17,12 @@ import {
    PackagePlus,
    BarChart3,
    Settings,
-   View } from "lucide-react";
+   View, 
+   TableIcon,
+   SheetIcon,
+   ChartBar,
+   ChartBarIncreasingIcon,
+   ChartNoAxesColumnDecreasingIcon} from "lucide-react";
 
 
 export const data_menu = {
@@ -82,6 +87,12 @@ export const data_menu = {
         url: "/dashboard/simulations/eoq",
         icon: CalculatorIcon,        
       },
+      {
+      title: "ABC Analysis",
+      id: "sim-abc",
+      url: "/dashboard/simulations/abc",
+      icon: ChartNoAxesColumnDecreasingIcon,
+    },
     ],
   }
 ,

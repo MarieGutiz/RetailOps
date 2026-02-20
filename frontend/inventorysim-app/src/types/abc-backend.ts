@@ -40,7 +40,19 @@ export interface AbcResponseDto {
 export type SimulationType = "classic" | "multi" ;
 
 export interface AbcRequestDto {
-  items?: AbcItemDto[];   // optional for florist
+  items?: AbcItemDto[];   
   username?: string;      // optional for public
   mode: SimulationType;
+  saveToHistory?:boolean;
 }
+
+//Selectable item for form
+export interface AbcSelectableItem {
+  product: Product;
+  quantity: number;
+  sku?: string;
+  category?: string;
+  salesValue: number;      // required
+  demandFrequency: number; // required
+}
+

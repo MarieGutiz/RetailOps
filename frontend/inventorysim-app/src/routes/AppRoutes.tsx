@@ -21,6 +21,7 @@ import DashboardModuleLayout from '@/components/layout/components/main/outlet/da
 import SimModuleLayout from '@/components/layout/components/main/outlet/simulations/SimModuleLayout'
 import NewsvendorModule from '@/components/layout/components/main/outlet/simulations/NewsvendorModule'
 import EoqModule from '@/components/layout/components/main/outlet/simulations/EoqModule'
+import AbcModule from '@/components/layout/components/main/outlet/simulations/AbcModule'
 
 
 const Approutes = () => {
@@ -55,7 +56,8 @@ const Approutes = () => {
           <Route path="simulations" element={<SimModuleLayout />}>
             <Route index element={<Navigate to="newsvendor" replace/>}/>
              <Route path="newsvendor" element={<NewsvendorModule />}/>
-             <Route path="eoq" element={<EoqModule />}/>         
+             <Route path="eoq" element={<EoqModule />}/>    
+             <Route path="abc" element={<AbcModule />}/>       
           </Route>
         </Route>
        </Route>
