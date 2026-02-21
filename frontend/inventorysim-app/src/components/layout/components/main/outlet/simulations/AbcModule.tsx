@@ -8,6 +8,9 @@ import Info from "@/views/helpers/Info";
 import AbcForm from "@/views/ABCViews/AbcForms/AbcForm";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AbcResultsPanel from "@/views/ABCViews/AbcForms/ResultPanel/AbcResultsPanel";
+import AbcDistributionPanel from "@/views/ABCViews/DistributionPanel/AbcDistributionPanel";
+import { useSimulationStore } from "@/store/simulations/useSimulationStore";
 
 const ABC_INFO = {
   title: "ABC Inventory Classification",
@@ -68,6 +71,17 @@ const AbcModule = () => {
     await simulator.run(formData);
   };
 
+  // const storeState = useSimulationStore.getState();
+
+  const abcSimulations = useSimulationStore(
+    (s) => s.abcSimulations
+  );
+
+  const abcResult =
+    lastSimulatedProduct &&
+    abcSimulations[selectedShop.id]?.[lastSimulatedProduct]
+      ?.response;
+  console.log("ABC Result from store in module : ", abcResult);//ok
   return (
     <ModuleContainer
       title="ABC Simulation"
@@ -136,24 +150,38 @@ const AbcModule = () => {
 
         {/* PARAMETERS */}
         <TabsContent value="parameters" className="mt-4 w-full">
-          <AbcForm onSubmit={handleRunSimulation} disabled={simulator.isRunning} />
+          <AbcForm 
+           onSubmit={handleRunSimulation}
+           disabled={simulator.isRunning} />
         </TabsContent>
 
         {/* RESULTS */}
         <TabsContent value="results" className="mt-4 w-full">
+        {lastSimulatedProduct && abcResult ? (
+          <AbcResultsPanel
+            response={abcResult}
+            isRunning={simulator.isRunning}
+          />
+        ) : (
           <div className="text-sm text-muted-foreground">
-            {simulator.response
-              ? "Simulation results will appear here."
-              : "Run the simulation to see results."}
+            Run the simulation to see results.
           </div>
-        </TabsContent>
+        )}
+      </TabsContent>
 
-        {/* DISTRIBUTION */}
-        <TabsContent value="distribution" className="mt-4 w-full">
+       {/* DISTRIBUTION */}
+      <TabsContent value="distribution" className="mt-4 w-full">
+        {lastSimulatedProduct && abcResult ? (
+          <AbcDistributionPanel
+            response={abcResult}
+            isRunning={simulator.isRunning}
+          />
+        ) : (
           <div className="text-sm text-muted-foreground">
-            ABC category distribution will appear here after running the simulation.
+            Category distribution will appear here.
           </div>
-        </TabsContent>
+        )}
+      </TabsContent>
       </Tabs>
     </ModuleContainer>
   );

@@ -24,7 +24,9 @@ export function useHydratedNewsvendorSimulator(shopId: string, shopName: string)
 
     // Sort by createdAt descending
     const [latestProduct, latestSim] = entries
-      .sort(([, a], [, b]) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+      .sort(
+        ([, a], [, b]) =>
+           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
 
     setLastSimulatedProduct(latestProduct);
 

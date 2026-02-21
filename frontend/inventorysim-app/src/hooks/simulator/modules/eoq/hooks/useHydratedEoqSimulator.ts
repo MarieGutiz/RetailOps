@@ -17,7 +17,9 @@ export function useHydratedEoqSimulator(shopId: string, shopName: string) {
 
     // Find the latest simulation by createdAt
     const [latestProduct, latestSim] = entries
-      .sort(([, a], [, b]) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+      .sort(
+        ([, a], [, b]) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
 
     setLastSimulatedProduct(latestProduct);
 

@@ -141,8 +141,10 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
         <form className="flex flex-col md:flex-row gap-6" onSubmit={handleSubmit(submit)}>
           {/* ===== LEFT PANEL: Product Selection ===== */}
           <div className="md:w-1/3 flex flex-col gap-4">
-            <Label>Select a product</Label>
+            <Label htmlFor="productSearch">Select products</Label>
             <Input
+              id="productSearch"
+              name="productSearch"
               placeholder={loading ? "Loading products..." : "Search by SKU or name"}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
