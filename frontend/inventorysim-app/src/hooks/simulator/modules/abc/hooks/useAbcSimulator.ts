@@ -68,10 +68,10 @@ export function useAbcSimulator(
       const sanitizedRequest = sanitizeRequest(request);
 
       const res = await simulateAbc(sanitizedRequest, simId, shopName);
-
+      console.log("ABC Simulation response:", res);//ok
       setLastRequest(request);
       setResponse(res);
-
+       
       // Persist in global store
       if (productName) {
         addAbcSimulation(shopId, productName, {

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useShopInventoryProducts } from "@/hooks/shop/useShopInventoryProducts";
 import { useProductStore } from "@/store/inventory/useProductStore";
-import type { AbcRequestDto, AbcItemDto, SimulationType, AbcSelectableItem } from "@/types/abc-backend";
+import type { AbcRequestDto, SimulationType, AbcSelectableItem } from "@/types/abc-backend";
 import Info from "@/views/helpers/Info";
 import ProductCard from "@/views/inventory/forms/ProductCard";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { abcSchema, type AbcFormValues } from "./props/Abc.schema";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { buildAbcRequest } from "@/utils/abc/buildABCRequest";
 
 const MODE_INFO = {
   title: "Simulation Mode",
@@ -98,14 +99,15 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
       toast.error("Please select at least one product.");
       return;
     }
-
-    const payload: AbcRequestDto = {
-      items: values.items,
-      mode: values.mode,
-      saveToHistory: isAuthenticated ? values.saveToHistory : false,
-      username: isAuthenticated ? undefined : "guest",
-    };
-
+   //Ability to add + than 1 prdct
+    // const payload: AbcRequestDto = {
+    //   items: values.items,
+    //   mode: values.mode,
+    //   saveToHistory: isAuthenticated ? values.saveToHistory : false,
+    //   username: isAuthenticated ? undefined : "guest",
+    // };
+    const payload = buildAbcRequest(values, isAuthenticated);
+    console.log("ABC payload ", payload)
     onSubmit(payload);
   };
 
@@ -123,8 +125,10 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
         <form className="flex flex-col md:flex-row gap-6" onSubmit={handleSubmit(submit)}>
           {/* ===== LEFT PANEL: Product Selection ===== */}
           <div className="md:w-1/3 flex flex-col gap-4">
-            <Label>Select products</Label>
+            <Label htmlFor="productSearch">Select products</Label>
             <Input
+              id="productSearch"
+              name="productSearch"
               placeholder={loading ? "Loading products..." : "Search by SKU or name"}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -157,7 +161,14 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
                             className={`cursor-pointer transition-colors hover:bg-muted/50 ${checked ? "bg-muted" : ""}`}
                           >
                             <TableCell className="px-2 py-2">
-                              <input type="checkbox" checked={checked} readOnly />
+                              <input
+                                id={`select-${prod.product.id}`}
+                                name={`select-${prod.product.id}`}
+                                type="checkbox"
+                                checked={checked}
+                                readOnly
+                                aria-label={`Select ${prod.product.name}`}
+                              />
                             </TableCell>
                             <TableCell className="px-2 py-2 font-mono text-xs">{prod.product.sku || "—"}</TableCell>
                             <TableCell className="px-2 py-2">{prod.product.name}</TableCell>
@@ -195,7 +206,7 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
                 }
                 disabled={disabled || !fields.length}
               >
-                <SelectTrigger className="toolbar-element btn-flat-btn toolbar-element-md active w-fit sm:w-auto">
+                <SelectTrigger id="modeSelect" className="toolbar-element btn-flat-btn toolbar-element-md active w-fit sm:w-auto">
                   <SelectValue placeholder="Select mode" />
                 </SelectTrigger>
                 <SelectContent>
@@ -225,6 +236,8 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
             <div className="md:col-span-2 max-h-[400px] overflow-y-auto space-y-4">
               {fields.map((field, idx) => {
                 const prod = productOptions.find(p => p.product.id === field.product.id)!;
+                const salesId = `items-${idx}-salesValue`;
+                const demandId = `items-${idx}-demandFrequency`;
                 return (
                   <div key={field.product.id} className="border rounded-md p-4 space-y-2">
                     <ProductCard
@@ -235,14 +248,30 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
                     />
                     <div className="flex gap-4">
                       <div className="flex-1">
-                        <Label htmlFor={`items.${idx}.salesValue`}>Sales Value</Label>
-                        <Input type="number" step={0.01} min={0} {...register(`items.${idx}.salesValue` as const)} />
-                        {errors.items?.[idx]?.salesValue && <p className="text-xs text-destructive">{errors.items[idx].salesValue?.message}</p>}
+                        <Label htmlFor={salesId}>Sales Value</Label>
+                        <Input
+                          id={salesId}
+                          type="number"
+                          step={0.01}
+                          min={0}
+                          {...register(`items.${idx}.salesValue` as const, { valueAsNumber: true })}
+                        />
+                        {errors.items?.[idx]?.salesValue && (
+                          <p className="text-xs text-destructive">{errors.items[idx].salesValue?.message}</p>
+                        )}
                       </div>
                       <div className="flex-1">
-                        <Label htmlFor={`items.${idx}.demandFrequency`}>Demand Frequency</Label>
-                        <Input type="number" step={1} min={0} {...register(`items.${idx}.demandFrequency` as const)} />
-                        {errors.items?.[idx]?.demandFrequency && <p className="text-xs text-destructive">{errors.items[idx].demandFrequency?.message}</p>}
+                        <Label htmlFor={demandId}>Demand Frequency</Label>
+                        <Input
+                          id={demandId}
+                          type="number"
+                          step={1}
+                          min={0}
+                          {...register(`items.${idx}.demandFrequency` as const, { valueAsNumber: true })}
+                        />
+                        {errors.items?.[idx]?.demandFrequency && (
+                          <p className="text-xs text-destructive">{errors.items[idx].demandFrequency?.message}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -260,6 +289,7 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
         </form>
       </CardContent>
     </Card>
+
 
   );
 };

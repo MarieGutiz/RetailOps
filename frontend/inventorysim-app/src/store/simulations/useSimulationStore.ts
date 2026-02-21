@@ -32,7 +32,11 @@ interface SimulationStore {
   // shopId → productName → simulation
   newsvendorSimulations: Record<string, Record<string, NewsvendorSimulationEntry>>;
   eoqSimulations: Record<string, Record<string, EoqSimulationEntry>>;
+  
+  // ABC simulations: shopId → simId → simulation
   abcSimulations: Record<string, Record<string, AbcSimulationEntry>>;
+  lastAbcSimId: Record<string, string>; // shopId → last simulation ID
+
 
 
   addNewsvendorSimulation: (
@@ -47,12 +51,12 @@ interface SimulationStore {
     entry: EoqSimulationEntry
   ) => void;
 
-  addAbcSimulation: (
-    shopId: string,
-    product: string,
-    entry: AbcSimulationEntry
-  ) => void;
+  // new ABC methods
+  addAbcSimulation: (shopId: string,
+     simId: string,
+     entry: AbcSimulationEntry) => void;
 
+  setLastAbcSimId: (shopId: string, simId: string) => void;
 
   clearSimulationsForShop: (shopId: string) => void;
   clearSimulationsForProduct: (shopId: string, product: string) => void;
@@ -65,6 +69,7 @@ export const useSimulationStore = create<SimulationStore>()(
       newsvendorSimulations: {},
       eoqSimulations: {},
       abcSimulations: {},
+      lastAbcSimId: {},
 
 
       // ─── Newsvendor ───
@@ -73,7 +78,7 @@ export const useSimulationStore = create<SimulationStore>()(
           newsvendorSimulations: {
             ...state.newsvendorSimulations,
             [shopId]: {
-              ...state.newsvendorSimulations[shopId],
+              ...(state.newsvendorSimulations[shopId] ?? {}),
               [product]: entry,
             },
           },
@@ -85,23 +90,32 @@ export const useSimulationStore = create<SimulationStore>()(
           eoqSimulations: {
             ...state.eoqSimulations,
             [shopId]: {
-              ...state.eoqSimulations[shopId],
+              ...(state.eoqSimulations[shopId] ?? {}),
               [product]: entry,
             },
           },
         })),
 
-      // ─── ABC ───
-      addAbcSimulation: (shopId, product, entry) =>
+     // ─── ABC ───
+      addAbcSimulation: (shopId, simId, entry) =>
         set((state) => ({
           abcSimulations: {
             ...state.abcSimulations,
             [shopId]: {
-              ...state.abcSimulations[shopId],
-              [product]: entry,
+              ...(state.abcSimulations[shopId] ?? {}),
+              [simId]: entry,
             },
           },
         })),
+
+      setLastAbcSimId: (shopId, simId) =>
+        set((state) => ({
+          lastAbcSimId: {
+            ...state.lastAbcSimId,
+            [shopId]: simId,
+          },
+        })),
+
 
       // ─── Clear ───
       clearSimulationsForShop: (shopId) =>
@@ -113,12 +127,9 @@ export const useSimulationStore = create<SimulationStore>()(
 
       clearSimulationsForProduct: (shopId, product) =>
         set((state) => {
-          const { [product]: _, ...remainingNewsvendor } =
-            state.newsvendorSimulations[shopId] || {};
-          const { [product]: __, ...remainingEOQ } =
-            state.eoqSimulations[shopId] || {};
-          const { [product]: ___, ...remainingABC } =
-            state.abcSimulations[shopId] || {};
+          const { [product]: _, ...remainingNewsvendor } = state.newsvendorSimulations[shopId] ?? {};
+          const { [product]: __, ...remainingEOQ } = state.eoqSimulations[shopId] ?? {};
+          const { [product]: ___, ...remainingABC } = state.abcSimulations[shopId] ?? {};
 
           return {
             newsvendorSimulations: { ...state.newsvendorSimulations, [shopId]: remainingNewsvendor },
@@ -133,7 +144,8 @@ export const useSimulationStore = create<SimulationStore>()(
           eoqSimulations: {},
           abcSimulations: {},
         })),
-      }),
+    }),
+
     {
       name: "sim-storage", // localStorage key
       storage: createJSONStorage(() => ({
