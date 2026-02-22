@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { ABCCategory, AbcResponseDto } from "@/types/abc-backend";
 import { useCurrency } from "@/views/newsvendorViews/forms/props/useCurrency";
 import { useMemo, useState } from "react";
@@ -21,22 +22,12 @@ const AbcResultsPanel = ({ response, isRunning }: Props) => {
   const { format } = useCurrency();
   const [sortKey, setSortKey] = useState<SortKey>("rank");
   const [asc, setAsc] = useState(true);
+  const [hoverCategory, setHoverCategory] = useState<ABCCategory | null>(null);
+  const [hoverTableCategory, setHoverTableCategory] = useState<ABCCategory | null>(null);
+  const [hoverThreshold, setHoverThreshold] = useState<"80" | "95" | null>(null);
 
-  if (isRunning) {
-    return (
-      <div className="text-sm text-muted-foreground">
-        Running simulation...
-      </div>
-    );
-  }
-
-  if (!response) {
-    return (
-      <div className="text-sm text-muted-foreground">
-        Run the simulation to see results.
-      </div>
-    );
-  }
+  if (isRunning) return <div className="text-sm text-muted-foreground">Running simulation...</div>;
+  if (!response) return <div className="text-sm text-muted-foreground">Run the simulation to see results.</div>;
 
   const { items, summary } = response;
 
@@ -52,9 +43,8 @@ const AbcResultsPanel = ({ response, isRunning }: Props) => {
   }, [items, sortKey, asc]);
 
   const toggleSort = (key: SortKey) => {
-    if (key === sortKey) {
-      setAsc(!asc);
-    } else {
+    if (key === sortKey) setAsc(!asc);
+    else {
       setSortKey(key);
       setAsc(false);
     }
@@ -63,178 +53,153 @@ const AbcResultsPanel = ({ response, isRunning }: Props) => {
   const topA = items.filter(i => i.abcCategoryType === "A");
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 min-w-0">
 
       {/* EXECUTIVE SUMMARY */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-        {/* TOTAL VALUE */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Inventory Value</CardTitle>
-          </CardHeader>
-          <CardContent className="text-2xl font-semibold">
-            {format(summary.totalValue)}
-          </CardContent>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 min-w-0">
+        <Card className="min-w-0 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+          <CardHeader><CardTitle>Total Inventory Value</CardTitle></CardHeader>
+          <CardContent className="text-2xl font-semibold">{format(summary.totalValue)}</CardContent>
         </Card>
 
-        {(["A", "B", "C"] as ABCCategory[]).map(cat => {
-          const key = cat.toLowerCase() as "a" | "b" | "c";
+        {(["A","B","C"] as ABCCategory[]).map(cat => {
+          const key = cat.toLowerCase() as "a"|"b"|"c";
           const data = summary[key];
-          const categoryValue =
-            (data.valuePct / 100) * summary.totalValue;
+          const value = (data.valuePct/100)*summary.totalValue;
+
+          const isHighlighted = hoverCategory === cat || hoverTableCategory === cat;
 
           return (
-            <Card key={cat} className="relative overflow-hidden">
+            <Card
+              key={cat}
+              className={`relative overflow-hidden min-w-0 transition-all hover:shadow-lg hover:-translate-y-0.5 ${isHighlighted?"bg-blue-50":""}`}
+              onMouseEnter={() => setHoverCategory(cat)}
+              onMouseLeave={() => setHoverCategory(null)}
+            >
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <Badge className={`${categoryColor[cat]} text-white`}>
-                    {cat}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    {data.valuePct.toFixed(1)}%
-                  </span>
+                  <Badge className={`${categoryColor[cat]} text-white`}>{cat}</Badge>
+                  <span className="text-xs text-muted-foreground">{data.valuePct.toFixed(1)}%</span>
                 </CardTitle>
               </CardHeader>
-
-              <CardContent className="space-y-2">
-                <div className="text-lg font-semibold">
-                  {format(categoryValue)}
-                </div>
+              <CardContent className="space-y-1">
+                <div className="text-lg font-semibold">{format(value)}</div>
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Items</span>
-                  <span>{data.count}</span>
+                  <span>Items</span><span>{data.count}</span>
                 </div>
               </CardContent>
-
               <div className={`absolute bottom-0 left-0 right-0 h-1 ${categoryColor[cat]}`} />
             </Card>
           );
         })}
       </div>
 
-      {/* DOMINANCE SPOTLIGHT */}
-      {topA.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Value Drivers (Category A)</CardTitle>
-          </CardHeader>
+      {/* TOP A */}
+      {topA.length>0 && (
+        <Card className="min-w-0 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+          <CardHeader><CardTitle>Top Value Drivers (Category A)</CardTitle></CardHeader>
           <CardContent className="flex flex-wrap gap-2">
-            {topA.slice(0, 5).map(item => (
-              <Badge key={item.product.id} variant="outline">
-                {item.product.name} • {format(item.salesValue)}
-              </Badge>
+            {topA.slice(0,5).map(i=>(
+              <Badge key={i.product.id} variant="outline">{i.product.name} • {format(i.salesValue)}</Badge>
             ))}
           </CardContent>
         </Card>
       )}
 
       {/* RANKED TABLE */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Ranked Contribution Analysis</CardTitle>
-        </CardHeader>
+      <Card className="min-w-0 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+        <CardHeader><CardTitle>Ranked Contribution Analysis</CardTitle></CardHeader>
+        <CardContent className="min-w-0">
+          <div className="w-full overflow-x-auto">
+            <Table className="w-full text-sm table-fixed border-collapse">
+              <TableHeader>
+                <TableRow>
+                  {[
+                    {key:"rank",label:"Rank",align:"left"},
+                    {key:"product",label:"Product",align:"left"},
+                    {key:"salesValue",label:"Sales Value",align:"right"},
+                    {key:"cumulativePct",label:"Cumulative %",align:"center"},
+                    {key:"demandFrequency",label:"Demand",align:"right"},
+                    {key:"category",label:"Category",align:"center"},
+                  ].map(col=>{
+                    const isSort = col.key===sortKey;
+                    const arrow = isSort ? (asc?"↑":"↓"):"";
+                    return (
+                      <TableHead
+                        key={col.key}
+                        className={`cursor-pointer select-none px-2 py-1 ${
+                          col.align==="right"?"text-right":col.align==="center"?"text-center":"text-left"
+                        }`}
+                        onClick={()=>col.key!=="product" && col.key!=="category" && toggleSort(col.key as SortKey)}
+                      >
+                        <span className="flex items-center justify-center sm:justify-start gap-1">{col.label} {arrow}</span>
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedItems.map(item=>{
+                  let thresholdClass = "";
+                  if(item.cumulativePct>=95) thresholdClass="bg-emerald-50";
+                  else if(item.cumulativePct>=80) thresholdClass="bg-amber-50";
 
-        <CardContent>
-          <div className="overflow-auto">
-            <table className="w-full text-sm">
-              <thead className="border-b">
-                <tr>
-                  <th className="py-2 cursor-pointer" onClick={() => toggleSort("rank")}>
-                    Rank
-                  </th>
-                  <th>Product</th>
-                  <th
-                    className="text-right cursor-pointer"
-                    onClick={() => toggleSort("salesValue")}
-                  >
-                    Sales Value
-                  </th>
-                  <th
-                    className="text-right cursor-pointer"
-                    onClick={() => toggleSort("cumulativePct")}
-                  >
-                    Cumulative %
-                  </th>
-                  <th
-                    className="text-right cursor-pointer"
-                    onClick={() => toggleSort("demandFrequency")}
-                  >
-                    Demand
-                  </th>
-                  <th className="text-center">Category</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {sortedItems.map(item => {
-                  const thresholdClass =
-                    item.cumulativePct >= 95
-                      ? "bg-emerald-50"
-                      : item.cumulativePct >= 80
-                      ? "bg-amber-50"
-                      : "";
+                  const thresholdHover = item.cumulativePct>=95 ? "95" : item.cumulativePct>=80 ? "80" : null;
 
                   return (
-                    <tr
-                      key={item.product.id}
-                      className={`border-b transition-colors hover:bg-muted/40 ${thresholdClass}`}
+                    <TableRow
+                      key={`${item.rank}-${item.product.id ?? "noid"}`}
+                      className={`transition-all cursor-pointer hover:bg-blue-50 ${thresholdClass} ${hoverThreshold && thresholdHover && hoverThreshold===thresholdHover?"bg-blue-100":""}`}
+                      onMouseEnter={()=>{setHoverThreshold(thresholdHover); setHoverTableCategory(item.abcCategoryType);}}
+                      onMouseLeave={()=>{setHoverThreshold(null); setHoverTableCategory(null);}}
                     >
-                      <td className="py-2 font-medium">{item.rank}</td>
-
-                      <td>{item.product.name}</td>
-
-                      <td className="text-right font-medium">
-                        {format(item.salesValue)}
-                      </td>
-
-                      <td className="text-right w-44">
-                        <div className="flex flex-col items-end">
-                          <span>{item.cumulativePct.toFixed(1)}%</span>
-                          <div className="w-full h-1 bg-muted rounded-full mt-1">
-                            <div
-                              className="h-1 bg-primary rounded-full"
-                              style={{ width: `${item.cumulativePct}%` }}
-                            />
+                      <TableCell className="px-2 py-1 font-medium text-left">{item.rank}</TableCell>
+                      <TableCell className="px-2 py-1 truncate text-left">{item.product.name}</TableCell>
+                      <TableCell className="px-2 py-1 font-medium text-left">{format(item.salesValue)}</TableCell>
+                      <TableCell className="px-2 py-1 text-center">
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-xs">{item.cumulativePct.toFixed(1)}%</span>
+                          <div className="w-full h-2 bg-gray-200 rounded-full">
+                            <div className="h-2 bg-blue-400 rounded-full" style={{width:`${item.cumulativePct}%`}} />
                           </div>
                         </div>
-                      </td>
-
-                      <td className="text-right">
-                        {item.demandFrequency}
-                      </td>
-
-                      <td className="text-center">
-                        <Badge
-                          className={`${categoryColor[item.abcCategoryType]} text-white`}
-                        >
+                      </TableCell>
+                      <TableCell className="px-2 py-1 text-center">{item.demandFrequency}</TableCell>
+                      <TableCell className="px-2 py-1 text-center">
+                        <Badge className={`${categoryColor[item.abcCategoryType]} text-white`}>
                           {item.abcCategoryType}
                         </Badge>
-                      </td>
-                    </tr>
-                  );
+                      </TableCell>
+                    </TableRow>
+                  )
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
 
           {/* Threshold Legend */}
-          <div className="flex gap-6 text-xs text-muted-foreground mt-4">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-2 bg-amber-50 border" />
-              80% threshold
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-2 bg-emerald-50 border" />
-              95% threshold
-            </div>
+          <div className="flex gap-6 text-xs mt-3">
+            {[
+              {label:"80% threshold",color:"bg-amber-50",value:"80"},
+              {label:"95% threshold",color:"bg-emerald-50",value:"95"}
+            ].map(th=>(
+              <div
+                key={th.value}
+                className={`flex items-center gap-2 cursor-pointer ${
+                  hoverThreshold===th.value?"bg-blue-50 rounded px-1":""
+                }`}
+                onMouseEnter={()=>setHoverThreshold(th.value as "80"|"95")}
+                onMouseLeave={()=>setHoverThreshold(null)}
+              >
+                <div className={`w-4 h-2 border ${th.color}`}/>
+                {th.label}
+              </div>
+            ))}
           </div>
-
         </CardContent>
       </Card>
-
     </div>
-  );
+  )
 
 };
 

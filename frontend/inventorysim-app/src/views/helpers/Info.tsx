@@ -62,7 +62,7 @@ const Info = ({scenarioKey, content}: InfoProps) => {
             </p>
           )}
 
-          <DialogDescription className="j-dialog-description text-center space-y-1 text-xs">
+          <DialogDescription className="j-dialog-description text-center space-y-1 text-xs whitespace-pre-line">
             
               {scenario.description}
               {scenario.thresholds && <> {scenario.thresholds}</>}
@@ -96,7 +96,9 @@ const Info = ({scenarioKey, content}: InfoProps) => {
         {scenario.theory && (
           <p className="text-xs text-muted-foreground">{scenario.theory}</p>
         )}
-        <p className="mt-2 text-xs">{scenario.description}</p>
+        <p className="mt-2 text-xs whitespace-pre-line">
+          {scenario.description}
+        </p>
         {scenario.thresholds && (
           <p className="mt-2 text-xs">{scenario.thresholds}</p>
         )}

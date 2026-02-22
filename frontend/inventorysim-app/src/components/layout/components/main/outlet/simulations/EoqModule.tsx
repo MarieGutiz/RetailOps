@@ -108,36 +108,43 @@ const EoqModule = () => {
       }
     >
       <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="
-          bg-white/70 backdrop-blur-sm shadow-md
-          rounded-lg p-1
-          flex flex-wrap sm:flex-nowrap
-          gap-2
-          border border-gray-200
-        "
-      >
-        <TabsList className="bg-white/70 backdrop-blur-sm shadow-md rounded-lg p-1 flex gap-2 border border-gray-200">
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="
+        bg-white/70 backdrop-blur-sm shadow-md
+        rounded-lg p-1
+        flex flex-wrap sm:flex-nowrap
+        gap-1 sm:gap-2
+        border border-gray-200
+      "
+    >
+     <TabsList 
+      className="bg-yellow-200 backdrop-blur-sm shadow-md
+       rounded-lg p-1 
+       flex flex-wrap sm:flex-nowrap gap-2 sm:gap-2 
+       border border-gray-200">
+
           <TabsTrigger
             value="parameters"
-            className={`px-4 py-2 rounded-md transition-colors ${
-              activeTab === "parameters"
-                ? "jbtn-success shadow-inner"
-                : "hover:bg-gray-100"
-            }`}
+            className={`
+              px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
+              ${activeTab === "parameters" 
+                ? "jbtn-success shadow-inner" 
+                : "bg-blue-100 hover:bg-blue-200"}
+            `}
           >
             Parameters
           </TabsTrigger>
 
           <TabsTrigger
             value="results"
-            disabled={!lastSimulatedProduct}
-            className={`px-4 py-2 rounded-md transition-colors ${
-              activeTab === "results"
-                ? "jbtn-success shadow-inner"
-                : "hover:bg-gray-100"
-            }`}
+            disabled={!simulator.hasResult}
+            className={`
+              px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
+              ${activeTab === "results" 
+                ? "jbtn-success shadow-inner" 
+                : "bg-blue-100 hover:bg-blue-200"}
+            `}
           >
             Results
           </TabsTrigger>
@@ -145,13 +152,15 @@ const EoqModule = () => {
           <TabsTrigger
             value="costs"
             disabled={!simulator.hasResult}
-            className={`relative px-4 py-2 rounded-md transition-colors ${
-              activeTab === "costs"
-                ? "jbtn-success shadow-inner"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            Cost Breakdown
+            className={`
+              relative px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
+              ${activeTab === "costs" 
+                ? "jbtn-success shadow-inner" 
+                : "bg-blue-100 hover:bg-blue-200"}
+              w-auto
+            `}
+          >    
+              Cost Breakdown
 
             {simulator.hasResult && activeTab !== "costs" && (
               <span
@@ -168,7 +177,7 @@ const EoqModule = () => {
         </TabsList>
 
         {/* PARAMETERS */}
-        <TabsContent value="parameters" className="mt-4">
+        <TabsContent value="parameters" className="mt-8 sm:mt-4 w-full">
           <EoqForm
             onSubmit={handleRunSimulation}
             disabled={simulator.isRunning}
@@ -176,7 +185,7 @@ const EoqModule = () => {
         </TabsContent>
 
         {/* RESULTS */}
-        <TabsContent value="results" className="mt-4">
+        <TabsContent value="results" className="mt-8 sm:mt-4 w-full">
           {isValidResult ? (
             <EoqResultsPanel result={currentResult} />
           ) : (
@@ -187,7 +196,7 @@ const EoqModule = () => {
         </TabsContent>
 
         {/* COST BREAKDOWN */}
-        <TabsContent value="costs" className="mt-4">
+        <TabsContent value="costs" className="mt-8 sm:mt-4 w-full">
           {isValidResult && simulator.hasResult ? (
             <EoqCostBreakdownPanel
               curve={simulator.curve ?? null}
