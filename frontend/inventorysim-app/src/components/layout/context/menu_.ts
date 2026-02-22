@@ -109,13 +109,13 @@ export const data_menu = {
       icon: FileTextIcon,
       subitems: [],
     },
-    {
-      title: "Collaboration",
-      id: "team",
-      url: "#",
-      icon: UsersIcon,
-      subitems: [],
-    },
+    // {
+    //   title: "Collaboration",
+    //   id: "team",
+    //   url: "#",
+    //   icon: UsersIcon,
+    //   subitems: [],
+    // },
   ],
   navClouds: [
     {
@@ -175,16 +175,5 @@ export const data_menu = {
       icon: HelpCircleIcon,
     },
   ],
-  documents: [
-    {
-      name: "Data Product Library",
-      url: "#",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Simulation Notes",
-      url: "#",
-      icon: NotebookIcon,
-    },
-  ],
+ 
 };

@@ -1,39 +1,19 @@
 import { useSimulationStore } from "@/store/simulations/useSimulationStore";
-import { useState, useEffect } from "react";
 import { useAbcSimulator } from "./useAbcSimulator";
 
 /**
  * Hydrates the ABC simulator with the last persisted simulation
- * for the given shopId and optional productName.
+ * for the given shopId
  */
-export function useHydratedAbcSimulator(shopId: string, shopName: string) {
-  const simulator = useAbcSimulator(shopId, shopName);
-  const abcSimulations = useSimulationStore((s) => s.abcSimulations);
+export function useHydratedAbcSimulator(shopId: string) {
+  const simulator = useAbcSimulator(shopId);
 
-  const [lastSimulatedProduct, setLastSimulatedProduct] = useState<string | null>(null);
+  const lastAbcSimId = useSimulationStore(
+    (s) => s.lastAbcSimId[shopId] ?? null
+  );
 
-  useEffect(() => {
-    const shopSims = abcSimulations[shopId];
-    if (!shopSims) return;
-
-    const entries = Object.entries(shopSims);
-    if (entries.length === 0) return;
-
-    // Find the latest simulation by createdAt
-    const [latestProduct, latestSim] = entries
-      .sort(
-        ([, a], [, b]) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )[0];
-
-    setLastSimulatedProduct(latestProduct);
-
-    // Hydrate the simulator state without calling the API
-    if (!simulator.response && !simulator.lastRequest) {
-      simulator.lastRequest = latestSim.request;
-      simulator.response = latestSim.response;
-    }
-  }, [shopId, abcSimulations, simulator]);
-
-  return { simulator, lastSimulatedProduct };
+  return {
+    simulator,
+    lastSimulatedRunId: lastAbcSimId,
+  };
 }

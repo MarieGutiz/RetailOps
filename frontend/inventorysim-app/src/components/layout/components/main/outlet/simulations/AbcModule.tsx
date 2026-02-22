@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AbcResultsPanel from "@/views/ABCViews/AbcForms/ResultPanel/AbcResultsPanel";
 import AbcDistributionPanel from "@/views/ABCViews/DistributionPanel/AbcDistributionPanel";
-import { useSimulationStore } from "@/store/simulations/useSimulationStore";
 
 const ABC_INFO = {
   title: "ABC Inventory Classification",
@@ -46,41 +45,31 @@ const AbcModule = () => {
 
     const selectedUserCase = selectedShop.name;
 
-  // Hydrate simulator & last simulated product
-  const { simulator, lastSimulatedProduct } = useHydratedAbcSimulator(
-    selectedShop.id,
-    selectedShop.name
-  );
+    // New hydration pattern
+    const { simulator, lastSimulatedRunId } =
+      useHydratedAbcSimulator(selectedShop.id);
 
-  const [activeTab, setActiveTab] = useState("parameters");
+    const [activeTab, setActiveTab] = useState("parameters");
 
-  // Auto-switch to Results if previous run exists
-  useEffect(() => {
-    if (lastSimulatedProduct && simulator.response) {
-      setActiveTab("results");
-    }
-  }, [lastSimulatedProduct, simulator.response]);
+    // Auto-switch to Results if previous run exists
+    useEffect(() => {
+      if (lastSimulatedRunId && simulator.response) {
+        setActiveTab("results");
+      }
+    }, [lastSimulatedRunId, simulator.response]);
 
-  const handleRunSimulation = async (formData?: any) => {
-    if (!formData || !formData.items?.length) {
-      toast.error("Simulation request missing items");
-      return console.error("Simulation request missing items");
-    }
+    const handleRunSimulation = async (formData?: any) => {
+      if (!formData || !formData.items?.length) {
+        toast.error("Simulation request missing items");
+        return;
+      }
 
-    setActiveTab("parameters");
-    await simulator.run(formData);
-  };
+      setActiveTab("parameters");
+      await simulator.run(formData);
+    };
 
-  // const storeState = useSimulationStore.getState();
+    const abcResult = simulator.response;
 
-  const abcSimulations = useSimulationStore(
-    (s) => s.abcSimulations
-  );
-
-  const abcResult =
-    lastSimulatedProduct &&
-    abcSimulations[selectedShop.id]?.[lastSimulatedProduct]
-      ?.response;
   console.log("ABC Result from store in module : ", abcResult);//ok
   return (
     <ModuleContainer
@@ -95,7 +84,8 @@ const AbcModule = () => {
             className="toolbar-element jbtn-flat-btn toolbar-element-md"
             disabled={simulator.isRunning || !simulator.lastRequest}
             onClick={() =>
-              simulator.lastRequest && handleRunSimulation(simulator.lastRequest)
+              simulator.lastRequest &&
+              handleRunSimulation(simulator.lastRequest)
             }
           >
             Run Last Simulation
@@ -104,74 +94,98 @@ const AbcModule = () => {
       }
     >
       <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="w-full flex flex-col gap-4"
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="
+        bg-white/70 backdrop-blur-sm shadow-md
+        rounded-lg p-1
+        flex flex-wrap sm:flex-nowrap
+        gap-1 sm:gap-2
+        border border-gray-200
+      "
+    >
+     <TabsList 
+      className="bg-blue-200 backdrop-blur-sm shadow-md
+       rounded-lg p-1 
+       flex flex-wrap sm:flex-nowrap gap-2 sm:gap-2 
+       border border-gray-200">
+
+      <TabsTrigger
+        value="parameters"
+        className={`
+          px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
+          ${activeTab === "parameters" 
+            ? "jbtn-success shadow-inner" 
+            : "bg-blue-100 hover:bg-blue-200"}
+        `}
       >
-        <TabsList className="flex gap-2 border-b border-gray-200">
-          <TabsTrigger
-            value="parameters"
-            className={`px-4 py-2 rounded-md transition-colors ${
-              activeTab === "parameters"
-                ? "jbtn-success shadow-inner"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            Parameters
-          </TabsTrigger>
+        Parameters
+      </TabsTrigger>
 
-          <TabsTrigger
-            value="results"
-            disabled={!lastSimulatedProduct}
-            className={`px-4 py-2 rounded-md transition-colors ${
-              activeTab === "results"
-                ? "jbtn-success shadow-inner"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            Results
-          </TabsTrigger>
+      <TabsTrigger
+        value="results"
+        disabled={!simulator.hasResult}
+        className={`
+          px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
+          ${activeTab === "results" 
+            ? "jbtn-success shadow-inner" 
+            : "bg-blue-100 hover:bg-blue-200"}
+        `}
+      >
+        Results
+      </TabsTrigger>
 
-          <TabsTrigger
-            value="distribution"
-            disabled={!simulator.hasResult}
-            className={`px-4 py-2 rounded-md transition-colors ${
-              activeTab === "distribution"
-                ? "jbtn-success shadow-inner"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            Distribution
-            {simulator.hasResult && activeTab !== "distribution" && (
-              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
-            )}
-          </TabsTrigger>
-        </TabsList>
+      <TabsTrigger
+        value="distribution"
+        disabled={!simulator.hasResult}
+        className={`
+          relative px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
+          ${activeTab === "distribution" 
+            ? "jbtn-success shadow-inner" 
+            : "bg-blue-100 hover:bg-blue-200"}
+          w-auto
+        `}
+      >
+        Distribution
+        {simulator.hasResult && activeTab !== "distribution" && (
+          <span 
+            className="
+            absolute -top-1 -right-1
+            h-3 w-3 rounded-full
+            bg-emerald-500
+             animate-pulse" />
+        )}
+      </TabsTrigger>
+    </TabsList>
+
 
         {/* PARAMETERS */}
-        <TabsContent value="parameters" className="mt-4 w-full">
+        <TabsContent value="parameters" className="mt-8 sm:mt-4 w-full">
           <AbcForm 
            onSubmit={handleRunSimulation}
            disabled={simulator.isRunning} />
         </TabsContent>
 
         {/* RESULTS */}
-        <TabsContent value="results" className="mt-4 w-full">
-        {lastSimulatedProduct && abcResult ? (
-          <AbcResultsPanel
-            response={abcResult}
-            isRunning={simulator.isRunning}
-          />
-        ) : (
-          <div className="text-sm text-muted-foreground">
-            Run the simulation to see results.
+        <TabsContent value="results" className="mt-8 sm:mt-4 w-full">
+          <div className="">
+              {abcResult ? (
+                <AbcResultsPanel
+                  response={abcResult}
+                  isRunning={simulator.isRunning}
+                />
+              ) : (
+                <div className="text-sm text-muted-foreground">
+                  Run the simulation to see results.
+                </div>
+              )}
           </div>
-        )}
+        
       </TabsContent>
 
        {/* DISTRIBUTION */}
-      <TabsContent value="distribution" className="mt-4 w-full">
-        {lastSimulatedProduct && abcResult ? (
+      <TabsContent value="distribution" className="mt-8 sm:mt-4 w-full">
+        { abcResult ? (
           <AbcDistributionPanel
             response={abcResult}
             isRunning={simulator.isRunning}
