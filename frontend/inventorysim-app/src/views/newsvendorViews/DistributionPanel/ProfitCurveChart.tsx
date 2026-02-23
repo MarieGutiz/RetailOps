@@ -1,7 +1,9 @@
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { batchNewsvendorSimulation } from "@/services/api/newsvendor.api";
 import { useApiErrorToast } from "@/services/api/useApiErrorToast";
-import type { NewsvendorMarkersRequest, NewsvendorRequest } from "@/types/newsvendor-backend";
-import { useState, useEffect } from "react";
+import type { NewsvendorRequest } from "@/types/newsvendor-backend";
+import Info from "@/views/helpers/Info";
+import { useState, useEffect, useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -11,6 +13,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   ReferenceLine,
+  ReferenceDot,
 } from "recharts";
 
 
@@ -26,8 +29,23 @@ interface ChartPoint {
   profit: number;
 }
 
+const PROFIT_CURVE_INFO = {
+  title: "Expected Profit Curve",
+  description: `
+This curve shows expected profit as a function of order quantity.
+
+• The peak represents the optimal order quantity (Q*).
+• The vertical dashed line marks Q*.
+• The curve shape reflects underage vs overage tradeoffs.
+
+Left of Q* → stockouts dominate.
+Right of Q* → excess inventory dominates.
+  `,
+};
+
+
 const ProfitCurveChart = ({ request, simId, shopName, optimalQ }: Props) => {
-      const [data, setData] = useState<ChartPoint[]>([]);
+  const [data, setData] = useState<ChartPoint[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,75 +101,105 @@ const ProfitCurveChart = ({ request, simId, shopName, optimalQ }: Props) => {
     loadCurve();
   }, [request, simId, shopName, optimalQ]);
 
-  return (
-    <div className="h-[350px] flex flex-col">
-      <h3 className="font-semibold mb-2">
-        Expected Profit vs Order Quantity
-      </h3>
+    const optimalPoint = useMemo(() => {
+    return data.find((p) => p.q === Math.round(optimalQ));
+  }, [data, optimalQ]);
 
-      {/* Loading */}
-      {loading && (
-        <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
-          Computing profit curve...
-        </div>
-      )}
 
-      {/* Error Panel */}
-      {error && (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-            {error}
+    return (
+    <Card className="h-[420px] flex flex-col">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <h3 className="font-semibold">
+          Expected Profit vs Order Quantity
+        </h3>
+        <Info content={PROFIT_CURVE_INFO} />
+      </CardHeader>
+
+      <CardContent className="flex-1">
+        {loading && (
+          <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
+            Computing profit curve...
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Chart */}
-      {!loading && !error && data.length > 0 && (
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
+        {error && (
+          <div className="h-full flex items-center justify-center">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+              {error}
+            </div>
+          </div>
+        )}
 
-            <XAxis dataKey="q" type="number" />
+        {!loading && !error && data.length > 0 && (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
 
-            <YAxis />
+              <XAxis
+                dataKey="q"
+                type="number"
+                label={{
+                  value: "Order Quantity (Q)",
+                  position: "insideBottom",
+                  offset: -5,
+                }}
+              />
 
-            <Tooltip
-              formatter={(value: number) =>
-                value.toLocaleString()
-              }
-              labelFormatter={(label) =>
-                `Order Quantity: ${label}`
-              }
-            />
+              <YAxis
+                label={{
+                  value: "Expected Profit",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
 
-            {/* Profit curve */}
-            <Line
-              type="monotone"
-              dataKey="profit"
-              stroke="#6366f1"
-              dot={false}
-              isAnimationActive={false}
-            />
+              <Tooltip
+                formatter={(value: number) => [
+                  value.toLocaleString(),
+                  "Expected Profit",
+                ]}
+                labelFormatter={(label) =>
+                  `Order Quantity: ${label}`
+                }
+              />
 
-            {/* Optimal Q */}
-            <ReferenceLine
-              x={optimalQ}
-              stroke="red"
-              strokeDasharray="4 4"
-              label="Q*"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      )}
+              <Line
+                type="monotone"
+                dataKey="profit"
+                stroke="#6366f1"
+                strokeWidth={2}
+                dot={false}
+                isAnimationActive={false}
+              />
 
-      {/* Empty state */}
-      {!loading && !error && data.length === 0 && (
-        <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
-          No simulation data available.
-        </div>
-      )}
-    </div>
-  );
+              <ReferenceLine
+                x={optimalQ}
+                stroke="red"
+                strokeDasharray="4 4"
+                label="Q*"
+              />
+
+              {optimalPoint && (
+                <ReferenceDot
+                  x={optimalPoint.q}
+                  y={optimalPoint.profit}
+                  r={6}
+                  fill="red"
+                  stroke="none"
+                />
+              )}
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+
+        {!loading && !error && data.length === 0 && (
+          <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
+            No simulation data available.
+          </div>
+        )}
+      </CardContent>
+    </Card>
+    )
 
 
 }

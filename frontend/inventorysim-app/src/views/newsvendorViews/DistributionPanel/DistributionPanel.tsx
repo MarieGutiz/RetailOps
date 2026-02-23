@@ -31,7 +31,7 @@ const DistributionPanel = ({
         </div>
         <div className="p-4 bg-white rounded shadow text-center">
           <h4 className="text-gray-500">Expected Profit</h4>
-          <p className="text-xl font-bold">{response.expectedProfit}</p>
+          <p className="text-xl font-bold">{response.expectedProfit.toFixed(2)}</p>
         </div>
         <div className="p-4 bg-white rounded shadow text-center">
           <h4 className="text-gray-500">Critical Ratio</h4>

@@ -53,6 +53,26 @@ const AbcDistributionPanel = ({ response }: Props) => {
   return (
     <div className="flex flex-col gap-6">
 
+            {/* INSIGHT CARD */}
+      <Card className="border bg-muted/30 shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-xl sm:text-2xl">
+            Inventory Value & Category Insights
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
+          <p>
+            This section visualizes how inventory value is distributed across ABC categories.
+            Category A typically represents the few high-value items, B are moderate contributors,
+            and C are numerous low-value items.
+          </p>
+          <p>
+            Understanding this concentration helps prioritize inventory control, stock monitoring,
+            and resource allocation.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* TOTAL VALUE */}
       <Card>
         <CardHeader>
@@ -63,22 +83,21 @@ const AbcDistributionPanel = ({ response }: Props) => {
         </CardContent>
       </Card>
 
-      {/* PIE CHART */}
+      
+      {/* PIE CHART WITH CAPTION */}
       <Card>
         <CardHeader>
           <CardTitle>Value Distribution (%)</CardTitle>
         </CardHeader>
-        <CardContent className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
+        <CardContent className="flex flex-col h-80">
+          <ResponsiveContainer width="100%" height="80%">
             <PieChart>
               <Pie
                 data={pieData}
                 dataKey="value"
                 nameKey="name"
                 outerRadius={110}
-                label={({ name, value }) =>
-                  `${name}: ${value.toFixed(1)}%`
-                }
+                label={({ name, value }) => `${name}: ${value.toFixed(1)}%`}
               >
                 {pieData.map((entry, index) => (
                   <Cell
@@ -90,16 +109,21 @@ const AbcDistributionPanel = ({ response }: Props) => {
               <Tooltip formatter={(value: number) => `${value.toFixed(2)}%`} />
             </PieChart>
           </ResponsiveContainer>
+          <p className="mt-2 text-sm text-muted-foreground">
+            The pie chart shows each category's contribution to total inventory value.
+            Category A typically contains a few high-value items, B moderate contributors, and C
+            many low-value items.
+          </p>
         </CardContent>
       </Card>
 
-      {/* BAR CHART */}
+      {/* BAR CHART WITH CAPTION */}
       <Card>
         <CardHeader>
           <CardTitle>Item Count per Category</CardTitle>
         </CardHeader>
-        <CardContent className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
+        <CardContent className="flex flex-col h-80">
+          <ResponsiveContainer width="100%" height="80%">
             <BarChart data={barData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
@@ -116,8 +140,13 @@ const AbcDistributionPanel = ({ response }: Props) => {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+          <p className="mt-2 text-sm text-muted-foreground">
+            The bar chart shows the number of items in each category.
+            Category C usually contains the most items but contributes the least to total value.
+          </p>
         </CardContent>
       </Card>
+
     </div>
   );
 }

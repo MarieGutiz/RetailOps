@@ -8,7 +8,7 @@ import Info from "@/views/helpers/Info";
 import AbcForm from "@/views/ABCViews/AbcForms/AbcForm";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AbcResultsPanel from "@/views/ABCViews/AbcForms/ResultPanel/AbcResultsPanel";
+import AbcResultsPanel from "@/views/ABCViews/ResultPanel/AbcResultsPanel";
 import AbcDistributionPanel from "@/views/ABCViews/DistributionPanel/AbcDistributionPanel";
 
 const ABC_INFO = {

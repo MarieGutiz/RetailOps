@@ -9,13 +9,6 @@ export interface EoqRequest {
   username?: string;
 }
 
-// export interface EoqResponse {
-//   product: string;
-//   demand: number;        
-//   setupCost: number;     
-//   holdingCost: number;   
-//   eoq: number;
-// }
 export interface EoqResponse {
   product: string;
   demand: number;

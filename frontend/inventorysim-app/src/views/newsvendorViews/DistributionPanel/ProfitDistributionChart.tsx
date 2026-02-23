@@ -88,40 +88,48 @@ const ProfitDistributionChart = ({
   }, [request, optimalQ, simId, shopName]);
 
   return (
-    <div className="h-[450px] flex flex-col">
-      <h3 className="font-semibold mb-2">Profit Distribution at Q* = {optimalQ}</h3>
+  <div className="w-full space-y-4">
 
-      {/* Explanation */}
-      <p className="text-sm text-gray-600 mb-2">
-        This histogram shows the distribution of profits from <strong>{request.simulationRuns}</strong> Monte Carlo simulations.
-        Each bar represents a profit bucket, and the height (frequency) shows the proportion of simulations that ended in that range.
-        Red bars indicate losses (profit &lt; 0), purple bars indicate positive profits. Reference lines show break-even (0) and expected profit.
+    {/* Title */}
+    <div>
+      <h3 className="font-semibold text-base sm:text-lg">
+        Profit Distribution at Q* = {optimalQ}
+      </h3>
+      <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+        Distribution of simulated profits from {request.simulationRuns} Monte Carlo runs.
       </p>
+    </div>
 
-      {/* Loading */}
-      {loading && (
-        <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
-          Running Monte Carlo simulation...
+    {/* Loading */}
+    {loading && (
+      <div className="h-[260px] flex items-center justify-center text-sm text-muted-foreground">
+        Running Monte Carlo simulation...
+      </div>
+    )}
+
+    {/* Error */}
+    {error && (
+      <div className="h-[260px] flex items-center justify-center">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+          {error}
         </div>
-      )}
+      </div>
+    )}
 
-      {/* Error */}
-      {error && (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-            {error}
-          </div>
-        </div>
-      )}
-
-      {/* Chart */}
-      {!loading && !error && data.length > 0 && (
-        <>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart 
-             data={data}
-             margin={{ top: 10, right: 20, left: 40, bottom: 20 }}
-             >
+    {/* Chart */}
+    {!loading && !error && data.length > 0 && (
+      <>
+        <div className="w-full">
+          <ResponsiveContainer width="100%" aspect={1.8}>
+            <BarChart
+              data={data}
+              margin={{
+                top: 10,
+                right: 10,
+                left: 0,
+                bottom: 10,
+              }}
+            >
               <CartesianGrid strokeDasharray="3 3" />
 
               <XAxis
@@ -129,64 +137,94 @@ const ProfitDistributionChart = ({
                 type="number"
                 domain={["dataMin", "dataMax"]}
                 tickFormatter={(v) => v.toLocaleString()}
-                label={{ value: "Profit ($)", position: "insideBottom", offset: -5 }}
+                tick={{ fontSize: 10 }}
               />
 
               <YAxis
-                tickFormatter={(v) => (v * 100).toFixed(1) + "%"}
-                label={{ value: "Frequency (%)", angle: -90, position: "insideLeft", offset: 0 }}
+                tickFormatter={(v) => (v * 100).toFixed(0) + "%"}
+                tick={{ fontSize: 10 }}
+                width={40}
               />
 
               <Tooltip
-                formatter={(value: number) => (value * 100).toFixed(2) + "%"}
-                labelFormatter={(label) => `Profit: ${label}`}
+                formatter={(value: number) =>
+                  (value * 100).toFixed(2) + "%"
+                }
+                labelFormatter={(label) =>
+                  `Profit: ${Number(label).toLocaleString()}`
+                }
               />
 
-              {/* Reference lines */}
-              <ReferenceLine x={0} stroke="red" strokeDasharray="4 4" label="Break Even" />
+              <ReferenceLine
+                x={0}
+                stroke="red"
+                strokeDasharray="4 4"
+              />
+
               {expectedProfit !== null && (
                 <ReferenceLine
-                x={expectedProfit}
-                stroke="blue"
-                strokeDasharray="4 4"
-                label={{
-                  value: "Expected Profit",
-                  position: "insideTopRight",
-                  fill: "blue",
-                  fontSize: 12,
-                }}
-              />
+                  x={expectedProfit}
+                  stroke="blue"
+                  strokeDasharray="4 4"
+                />
               )}
 
-              {/* Histogram bars */}
-              <Bar dataKey="frequency" barSize={8} fill="#8b5cf6" isAnimationActive={false} />
+              <Bar
+                dataKey="frequency"
+                fill="#8b5cf6"
+                isAnimationActive={false}
+                barSize={6}
+              />
             </BarChart>
           </ResponsiveContainer>
-
-          {/* Info panel */}
-          <div className="text-sm mt-2 text-gray-700 space-y-1">
-            {expectedProfit !== null && <div><strong>Expected Profit:</strong> {expectedProfit.toFixed(2)}</div>}
-            {probabilityOfLoss !== null && <div><strong>Probability of Loss:</strong> {(probabilityOfLoss * 100).toFixed(2)}%</div>}
-            {minProfit !== null && maxProfit !== null && (
-              <div><strong>Profit Range:</strong> {minProfit.toFixed(2)} to {maxProfit.toFixed(2)}</div>
-            )}
-            {variance !== null && <div><strong>Variance:</strong> {variance.toFixed(2)}</div>}
-            <div className="text-xs text-gray-500">
-              Frequencies are obtained by repeating the Monte Carlo simulation {request.simulationRuns} times,
-              sampling demand from a normal distribution with mean {request.meanDemand} and std deviation {request.stdDeviation}.
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Empty */}
-      {!loading && !error && data.length === 0 && (
-        <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
-          No simulation data available.
         </div>
-      )}
-    </div>
-  );
+
+        {/* Info Panel */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-700">
+          {expectedProfit !== null && (
+            <div>
+              <strong>Expected Profit:</strong>{" "}
+              {expectedProfit.toFixed(2)}
+            </div>
+          )}
+
+          {probabilityOfLoss !== null && (
+            <div>
+              <strong>Probability of Loss:</strong>{" "}
+              {(probabilityOfLoss * 100).toFixed(2)}%
+            </div>
+          )}
+
+          {minProfit !== null && maxProfit !== null && (
+            <div>
+              <strong>Profit Range:</strong>{" "}
+              {minProfit.toFixed(2)} to {maxProfit.toFixed(2)}
+            </div>
+          )}
+
+          {variance !== null && (
+            <div>
+              <strong>Variance:</strong>{" "}
+              {variance.toFixed(2)}
+            </div>
+          )}
+        </div>
+
+        <div className="text-[11px] sm:text-xs text-muted-foreground">
+          Demand sampled from Normal(μ={request.meanDemand}, σ={request.stdDeviation})
+          across {request.simulationRuns} simulations.
+        </div>
+      </>
+    )}
+
+    {/* Empty */}
+    {!loading && !error && data.length === 0 && (
+      <div className="h-[260px] flex items-center justify-center text-sm text-muted-foreground">
+        No simulation data available.
+      </div>
+    )}
+  </div>
+);
 
 
 
