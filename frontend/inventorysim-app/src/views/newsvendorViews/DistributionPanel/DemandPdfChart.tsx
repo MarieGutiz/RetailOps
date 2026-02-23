@@ -126,40 +126,57 @@ const DemandPdfChart = ({
 
 
   return (
-    <div className="h-[350px] flex flex-col">
-      <h3 className="font-semibold mb-2">
+  <div className="w-full space-y-4">
+
+    {/* Title */}
+    <div>
+      <h3 className="font-semibold text-base sm:text-lg">
         Demand Distribution (Normal PDF)
       </h3>
+      <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+        Normal distribution of demand. Area shaded represents probability of demand ≤ Q*.
+      </p>
+    </div>
 
-      {/* Loading */}
-      {loading && (
-        <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
-          Computing normal distribution...
+    {/* Loading */}
+    {loading && (
+      <div className="h-[240px] flex items-center justify-center text-sm text-muted-foreground">
+        Computing normal distribution...
+      </div>
+    )}
+
+    {/* Error */}
+    {error && (
+      <div className="h-[240px] flex items-center justify-center">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+          {error}
         </div>
-      )}
+      </div>
+    )}
 
-      {/* Error Panel */}
-      {error && (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-            {error}
-          </div>
-        </div>
-      )}
-
-      {/* Chart */}
-      {!loading && !error && shadedData.length > 0 && (
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={shadedData}>
+    {/* Chart */}
+    {!loading && !error && shadedData.length > 0 && (
+      <div className="w-full">
+        <ResponsiveContainer width="100%" aspect={2}>
+          <AreaChart
+            data={shadedData}
+            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
 
-           <XAxis
+            <XAxis
               dataKey="demand"
               type="number"
               domain={["dataMin", "dataMax"]}
               tickFormatter={(v) => Math.round(v).toString()}
+              tick={{ fontSize: 10 }}
             />
-            <YAxis type="number" />
+
+            <YAxis
+              type="number"
+              tick={{ fontSize: 10 }}
+              width={40}
+            />
 
             <Tooltip
               formatter={(value: number, name: string) => {
@@ -167,16 +184,14 @@ const DemandPdfChart = ({
                   density: "Probability Density",
                   shadedDensity: "Cumulative Area (≤ Q*)",
                 };
-
                 return [value.toFixed(5), labelMap[name] || name];
               }}
               labelFormatter={(label) =>
-                  `Demand: ${Math.round(Number(label))} units`
-                }
+                `Demand: ${Math.round(Number(label))} units`
+              }
             />
 
-
-            {/* Shaded area up to Q* */}
+            {/* Shaded area */}
             <Area
               type="monotone"
               dataKey="shadedDensity"
@@ -186,7 +201,7 @@ const DemandPdfChart = ({
               isAnimationActive={false}
             />
 
-            {/* Full curve */}
+            {/* Full PDF curve */}
             <Area
               type="monotone"
               dataKey="density"
@@ -197,21 +212,28 @@ const DemandPdfChart = ({
             />
 
             {/* Reference lines */}
-            <ReferenceLine x={Math.round(mean)} stroke="orange" label="Mean" />
-            <ReferenceLine x={Math.floor(optimalQ)} stroke="red" label="Q*" />
+            <ReferenceLine
+              x={Math.round(mean)}
+              stroke="orange"
+            />
+
+            <ReferenceLine
+              x={Math.floor(optimalQ)}
+              stroke="red"
+            />
           </AreaChart>
         </ResponsiveContainer>
-      )}
+      </div>
+    )}
 
-      {/* Empty state */}
-      {!loading && !error && shadedData.length === 0 && (
-        <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
-          No distribution data available.
-        </div>
-      )}
-    </div>
-
-  );
+    {/* Empty */}
+    {!loading && !error && shadedData.length === 0 && (
+      <div className="h-[240px] flex items-center justify-center text-sm text-muted-foreground">
+        No distribution data available.
+      </div>
+    )}
+  </div>
+);
 
 
 }

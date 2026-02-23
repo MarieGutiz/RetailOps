@@ -149,7 +149,7 @@ const NewsvendorForm = ({
     simulationRuns: values.simulationRuns,
     saveToHistory: isAuthenticated ? values.saveToHistory : false,
   };
-    console.log("Submitting payload:", payload); // <-- debug log
+    // console.log("Submitting payload:", payload); // <-- debug log
 
   onSubmit(payload);
 };

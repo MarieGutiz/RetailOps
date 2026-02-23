@@ -75,9 +75,6 @@ const NewsvendorModule = () => {
   };
 
   const storeState = useSimulationStore.getState();
-  // console.log("response:", simulator.response);
-  // console.log("lastRequest:", simulator.lastRequest);
-
 
   return (
     <ModuleContainer
