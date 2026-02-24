@@ -98,9 +98,16 @@ export const data_menu = {
 ,
     {
       title: "Analytics",
-      url: "#",
+      url: "/dashboard/analytics/newsvendor",
       icon: BarChartIcon,
-      subitems: [],
+      subitems: [
+        {
+        title: "Newsvendor",
+        id: "analytics-newsvendor",
+        url: "/dashboard/analytics/newsvendor",
+        icon: ActivityIcon,
+      },
+      ],
     },
     {
       title: "Reports",
