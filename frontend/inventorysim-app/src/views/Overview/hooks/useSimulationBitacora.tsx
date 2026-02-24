@@ -1,6 +1,10 @@
 import { useSimulationStore } from "@/store/simulations/useSimulationStore";
+import type { AbcResponseDto } from "@/types/abc-backend";
+import type { EoqResponse } from "@/types/eoq-backend";
+import type { NewsvendorRequest, NewsvendorResponse } from "@/types/newsvendor-backend";
 import { useMemo } from "react";
 
+// ─── SimulationLogEntry Types ───
 export type SimulationLogEntry =
   | {
       type: "newsvendor";
@@ -8,7 +12,8 @@ export type SimulationLogEntry =
       product: string;
       sku: string;
       createdAt: string;
-      data: any;
+      data: NewsvendorResponse;
+      request: NewsvendorRequest;
     }
   | {
       type: "eoq";
@@ -16,31 +21,42 @@ export type SimulationLogEntry =
       product: string;
       sku: string;
       createdAt: string;
-      data: any;
+      data: EoqResponse;
     }
   | {
       type: "abc";
       shopId: string;
       simId: string;
       createdAt: string;
-      data: any;
+      data: AbcResponseDto;
     };
 
-export const useSimulationBitacora = (shopId?: string) => {
-  const {
-    newsvendorSimulations,
-    eoqSimulations,
-    abcSimulations,
-  } = useSimulationStore();
+// ─── Type Guards ───
+export const isNewsvendorLog = (
+  log: SimulationLogEntry
+): log is Extract<SimulationLogEntry, { type: "newsvendor" }> => log.type === "newsvendor";
 
-  return useMemo(() => {
+const isEoqLog = (
+  log: SimulationLogEntry
+): log is Extract<SimulationLogEntry, { type: "eoq" }> => log.type === "eoq";
+
+const isAbcLog = (
+  log: SimulationLogEntry
+): log is Extract<SimulationLogEntry, { type: "abc" }> => log.type === "abc";
+
+// ─── Full Bitácora Hook ───
+export const useSimulationBitacora = (shopId?: string) => {
+  const { newsvendorSimulations, eoqSimulations, abcSimulations } = useSimulationStore();
+
+  return useMemo<SimulationLogEntry[]>(() => {
     if (!shopId) return [];
 
     const logs: SimulationLogEntry[] = [];
 
-    // Newsvendor
+    // ─── Newsvendor ───
     const nv = newsvendorSimulations[shopId] ?? {};
     Object.entries(nv).forEach(([sku, entry]) => {
+      if (!entry.request || !entry.response) return; // safety
       logs.push({
         type: "newsvendor",
         shopId,
@@ -48,10 +64,11 @@ export const useSimulationBitacora = (shopId?: string) => {
         product: entry.request.productName,
         createdAt: entry.createdAt,
         data: entry.response,
+        request: entry.request,
       });
     });
 
-    // EOQ
+    // ─── EOQ ───
     const eoq = eoqSimulations[shopId] ?? {};
     Object.entries(eoq).forEach(([sku, entry]) => {
       logs.push({
@@ -64,7 +81,7 @@ export const useSimulationBitacora = (shopId?: string) => {
       });
     });
 
-    // ABC
+    // ─── ABC ───
     const abc = abcSimulations[shopId] ?? {};
     Object.entries(abc).forEach(([simId, entry]) => {
       logs.push({
@@ -77,10 +94,12 @@ export const useSimulationBitacora = (shopId?: string) => {
     });
 
     // Sort newest first
-    return logs.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
-    );
+    return logs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [shopId, newsvendorSimulations, eoqSimulations, abcSimulations]);
+};
+
+// ─── Filtered Hook: Only Newsvendor Logs ───
+export const useNewsvendorBitacora = (shopId?: string) => {
+  const logs = useSimulationBitacora(shopId);
+  return useMemo(() => logs.filter(isNewsvendorLog), [logs]);
 };
