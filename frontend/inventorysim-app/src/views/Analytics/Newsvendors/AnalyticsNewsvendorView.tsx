@@ -1,4 +1,4 @@
-import { isNewsvendorLog, useNewsvendorBitacora, type SimulationLogEntry } from "@/views/Overview/hooks/useSimulationBitacora";
+import { isNewsvendorLog, type SimulationLogEntry } from "@/views/Overview/hooks/useSimulationBitacora";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import jStat from "jstat";
@@ -7,9 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import DistributionPanel from "@/views/newsvendorViews/DistributionPanel/DistributionPanel";
-import SimulationResultCard from "./SimulationResultCard";
 import NewsvendorOverview from "@/views/newsvendorViews/DistributionPanel/NewsvendorOverview";
 import Info from "@/views/helpers/Info";
+import AnalyticsResultCard from "../AnalyticsResultCard";
+import { useAnalyticsEngine } from "../useAnalyticsEngine";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import NormalServiceLevelChart from "./NormalServiceLevelChart";
 
 const POLICY_COMPARISON_INFO = {
   title: "Policy Comparison Logic",
@@ -22,17 +25,17 @@ interface Props {
   logs: SimulationLogEntry[];
 }
 
-interface AnalyticsResult {
-  logEntry: SimulationLogEntry;
-  difference: number;
-}
+// interface AnalyticsResult {
+//   logEntry: Extract<SimulationLogEntry, { type: "newsvendor" }>;
+//   difference: number;
+// }
 
 const AnalyticsNewsvendorView = ({ logs }: Props) => {
-  const [activeTab, setActiveTab] = useState("parameters");
+  const [activeTab, setActiveTab] = useState("whatif");
   const [inputValue, setInputValue] = useState("0.95");
   const [targetSL, setTargetSL] = useState(0.95);
-  const [results, setResults] = useState<AnalyticsResult[]>([]);
-  const [selectedLog, setSelectedLog] = useState<SimulationLogEntry | null>(null);
+  // const [results, setResults] = useState<AnalyticsResult[]>([]);
+  // const [selectedLog, setSelectedLog] = useState<SimulationLogEntry | null>(null);
 
   // Validate service level between 0.1 and 1
   const parsedSL = useMemo(() => {
@@ -48,21 +51,30 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
   // Filter only newsvendor logs
   const newsvendorLogs = useMemo(() => logs.filter(isNewsvendorLog), [logs]);
 
+// Use the analytics engine hook
+  const { results, selectedLog, setSelectedLog, runAnalysis } =
+    useAnalyticsEngine({
+      logs: newsvendorLogs,
+      computeDifference: (log) => Math.abs(log.data.serviceLevel - targetSL),
+    });
+
   const handleFindClosest = () => {
     if (!newsvendorLogs.length) {
       toast.error("No historical Newsvendor simulations found.");
       return;
     }
-
-    const computed: AnalyticsResult[] = newsvendorLogs.map((log) => ({
-      logEntry: log,
-      difference: Math.abs(log.data.serviceLevel - targetSL),
-    }));
-
-    computed.sort((a, b) => a.difference - b.difference);
-    setResults(computed);
+    runAnalysis();
     setActiveTab("results");
   };
+  //   const computed: AnalyticsResult[] = newsvendorLogs.map((log) => ({
+  //     logEntry: log,
+  //     difference: Math.abs(log.data.serviceLevel - targetSL),
+  //   }));
+
+  //   computed.sort((a, b) => a.difference - b.difference);
+  //   setResults(computed);
+  //   setActiveTab("results");
+  // };
 
   // Analytical Q (normal demand assumption)
   const analyticalQ = useMemo(() => {
@@ -70,7 +82,7 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
     const mean = selectedLog.request.meanDemand;
     const std = selectedLog.request.stdDeviation;
     const z = jStat.normal.inv(targetSL, 0, 1);
-    return mean + z * std; // μ + zσ
+    return mean + z * std; //Q* = μ + zσ (for a safety stock)
   }, [selectedLog, targetSL]);
 
   return (
@@ -94,15 +106,15 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
       "
     >
         <TabsTrigger
-          value="parameters"
+          value="whatif"
           className={`
             px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
-            ${activeTab === "parameters"
+            ${activeTab === "whatif"
               ? "jbtn-success shadow-inner"
               : "bg-blue-100 hover:bg-blue-200"}
           `}
         >
-          Parameters
+          What if?..
         </TabsTrigger>
 
         <TabsTrigger
@@ -143,41 +155,149 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
       </TabsList>
 
       {/* PARAMETERS */}
-      <TabsContent value="parameters" className="mt-6 space-y-4 max-w-md">
-        <div className="flex items-center gap-3">
-          <Label className="text-sm font-medium">Target Service Level</Label>
-          <Input
-            type="number"
-            min={0.1}
-            max={1}
-            step={0.01}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="w-24 h-9 text-sm"
-          />
-          <span className="text-sm text-muted-foreground">{(targetSL * 100).toFixed(0)}%</span>
-        </div>
+      <TabsContent value="whatif" className="mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <Button
-          onClick={handleFindClosest}
-          disabled={targetSL < 0.1 || targetSL > 1}
-          className="toolbar-element jbtn-flat-btn toolbar-element-md active"
-        >
-          Find Closest Simulations
-        </Button>
+          {/* LEFT: Controls */}
+          <div className="lg:col-span-1">
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 space-y-6">
+
+              <div>
+                <h3 className="text-base font-semibold">Service Level Target</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Adjust the desired probability of meeting demand without stockouts.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Target Service Level (α)</Label>
+
+                <div className="flex items-center gap-3">
+                  <Input
+                    type="number"
+                    min={0.1}
+                    max={0.999}
+                    step={0.01}
+                    value={inputValue}
+                    onChange={(e) => {
+                      let val = Number(e.target.value);
+
+                      // Zod-style validation
+                      if (isNaN(val)) val = 0.95;
+                      if (val < 0.1) val = 0.1;
+                      if (val > 0.999) val = 0.999;
+
+                      // Round to nearest step of 0.01
+                      val = Math.round(val * 100) / 100;
+
+                      setInputValue(val.toString());
+                    }}
+                    className="w-28 h-9 text-sm"
+                  />
+
+                  <span className="text-sm font-medium text-blue-600">
+                    {(targetSL * 100).toFixed(1)}%
+                  </span>
+                </div>
+
+                <div className="text-xs text-red-500">
+                  {Number(inputValue) < 0.1 || Number(inputValue) > 0.999
+                    ? "Value must be between 0.10 and 0.999 in steps of 0.01"
+                    : null}
+                </div>
+
+                <div className="text-xs text-muted-foreground">
+                  Stockout probability = {(1 - targetSL).toFixed(3)}
+                </div>
+              </div>
+
+              <Button
+                onClick={handleFindClosest}
+                disabled={targetSL < 0.1 || targetSL > 0.999}
+                className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+              >
+                Find Closest Simulations
+              </Button>
+            </div>
+          </div>
+
+          {/* RIGHT: Chart */}
+          <div className="lg:col-span-2">
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Normal Distribution Visualization</h3>
+                <p className="text-xs text-muted-foreground">
+                  Shaded region represents demand ≤ Q (service level).
+                </p>
+              </div>
+
+              {/* Chart container taller for legend */}
+              <div className="h-[260px] sm:h-[300px] md:h-[300px] lg:h-[300px]">
+                <NormalServiceLevelChart
+                  mean={selectedLog?.request.meanDemand ?? 0}
+                  std={selectedLog?.request.stdDeviation ?? 1}
+                  serviceLevel={targetSL}
+                />
+              </div>
+            </div>
+          </div>
+
+        </div>
       </TabsContent>
 
       {/* RESULTS */}
       <TabsContent value="results" className="mt-6 space-y-4">
         {results.slice(0, 5).map((r, idx) => (
-          <SimulationResultCard
+          <AnalyticsResultCard
             key={idx}
             log={r.logEntry}
-            difference={r.difference}
             onSelect={() => {
               setSelectedLog(r.logEntry);
               setActiveTab("distribution");
             }}
+            header={
+              <div>
+                {new Date(r.logEntry.createdAt).toLocaleString()}
+              </div>
+            }
+            metrics={
+              <div className="flex flex-wrap gap-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <div className="px-2 py-1 rounded-md bg-blue-50 cursor-help">
+                        SL: {(r.logEntry.data.serviceLevel * 100).toFixed(1)}%
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs text-sm">
+                      Service Level (SL) is the probability of meeting demand without stockouts.
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <div className="px-2 py-1 rounded-md bg-amber-50 cursor-help">
+                        Δ: {(r.difference * 100).toFixed(1)}%
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs text-sm">
+                      Delta (Δ) is the absolute difference between the historical service level and your target SL.
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <div className="px-2 py-1 rounded-md bg-emerald-50 cursor-help">
+                        Q*: {Math.round(r.logEntry.data.optimalOrderQuantity)}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs text-sm">
+                      Q* is the optimal order quantity computed by the simulation or analytical model.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            }
           />
         ))}
       </TabsContent>

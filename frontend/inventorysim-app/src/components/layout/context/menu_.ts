@@ -107,6 +107,12 @@ export const data_menu = {
         url: "/dashboard/analytics/newsvendor",
         icon: ActivityIcon,
       },
+      {
+        title: "EOQ",
+        id: "analytics-eoq",
+        url: "/dashboard/analytics/eoq",
+        icon: CalculatorIcon,        
+      },
       ],
     },
     {

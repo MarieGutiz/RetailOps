@@ -5,6 +5,7 @@ import ModuleContainer from "../../ModuleContainer";
 import NoSelectShop from "@/views/helpers/NoSelectShop";
 import Info from "@/views/helpers/Info";
 import AnalyticsNewsvendorView from "@/views/Analytics/Newsvendors/AnalyticsNewsvendorView";
+import NoSimulationLogs from "@/views/Analytics/NoSimulationLogs";
 
 const NEWSVENDOR_INFO = {
   title: "Newsvendor Analytics",
@@ -51,7 +52,14 @@ const NewsvendorAnalyticsModule = () => {
         <Info content={NEWSVENDOR_INFO} />
       }
     >
-      <AnalyticsNewsvendorView logs={logs} />
+      {logs.length ? (
+        <AnalyticsNewsvendorView logs={logs} />
+      ) : (
+        <NoSimulationLogs
+          simulationType="Newsvendor"
+          navigateTo="/dashboard/simulations/newsvendor"
+        />
+      )}
     </ModuleContainer>
   )
 }

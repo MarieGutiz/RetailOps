@@ -1,6 +1,6 @@
 import { useSimulationStore } from "@/store/simulations/useSimulationStore";
 import type { AbcResponseDto } from "@/types/abc-backend";
-import type { EoqResponse } from "@/types/eoq-backend";
+import type { EoqRequest, EoqResponse } from "@/types/eoq-backend";
 import type { NewsvendorRequest, NewsvendorResponse } from "@/types/newsvendor-backend";
 import { useMemo } from "react";
 
@@ -22,6 +22,7 @@ export type SimulationLogEntry =
       sku: string;
       createdAt: string;
       data: EoqResponse;
+      request: EoqRequest;
     }
   | {
       type: "abc";
@@ -36,15 +37,24 @@ export const isNewsvendorLog = (
   log: SimulationLogEntry
 ): log is Extract<SimulationLogEntry, { type: "newsvendor" }> => log.type === "newsvendor";
 
-const isEoqLog = (
+export const isEoqLog = (
   log: SimulationLogEntry
 ): log is Extract<SimulationLogEntry, { type: "eoq" }> => log.type === "eoq";
 
-const isAbcLog = (
+export const isAbcLog = (
   log: SimulationLogEntry
 ): log is Extract<SimulationLogEntry, { type: "abc" }> => log.type === "abc";
 
 // ─── Full Bitácora Hook ───
+/**
+ * Custom hook to retrieve all simulation logs for a given shop.
+ * Aggregates Newsvendor, EOQ, and ABC simulations into a single array.
+ * Sorted by creation date, newest first.
+ *
+ * @param shopId - ID of the shop to filter logs
+ * @returns Array of SimulationLogEntry objects
+ */
+
 export const useSimulationBitacora = (shopId?: string) => {
   const { newsvendorSimulations, eoqSimulations, abcSimulations } = useSimulationStore();
 
@@ -78,6 +88,7 @@ export const useSimulationBitacora = (shopId?: string) => {
         product: entry.request.productName,
         createdAt: entry.createdAt,
         data: entry.response,
+        request: entry.request
       });
     });
 
@@ -102,4 +113,10 @@ export const useSimulationBitacora = (shopId?: string) => {
 export const useNewsvendorBitacora = (shopId?: string) => {
   const logs = useSimulationBitacora(shopId);
   return useMemo(() => logs.filter(isNewsvendorLog), [logs]);
+};
+
+// ─── Filtered Hook: Only Newsvendor Logs ───
+export const useEoqBitacora = (shopId?: string) => {
+  const logs = useSimulationBitacora(shopId);
+  return useMemo(() => logs.filter(isEoqLog), [logs]);
 };
