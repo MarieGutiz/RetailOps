@@ -156,75 +156,77 @@ const DemandPdfChart = ({
 
     {/* Chart */}
     {!loading && !error && shadedData.length > 0 && (
-      <div className="w-full">
-        <ResponsiveContainer width="100%" aspect={2}>
-          <AreaChart
-            data={shadedData}
-            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
+      <div className="w-full max-w-2xl mx-auto">
+      <div className="h-[220px] sm:h-[260px] md:h-[300px] lg:h-[320px]">
+          <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={shadedData}
+                margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
 
-            <XAxis
-              dataKey="demand"
-              type="number"
-              domain={["dataMin", "dataMax"]}
-              tickFormatter={(v) => Math.round(v).toString()}
-              tick={{ fontSize: 10 }}
-            />
+                <XAxis
+                  dataKey="demand"
+                  type="number"
+                  domain={["dataMin", "dataMax"]}
+                  tickFormatter={(v) => Math.round(v).toString()}
+                  tick={{ fontSize: 10 }}
+                />
 
-            <YAxis
-              type="number"
-              tick={{ fontSize: 10 }}
-              width={40}
-            />
+                <YAxis
+                  type="number"
+                  tick={{ fontSize: 10 }}
+                  width={40}
+                />
 
-            <Tooltip
-              formatter={(value: number, name: string) => {
-                const labelMap: Record<string, string> = {
-                  density: "Probability Density",
-                  shadedDensity: "Cumulative Area (≤ Q*)",
-                };
-                return [value.toFixed(5), labelMap[name] || name];
-              }}
-              labelFormatter={(label) =>
-                `Demand: ${Math.round(Number(label))} units`
-              }
-            />
+                <Tooltip
+                  formatter={(value: number, name: string) => {
+                    const labelMap: Record<string, string> = {
+                      density: "Probability Density",
+                      shadedDensity: "Cumulative Area (≤ Q*)",
+                    };
+                    return [value.toFixed(5), labelMap[name] || name];
+                  }}
+                  labelFormatter={(label) =>
+                    `Demand: ${Math.round(Number(label))} units`
+                  }
+                />
 
-            {/* Shaded area */}
-            <Area
-              type="monotone"
-              dataKey="shadedDensity"
-              stroke="none"
-              fill="#3b82f6"
-              fillOpacity={0.25}
-              isAnimationActive={false}
-            />
+                {/* Shaded area */}
+                <Area
+                  type="monotone"
+                  dataKey="shadedDensity"
+                  stroke="none"
+                  fill="#3b82f6"
+                  fillOpacity={0.25}
+                  isAnimationActive={false}
+                />
 
-            {/* Full PDF curve */}
-            <Area
-              type="monotone"
-              dataKey="density"
-              stroke="#10b981"
-              fill="none"
-              dot={false}
-              isAnimationActive={false}
-            />
+                {/* Full PDF curve */}
+                <Area
+                  type="monotone"
+                  dataKey="density"
+                  stroke="#10b981"
+                  fill="none"
+                  dot={false}
+                  isAnimationActive={false}
+                />
 
-            {/* Reference lines */}
-            <ReferenceLine
-              x={Math.round(mean)}
-              stroke="orange"
-            />
+                {/* Reference lines */}
+                <ReferenceLine
+                  x={Math.round(mean)}
+                  stroke="orange"
+                />
 
-            <ReferenceLine
-              x={Math.floor(optimalQ)}
-              stroke="red"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-    )}
+                <ReferenceLine
+                  x={Math.floor(optimalQ)}
+                  stroke="red"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          </div>
+        )}
 
     {/* Empty */}
     {!loading && !error && shadedData.length === 0 && (
