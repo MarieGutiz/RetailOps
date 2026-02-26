@@ -113,6 +113,12 @@ export const data_menu = {
         url: "/dashboard/analytics/eoq",
         icon: CalculatorIcon,        
       },
+      {
+        title: "ABC",
+        id: "analytics-abc",
+        url: "/dashboard/analytics/abc",
+        icon: ChartNoAxesColumnDecreasingIcon,        
+      },
       ],
     },
     {

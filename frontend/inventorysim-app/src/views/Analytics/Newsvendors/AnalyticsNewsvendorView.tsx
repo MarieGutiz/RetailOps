@@ -25,17 +25,10 @@ interface Props {
   logs: SimulationLogEntry[];
 }
 
-// interface AnalyticsResult {
-//   logEntry: Extract<SimulationLogEntry, { type: "newsvendor" }>;
-//   difference: number;
-// }
-
 const AnalyticsNewsvendorView = ({ logs }: Props) => {
   const [activeTab, setActiveTab] = useState("whatif");
   const [inputValue, setInputValue] = useState("0.95");
   const [targetSL, setTargetSL] = useState(0.95);
-  // const [results, setResults] = useState<AnalyticsResult[]>([]);
-  // const [selectedLog, setSelectedLog] = useState<SimulationLogEntry | null>(null);
 
   // Validate service level between 0.1 and 1
   const parsedSL = useMemo(() => {
@@ -66,15 +59,6 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
     runAnalysis();
     setActiveTab("results");
   };
-  //   const computed: AnalyticsResult[] = newsvendorLogs.map((log) => ({
-  //     logEntry: log,
-  //     difference: Math.abs(log.data.serviceLevel - targetSL),
-  //   }));
-
-  //   computed.sort((a, b) => a.difference - b.difference);
-  //   setResults(computed);
-  //   setActiveTab("results");
-  // };
 
   // Analytical Q (normal demand assumption)
   const analyticalQ = useMemo(() => {

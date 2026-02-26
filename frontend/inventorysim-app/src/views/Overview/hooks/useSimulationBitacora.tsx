@@ -1,5 +1,5 @@
 import { useSimulationStore } from "@/store/simulations/useSimulationStore";
-import type { AbcResponseDto } from "@/types/abc-backend";
+import type { AbcRequestDto, AbcResponseDto } from "@/types/abc-backend";
 import type { EoqRequest, EoqResponse } from "@/types/eoq-backend";
 import type { NewsvendorRequest, NewsvendorResponse } from "@/types/newsvendor-backend";
 import { useMemo } from "react";
@@ -30,6 +30,7 @@ export type SimulationLogEntry =
       simId: string;
       createdAt: string;
       data: AbcResponseDto;
+      request: AbcRequestDto
     };
 
 // ─── Type Guards ───
@@ -101,6 +102,7 @@ export const useSimulationBitacora = (shopId?: string) => {
         simId,
         createdAt: entry.createdAt,
         data: entry.response,
+        request: entry.request,
       });
     });
 
@@ -119,4 +121,10 @@ export const useNewsvendorBitacora = (shopId?: string) => {
 export const useEoqBitacora = (shopId?: string) => {
   const logs = useSimulationBitacora(shopId);
   return useMemo(() => logs.filter(isEoqLog), [logs]);
+};
+
+// ─── Filtered Hook: Only Newsvendor Logs ───
+export const useAbcBitacora = (shopId?: string) => {
+  const logs = useSimulationBitacora(shopId);
+  return useMemo(() => logs.filter(isAbcLog), [logs]);
 };
