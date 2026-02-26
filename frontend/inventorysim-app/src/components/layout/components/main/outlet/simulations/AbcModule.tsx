@@ -173,6 +173,7 @@ const AbcModule = () => {
                 <AbcResultsPanel
                   response={abcResult}
                   isRunning={simulator.isRunning}
+                  mode={simulator.lastRequest?.mode}
                 />
               ) : (
                 <div className="text-sm text-muted-foreground">
@@ -189,6 +190,7 @@ const AbcModule = () => {
           <AbcDistributionPanel
             response={abcResult}
             isRunning={simulator.isRunning}
+            mode={simulator.lastRequest?.mode}
           />
         ) : (
           <div className="text-sm text-muted-foreground">

@@ -69,28 +69,64 @@ const AnalyticsEOQView = ({ logs }: Props) => {
     <Tabs
       value={activeTab}
       onValueChange={setActiveTab}
-      className="bg-white/70 backdrop-blur-sm shadow-md rounded-lg p-1 flex flex-wrap sm:flex-nowrap gap-1 sm:gap-2 border border-gray-200"
+      className="
+      bg-white/70
+       backdrop-blur-sm
+       shadow-md rounded-lg p-1
+       flex flex-wrap sm:flex-nowrap 
+       gap-1 sm:gap-2
+       border border-gray-200"
     >
-      <TabsList className="bg-blue-200 backdrop-blur-sm shadow-md rounded-lg p-1 flex flex-wrap sm:flex-nowrap gap-2 sm:gap-2 border border-gray-200">
+      <TabsList 
+       className="
+        bg-blue-200
+         backdrop-blur-sm
+         shadow-md rounded-lg p-1
+         flex flex-wrap sm:flex-nowrap
+         gap-2 sm:gap-2
+         border border-gray-200">
+
         <TabsTrigger
           value="whatif"
-          className={`px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors ${activeTab === "whatif" ? "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
+          className={`
+            px-2 sm:px-4 py-1 sm:py-2
+            rounded-md
+            transition-colors ${activeTab === "whatif" 
+            ? "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
         >
           What if?..
         </TabsTrigger>
         <TabsTrigger
           value="results"
           disabled={!results.length}
-          className={`px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors ${activeTab === "results" ? "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
+          className={`
+            px-2 sm:px-4 py-1 sm:py-2
+            rounded-md
+            transition-colors ${activeTab === "results"
+             ? "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
         >
           Results
         </TabsTrigger>
         <TabsTrigger
           value="cost"
           disabled={!selectedLog}
-          className={`px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors ${activeTab === "cost" ? "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
+          className={`
+            px-2 sm:px-4 py-1 sm:py-2
+            rounded-md
+            transition-colors ${activeTab === "cost" ?
+             "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
         >
           Cost Breakdown
+          {selectedLog && activeTab !== "cost" && (
+            <span
+              className="
+                absolute -top-1 -right-1
+                h-3 w-3 rounded-full
+                bg-emerald-500
+                animate-pulse
+              "
+            />
+          )}
         </TabsTrigger>
       </TabsList>
 

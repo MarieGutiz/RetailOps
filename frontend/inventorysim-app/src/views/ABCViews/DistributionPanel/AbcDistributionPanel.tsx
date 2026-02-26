@@ -1,5 +1,6 @@
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { AbcResponseDto } from "@/types/abc-backend";
+import type { AbcResponseDto, SimulationType } from "@/types/abc-backend";
 import { useCurrency } from "@/views/newsvendorViews/forms/props/useCurrency";
 import { 
     Bar,
@@ -17,7 +18,25 @@ import {
 interface Props {
   response?: AbcResponseDto;
   isRunning?:boolean;
+  mode?:SimulationType;
 }
+const modeConfig: Record<
+  SimulationType,
+  { label: string; description: string; badgeStyle: string }
+> = {
+  classic: {
+    label: "Classic ABC",
+    description:
+      "Distribution based purely on total sales value ranking.",
+    badgeStyle: "bg-blue-100 text-blue-700",
+  },
+  multi: {
+    label: "Multi-Criteria ABC",
+    description:
+      "Distribution derived from weighted value and demand contribution.",
+    badgeStyle: "bg-purple-100 text-purple-700",
+  },
+};
 
 const COLORS = {
   A: "#ef4444",
@@ -25,7 +44,7 @@ const COLORS = {
   C: "#10b981",
 };
 
-const AbcDistributionPanel = ({ response }: Props) => {
+const AbcDistributionPanel = ({ response, mode="classic" }: Props) => {
   const { format } = useCurrency();
 
   if (!response) {
@@ -53,25 +72,50 @@ const AbcDistributionPanel = ({ response }: Props) => {
   return (
     <div className="flex flex-col gap-6">
 
-            {/* INSIGHT CARD */}
-      <Card className="border bg-muted/30 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-xl sm:text-2xl">
-            Inventory Value & Category Insights
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
-          <p>
-            This section visualizes how inventory value is distributed across ABC categories.
-            Category A typically represents the few high-value items, B are moderate contributors,
-            and C are numerous low-value items.
-          </p>
-          <p>
-            Understanding this concentration helps prioritize inventory control, stock monitoring,
-            and resource allocation.
-          </p>
-        </CardContent>
-      </Card>
+    {/* INSIGHT CARD */}
+    <Card className="border bg-muted/30 shadow-sm">
+      <CardContent className="p-6 space-y-5">
+
+        {(() => {
+          const config = modeConfig[mode];
+
+          return (
+            <>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold">
+                    Inventory Value & Category Insights
+                  </h2>
+
+                  <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+                    {config.description}
+                  </p>
+                </div>
+
+                <Badge className={`px-4 py-1 text-xs ${config.badgeStyle}`}>
+                  {config.label}
+                </Badge>
+              </div>
+
+              <div className="pt-4 border-t text-sm sm:text-base text-muted-foreground leading-relaxed space-y-2">
+                <p>
+                  Category A represents the critical minority driving strategic importance.
+                  Category B captures moderate contributors, while Category C forms the broad
+                  operational base of lower-impact items.
+                </p>
+
+                <p>
+                  {mode === "multi"
+                    ? "Because demand frequency contributes to ranking, high-velocity items may rise in category even when their individual value is moderate. This creates a more operationally responsive segmentation."
+                    : "Since ranking is driven strictly by financial contribution, categories emphasize value concentration over movement frequency."}
+                </p>
+              </div>
+            </>
+          );
+        })()}
+
+      </CardContent>
+    </Card>
 
       {/* TOTAL VALUE */}
       <Card>
