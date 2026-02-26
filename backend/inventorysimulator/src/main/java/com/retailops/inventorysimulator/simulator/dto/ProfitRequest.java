@@ -1,15 +1,22 @@
 package com.retailops.inventorysimulator.simulator.dto;
 
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 
-public record ProfitRequest(@NotNull
-                            Long productId,
+public record ProfitRequest(
+                            @NotNull
+                            @NotBlank(message = "Product name is required")
+                                     String productName,
+                            @NotNull
+                            @DecimalMin(value = "0.0", inclusive = false)
+                            BigDecimal price,
+
+                            @NotNull
+                            @DecimalMin(value = "0.0", inclusive = false)
+                            BigDecimal cost,
 
                             @Min(value = 0, message = "Stock quantity must be >= 0")
                             @Digits(integer = 10, fraction = 0, message = "SKU product quantity must be an integer value")
@@ -19,7 +26,6 @@ public record ProfitRequest(@NotNull
                             @Min(value = 0, message = "Demand must be >= 0")
                             BigInteger demand,
 
-                            boolean saveToHistory,
                             String username) {
                         // Default values if null
                         public BigInteger stockQtyOrDefault() {
