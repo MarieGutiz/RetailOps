@@ -124,9 +124,17 @@ export const data_menu = {
     {
       title: "Reports",
       id: "reports",
-      url: "#",
+      url: "/dashboard/reports/newsvendor",
       icon: FileTextIcon,
-      subitems: [],
+      subitems: [
+       {
+        title: "Newsvendor",
+        id: "report-newsvendor",
+        url: "/dashboard/reports/newsvendor",
+        icon: ActivityIcon,
+      },
+
+      ],
     },
     // {
     //   title: "Collaboration",

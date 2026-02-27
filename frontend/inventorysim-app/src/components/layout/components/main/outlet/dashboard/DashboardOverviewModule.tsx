@@ -140,11 +140,6 @@ const DashboardOverviewModule = () => {
                 key={risk}
                 onClick={() => setRiskFilter(risk as any)}
                 className="toolbar-element jbtn-flat-btn toolbar-element-md active"
-                // className={`jbtn-passive p-0 text-muted-foreground ${
-                //   riskFilter === risk
-                //     ? "bg-primary text-primary-foreground"
-                //     : "bg-background hover:bg-muted"
-                // }`}
               >
                 {risk.toUpperCase()}
               </Button>
