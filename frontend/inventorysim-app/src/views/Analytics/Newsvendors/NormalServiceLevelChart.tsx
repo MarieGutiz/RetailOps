@@ -1,6 +1,6 @@
 
 import { useMemo } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine, Area, Tooltip, ResponsiveContainer, AreaChart } from "recharts";
+import { XAxis, YAxis, CartesianGrid, ReferenceLine, Area, Tooltip, ResponsiveContainer, AreaChart } from "recharts";
 import jStat from "jstat";
 
 interface Props {

@@ -26,6 +26,8 @@ import AnalyticsModuleLayout from '@/components/layout/components/main/outlet/an
 import NewsvendorAnalyticsModule from '@/components/layout/components/main/outlet/analytics/NewsvendorAnalyticsModule'
 import EoqAnalyticsModule from '@/components/layout/components/main/outlet/analytics/EoqAnalyticsModule'
 import AbcAnalyticsModule from '@/components/layout/components/main/outlet/analytics/AbcAnalyticsModule'
+import ReportsModuleLayout from '@/components/layout/components/main/outlet/reports/ReportsModuleLayout'
+import NewsvendorReportModule from '@/components/layout/components/main/outlet/reports/NewsvendorReportModule'
 
 
 const Approutes = () => {
@@ -64,12 +66,18 @@ const Approutes = () => {
              <Route path="abc" element={<AbcModule />}/>       
           </Route>
 
-          {/* Simulation module */}
+          {/* Anaylytics module */}
           <Route path="analytics" element={<AnalyticsModuleLayout />}>
             <Route index element={<Navigate to="newsvendor" replace/>}/>
              <Route path="newsvendor" element={<NewsvendorAnalyticsModule />}/>   
              <Route path="eoq" element={<EoqAnalyticsModule />}/>
              <Route path="abc" element={<AbcAnalyticsModule />}/>  
+          </Route>
+
+          {/* Reports module */}
+          <Route path="reports" element={<ReportsModuleLayout />}>
+            <Route index element={<Navigate to="newsvendor" replace/>}/>
+             <Route path="newsvendor" element={<NewsvendorReportModule />}/>   
           </Route>
 
         </Route>
