@@ -1,5 +1,5 @@
 import type { AbcRequestDto, AbcItemDto } from "@/types/abc-backend";
-import type { AbcFormValues } from "@/views/ABCViews/AbcForms/props/Abc.schema";
+import type { AbcFormValues } from "@/views/simulator/ABCViews/AbcForms/props/Abc.schema";
 
 export function buildAbcRequest(
   values: AbcFormValues,

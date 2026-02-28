@@ -70,27 +70,27 @@ export const data_menu = {
 
     },
     {
-    title: "Simulations",
-    id: "simulations",
+    title: "Simulator",
+    id: "simulator",
     icon: PlayCircleIcon,
-    url: "/dashboard/simulations/newsvendor",
+    url: "/dashboard/simulator/newsvendor",
     subitems: [
       {
         title: "Newsvendor",
         id: "sim-newsvendor",
-        url: "/dashboard/simulations/newsvendor",
+        url: "/dashboard/simulator/newsvendor",
         icon: ActivityIcon,
       },
       {
         title: "EOQ",
         id: "sim-eoq",
-        url: "/dashboard/simulations/eoq",
+        url: "/dashboard/simulator/eoq",
         icon: CalculatorIcon,        
       },
       {
       title: "ABC Analysis",
       id: "sim-abc",
-      url: "/dashboard/simulations/abc",
+      url: "/dashboard/simulator/abc",
       icon: ChartNoAxesColumnDecreasingIcon,
     },
     ],

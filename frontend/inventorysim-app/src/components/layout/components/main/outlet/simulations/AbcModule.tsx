@@ -5,11 +5,11 @@ import NoSelectShop from "@/views/helpers/NoSelectShop";
 import { useMemo, useState, useEffect } from "react";
 import ModuleContainer from "../../ModuleContainer";
 import Info from "@/views/helpers/Info";
-import AbcForm from "@/views/ABCViews/AbcForms/AbcForm";
+import AbcForm from "@/views/simulator/ABCViews/AbcForms/AbcForm";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AbcResultsPanel from "@/views/ABCViews/ResultPanel/AbcResultsPanel";
-import AbcDistributionPanel from "@/views/ABCViews/DistributionPanel/AbcDistributionPanel";
+import AbcResultsPanel from "@/views/simulator/ABCViews/ResultPanel/AbcResultsPanel";
+import AbcDistributionPanel from "@/views/simulator/ABCViews/DistributionPanel/AbcDistributionPanel";
 
 const ABC_INFO = {
   title: "ABC Inventory Classification",

@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/Button";
 import { useSelectedShop } from "@/hooks/shop/useSelectedShop";
 import { useHydratedEoqSimulator } from "@/hooks/simulator/modules/eoq/hooks/useHydratedEoqSimulator";
 import { useSimulationStore } from "@/store/simulations/useSimulationStore";
-import EoqForm from "@/views/EOQViews/forms/EoqForm";
+import EoqForm from "@/views/simulator/EOQViews/forms/EoqForm";
 import NoSelectShop from "@/views/helpers/NoSelectShop";
 import { useMemo, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import ModuleContainer from "../../ModuleContainer";
 import Info from "@/views/helpers/Info";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EoqResultsPanel from "@/views/EOQViews/ResultPanel/EoqResultsPanel";
-import EoqCostBreakdownPanel from "@/views/EOQViews/CostBreakdownPanel/EoqCostBreakdownPanel";
+import EoqResultsPanel from "@/views/simulator/EOQViews/ResultPanel/EoqResultsPanel";
+import EoqCostBreakdownPanel from "@/views/simulator/EOQViews/CostBreakdownPanel/EoqCostBreakdownPanel";
 
 const EOQ_INFO = {
   title: "Economic Order Quantity (EOQ)",

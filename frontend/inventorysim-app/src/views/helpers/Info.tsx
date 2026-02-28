@@ -1,5 +1,5 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import  { ABC_SCENARIOS_META } from "../ABCViews/info/ABC_SCENARIOS"
+import  { ABC_SCENARIOS_META } from "../simulator/ABCViews/info/ABC_SCENARIOS"
 import  { Button } from "@/components/ui/Button"
 import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
