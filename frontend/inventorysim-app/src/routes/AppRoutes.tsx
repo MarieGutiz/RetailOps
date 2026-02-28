@@ -59,7 +59,7 @@ const Approutes = () => {
           </Route>
 
           {/* Simulation module */}
-          <Route path="simulations" element={<SimModuleLayout />}>
+          <Route path="simulator" element={<SimModuleLayout />}>
             <Route index element={<Navigate to="newsvendor" replace/>}/>
              <Route path="newsvendor" element={<NewsvendorModule />}/>
              <Route path="eoq" element={<EoqModule />}/>    

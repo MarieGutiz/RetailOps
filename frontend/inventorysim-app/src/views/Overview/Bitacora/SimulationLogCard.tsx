@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { SimulationLogEntry } from "../hooks/useSimulationBitacora";
-import MetricCard from "@/views/newsvendorViews/ResultsPanel/MetricCard";
-import { useCurrency } from "@/views/newsvendorViews/forms/props/useCurrency";
+import MetricCard from "@/views/simulator/newsvendorViews/ResultsPanel/MetricCard";
+import { useCurrency } from "@/views/simulator/newsvendorViews/forms/props/useCurrency";
 import { Badge } from "@/components/ui/badge";
 
 interface Props {

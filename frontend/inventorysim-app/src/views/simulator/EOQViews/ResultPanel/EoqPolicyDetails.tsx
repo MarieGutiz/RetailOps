@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { EoqResponse } from "@/types/eoq-backend";
-import { formatDecimal, formatInt } from "@/views/newsvendorViews/forms/props/useCurrency";
+import { formatDecimal, formatInt } from "@/views/simulator/newsvendorViews/forms/props/useCurrency";
 
 interface Props {
   result: EoqResponse;

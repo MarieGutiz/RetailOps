@@ -1,4 +1,7 @@
+import type { NewsvendorRequest } from "@/types/newsvendor-backend";
 import type { BaseReport } from "../types/report.types";
+import ReportParameterCard from "./ReportParameterCard";
+import DemandRiskReportChart from "./DemandRiskReportChart";
 
 interface Props {
   report: BaseReport;
@@ -46,15 +49,20 @@ const NewsvendorReportView = ({ report }: Props) => {
             <h3 className="font-semibold mb-3">{section.title}</h3>
 
             {section.type === "table" && (
-              <pre className="text-sm overflow-auto">
-                {JSON.stringify(section.payload, null, 2)}
-              </pre>
+              // <pre className="text-sm overflow-auto">
+              //   {JSON.stringify(section.payload, null, 2)}
+              // </pre>
+              <ReportParameterCard request={section.payload as NewsvendorRequest} />
             )}
 
             {section.type === "chart" && (
-              <pre className="text-sm">
-                {JSON.stringify(section.payload, null, 2)}
-              </pre>
+              <div className="flex justify-center">
+              <DemandRiskReportChart
+                mean={section.payload.mean}
+                std={section.payload.std}
+                serviceLevel={section.payload.serviceLevel}
+              />
+            </div>
             )}
 
             {section.type === "text" && (

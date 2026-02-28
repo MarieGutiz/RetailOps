@@ -7,11 +7,15 @@ export interface ReportKPI {
   severity?: ReportSeverity;
 }
 
-export interface ReportSection {
+type BaseReportSection = {
   title: string;
   type: "table" | "chart" | "text";
-  payload: unknown;
-}
+  payload: any; // for table/text
+} | {
+  title: string;
+  type: "chart";
+  payload: ChartPayload;
+};
 
 export interface BaseReport {
   model: "newsvendor" | "eoq" | "abc";
@@ -25,5 +29,11 @@ export interface BaseReport {
   };
 
   kpis: ReportKPI[];
-  sections: ReportSection[];
+  sections: BaseReportSection[];
 }
+
+type ChartPayload = {
+  mean: number;
+  std: number;
+  serviceLevel: number;
+};
