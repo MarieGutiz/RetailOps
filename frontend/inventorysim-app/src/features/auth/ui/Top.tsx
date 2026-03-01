@@ -3,7 +3,7 @@ const Top = ({text}: {text: string}) => {
   return (
    <div className="mx-auto w-full max-w-md ">
         <img
-          src="src/assets/range.png"
+          src="src/assets/retailsOps.png"
           alt="RetailOps"
           className="mx-auto h-12 w-auto"
         />
