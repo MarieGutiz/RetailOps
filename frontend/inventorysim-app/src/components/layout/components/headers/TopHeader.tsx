@@ -70,7 +70,7 @@ export default function TopHeader({logo}: {logo?:boolean}) {
           <Brand
             asChild
             variant="header"
-            imgSrc="src/assets/range.png" // header logo img
+            imgSrc="src/assets/retailsOps.png" // header logo img
             imgAlt="@RetailOps Sim"
             /* keep className empty so your parent keeps layout control */
           />

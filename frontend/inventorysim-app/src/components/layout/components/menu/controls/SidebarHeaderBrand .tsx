@@ -1,6 +1,6 @@
 import { usePrimeLayoutStore } from "@/components/layout/hooks/usePrimeLayout";
 import Brand from "../../headers/Brand";
-import rangeLogo from "@/assets/range.jpg";
+import rangeLogo from "@/assets/retailsOps.jpg";
 
 const SidebarHeaderBrand  = () => {
     const isCollapsed = !usePrimeLayoutStore((l) => l.open)

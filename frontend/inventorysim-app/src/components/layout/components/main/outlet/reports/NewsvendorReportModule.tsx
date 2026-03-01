@@ -9,17 +9,25 @@ import NewsvendorReportView from "@/views/reports/newsvendorsViews/NewsvendorRep
 import { buildNewsvendorReport } from "@/views/reports/builders/buildNewsvendorReport";
 import { useShopInventoryProducts } from "@/hooks/shop/useShopInventoryProducts";
 import { HousePlusIcon } from "lucide-react";
+import { useCurrency } from "@/views/simulator/newsvendorViews/forms/props/useCurrency";
 
 const NEWSVENDOR_REPORT_INFO = {
   title: "Newsvendor Report",
   theory: "Decision-focused inventory report",
-  description:
-    "Summarizes the latest Newsvendor simulation into operational KPIs and risk insights.",
+  description: `This report summarizes the results of a Newsvendor simulation, including optimal order quantity, expected profit, service level, and stockout probability.
+
+You can select and compare previous simulation logs to review historical decisions and performance outcomes. Each report reflects the exact inputs and demand assumptions used at the time of simulation.
+
+Use this view to validate inventory policies, assess risk exposure, and refine service level targets before operational deployment.
+
+A PDF export option is available to generate a shareable version of the report for documentation, audit, or stakeholder presentation purposes.`,
 };
 
 const NewsvendorReportModule = () => {
   const { shop: selectedShop } = useSelectedShop();
   const logs = useNewsvendorBitacora(selectedShop?.id);
+  const { format } = useCurrency();
+
   
 
   // Already filtered hook
@@ -65,8 +73,8 @@ const NewsvendorReportModule = () => {
   // Build report
   const report = useMemo(() => {
     if (!selectedLog) return null;
-    return buildNewsvendorReport(selectedLog, productOptions);
-  }, [selectedLog, productOptions]);
+    return buildNewsvendorReport(selectedLog, productOptions, format);
+  }, [selectedLog, productOptions, format]);
 
 
 

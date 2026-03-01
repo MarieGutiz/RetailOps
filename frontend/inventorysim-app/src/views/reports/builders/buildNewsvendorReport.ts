@@ -1,15 +1,14 @@
 import type { SimulationLogEntry } from "@/views/Overview/hooks/useSimulationBitacora";
 import type { BaseReport } from "../types/report.types";
-import { useCurrency } from "@/views/simulator/newsvendorViews/forms/props/useCurrency";
-
-
 
 export const buildNewsvendorReport = (
   log: Extract<SimulationLogEntry, { type: "newsvendor" }>,
    productOptions: {
     name: string;
     sku: string;
-  }[]
+  }[],
+  formatCurrency: (value: number) => string
+
 ): BaseReport => {
 
   const { data, request, shopId, createdAt } = log;
@@ -23,10 +22,6 @@ const productName = product?.name ?? log.request.productName;
   // Backend returns decimal probability (0–1)
   const service = data.serviceLevel;
   const stockoutRisk = 1 - service;
-
-   // Format profit as currency
-  // const { format } = useCurrency();
-  // const formattedProfit = format(data.expectedProfit);
 
   return {
     model: "newsvendor",
@@ -47,7 +42,7 @@ const productName = product?.name ?? log.request.productName;
       },
       {
         label: "Expected Profit",
-        value: data.expectedProfit,
+        value: formatCurrency(data.expectedProfit),   
         severity: data.expectedProfit > 0 ? "positive" : "warning",
       },
       {
