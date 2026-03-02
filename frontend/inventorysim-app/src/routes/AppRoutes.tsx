@@ -28,6 +28,8 @@ import EoqAnalyticsModule from '@/components/layout/components/main/outlet/analy
 import AbcAnalyticsModule from '@/components/layout/components/main/outlet/analytics/AbcAnalyticsModule'
 import ReportsModuleLayout from '@/components/layout/components/main/outlet/reports/ReportsModuleLayout'
 import NewsvendorReportModule from '@/components/layout/components/main/outlet/reports/NewsvendorReportModule'
+import EOQReportModule from '@/components/layout/components/main/outlet/reports/EOQReportModule'
+import ABCReportModule from '@/components/layout/components/main/outlet/reports/ABCReportModule'
 
 
 const Approutes = () => {
@@ -77,7 +79,9 @@ const Approutes = () => {
           {/* Reports module */}
           <Route path="reports" element={<ReportsModuleLayout />}>
             <Route index element={<Navigate to="newsvendor" replace/>}/>
-             <Route path="newsvendor" element={<NewsvendorReportModule />}/>   
+             <Route path="newsvendor" element={<NewsvendorReportModule />}/> 
+             <Route path="eoq" element={<EOQReportModule />}/> 
+             <Route path="abc" element={<ABCReportModule />}/>  
           </Route>
 
         </Route>

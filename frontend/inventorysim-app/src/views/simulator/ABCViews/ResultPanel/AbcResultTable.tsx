@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { AbcResponseDto, ABCCategory } from "@/types/abc-backend"
-import { useCurrency } from "@/views/simulator/newsvendorViews/forms/props/useCurrency"
+import { useCurrency } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency"
 import { useState, useMemo } from "react"
 
 interface Props {

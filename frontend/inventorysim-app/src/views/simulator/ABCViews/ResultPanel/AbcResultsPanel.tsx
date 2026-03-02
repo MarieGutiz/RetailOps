@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ABCCategory, AbcResponseDto, SimulationType } from "@/types/abc-backend";
-import { useCurrency } from "@/views/simulator/newsvendorViews/forms/props/useCurrency";
+import { useCurrency } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency";
 import { useState } from "react";
 import AbcResultTable from "./AbcResultTable";
 

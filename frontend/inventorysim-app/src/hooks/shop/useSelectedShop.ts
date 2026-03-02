@@ -6,7 +6,7 @@ export function useSelectedShop() {
   const shop = useShopStore((s) => s.shop);          // ShopMeta | null
   const shops = useShopStore((s) => s.shops);
   const setShop = useShopStore((s) => s.setShop);
-
+  
   const selectedId = shop?.id ?? null;
 
   const selectedSlice: ShopSlice | null =
@@ -17,10 +17,18 @@ export function useSelectedShop() {
       ? shopSliceToMeta(selectedId, selectedSlice)
       : null;
 
+    //     const shopName =
+    // selectedSlice && "name" in selectedSlice
+    //   ? selectedSlice.name
+    //   : undefined;
+    const shopName = normalizedShop?.name;
+
+    
   return {
     selectedId,
     shop: normalizedShop,
     selectedSlice,
     selectShop: setShop, // expects ShopMeta
+    shopName,
   };
 }

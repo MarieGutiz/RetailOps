@@ -7,7 +7,9 @@ export const buildNewsvendorReport = (
     name: string;
     sku: string;
   }[],
-  formatCurrency: (value: number) => string
+  formatCurrency: (value: number) => string,
+  formatDate:(dateString: string | Date) =>string,
+  shopName: string = "Shop"
 
 ): BaseReport => {
 
@@ -26,13 +28,13 @@ const productName = product?.name ?? log.request.productName;
   return {
     model: "newsvendor",
     shopId,
-    generatedAt: new Date().toISOString(),
+    generatedAt: formatDate(new Date()),
 
     header: {
-      title: "Newsvendor Analysis",
-      subtitle: `${productName} (SKU: ${sku})`,
-      context: `Simulation from ${new Date(createdAt).toLocaleString()} • Service level achieved: ${(service * 100).toFixed(2)}%`,
-    },
+    title: "Newsvendor Analysis",
+    subtitle: `${productName} (SKU: ${sku}) — ${shopName}`,
+    context: `Simulation run on ${formatDate(createdAt)} • Achieved service level: ${(service * 100).toFixed(2)}%`,
+  },
 
     kpis: [
       {
@@ -58,17 +60,25 @@ const productName = product?.name ?? log.request.productName;
 
     sections: [
       {
-        title: "Input Parameters",
-        type: "table",
-        payload: request,
-      },
+      title: "Input Parameters",
+      type: "parameters",
+      payload: [
+        { label: "Mean Demand", value: request.meanDemand },
+        { label: "Std Deviation", value: request.stdDeviation },
+        { label: "Selling Price", value: request.price, isCurrency: true },
+        { label: "Unit Cost", value: request.cost, isCurrency: true },
+        { label: "Salvage Value", value: request.salvageValue, isCurrency: true },
+        { label: "Penalty Cost", value: request.penalty, isCurrency: true },
+      ]
+    },
       {
         title: "Risk Distribution",
         type: "chart",
         payload: {
+          type: "demandRisk",
           mean: request.meanDemand,
           std: request.stdDeviation,
-          serviceLevel: service, // decimal (0–1)
+          serviceLevel: service,
         },
       },
       {

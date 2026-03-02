@@ -3,7 +3,7 @@ import { toast } from "sonner"
 import ResultsSummary from "./ResultsSummary";
 import KeyMetricsGrid from "./KeyMetricsGrid";
 import RiskIndicators from "./RiskIndicators";
-import { useCurrency } from "../forms/props/useCurrency";
+import { useCurrency } from "../forms/hooks/useCurrency";
 
 interface ResultsPanelProps {
   result: NewsvendorResponse | null

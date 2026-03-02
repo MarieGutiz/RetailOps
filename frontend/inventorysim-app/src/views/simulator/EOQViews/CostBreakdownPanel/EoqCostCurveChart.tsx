@@ -1,5 +1,5 @@
 import type { EoqCurveResponse } from '@/types/eoq-backend';
-import { useCurrency } from '@/views/simulator/newsvendorViews/forms/props/useCurrency';
+import { useCurrency } from '@/views/simulator/newsvendorViews/forms/hooks/useCurrency';
 import React from 'react'
 import { 
     CartesianGrid,

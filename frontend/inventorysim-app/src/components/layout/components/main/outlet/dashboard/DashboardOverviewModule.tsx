@@ -8,7 +8,6 @@ import { useSimulationBitacora } from "@/views/Overview/hooks/useSimulationBitac
 import SimulationLogCard from "@/views/Overview/Bitacora/SimulationLogCard";
 import { Button } from "@/components/ui/Button";
 import Info from "@/views/helpers/Info";
-import { Label } from "@/components/ui/label";
 
 
 const OVERVIEW_INFO = {

@@ -2,7 +2,7 @@ import type { EoqResponse } from "@/types/eoq-backend";
 import EoqCostAnalysis from "./EoqCostAnalysis";
 import EoqPolicyDetails from "./EoqPolicyDetails";
 import EoqSummaryCards from "./EoqSummaryCards";
-import { useCurrency } from "@/views/simulator/newsvendorViews/forms/props/useCurrency";
+import { useCurrency } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency";
 
 export interface EoqResultsPanelProps {
   result: EoqResponse

@@ -133,6 +133,18 @@ export const data_menu = {
         url: "/dashboard/reports/newsvendor",
         icon: ActivityIcon,
       },
+      {
+        title: "EOQ",
+        id: "report-eoq",
+        url: "/dashboard/reports/eoq",
+        icon: CalculatorIcon,        
+      },
+      {
+        title: "ABC",
+        id: "report-abc",
+        url: "/dashboard/reports/abc",
+        icon: ChartNoAxesColumnDecreasingIcon,        
+      },
 
       ],
     },
