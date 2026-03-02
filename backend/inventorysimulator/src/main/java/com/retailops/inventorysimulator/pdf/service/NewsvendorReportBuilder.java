@@ -24,8 +24,11 @@ import com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+
+
 
 @Service
 @AllArgsConstructor
@@ -36,6 +39,10 @@ public class NewsvendorReportBuilder {
             NewsvendorRequestPdf request,
             NewsvendorResponse response) {
         NewsvendorReport report = new NewsvendorReport();
+
+        // --- 0. Setup defaults: watermark & GitHub link ---
+        report.setupDefaults();
+
 
         // --- 1. Use actual service level from response ---
         double serviceLevel = response.serviceLevel().doubleValue();
@@ -85,10 +92,6 @@ public class NewsvendorReportBuilder {
         inputParams.setType(BaseReport.ReportSection.SectionType.TABLE);
         inputParams.setPayload(request);
 
-//        BaseReport.ReportSection riskChart = new BaseReport.ReportSection();
-//        riskChart.setTitle("Risk Distribution");
-//        riskChart.setType(BaseReport.ReportSection.SectionType.CHART);
-
         //Add chart
         // --- 5. Sections ---
         BaseReport.ReportSection riskChart = new BaseReport.ReportSection();
@@ -112,7 +115,9 @@ public class NewsvendorReportBuilder {
             String svg = newsvendorChartService.generateRiskDistributionSvg(
                     request.getMeanDemand(),
                     request.getStdDeviation(),
-                    serviceLevel
+                    serviceLevel,
+                    450,
+                    250
             );
             riskChart.setPayload(svg);
         }

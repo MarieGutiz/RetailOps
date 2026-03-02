@@ -22,6 +22,8 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 
 public class SvgUtils {
@@ -39,4 +41,5 @@ public class SvgUtils {
         byte[] pngBytes = baos.toByteArray();
         return Base64.getEncoder().encodeToString(pngBytes);
     }
+
 }

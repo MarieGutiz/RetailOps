@@ -29,6 +29,7 @@ public class NewsvendorReport extends BaseReport{
     private double serviceLevel;
     private double stockoutProbability;
 
+
     // Optional: you can add more fields specific to Newsvendor
 
 }
