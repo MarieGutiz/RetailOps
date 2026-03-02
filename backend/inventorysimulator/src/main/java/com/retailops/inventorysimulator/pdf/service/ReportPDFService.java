@@ -26,6 +26,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 
 @Service
@@ -46,7 +47,7 @@ public class ReportPDFService {
         context.setVariable("report", report);
 
         String html = templateEngine.process("pdf/newsvendor-report", context);
-        System.out.println(html);
+//        System.out.println(html);
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();

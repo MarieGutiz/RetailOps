@@ -46,7 +46,7 @@ class NewsvendorPdfTest {
         // 1. Build a sample request
         NewsvendorRequestPdf request = NewsvendorRequestPdf.builder()
                 .model(SimulationType.NEWSVENDOR)
-                .productName("Widget X")
+                .productName("My Shop")
                 .shopId("SHOP-123")
                 .createdAt(LocalDateTime.now())
                 .meanDemand(100.0)

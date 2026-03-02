@@ -19,7 +19,14 @@ package com.retailops.inventorysimulator.pdf.model;
 
 import lombok.Data;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 
 @Data
@@ -32,6 +39,62 @@ public abstract  class BaseReport {
     private ReportHeader header;
     private List<Kpi> kpis;
     private List<ReportSection> sections;
+
+
+    // --- New reusable fields ---
+    private String watermarkBase64;  // Base64 PNG for PDF/HTML watermark
+    private String githubLink;       //  "https://github.com/mariegutiz"
+
+
+    // --- DEFAULT SETUP METHOD ---
+    public void setupDefaults() {
+        try {
+            this.watermarkBase64 = generateHeaderWatermarkBase64();
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.watermarkBase64 = null;
+        }
+        this.githubLink = "https://github.com/mariegutiz";
+    }
+
+    /**
+     * Generate a Base64 PNG for the header watermark:
+     * - 50px high logo + "RetailOps Sim" text
+     */
+    private String generateHeaderWatermarkBase64() throws IOException {
+        // Load logo
+        try (InputStream is = getClass().getResourceAsStream("/templates/pdf/retailops.png")) {
+            if (is == null) throw new IOException("Logo not found in classpath");
+
+            BufferedImage logo = ImageIO.read(is);
+
+            // Scale logo to 50px height
+            int logoHeight = 50;
+            int logoWidth = (int) ((double) logo.getWidth() / logo.getHeight() * logoHeight);
+
+            BufferedImage headerImage = new BufferedImage(logoWidth + 150, logoHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = headerImage.createGraphics();
+
+            // Enable anti-aliasing
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            // Draw logo
+            g.drawImage(logo, 0, 0, logoWidth, logoHeight, null);
+
+            // Draw text
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.setColor(new Color(44, 123, 229)); // brand color #2C7BE5
+            g.drawString("RetailOps Sim", logoWidth + 10, logoHeight - 10);
+
+            g.dispose();
+
+            // Convert to Base64
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(headerImage, "png", baos);
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
+        }
+    }
 
     @Data
     public static class ReportHeader {
@@ -67,5 +130,7 @@ public abstract  class BaseReport {
             TEXT
         }
     }
+
+
 
 }
