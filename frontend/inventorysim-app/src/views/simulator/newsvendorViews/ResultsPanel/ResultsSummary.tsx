@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { formatInt } from "../forms/props/useCurrency";
+import { formatInt } from "../forms/hooks/useCurrency";
 
 interface ResultsSummaryProps {
   result: {

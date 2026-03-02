@@ -5,11 +5,12 @@ import ModuleContainer from "../../ModuleContainer";
 import NoSelectShop from "@/views/helpers/NoSelectShop";
 import NoSimulationLogs from "@/views/Analytics/NoSimulationLogs";
 import Info from "@/views/helpers/Info";
-import NewsvendorReportView from "@/views/reports/newsvendorsViews/NewsvendorReportView";
 import { buildNewsvendorReport } from "@/views/reports/builders/buildNewsvendorReport";
 import { useShopInventoryProducts } from "@/hooks/shop/useShopInventoryProducts";
 import { HousePlusIcon } from "lucide-react";
-import { useCurrency } from "@/views/simulator/newsvendorViews/forms/props/useCurrency";
+import { useCurrency } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency";
+import GenericReportView from "@/views/reports/GenericReportView";
+import { useFormats } from "@/views/simulator/newsvendorViews/forms/hooks/useFormats";
 
 const NEWSVENDOR_REPORT_INFO = {
   title: "Newsvendor Report",
@@ -24,11 +25,10 @@ A PDF export option is available to generate a shareable version of the report f
 };
 
 const NewsvendorReportModule = () => {
-  const { shop: selectedShop } = useSelectedShop();
+  const { shop: selectedShop, shopName } = useSelectedShop();
   const logs = useNewsvendorBitacora(selectedShop?.id);
-  const { format } = useCurrency();
-
-  
+  const { format } = useCurrency();  
+  const { formatDate } = useFormats();
 
   // Already filtered hook
   const newsvendorLogs = useNewsvendorBitacora(selectedShop?.id);
@@ -73,8 +73,13 @@ const NewsvendorReportModule = () => {
   // Build report
   const report = useMemo(() => {
     if (!selectedLog) return null;
-    return buildNewsvendorReport(selectedLog, productOptions, format);
-  }, [selectedLog, productOptions, format]);
+    return buildNewsvendorReport(
+      selectedLog,
+      productOptions,
+      format,
+      formatDate,
+      shopName ?? "Shop");
+  }, [selectedLog, productOptions, format, formatDate, shopName]);
 
 
 
@@ -142,7 +147,7 @@ const NewsvendorReportModule = () => {
       }}
       actions={<Info content={NEWSVENDOR_REPORT_INFO} />}
     >
-      {report && <NewsvendorReportView report={report} />}
+      {report && <GenericReportView report={report} />}
     </ModuleContainer>
   );
 
