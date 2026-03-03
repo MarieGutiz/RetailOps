@@ -19,6 +19,7 @@ package com.retailops.inventorysimulator.pdf.service;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.retailops.inventorysimulator.pdf.dto.NewsvendorRequestPdf;
+import com.retailops.inventorysimulator.pdf.model.BaseReport;
 import com.retailops.inventorysimulator.pdf.model.NewsvendorReport;
 import com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse;
 import org.springframework.stereotype.Service;
@@ -40,25 +41,20 @@ public class ReportPDFService {
         this.reportBuilder = reportBuilder;
     }
 
-    public byte[] generatePdf(NewsvendorRequestPdf request, NewsvendorResponse response) {
-        NewsvendorReport report = reportBuilder.buildFromRequest(request, response);
-
+    public byte[] generatePdf(BaseReport report, String templateName) {
         Context context = new Context();
         context.setVariable("report", report);
-
-        String html = templateEngine.process("pdf/newsvendor-report", context);
-//        System.out.println(html);
+        String html = templateEngine.process(templateName, context);
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.withHtmlContent(html, null);
-            builder.toStream(outputStream);
-            builder.run();//PROBLEM
-
+            builder.toStream(outputStream); builder.run();
             return outputStream.toByteArray();
         } catch (Exception e) {
             throw new RuntimeException("Error generating PDF", e);
         }
+
     }
 
 }

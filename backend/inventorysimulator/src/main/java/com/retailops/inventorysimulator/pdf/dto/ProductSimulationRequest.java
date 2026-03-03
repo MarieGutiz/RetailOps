@@ -17,31 +17,23 @@
 
 package com.retailops.inventorysimulator.pdf.dto;
 
-import com.retailops.inventorysimulator.util.types.SimulationType;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
-@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class SimulationRequest {
+public abstract class ProductSimulationRequest extends SimulationRequest {
 
-    @NotNull(message = "Simulation model must be provided")
-    private SimulationType model;
+    @NotBlank(message = "Product name is required")
+    private String productName;
 
-    @NotBlank(message = "Shop ID is required")
-    private String shopId;
-
-    @NotBlank(message = "Shop name is required")
-    private String shopName;
-
-    @NotNull(message = "Creation date is required")
-    private LocalDateTime createdAt;
+    @NotBlank(message = "SKU is required")
+    private String sku;
 }

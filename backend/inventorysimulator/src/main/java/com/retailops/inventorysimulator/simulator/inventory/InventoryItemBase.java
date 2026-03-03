@@ -35,10 +35,6 @@ import java.math.BigInteger;
 @AllArgsConstructor
 public abstract class InventoryItemBase {
 
-//    private Product product;
-//
-//    private BigInteger demandFrequency;
-//    private BigDecimal salesValue;
 
     @NotNull(message = "Product is required")
     private Product product;

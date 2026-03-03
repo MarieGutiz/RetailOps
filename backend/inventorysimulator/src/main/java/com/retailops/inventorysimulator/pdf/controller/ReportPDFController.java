@@ -17,7 +17,15 @@
 
 package com.retailops.inventorysimulator.pdf.controller;
 
+import com.retailops.inventorysimulator.pdf.dto.AbcPdfPayload;
+import com.retailops.inventorysimulator.pdf.dto.EoqPdfPayload;
+import com.retailops.inventorysimulator.pdf.dto.NewsvendorPdfPayload;
 import com.retailops.inventorysimulator.pdf.dto.NewsvendorRequestPdf;
+import com.retailops.inventorysimulator.pdf.model.AbcReport;
+import com.retailops.inventorysimulator.pdf.model.EoqReport;
+import com.retailops.inventorysimulator.pdf.model.NewsvendorReport;
+import com.retailops.inventorysimulator.pdf.service.AbcReportBuilder;
+import com.retailops.inventorysimulator.pdf.service.EoqReportBuilder;
 import com.retailops.inventorysimulator.pdf.service.NewsvendorReportBuilder;
 
 import com.retailops.inventorysimulator.pdf.service.ReportPDFService;
@@ -38,32 +46,94 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class ReportPDFController {
 
-    private final NewsvendorReportBuilder reportBuilder;
+    private final NewsvendorReportBuilder newsvendorBuilder;
+    private final EoqReportBuilder eoqBuilder;
+    private final AbcReportBuilder abcBuilder;
     private final ReportPDFService pdfService;
 
-    @PostMapping("/newsvendor/pdf")
-    public ResponseEntity<byte[]> pdfNewsvendor(
-            @Valid @RequestBody NewsvendorRequestPdf request,
-            @Valid @RequestBody NewsvendorResponse response
-            ) {
+    // -------------------------------
+    // NEWSVENDOR
+    // -------------------------------
+//    @PostMapping("/newsvendor/pdf")
+//    public ResponseEntity<byte[]> pdfNewsvendor(
+//            @Valid @RequestBody NewsvendorPdfPayload payload) {
+//
+//        NewsvendorReport report =
+//                newsvendorBuilder.buildFromRequest(
+//                        payload.request(),
+//                        payload.response()
+//                );
+//
+//        byte[] pdfBytes = pdfService.generatePdf(
+//                report,
+//                "pdf/newsvendor-report"
+//        );
+//
+//        return buildPdfResponse(pdfBytes, "newsvendor-report.pdf");
+//    }
 
-       // 1 Build report from request & Generate PDF bytes
-        byte[] pdfBytes = pdfService.generatePdf(request, response);
+    // -------------------------------
+    // EOQ
+    // -------------------------------
+//    @PostMapping("/eoq/pdf")
+//    public ResponseEntity<byte[]> pdfEoq(
+//            @Valid @RequestBody EoqPdfPayload payload) {
+//
+//        EoqReport report =
+//                eoqBuilder.buildFromRequest(
+//                        payload.request(),
+//                        payload.response(),
+//                        payload.curve(),
+//                        payload.shopName()
+//                );
+//
+//        byte[] pdfBytes = pdfService.generatePdf(
+//                report,
+//                "pdf/eoq-report"
+//        );
+//
+//        return buildPdfResponse(pdfBytes, "eoq-report.pdf");
+//    }
 
-        // 3 Prepare headers
+    // -------------------------------
+    // ABC
+    // -------------------------------
+//    @PostMapping("/abc/pdf")
+//    public ResponseEntity<byte[]> pdfAbc(
+//            @Valid @RequestBody AbcPdfPayload payload) {
+//
+//        AbcReport report =
+//                abcBuilder.buildFromRequest(
+//                        payload.request(),
+//                        payload.shopName()
+//                );
+//
+//        byte[] pdfBytes = pdfService.generatePdf(
+//                report,
+//                "pdf/abc-report"
+//        );
+//
+//        return buildPdfResponse(pdfBytes, "abc-report.pdf");
+//    }
+
+    // -------------------------------
+    // Common Response Builder
+    // -------------------------------
+    private ResponseEntity<byte[]> buildPdfResponse(byte[] pdfBytes, String filename) {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDisposition(
                 ContentDisposition.attachment()
-                        .filename("newsvendor-report.pdf")
+                        .filename(filename)
                         .build()
         );
 
-        // 4 Return file response
         return ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(pdfBytes);
     }
+
 
 }

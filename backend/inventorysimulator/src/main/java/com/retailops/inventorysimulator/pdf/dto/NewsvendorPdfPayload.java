@@ -15,21 +15,11 @@
  *
  */
 
-package com.retailops.inventorysimulator.pdf.model;
+package com.retailops.inventorysimulator.pdf.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-@EqualsAndHashCode(callSuper = true)
-@Data
-public class NewsvendorReport extends BaseReport{
-
-    private BigInteger optimalQuantity;
-    private BigDecimal expectedProfit;
-    private BigDecimal serviceLevel;
-    private BigDecimal stockoutProbability;
-
-}
+public record NewsvendorPdfPayload(
+        NewsvendorRequestPdf request,
+        NewsvendorResponse response
+) {}
