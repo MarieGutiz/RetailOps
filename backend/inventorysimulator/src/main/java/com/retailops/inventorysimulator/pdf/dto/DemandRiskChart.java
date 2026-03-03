@@ -15,21 +15,21 @@
  *
  */
 
-package com.retailops.inventorysimulator.pdf.model;
+package com.retailops.inventorysimulator.pdf.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class NewsvendorReport extends BaseReport{
-
-    private BigInteger optimalQuantity;
-    private BigDecimal expectedProfit;
+@AllArgsConstructor
+public class DemandRiskChart {
+    private BigDecimal mean;
+    private BigDecimal std;
     private BigDecimal serviceLevel;
-    private BigDecimal stockoutProbability;
+    private BigDecimal criticalValue; // Q* mark
+
+    private String base64Png;
 
 }

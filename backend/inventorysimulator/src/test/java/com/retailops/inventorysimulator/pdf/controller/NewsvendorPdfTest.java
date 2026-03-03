@@ -17,7 +17,9 @@
 
 package com.retailops.inventorysimulator.pdf.controller;
 
+import com.retailops.inventorysimulator.pdf.dto.NewsvendorPdfPayload;
 import com.retailops.inventorysimulator.pdf.dto.NewsvendorRequestPdf;
+import com.retailops.inventorysimulator.pdf.model.NewsvendorReport;
 import com.retailops.inventorysimulator.pdf.service.NewsvendorReportBuilder;
 import com.retailops.inventorysimulator.pdf.service.ReportPDFService;
 import com.retailops.inventorysimulator.util.types.SimulationType;
@@ -43,38 +45,49 @@ class NewsvendorPdfTest {
     @Test
     void generatePdfLocally() throws Exception {
 
-        // 1. Build a sample request
+        // 1 Build request
         NewsvendorRequestPdf request = NewsvendorRequestPdf.builder()
                 .model(SimulationType.NEWSVENDOR)
-                .productName("My Shop")
+                .productName("Wireless Headphones")
+                .sku("WH-001")
                 .shopId("SHOP-123")
+                .shopName("My Shop")
                 .createdAt(LocalDateTime.now())
                 .meanDemand(100.0)
                 .stdDeviation(20.0)
                 .price(BigDecimal.valueOf(50.0))
                 .cost(BigDecimal.valueOf(30.0))
                 .salvageValue(BigDecimal.valueOf(5.0))
-                .penalty(BigDecimal.valueOf(0.0))
-                .mode("CLASSIC")
-                .simulationRuns(1000)
+                .penalty(BigDecimal.ZERO)
                 .build();
 
-        // 2. Build a stub NewsvendorResponse
+        // 2 Stub response
         var response = new com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse(
                 request.getProductName(),
-                BigDecimal.valueOf(0.75), // critical ratio
-                BigInteger.valueOf(105),  // optimal order quantity
-                BigDecimal.valueOf(1500.0), // expected profit
-                BigDecimal.valueOf(0.95)    // service level
+                BigDecimal.valueOf(0.75),
+                BigInteger.valueOf(105),
+                BigDecimal.valueOf(1500.0),
+                BigDecimal.valueOf(0.95)
         );
 
-        // 3. Build report using the builder and  Generate PDF bytes
-        byte[] pdfBytes = pdfService.generatePdf(request, response);
+        // 3 Create payload
+        NewsvendorPdfPayload payload =
+                new NewsvendorPdfPayload(request, response);
 
-        // 5. Write it locally for inspection
+        // 4 Build report
+        NewsvendorReport report = reportBuilder.build(payload);
+
+        // 5 Generate PDF using correct template
+        byte[] pdfBytes = pdfService.generatePdf(
+                report,
+                "pdf/newsvendor-report"
+        );
+
+        // 6 Save locally
         Files.write(Paths.get("target/newsvendor-test.pdf"), pdfBytes);
 
         System.out.println("PDF generated at target/newsvendor-test.pdf");
     }
+
 
 }

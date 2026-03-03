@@ -21,15 +21,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class NewsvendorReport extends BaseReport{
+public class AbcReport extends BaseReport {
 
-    private BigInteger optimalQuantity;
-    private BigDecimal expectedProfit;
-    private BigDecimal serviceLevel;
-    private BigDecimal stockoutProbability;
+    private BigDecimal totalInventoryValue;
 
+    private int aItemsCount;
+    private int bItemsCount;
+    private int cItemsCount;
+
+
+    // Optional: you can add ABC-specific summaries or charts
 }

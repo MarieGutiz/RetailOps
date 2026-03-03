@@ -34,7 +34,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class NewsvendorRequestPdf extends SimulationRequest{
+public class NewsvendorRequestPdf extends ProductSimulationRequest{
 
     @NotNull(message = "Mean demand is required")
     @Positive(message = "Mean demand must be greater than 0")
@@ -60,9 +60,5 @@ public class NewsvendorRequestPdf extends SimulationRequest{
     @DecimalMin(value = "0.0", inclusive = true, message = "Penalty cannot be negative")
     private BigDecimal penalty;
 
-    @NotNull(message = "Simulation mode is required")
-    private String mode; // "CLASSIC" | "ADVANCED"
 
-    @Positive(message = "Number of simulation runs must be positive")
-    private Integer simulationRuns;
 }

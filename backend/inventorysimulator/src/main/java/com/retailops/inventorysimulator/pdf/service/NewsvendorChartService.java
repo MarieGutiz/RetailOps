@@ -110,7 +110,7 @@ public class NewsvendorChartService {
     /**
      * Simple binary search inverse CDF using your Normal.normalCDF()
      */
-    private double inverseCDF(double p, double mean, double std) {
+    public double inverseCDF(double p, double mean, double std) {
         double low = mean - 6 * std;
         double high = mean + 6 * std;
 

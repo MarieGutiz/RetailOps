@@ -15,21 +15,22 @@
  *
  */
 
-package com.retailops.inventorysimulator.pdf.model;
+package com.retailops.inventorysimulator.pdf.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class NewsvendorReport extends BaseReport{
+@AllArgsConstructor
+public class EoqCostCurveChart {
 
-    private BigInteger optimalQuantity;
-    private BigDecimal expectedProfit;
-    private BigDecimal serviceLevel;
-    private BigDecimal stockoutProbability;
+    private BigDecimal annualDemand;
+    private BigDecimal orderingCost;
+    private BigDecimal holdingCost;
 
+    private BigDecimal optimalQuantity;
+
+    private String base64Png;
 }

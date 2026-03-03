@@ -17,31 +17,32 @@
 
 package com.retailops.inventorysimulator.pdf.dto;
 
+import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
+import com.retailops.inventorysimulator.simulator.dto.AbcItemResultDto;
+import com.retailops.inventorysimulator.simulator.dto.AbcResponseDto;
 import com.retailops.inventorysimulator.util.types.SimulationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @SuperBuilder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public abstract class SimulationRequest {
+@Jacksonized
+@Getter
+@Setter
+@ToString(callSuper = true)
+public class AbcRequestPdf extends SimulationRequest {
 
-    @NotNull(message = "Simulation model must be provided")
-    private SimulationType model;
+    @NotBlank(message = "ABC mode is required")
+    private SimulationType mode;
 
-    @NotBlank(message = "Shop ID is required")
-    private String shopId;
+    @NotNull(message = "Items list cannot be null")
+    private List<AbcItemDto> items;
 
-    @NotBlank(message = "Shop name is required")
-    private String shopName;
 
-    @NotNull(message = "Creation date is required")
-    private LocalDateTime createdAt;
 }

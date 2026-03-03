@@ -21,15 +21,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class NewsvendorReport extends BaseReport{
+public class EoqReport extends BaseReport {
 
-    private BigInteger optimalQuantity;
-    private BigDecimal expectedProfit;
-    private BigDecimal serviceLevel;
-    private BigDecimal stockoutProbability;
+    private BigDecimal optimalQuantity;
+    private BigDecimal totalAnnualCost;
+    private BigDecimal orderingCost;
+    private BigDecimal holdingCost;
+    private BigDecimal numberOfOrdersPerYear;
+    private BigDecimal cycleTime;
 
 }
