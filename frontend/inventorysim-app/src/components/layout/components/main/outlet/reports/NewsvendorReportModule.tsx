@@ -11,6 +11,8 @@ import { HousePlusIcon } from "lucide-react";
 import { useCurrency } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency";
 import GenericReportView from "@/views/reports/GenericReportView";
 import { useFormats } from "@/views/simulator/newsvendorViews/forms/hooks/useFormats";
+import { Button } from "@/components/ui/Button";
+import { useNewsvendorPdf } from "@/hooks/pdf/newsvendor/useNewsvendorPdf";
 
 const NEWSVENDOR_REPORT_INFO = {
   title: "Newsvendor Report",
@@ -30,12 +32,23 @@ const NewsvendorReportModule = () => {
   const { format } = useCurrency();  
   const { formatDate } = useFormats();
 
+
+
   // Already filtered hook
   const newsvendorLogs = useNewsvendorBitacora(selectedShop?.id);
 
   const { products, inventory } = useShopInventoryProducts();
 
   const [selectedLogCreatedAt, setSelectedLogCreatedAt] = useState<string | null>(null);
+
+  
+  //Export to pdf:
+
+    const { generatePdf } = useNewsvendorPdf(
+    selectedShop?.id,
+    selectedLogCreatedAt ?? undefined,
+    shopName
+  );
 
   // Build product options for SKU lookup
   const productOptions = useMemo(() => {
@@ -145,7 +158,19 @@ const NewsvendorReportModule = () => {
             </div>
         );
       }}
-      actions={<Info content={NEWSVENDOR_REPORT_INFO} />}
+      actions={
+        <>
+          <Button
+            className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+            onClick={generatePdf}
+            disabled={!selectedLog}
+          >
+            Export PDF
+          </Button>
+          <Info content={NEWSVENDOR_REPORT_INFO} />
+        </>
+      
+    }
     >
       {report && <GenericReportView report={report} />}
     </ModuleContainer>
