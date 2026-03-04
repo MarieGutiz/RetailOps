@@ -18,7 +18,9 @@
 package com.retailops.inventorysimulator.pdf.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class AbstractReportBuilder<
         R extends BaseReport,
@@ -56,5 +58,15 @@ public abstract class AbstractReportBuilder<
 
     protected void applyModelSpecificFields(R report, C context) {
         // default: do nothing
+    }
+
+    protected String formatNow() {
+        return formatDateTime(LocalDateTime.now());
+    }
+
+    protected String formatDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("MMM d, yyyy, h:mm a", Locale.ENGLISH);
+        return dateTime.format(formatter);
     }
 }

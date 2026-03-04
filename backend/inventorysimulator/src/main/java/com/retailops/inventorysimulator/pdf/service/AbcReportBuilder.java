@@ -17,6 +17,7 @@
 
 package com.retailops.inventorysimulator.pdf.service;
 
+import com.retailops.inventorysimulator.pdf.dto.AbcItemRow;
 import com.retailops.inventorysimulator.pdf.dto.AbcPdfPayload;
 import com.retailops.inventorysimulator.pdf.dto.AbcRequestPdf;
 import com.retailops.inventorysimulator.pdf.model.AbcReport;
@@ -59,7 +60,7 @@ private final AbcAnalysisService abcAnalysisService; // service that runs the AB
         BaseReport.ReportHeader header = new BaseReport.ReportHeader();
         header.setTitle("ABC Inventory Analysis");
         header.setSubtitle(String.format("Mode: %s — Shop: %s", request.getMode(), context.shopName()));
-        header.setContext("Simulation generated at " + LocalDateTime.now());
+        header.setContext("Simulation generated at " + formatNow());
         return header;
     }
 
@@ -108,15 +109,26 @@ private final AbcAnalysisService abcAnalysisService; // service that runs the AB
         inputSection.setPayload(parameters);
 
         // --- 2. ABC Items Table ---
-        List<Map<String, Object>> itemTable = response.items().stream()
-                .map(i -> Map.<String, Object>of(
-                        "Product", i.getProduct().getName(),
-                        "SKU", i.getProduct().getSku(),
-                        "Sales Value", i.getSalesValue(),
-                        "Demand Frequency", i.getDemandFrequency(),
-                        "ABC Category", i.getAbcCategoryType(),
-                        "Rank", i.getRank(),
-                        "Cumulative %", i.getCumulativePct()
+//        List<Map<String, Object>> itemTable = response.items().stream()
+//                .map(i -> Map.<String, Object>of(
+//                        "Product", i.getProduct().getName(),
+//                        "SKU", i.getProduct().getSku(),
+//                        "Sales Value", i.getSalesValue(),
+//                        "Demand Frequency", i.getDemandFrequency(),
+//                        "ABC Category", i.getAbcCategoryType(),
+//                        "Rank", i.getRank(),
+//                        "Cumulative %", i.getCumulativePct()
+//                ))
+//                .toList();
+        List<AbcItemRow> itemTable = response.items().stream()
+                .map(i -> new AbcItemRow(
+                        i.getProduct().getName(),
+                        i.getProduct().getSku(),
+                        i.getAbcCategoryType(),
+                        i.getRank(),
+                        i.getSalesValue(),
+                        i.getDemandFrequency(),
+                        i.getCumulativePct()
                 ))
                 .toList();
 

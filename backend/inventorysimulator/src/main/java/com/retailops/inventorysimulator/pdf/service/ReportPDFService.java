@@ -22,6 +22,7 @@ import com.retailops.inventorysimulator.pdf.dto.NewsvendorRequestPdf;
 import com.retailops.inventorysimulator.pdf.model.BaseReport;
 import com.retailops.inventorysimulator.pdf.model.NewsvendorReport;
 import com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -31,20 +32,19 @@ import java.io.IOException;
 
 
 @Service
+@AllArgsConstructor
 public class ReportPDFService {
 
     private final TemplateEngine templateEngine;
-    private final NewsvendorReportBuilder reportBuilder;
-
-    public ReportPDFService(TemplateEngine templateEngine, NewsvendorReportBuilder reportBuilder) {
-        this.templateEngine = templateEngine;
-        this.reportBuilder = reportBuilder;
-    }
 
     public byte[] generatePdf(BaseReport report, String templateName) {
         Context context = new Context();
         context.setVariable("report", report);
         String html = templateEngine.process(templateName, context);
+
+        System.out.println("=== HTML GENERATED ===");
+        System.out.println(html);
+        System.out.println("======================");
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();

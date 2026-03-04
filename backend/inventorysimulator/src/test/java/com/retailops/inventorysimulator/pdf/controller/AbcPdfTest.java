@@ -76,16 +76,28 @@ class AbcPdfTest {
                 .build();
 
         // --- 2. Build ABC items using builder ---
+//        AbcItemDto item1 = AbcItemDto.builder()
+//                .product(product1)
+//                .demandFrequency(BigInteger.valueOf(150))
+//                .salesValue(BigDecimal.valueOf(5000))
+//                .build();
+//
+//        AbcItemDto item2 = AbcItemDto.builder()
+//                .product(product2)
+//                .demandFrequency(BigInteger.valueOf(80))
+//                .salesValue(BigDecimal.valueOf(2000))
+//                .build();
+
         AbcItemDto item1 = AbcItemDto.builder()
                 .product(product1)
-                .demandFrequency(BigInteger.valueOf(150))
-                .salesValue(BigDecimal.valueOf(5000))
+                .demandFrequency(BigInteger.valueOf(50))   // lower than before
+                .salesValue(BigDecimal.valueOf(4000))      // moderate sales
                 .build();
 
         AbcItemDto item2 = AbcItemDto.builder()
                 .product(product2)
-                .demandFrequency(BigInteger.valueOf(80))
-                .salesValue(BigDecimal.valueOf(2000))
+                .demandFrequency(BigInteger.valueOf(200))  // high demand
+                .salesValue(BigDecimal.valueOf(3000))      // lower than item1
                 .build();
 
         // --- 3. Build request ------

@@ -24,6 +24,11 @@ public class AbcAnalyzerClassic extends AbstractAbcAnalyzer implements AbcAnalyz
         // Compute total sales for ranking & cumulative percentage
         BigDecimal totalSales = totalSales(items);
 
+//        // Log for verification
+//        System.out.println("Classic Analyzer: ranking by sales only");
+//        items.forEach(i -> System.out.println(i.getProduct().getName() + " -> " + i.getSalesValue()));
+
+
         // Rank items and assign ABC class
         return rank(items, totalSales);
 
