@@ -48,6 +48,14 @@ public class AbcAnalyzerMulti extends AbstractAbcAnalyzer implements AbcAnalyzer
                         )
         );
 
+//        // Log for verification
+//        System.out.println("Multi Analyzer: ranking by weighted sales+demand");
+//        items.forEach(i -> System.out.println(i.getProduct().getName() +
+//                " -> sales:" + i.getSalesValue() +
+//                " demand:" + i.getDemandFrequency() +
+//                " weighted:" + weightedScore(i, totalSales, totalDemand)
+//        ));
+
         return rank(items, totalSales);
     }
 
@@ -58,6 +66,8 @@ public class AbcAnalyzerMulti extends AbstractAbcAnalyzer implements AbcAnalyzer
                 .divide(totalSales, 6, RoundingMode.HALF_UP);
         BigDecimal demandShare = new BigDecimal(item.getDemandFrequency())
                 .divide(new BigDecimal(totalDemand), 6, RoundingMode.HALF_UP);
+
+
 
         return salesShare.multiply(BigDecimal.valueOf(0.7))
                 .add(demandShare.multiply(BigDecimal.valueOf(0.3)));

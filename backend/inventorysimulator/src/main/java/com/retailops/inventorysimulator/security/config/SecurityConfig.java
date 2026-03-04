@@ -73,6 +73,7 @@ public class SecurityConfig  {
                         .requestMatchers("/api/simulator/newsvendor/**").permitAll()
                         .requestMatchers("/api/simulator/eoq/**").permitAll()
                         .requestMatchers("/api/simulator/abc/**").permitAll()
+                        .requestMatchers("/api/reports/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/products/**").permitAll()
                         .requestMatchers("/auth/**", "/api/auth/**").permitAll()
                         .anyRequest().authenticated()

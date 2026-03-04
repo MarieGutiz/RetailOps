@@ -54,67 +54,61 @@ public class ReportPDFController {
     // -------------------------------
     // NEWSVENDOR
     // -------------------------------
-//    @PostMapping("/newsvendor/pdf")
-//    public ResponseEntity<byte[]> pdfNewsvendor(
-//            @Valid @RequestBody NewsvendorPdfPayload payload) {
-//
-//        NewsvendorReport report =
-//                newsvendorBuilder.buildFromRequest(
-//                        payload.request(),
-//                        payload.response()
-//                );
-//
-//        byte[] pdfBytes = pdfService.generatePdf(
-//                report,
-//                "pdf/newsvendor-report"
-//        );
-//
-//        return buildPdfResponse(pdfBytes, "newsvendor-report.pdf");
-//    }
+    @PostMapping("/newsvendor/pdf")
+    public ResponseEntity<byte[]> pdfNewsvendor(
+            @Valid @RequestBody NewsvendorPdfPayload payload) {
+
+        NewsvendorReport report =
+                newsvendorBuilder.build(
+                        payload);
+         System.out.println("newsvendor pdf "+report);
+        byte[] pdfBytes = pdfService.generatePdf(
+                report,
+                "pdf/newsvendor-report"
+        );
+
+        return buildPdfResponse(pdfBytes, "newsvendor-report.pdf");
+    }
 
     // -------------------------------
     // EOQ
     // -------------------------------
-//    @PostMapping("/eoq/pdf")
-//    public ResponseEntity<byte[]> pdfEoq(
-//            @Valid @RequestBody EoqPdfPayload payload) {
-//
-//        EoqReport report =
-//                eoqBuilder.buildFromRequest(
-//                        payload.request(),
-//                        payload.response(),
-//                        payload.curve(),
-//                        payload.shopName()
-//                );
-//
-//        byte[] pdfBytes = pdfService.generatePdf(
-//                report,
-//                "pdf/eoq-report"
-//        );
-//
-//        return buildPdfResponse(pdfBytes, "eoq-report.pdf");
-//    }
+    @PostMapping("/eoq/pdf")
+    public ResponseEntity<byte[]> pdfEoq(
+            @Valid @RequestBody EoqPdfPayload payload) {
+
+        EoqReport report =
+                eoqBuilder.build(
+                        payload
+                );
+
+        byte[] pdfBytes = pdfService.generatePdf(
+                report,
+                "pdf/eoq-report"
+        );
+
+        return buildPdfResponse(pdfBytes, "eoq-report.pdf");
+    }
 
     // -------------------------------
     // ABC
     // -------------------------------
-//    @PostMapping("/abc/pdf")
-//    public ResponseEntity<byte[]> pdfAbc(
-//            @Valid @RequestBody AbcPdfPayload payload) {
-//
-//        AbcReport report =
-//                abcBuilder.buildFromRequest(
-//                        payload.request(),
-//                        payload.shopName()
-//                );
-//
-//        byte[] pdfBytes = pdfService.generatePdf(
-//                report,
-//                "pdf/abc-report"
-//        );
-//
-//        return buildPdfResponse(pdfBytes, "abc-report.pdf");
-//    }
+    @PostMapping("/abc/pdf")
+    public ResponseEntity<byte[]> pdfAbc(
+            @Valid @RequestBody AbcPdfPayload payload) {
+
+        AbcReport report =
+                abcBuilder.build(
+                        payload
+                );
+
+        byte[] pdfBytes = pdfService.generatePdf(
+                report,
+                "pdf/abc-report"
+        );
+
+        return buildPdfResponse(pdfBytes, "abc-report.pdf");
+    }
 
     // -------------------------------
     // Common Response Builder

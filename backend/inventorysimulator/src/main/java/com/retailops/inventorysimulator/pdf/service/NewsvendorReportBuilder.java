@@ -73,7 +73,7 @@ public class NewsvendorReportBuilder
 
         header.setContext(String.format(
                 "Generated on %s • Single-period stochastic demand model",
-                LocalDateTime.now()
+                formatNow()
         ));
 
         return header;

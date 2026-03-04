@@ -28,7 +28,7 @@ import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class EoqReportBuilder extends AbstractReportBuilder<EoqReport, EoqPdfPay
         header.setSubtitle(String.format("%s — %s",
                 context.request().getProductName(),
                 context.shopName()));
-        header.setContext("Run on " + LocalDateTime.now() +
+        header.setContext("Run on " + formatNow() +
                 " • Optimal cost-minimizing replenishment policy");
         return header;
     }
@@ -145,7 +145,6 @@ public class EoqReportBuilder extends AbstractReportBuilder<EoqReport, EoqPdfPay
                     request.getDemand().doubleValue(),
                     request.getCost().doubleValue(),
                     request.getHoldingCost().doubleValue(),
-                    response.eoq().doubleValue(),
                     450,
                     250
             );
