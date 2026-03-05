@@ -15,11 +15,9 @@ import java.math.RoundingMode;
 @Service
 @RequiredArgsConstructor
 public class SimulationService {
-    final SimulationServiceModel simulationServiceModel;
+    private final SimulationServiceModel simulationServiceModel;
 
     public Page<SimulationRunDTO> getHistory(String username, int page, int size) {
-         return simulationServiceModel.getHistory(username, page, size);
+        return simulationServiceModel.getHistoryByUsername(username, page, size);
     }
-
-
 }

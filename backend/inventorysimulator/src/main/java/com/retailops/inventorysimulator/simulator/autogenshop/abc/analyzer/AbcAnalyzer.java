@@ -76,7 +76,7 @@ public class AbcAnalyzer {
             result.setAbcClass(ranked.abcCategoryType());
             result.setContributionPercentage(ranked.cumulativePct());
             result.setRank(ranked.rank());
-            result.setUsername(requestDto.username());
+            result.setAccount(requestDto.account());
             result.setAnalyzedAt(LocalDateTime.now());
 
             results.add(result);

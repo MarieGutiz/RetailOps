@@ -17,6 +17,7 @@
 
 package com.retailops.inventorysimulator.simulator.autogenshop.abc.service;
 
+import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.AbstractShopMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
 import com.retailops.inventorysimulator.simulator.dto.AbcItemDto;
@@ -84,6 +85,6 @@ public abstract class AbstractShopSimulationAbcService<TGenerator extends Abstra
     protected abstract TGenerator createGenerator(String simId);
 
     /** Concrete subclasses provide shop-specific demo name */
-    protected abstract String getDemoName();
+    protected abstract Account getDemoName();
 
 }

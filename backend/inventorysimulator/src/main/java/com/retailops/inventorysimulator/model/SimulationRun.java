@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class SimulationRun extends BaseModel{
 
     @Enumerated(EnumType.STRING)
-    private SimulationType simulationType; //save analogously e.g., "PROFIT", "NEWSVENDOR", "EOQ"
+    private SimulationType simulationType; // e.g., "PROFIT", "NEWSVENDOR", "EOQ"
 
     private String productName;
 
@@ -42,5 +42,19 @@ public class SimulationRun extends BaseModel{
 
     private LocalDateTime runAt;
 
-    private String username;//Later: Replace with manytoone user entity
+    // Optional link to Account (null for guest users)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account account;
+
+    /**
+     * Convenience getter for display purposes:
+     * returns the account username if present, otherwise "guest".
+     */
+    public String getUsernameOrGuest() {
+        return account != null && account.getUsername() != null
+                ? account.getUsername()
+                : "guest";
+    }
+
 }

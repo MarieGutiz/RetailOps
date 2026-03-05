@@ -15,10 +15,10 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 @Entity
 @Table(
-        name = "accounts",
-        uniqueConstraints = @UniqueConstraint(
-                columnNames = {"provider", "provider_id"}
-        )
+name = "accounts",
+uniqueConstraints = @UniqueConstraint(
+        columnNames = {"provider", "provider_id"}
+)
 )
 public class Account extends BaseModel{
     private String name;

@@ -17,6 +17,7 @@
 
 package com.retailops.inventorysimulator.simulator.autogenshop.abc.service;
 
+import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.cafeteria.CafeteriaAbcMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.service.AbcService;
@@ -44,8 +45,13 @@ public class CafeteriaSimulationAbcService extends
     }
 
     @Override
-    protected String getDemoName() {
-        return "cafeteria-demo";
+    protected Account getDemoName() {
+        // Lightweight Account object for demo/autogen cafeteria
+        return Account.builder()
+                .username("cafeteria-demo")
+                .name("Cafeteria Demo")
+                .email("demo@cafeteria.local")
+                .build();
     }
 
 

@@ -1,5 +1,6 @@
 package com.retailops.inventorysimulator.simulator.dto;
 
+import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.util.types.NewsvendorMode;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -41,12 +42,16 @@ public record NewsvendorRequest(
         int simulationRuns,
 
         boolean saveToHistory,
-        String username
+        Account account // optional, null if guest
 ) {
-    public String usernameOrDefault() {
-        return username != null && !username.isBlank()
-                ? username
-                : "guest";
-    }
+        /**
+         * Helper to get a username for display
+         */
+        public String usernameOrDefault() {
+                return account != null && account.getUsername() != null && !account.getUsername().isBlank()
+                        ? account.getUsername()
+                        : "guest";
+        }
+
 }
 

@@ -14,21 +14,23 @@ public interface SimulationRepository extends JpaRepository<SimulationRun, Long>
 
      SimulationRun findSimulationRunById(long id);
 
-     //By User
-     List<SimulationRun> findByUsername(String username);
-     Page<SimulationRun> findByUsername(String username, Pageable pageable);
+     // By Account username
+     List<SimulationRun> findByAccountUsername(String username);
+     Page<SimulationRun> findByAccountUsername(String username, Pageable pageable);
 
-     // All runs of a specific type (e.g., EOQ only)
      // By simulation type
      List<SimulationRun> findBySimulationType(SimulationType type);
      Page<SimulationRun> findBySimulationType(SimulationType type, Pageable pageable);
 
-     // By user + type
-     List<SimulationRun> findByUsernameAndSimulationType(String username, SimulationType type);
-     Page<SimulationRun> findByUsernameAndSimulationType(String username, SimulationType type, Pageable pageable);
+     // By account + type
+     Page<SimulationRun> findByAccountUsernameAndSimulationType(
+             String username,
+             SimulationType type,
+             Pageable pageable);
 
-     // Order by time (optional, makes frontend life easier)
+     // Order by run time
      List<SimulationRun> findBySimulationTypeOrderByRunAtDesc(SimulationType type);
-     List<SimulationRun> findByUsernameOrderByRunAtDesc(String username);
+     List<SimulationRun> findByAccountUsernameOrderByRunAtDesc(String username);
+
 
 }

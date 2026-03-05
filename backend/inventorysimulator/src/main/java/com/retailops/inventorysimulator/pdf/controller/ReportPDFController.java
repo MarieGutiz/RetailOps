@@ -20,7 +20,6 @@ package com.retailops.inventorysimulator.pdf.controller;
 import com.retailops.inventorysimulator.pdf.dto.AbcPdfPayload;
 import com.retailops.inventorysimulator.pdf.dto.EoqPdfPayload;
 import com.retailops.inventorysimulator.pdf.dto.NewsvendorPdfPayload;
-import com.retailops.inventorysimulator.pdf.dto.NewsvendorRequestPdf;
 import com.retailops.inventorysimulator.pdf.model.AbcReport;
 import com.retailops.inventorysimulator.pdf.model.EoqReport;
 import com.retailops.inventorysimulator.pdf.model.NewsvendorReport;
@@ -29,7 +28,7 @@ import com.retailops.inventorysimulator.pdf.service.EoqReportBuilder;
 import com.retailops.inventorysimulator.pdf.service.NewsvendorReportBuilder;
 
 import com.retailops.inventorysimulator.pdf.service.ReportPDFService;
-import com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ContentDisposition;

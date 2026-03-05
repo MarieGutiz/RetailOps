@@ -1,6 +1,7 @@
 package com.retailops.inventorysimulator.simulator.dto;
 
 
+import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.util.types.SimulationType;
 
 import java.math.BigDecimal;
@@ -14,5 +15,5 @@ public record SimulationRunDTO(Long id,
                                BigInteger demand,
                                BigDecimal profit,
                                LocalDateTime runAt,
-                               String username) {
+                               Account account) {
 }
