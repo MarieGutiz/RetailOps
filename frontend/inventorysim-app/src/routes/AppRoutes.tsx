@@ -30,6 +30,7 @@ import ReportsModuleLayout from '@/components/layout/components/main/outlet/repo
 import NewsvendorReportModule from '@/components/layout/components/main/outlet/reports/NewsvendorReportModule'
 import EOQReportModule from '@/components/layout/components/main/outlet/reports/EOQReportModule'
 import ABCReportModule from '@/components/layout/components/main/outlet/reports/ABCReportModule'
+import HelpPage from '@/pages/HelpPage/HelpPage'
 
 
 const Approutes = () => {
@@ -37,6 +38,7 @@ const Approutes = () => {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Home />} />
+      <Route path="/get-help" element={<HelpPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
