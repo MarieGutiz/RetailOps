@@ -24,6 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type NewsvendorFormValues, newsvendorSchema } from "./props/newsvendor.schema";
 import AdvancedNewsvendorSection from "./AdvancedNewsvendorSection";
+import { useUserStore } from "@/store/user/useUserStore";
 
 
 const MEAN_DEMAND_INFO = {
@@ -82,6 +83,7 @@ const NewsvendorForm = ({
   });
 
   const { register, handleSubmit, setValue, watch, formState } = form;
+  const user = useUserStore((state) => state.user);
   const { errors } = formState;
 
   // ───────────── Product Options ─────────────
@@ -146,8 +148,18 @@ const NewsvendorForm = ({
     penalty: values.penalty ?? 0,
 
     mode: values.mode,
+    
     simulationRuns: values.simulationRuns,
-    saveToHistory: isAuthenticated ? values.saveToHistory : false,
+
+    saveToHistory: user.userType === "Registered"
+      ? values.saveToHistory
+      : false,
+
+    account:
+      user.userType === "Registered" && user.id
+        ? { id: Number(user.id) }
+        : undefined
+
   };
     // console.log("Submitting payload:", payload); // <-- debug log
 

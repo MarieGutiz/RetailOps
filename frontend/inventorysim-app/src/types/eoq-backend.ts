@@ -6,7 +6,11 @@ export interface EoqRequest {
   cost: number;                 // Setup cost S
   holdingCost: number;          // Holding cost H
   saveToHistory: boolean;
-  username?: string;
+  // username?: string;
+
+  account?: {
+    id: number;
+  };
 }
 
 export interface EoqResponse {

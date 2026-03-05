@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { buildAbcRequest } from "@/utils/abc/buildABCRequest";
 import { Trash2 } from "lucide-react";
+import { useUserStore } from "@/store/user/useUserStore";
 
 const MODE_INFO = {
   title: "Simulation Mode",
@@ -69,6 +70,8 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
   });
 
   const { register, handleSubmit, watch, setValue, control, formState } = form;
+  const user = useUserStore((state) => state.user);
+  
   const { errors } = formState;
 
   const { fields, append, remove } = useFieldArray({
@@ -123,14 +126,8 @@ const AbcForm = ({ onSubmit, disabled = false }: AbcFormProps) => {
       toast.error("Please select at least one product.");
       return;
     }
-   //Ability to add + than 1 prdct
-    // const payload: AbcRequestDto = {
-    //   items: values.items,
-    //   mode: values.mode,
-    //   saveToHistory: isAuthenticated ? values.saveToHistory : false,
-    //   username: isAuthenticated ? undefined : "guest",
-    // };
-    const payload = buildAbcRequest(values, isAuthenticated);
+   
+    const payload = buildAbcRequest(values, user);
     console.log("ABC payload ", payload)
     onSubmit(payload);
   };

@@ -19,7 +19,11 @@ export interface NewsvendorRequest {
   simulationRuns: number;
 
   saveToHistory: boolean;
-  username?: string; // backend defaults to "guest"
+  // username?: string; // backend defaults to "guest"
+  account?: {
+    id: number;
+  };
+
 
 }
 

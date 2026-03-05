@@ -14,6 +14,7 @@ import { eoqSchema, type EoqFormValues } from "./props/Eoq.schema";
 import { Label } from "@/components/ui/label";
 import ProductCard from "@/views/inventory/forms/ProductCard";
 import Info from "@/views/helpers/Info";
+import { useUserStore } from "@/store/user/useUserStore";
 
 
 const DEMAND_INFO = {
@@ -68,6 +69,9 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
 
 
   const { register, handleSubmit, setValue, watch, formState } = form;
+
+  const user = useUserStore((state) => state.user);
+  
   const { errors } = formState;
 
    // ───────────── Product Options ─────────────
@@ -122,8 +126,16 @@ const EoqForm = ({ defaultRuns = 1, onSubmit, disabled = false }: EoqFormProps) 
       demand: values.demand,
       cost: values.cost,
       holdingCost: values.holdingCost,
-      saveToHistory: isAuthenticated ? values.saveToHistory : false,
-    };
+      
+      saveToHistory: user.userType === "Registered"
+      ? values.saveToHistory
+      : false,
+
+      account:
+        user.userType === "Registered" && user.id
+          ? { id: Number(user.id) }
+          : undefined
+      };
 
     onSubmit(payload);
   };

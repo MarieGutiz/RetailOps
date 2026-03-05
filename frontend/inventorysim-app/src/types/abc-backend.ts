@@ -41,9 +41,12 @@ export type SimulationType = "classic" | "multi" ;
 
 export interface AbcRequestDto {
   items?: AbcItemDto[];   
-  username?: string;      // optional for public
+  // username?: string;      // optional for public
   mode: SimulationType;
   saveToHistory?:boolean;
+  account?: {
+    id: number;
+  }; // only for registered users
 }
 
 //Selectable item for form

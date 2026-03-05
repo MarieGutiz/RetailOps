@@ -1,9 +1,10 @@
+import type { UserPolicy } from "@/store/user/useUserStore";
 import type { AbcRequestDto, AbcItemDto } from "@/types/abc-backend";
 import type { AbcFormValues } from "@/views/simulator/ABCViews/AbcForms/props/Abc.schema";
 
 export function buildAbcRequest(
   values: AbcFormValues,
-  isAuthenticated: boolean
+  user: UserPolicy
 ): AbcRequestDto {
   const items: AbcItemDto[] = values.items
     .filter(
@@ -34,7 +35,15 @@ export function buildAbcRequest(
   return {
     items,
     mode: values.mode,
-    saveToHistory: isAuthenticated ? values.saveToHistory : false,
-    username: isAuthenticated ? undefined : "guest",
+    saveToHistory: user.userType === "Registered"
+      ? values.saveToHistory
+      : false,
+
+    account:
+      user.userType === "Registered" && user.id
+        ? { id: Number(user.id) }
+        : undefined
+
+  
   };
 }

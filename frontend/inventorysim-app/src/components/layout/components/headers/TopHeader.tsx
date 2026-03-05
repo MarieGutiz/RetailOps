@@ -2,9 +2,19 @@ import { useState } from "react";
 import { Search, X } from "lucide-react";
 import UserMenu from "../menu/user/UserMenu";
 import Brand from "./Brand";
+import { useNavigate } from "react-router-dom";
 
 export default function TopHeader({logo}: {logo?:boolean}) {
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSearch = (query: string) => {
+    if (!query.trim()) return;
+    // Navigate to /get-help and pass query in URL
+    navigate(`/get-help?query=${encodeURIComponent(query)}`);
+  };
+
   //show logo if needed
   return (
    <div
@@ -42,6 +52,11 @@ export default function TopHeader({logo}: {logo?:boolean}) {
                       focus:ring-2 focus:ring-blue-400
                       w-[180px] text-sm transition-all"
             autoFocus
+            onKeyDown={(e) => {
+                if (e.key === "Enter")
+                  handleSearch((e.target as HTMLInputElement).value);
+              }}
+
           />
 
           <button
@@ -92,6 +107,12 @@ export default function TopHeader({logo}: {logo?:boolean}) {
                           text-gray-800 placeholder:text-gray-500
                           focus:ring-2 focus:ring-blue-400
                           w-full text-sm transition-all"
+
+                onKeyDown={(e) => {
+                if (e.key === "Enter")
+                  handleSearch((e.target as HTMLInputElement).value);
+              }}
+
               />
             </div>
           )}
@@ -108,6 +129,11 @@ export default function TopHeader({logo}: {logo?:boolean}) {
                           text-gray-800 placeholder:text-gray-500
                           focus:ring-2 focus:ring-blue-400
                           w-full text-sm transition-all"
+              onKeyDown={(e) => {
+                if (e.key === "Enter")
+                  handleSearch((e.target as HTMLInputElement).value);
+              }}
+         
               />
             </div>
           )}

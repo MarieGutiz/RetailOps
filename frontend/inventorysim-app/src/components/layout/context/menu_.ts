@@ -4,24 +4,13 @@ import {
    PlayCircleIcon,
    BarChartIcon,
    FileTextIcon,
-   UsersIcon,
-   DatabaseIcon,
    CalculatorIcon,
    ActivityIcon,
-   ScaleIcon,
-   SettingsIcon,
-   SearchIcon,
-   CommandIcon,
    HelpCircleIcon,
-   NotebookIcon,
    PackagePlus,
    BarChart3,
    Settings,
    View, 
-   TableIcon,
-   SheetIcon,
-   ChartBar,
-   ChartBarIncreasingIcon,
    ChartNoAxesColumnDecreasingIcon} from "lucide-react";
 
 
@@ -156,61 +145,11 @@ export const data_menu = {
     //   subitems: [],
     // },
   ],
-  navClouds: [
-    {
-      title: "Product Library",
-      icon: DatabaseIcon,
-      url: "#",
-      items: [
-        { title: "All Products", url: "#" },
-        { title: "Add New", url: "#" },
-        { title: "Categories", url: "#" },
-      ],
-    },
-    {
-      title: "EOQ Model",
-      icon: CalculatorIcon,
-      url: "#",
-      items: [
-        { title: "Run EOQ", url: "#" },
-        { title: "Compare Scenarios", url: "#" },
-      ],
-    },
-    {
-      title: "Newsvendor Model",
-      icon: ActivityIcon,
-      url: "#",
-      items: [
-        { title: "Run Simulation", url: "#" },
-        { title: "Demand Variability", url: "#" },
-      ],
-    },
-    {
-      title: "Critical Ratio",
-      icon: ScaleIcon,
-      url: "#",
-      items: [{ title: "Calculate", url: "#" }],
-    },
-  ],
+  
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
-    },
-    {
-      title: "Keyboard Shortcuts",
-      url: "#",
-      icon: CommandIcon,
-    },
-    {
       title: "Get Help",
-      url: "#",
+      url: "/get-help",
       icon: HelpCircleIcon,
     },
   ],
