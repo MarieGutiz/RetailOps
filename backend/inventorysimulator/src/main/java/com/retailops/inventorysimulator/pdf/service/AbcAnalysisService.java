@@ -18,6 +18,7 @@
 package com.retailops.inventorysimulator.pdf.service;
 
 
+import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer.AbcRankedItem;
 import com.retailops.inventorysimulator.simulator.dto.*;
 import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerClassic;
@@ -44,12 +45,16 @@ public class AbcAnalysisService {
         if (items == null || items.isEmpty()) {
             return new AbcResponseDto(List.of(), AbcSummaryBuilder.build(List.of()));
         }
-
+        Account placeholder= Account.builder()
+                .username("abc-exportPdf-guess")
+                .name("Abc-exportPdf-guess")
+                .email("abc@guess.local")
+                .build();
         AbcAnalyzerStrategy analyzer = selectAnalyzer(mode);
         List<AbcRankedItem> rankedItems = analyzer.analyze(
                 new AbcRequestDto(
                         items,
-                        "guess",
+                         placeholder,
                         mode,
                         false));
 

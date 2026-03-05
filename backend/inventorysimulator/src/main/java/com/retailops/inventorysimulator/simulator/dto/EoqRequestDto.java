@@ -1,5 +1,6 @@
 package com.retailops.inventorysimulator.simulator.dto;
 
+import com.retailops.inventorysimulator.model.Account;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,12 +29,12 @@ public record EoqRequestDto(
 
         boolean saveToHistory,
 
-        String username
-
+        Account account // optional, null for guest
 ) {
     public String usernameOrDefault() {
-        return username != null && !username.isBlank()
-                ? username
+        return account != null && account.getUsername() != null && !account.getUsername().isBlank()
+                ? account.getUsername()
                 : "guest";
     }
+
 }

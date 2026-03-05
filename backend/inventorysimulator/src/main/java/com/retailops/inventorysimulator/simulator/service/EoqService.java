@@ -153,7 +153,6 @@ public class EoqService {
             EoqRequestDto request,
             BigDecimal eoq
     ) {
-
         SimulationRun run = new SimulationRun();
         run.setSimulationType(SimulationType.EOQ);
         run.setProductName(productName);
@@ -161,7 +160,7 @@ public class EoqService {
         run.setSetupCost(request.cost());
         run.setHoldingCost(request.holdingCost());
         run.setEoq(eoq);
-        run.setUsername(request.username());
+        run.setAccount(request.account()); // link to registered user or null for guest
         run.setRunAt(LocalDateTime.now());
 
         simulationServiceModel.save(run);

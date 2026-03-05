@@ -17,7 +17,6 @@ import java.util.List;
 
 @Repository
 public interface ABCResultRepository extends JpaRepository<ABCResult, Long> {
-    List<ABCResult> findByUsername(String username);
     List<ABCResult> findByAbcClass(ABCCategoryType abcClass);
     List<ABCResult> findBySimulationRunId(Long simulationRunId);
 

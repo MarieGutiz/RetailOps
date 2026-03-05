@@ -136,7 +136,7 @@ public class NewsvendorService {
                     .demand(request.meanDemand().toBigIntegerExact())
                     .profit(BigDecimal.valueOf(expectedProfit))
                     .runAt(LocalDateTime.now())
-                    .username(request.usernameOrDefault())
+                    .account(request.account()) // set to logged-in account; null if guest
                     .build();
 
             simulationServiceModel.save(sim);

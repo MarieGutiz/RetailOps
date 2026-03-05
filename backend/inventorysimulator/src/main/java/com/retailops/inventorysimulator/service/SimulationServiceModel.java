@@ -13,17 +13,31 @@ public interface SimulationServiceModel extends BaseService<SimulationRun, Long>
     SimulationRun findSimulationRunById(long id);
 
     void save(SimulationRun sim);
-    List<SimulationRun> getHistory(String username);
+
+    // ---------- BASIC HISTORY ----------
+
+    List<SimulationRun> getHistoryByUsername(String username);
+
     List<SimulationRun> getHistoryByType(SimulationType type);
 
-    //Create pagination
-    Page<SimulationRun> findByUsername(String username, Pageable pageable);
-    public Page<SimulationRunDTO> getHistory(String username, int page, int size);
 
-    //Add Filtering by Username + SimulationType
+    // ---------- PAGINATION ----------
+
+    Page<SimulationRun> findByAccountUsername(String username, Pageable pageable);
+
+    Page<SimulationRunDTO> getHistoryByUsername(String username, int page, int size);
+
+
+    // ---------- FILTERING ----------
+
     Page<SimulationRunDTO> getHistoryByType(SimulationType type, int page, int size);
 
-    Page<SimulationRunDTO> getHistoryByUserAndType(String username, SimulationType type, int page, int size);
+    Page<SimulationRunDTO> getHistoryByUsernameAndType(
+            String username,
+            SimulationType type,
+            int page,
+            int size
+    );
 
 
 }

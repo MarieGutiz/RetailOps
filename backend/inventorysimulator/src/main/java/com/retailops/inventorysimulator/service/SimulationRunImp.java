@@ -3,6 +3,7 @@ package com.retailops.inventorysimulator.service;
 import com.retailops.inventorysimulator.model.SimulationRun;
 import com.retailops.inventorysimulator.repository.SimulationRepository;
 import com.retailops.inventorysimulator.simulator.dto.SimulationRunDTO;
+import com.retailops.inventorysimulator.transfer.AccountDTO;
 import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,73 +21,13 @@ import java.util.function.Function;
 public class SimulationRunImp extends BaseServiceImpl<SimulationRun> implements SimulationServiceModel {
     private final SimulationRepository simulationRepository;
 
-
     @Override
     protected JpaRepository<SimulationRun, Long> getRepository() {
         return simulationRepository;
     }
 
-
-    @Override
-    public SimulationRun findSimulationRunById(long id) {
-        return simulationRepository.getReferenceById(id);
-    }
-
-    @Override
-    public void save(SimulationRun sim) {
-        simulationRepository.save(sim);
-    }
-
-    @Override
-    public List<SimulationRun> getHistory(String username) {
-        if (username != null && !username.isBlank()) {
-            return simulationRepository.findByUsername(username);
-
-        }
-        return simulationRepository.findAll();
-    }
-
-    @Override
-    public List<SimulationRun> getHistoryByType(SimulationType type) {
-        return simulationRepository.findBySimulationType(type);
-    }
-
-
-    @Override
-    public Page<SimulationRun> findByUsername(String username, Pageable pageable) {
-        return simulationRepository.findByUsername(username, pageable);
-    }
-
-    @Override
-    public Page<SimulationRunDTO> getHistory(String username, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("runAt").descending());
-
-        Page<SimulationRun> runs;
-        if (username != null && !username.isBlank()) {
-            runs = simulationRepository.findByUsername(username, pageable);
-        } else {
-            runs = simulationRepository.findAll(pageable);
-        }
-
-        return runs.map(toSimulationRunDTO());
-    }
-
-    @Override
-    public Page<SimulationRunDTO> getHistoryByType(SimulationType type, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("runAt").descending());
-        Page<SimulationRun> runs = simulationRepository.findBySimulationType(type, pageable);
-        return runs.map(toSimulationRunDTO());
-    }
-
-    @Override
-    public Page<SimulationRunDTO> getHistoryByUserAndType(String username, SimulationType type, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("runAt").descending());
-        Page<SimulationRun> runs = simulationRepository.findByUsernameAndSimulationType(username, type, pageable);
-        return runs.map(toSimulationRunDTO());
-    }
-
     public Function<SimulationRun, SimulationRunDTO> toSimulationRunDTO() {
-        return  run -> new SimulationRunDTO(
+        return run -> new SimulationRunDTO(
                 run.getId(),
                 run.getSimulationType(),
                 run.getProductName(),
@@ -94,9 +35,79 @@ public class SimulationRunImp extends BaseServiceImpl<SimulationRun> implements 
                 run.getDemand(),
                 run.getProfit(),
                 run.getRunAt(),
-                run.getUsername()
+                run.getAccount()
         );
     }
 
+    @Override
+    public SimulationRun findSimulationRunById(long id) {
+        return simulationRepository.findSimulationRunById(id);
+    }
+
+    @Override
+    public void save(SimulationRun sim) {
+        simulationRepository.save(sim);
+    }
+
+    // ---------------- HISTORY ----------------
+
+    @Override
+    public List<SimulationRun> getHistoryByUsername(String username) {
+        return simulationRepository.findByAccountUsername(username);
+    }
+
+    @Override
+    public List<SimulationRun> getHistoryByType(SimulationType type) {
+        return simulationRepository.findBySimulationType(type);
+    }
+
+    // ---------------- PAGINATION ----------------
+
+    @Override
+    public Page<SimulationRun> findByAccountUsername(String username, Pageable pageable) {
+        return simulationRepository.findByAccountUsername(username, pageable);
+    }
+
+    @Override
+    public Page<SimulationRunDTO> getHistoryByUsername(String username, int page, int size) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "runAt")
+        );
+
+        return simulationRepository
+                .findByAccountUsername(username, pageable)
+                .map(toSimulationRunDTO());
+    }
+
+    @Override
+    public Page<SimulationRunDTO> getHistoryByType(SimulationType type, int page, int size) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "runAt")
+        );
+
+        return simulationRepository
+                .findBySimulationType(type, pageable)
+                .map(toSimulationRunDTO());
+    }
+
+    @Override
+    public Page<SimulationRunDTO> getHistoryByUsernameAndType(String username, SimulationType type, int page, int size) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "runAt")
+        );
+
+        return simulationRepository
+                .findByAccountUsernameAndSimulationType(username, type, pageable)
+                .map(toSimulationRunDTO());
+    }
 
 }

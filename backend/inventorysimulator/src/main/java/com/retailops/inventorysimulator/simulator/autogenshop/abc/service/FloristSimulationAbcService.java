@@ -17,6 +17,7 @@
 
 package com.retailops.inventorysimulator.simulator.autogenshop.abc.service;
 
+import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.simulator.autogenshop.productcatalog.florist.FloristAbcMonteCarloGenerator;
 import com.retailops.inventorysimulator.simulator.autogenshop.MonteCarloFactory;
 import com.retailops.inventorysimulator.simulator.service.AbcService;
@@ -44,8 +45,14 @@ public class FloristSimulationAbcService
     }
 
     @Override
-    protected String getDemoName() {
-        return "florist-demo";
+    protected Account getDemoName() {
+
+        // Lightweight Account for demo/autogen, not persisted
+        return Account.builder()
+                .username("florist-demo")
+                .name("Florist Demo")
+                .email("demo@florist.local")
+                .build();
     }
 
 }

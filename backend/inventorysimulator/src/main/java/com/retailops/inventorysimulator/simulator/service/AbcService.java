@@ -18,6 +18,7 @@ import com.retailops.inventorysimulator.simulator.segmentation.AbcAnalyzerStrate
 import com.retailops.inventorysimulator.simulator.segmentation.AbcSummaryBuilder;
 import com.retailops.inventorysimulator.util.types.SimulationType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -52,6 +53,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AbcService {
 
     private final ABCResultRepository abcResultRepository;
@@ -69,8 +71,21 @@ public class AbcService {
      */
 
     public AbcResponseDto runAbc(AbcRequestDto requestDto, String simId, String shopName) {
+        log.info("[ABC] saveToHistory={}", requestDto.saveToHistory());
 
-        if(simId ==null && shopName==null)return null;
+        log.info("[ABC] simId={}, shopName={}", simId, shopName);
+
+        if (simId == null && shopName == null) {
+            log.warn("[ABC] Simulation skipped because simId and shopName are null");
+            return null;
+        }
+
+        log.info(
+                "[ABC] Persisting simulation | mode={} | accountId={} | items={}",
+                requestDto.mode(),
+                requestDto.account() != null ? requestDto.account().getId() : "guest",
+                requestDto.items().size()
+        );
 
         AbcAnalyzerStrategy analyzer = resolveAnalyzer(requestDto.mode());
 
@@ -126,40 +141,36 @@ public class AbcService {
             List<AbcRankedItem> rankedItems,
             List<ABCResult> results
     ) {
+        // Skip if the user did not request history saving
+        if (!requestDto.saveToHistory()) return;
 
-        // Must explicitly request saving
-        if (!requestDto.saveToHistory()) {
-            return;
-        }
-        //Do not persist guests
-        if (requestDto.username() == null ||
-                requestDto.username().isBlank() ||
-                requestDto.username().equalsIgnoreCase("guest")) {
-            return;
-        }
-
+        // 1. Create and persist SimulationRun
         SimulationRun run = new SimulationRun();
         run.setSimulationType(requestDto.mode());
-        run.setUsername(requestDto.username());
+        run.setAccount(requestDto.account()); // optional, null for guest
         run.setRunAt(LocalDateTime.now());
 
         try {
+            // Serialize input and output JSON for reference
             run.setAbcInputJson(objectMapper.writeValueAsString(requestDto.items()));
             run.setAbcResultJson(objectMapper.writeValueAsString(results));
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to serialize ABC simulation JSON", e);
         }
 
         simulationRepository.save(run);
 
-        // Link and persist ABCResult entities
+        // 2. Link ABCResult entities to the run and user
         results.forEach(r -> {
-            r.setSimulationRun(run);
-            r.setUsername(requestDto.username());
-            r.setAnalyzedAt(run.getRunAt());
+            r.setSimulationRun(run);          // link to parent run
+            r.setAccount(requestDto.account()); // optional, null for guest
+            r.setAnalyzedAt(run.getRunAt());  // timestamp
         });
 
+        // 3. Persist ABCResult entities
         abcResultRepository.saveAll(results);
+
+        log.info("[ABC] Persisted {} ABC result rows", results.size());
     }
 
     /**

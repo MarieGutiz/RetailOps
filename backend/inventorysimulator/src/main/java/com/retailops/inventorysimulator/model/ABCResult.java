@@ -45,12 +45,16 @@ public class ABCResult extends BaseModel {
     @Column(name = "`rank_position`")
     private int rank; // position in sorted list
 
-    private String username; // optional, later link to User entity
+    // Optional link to the Account (null for guest)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account account;
 
     private LocalDateTime analyzedAt;
 
-    // Optional link back to the run
+    // Optional link back to the simulation run
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "simulation_run_id")
     private SimulationRun simulationRun;
+
 }
