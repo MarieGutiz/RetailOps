@@ -161,7 +161,7 @@ const NewsvendorForm = ({
         : undefined
 
   };
-    // console.log("Submitting payload:", payload); // <-- debug log
+    console.log("Submitting payload:", payload); // <-- debug log
 
   onSubmit(payload);
 };
