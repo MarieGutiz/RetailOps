@@ -181,4 +181,4 @@ http://localhost:5173
 
 ## Author
 
-Developer Mariela Gutierrez [@mariegutiz](https://github.com/mariegutiz)
+Developer -Mariela Gutierrez [@mariegutiz](https://github.com/mariegutiz)
