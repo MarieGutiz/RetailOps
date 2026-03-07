@@ -35,7 +35,6 @@ import java.math.BigInteger;
 @AllArgsConstructor
 public abstract class InventoryItemBase {
 
-
     @NotNull(message = "Product is required")
     private Product product;
 

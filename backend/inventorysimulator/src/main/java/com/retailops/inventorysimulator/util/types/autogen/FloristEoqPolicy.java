@@ -48,7 +48,38 @@ public enum FloristEoqPolicy {
             FloristProductSpec.FLORAL_FOAM,
             20.0, 35.0,
             0.30
-    );
+    ),
+
+    PROTEAS(
+            FloristProductSpec.PROTEAS,
+            15.0, 30.0,
+            0.55
+    ),
+
+    TULIPS(
+            FloristProductSpec.TULIPS,
+            15.0, 30.0,
+            0.55
+    ),
+
+    STANDARD_VASE(
+            FloristProductSpec.STANDARD_VASE,
+            25.0, 45.0,
+            0.20
+    ),
+
+    RIBBON(
+            FloristProductSpec.RIBBON,
+            10.0, 20.0,
+            0.25
+    ),
+
+    FLOWER_FOOD(
+            FloristProductSpec.FLOWER_FOOD,
+            8.0, 18.0,
+            0.20
+    )
+    ;
 
     private final FloristProductSpec product;
     private final double minOrderCost;

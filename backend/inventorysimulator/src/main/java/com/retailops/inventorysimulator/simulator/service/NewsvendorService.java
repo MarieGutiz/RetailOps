@@ -53,10 +53,8 @@ import java.util.TreeMap;
 @RequiredArgsConstructor
 public class NewsvendorService {
 
-    private final ProductService productService;
     private final SimulationServiceModel simulationServiceModel;
     private final MonteCarloFactory monteCarloFactory;
-    private final CriticalRatioCalculator criticalRatioCalculator;
 
     /**
      * Run a Newsvendor simulation.
