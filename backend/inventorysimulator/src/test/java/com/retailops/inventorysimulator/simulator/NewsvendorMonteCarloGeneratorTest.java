@@ -67,17 +67,6 @@ public class NewsvendorMonteCarloGeneratorTest {
                 simulationRuns
         );
 
-//        double avgProfit = generator.simulate(
-//                100,
-//                BigDecimal.valueOf(80),
-//                BigDecimal.valueOf(10),
-//                BigDecimal.valueOf(5),
-//                BigDecimal.valueOf(3),
-//                BigDecimal.valueOf(1),
-//                1000
-//        );
-//
-//        System.out.println(avgProfit); // Copy this value as expectedProfit
 
         // Deterministic value for the given seed
         double expectedProfit = 120.06633586494183; // <-- compute once and copy

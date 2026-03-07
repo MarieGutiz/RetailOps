@@ -16,43 +16,4 @@ public class RetailOpsAppApplication {
 		SpringApplication.run(RetailOpsAppApplication.class, args);
 
 	}
-	@Bean
-	public CommandLineRunner dataLoader(ProductRepository productRepo) {
-		return args -> {
-			productRepo.save(Product.builder()
-					.name("Juice A")
-					.sku("JC-302")
-					.category("Juice")
-					.unitCost(BigDecimal.valueOf(1.00))
-					.unitPrice(BigDecimal.valueOf(2.50))
-					.build());
-
-			productRepo.save(Product.builder()
-					.name("Juice B")
-					.sku("JC-303")
-					.category("Juice")
-					.unitCost(BigDecimal.valueOf(1.20))
-					.unitPrice(BigDecimal.valueOf(2.80))
-					.build());
-
-			productRepo.save(Product.builder()
-					.name("Cookie C")
-					.sku("CK-SN2")
-					.category("Cookie")
-					.unitCost(BigDecimal.valueOf(0.60))
-					.unitPrice(BigDecimal.valueOf(1.50))
-					.build());
-
-			productRepo.save(Product.builder()
-					.name("Cookie D")
-					.sku("CK-SN3")
-					.category("Cookie")
-					.unitCost(BigDecimal.valueOf(0.70))
-					.unitPrice(BigDecimal.valueOf(1.60))
-					.build());
-
-			productRepo.findAll().forEach(p ->
-					System.out.println("Loaded: " + p.getName() + " @ $" + p.getUnitPrice()));
-		};
-	}
 }

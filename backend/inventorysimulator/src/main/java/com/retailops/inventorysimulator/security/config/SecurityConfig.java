@@ -48,18 +48,7 @@ public class SecurityConfig  {
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomOidcUserService customOidcUserService;
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
-   // private final JwtService jwtService;
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(csrf -> csrf.disable()) // disable CSRF for APIs
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll()  // allow all requests without login
-//                );
-//        return http.build();
-//    }
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -67,15 +56,15 @@ public class SecurityConfig  {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults()) // enable CORS support
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/simulations/florist/abc").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/simulations/cafeteria/abc").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/simulations/florist/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/simulations/cafeteria/**").permitAll()
                         .requestMatchers("/api/simulator/newsvendor/**").permitAll()
                         .requestMatchers("/api/simulator/eoq/**").permitAll()
                         .requestMatchers("/api/simulator/abc/**").permitAll()
                         .requestMatchers("/api/reports/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/products/**").permitAll()
                         .requestMatchers("/auth/**", "/api/auth/**").permitAll()
+                        .requestMatchers("/api/simulation/profit").permitAll()
+                        .requestMatchers("/api/simulation/history").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))//change to stateless
