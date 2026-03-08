@@ -35,7 +35,12 @@ const HeroSection = () => {
              className="toolbar-element jbtn-flat-btn toolbar-element-md active"
              onClick={() => navigate("/dashboard")}
              >Start Simulation</Button>
-            <Button size="lg" variant="outline" className="toolbar-element jbtn-flat-btn toolbar-element-md active">Learn More</Button>
+            <Button 
+             size="lg"
+             variant="outline"
+             className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+             onClick={() => navigate("/get-help?query=start")}
+             >Learn More</Button>
           </div>
 
           {/* GitHub CTA */}

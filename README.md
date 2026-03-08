@@ -71,6 +71,15 @@ With **RetailOps**, users can:
 
 ---
 
+## API Documentation
+
+The backend REST API for RetailOps is fully documented and available interactively via SwaggerHub.  
+You can explore all endpoints, try requests, and see response examples here:
+
+🔗 [RetailOps API on SwaggerHub](https://app.swaggerhub.com/apis/ANALYSTDATA/retailops-inventory-optimization-api/v1.0-sim)
+
+---
+
 ## Architecture Overview
 
 The application follows a **client-server architecture** based on the C4 container model.
