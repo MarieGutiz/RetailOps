@@ -54,34 +54,60 @@ public class SecurityConfig  {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults()) // enable CORS support
+                .cors(Customizer.withDefaults())
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/simulations/florist/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/simulations/cafeteria/**").permitAll()
+
+                        // Swagger
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/images/**",
+                                "/swagger-ui/swagger-ui.css",
+                                "/swagger-ui/swagger-ui-bundle.js",
+                                "/swagger-ui/swagger-ui-standalone-preset.js"
+                        ).permitAll()
+
+                        // Auth
+                        .requestMatchers("/auth/**", "/api/auth/**").permitAll()
+
+                        // Public simulator endpoints
                         .requestMatchers("/api/simulator/newsvendor/**").permitAll()
                         .requestMatchers("/api/simulator/eoq/**").permitAll()
                         .requestMatchers("/api/simulator/abc/**").permitAll()
                         .requestMatchers("/api/reports/**").permitAll()
-                        .requestMatchers("/auth/**", "/api/auth/**").permitAll()
+
+                        // Public simulation
                         .requestMatchers("/api/simulation/profit").permitAll()
+
+                        // Protected history
                         .requestMatchers("/api/simulation/history").authenticated()
+
+                        // Other public examples
+                        .requestMatchers(HttpMethod.GET, "/api/simulations/florist/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/simulations/cafeteria/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))//change to stateless
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
 
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
-                                .oidcUserService(customOidcUserService)   // Google
-                                .userService(customOAuth2UserService)    // GitHub
+                                .oidcUserService(customOidcUserService)
+                                .userService(customOAuth2UserService)
                         )
-                        .successHandler(
-                                oAuth2SuccessHandler
-                        )
+                        .successHandler(oAuth2SuccessHandler)
                 )
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
