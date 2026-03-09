@@ -1,13 +1,13 @@
-import { useState } from "react"
-import type { SortingState } from "@tanstack/react-table"
+import { useState } from 'react';
+import type { SortingState } from '@tanstack/react-table';
 
 export const useProductTableState = () => {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [search, setSearch] = useState("")
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [search, setSearch] = useState('');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 3,
-  })
+  });
 
   return {
     sorting,
@@ -16,5 +16,5 @@ export const useProductTableState = () => {
     setSearch,
     pagination,
     setPagination,
-  }
-}
+  };
+};

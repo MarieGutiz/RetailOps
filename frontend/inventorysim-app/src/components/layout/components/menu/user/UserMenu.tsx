@@ -1,10 +1,17 @@
 import { useProductStore } from '@/store/inventory/useProductStore';
-import {  MoreVerticalIcon, UserCircle } from 'lucide-react';
+import { MoreVerticalIcon, UserCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import UserAvatar from './UserAvatar';
 import UserDropdown from './UserDropdown';
 import { Button } from '@/components/ui/Button';
 import { useUserStore } from '@/store/user/useUserStore';
+
+
+/**
+ * User toolbar menu.
+ * Displays authentication-aware UI: greeting + avatar dropdown when logged in,
+ * or sign-up / profile entry points when not authenticated.
+ */
 
 const UserMenu = () => {
   const navigate = useNavigate();
@@ -12,23 +19,25 @@ const UserMenu = () => {
   const { user } = useUserStore();
   // console.log("UserMenu - profileImg:", profileImg);
 
-   return (
+  return (
     <div className="flex items-center gap-2 flex-none">
       {isAuth ? (
         <div className="flex items-center gap-2">
           {/* Smaller text + responsive */}
-          <span className="
+          <span
+            className="
           text-gray-300
             text-xs           /* mobile */
             sm:text-sm        /* small screens */
             md:text-sm      /* medium and up */
-            whitespace-nowrap ">
+            whitespace-nowrap "
+          >
             Hello, {user.name || user.username}
-          </span>          
-          
+          </span>
+
           <UserDropdown>
             <Button
-            className="
+              className="
                 flex items-center justify-center
                 gap-px 
                 h-10 w-15      /* width adapts to content */
@@ -39,19 +48,19 @@ const UserMenu = () => {
             "
             >
               {/* Avatar */}
-            <UserAvatar 
-              avatar={user.profileImg || ""}
-              username={user.name || user.username || "Guest"} 
-            />
-            <MoreVerticalIcon className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
-          </Button>
+              <UserAvatar
+                avatar={user.profileImg || ''}
+                username={user.name || user.username || 'Guest'}
+              />
+              <MoreVerticalIcon className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+            </Button>
           </UserDropdown>
         </div>
       ) : (
         <div className="hidden sm:block">
           <button
             className="toolbar-element jbtn-flat-btn toolbar-element-md active"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate('/register')}
           >
             Sign Up
           </button>
@@ -59,20 +68,20 @@ const UserMenu = () => {
       )}
 
       {/* Hide default circle when authenticated */}
-     {!isAuth && (
-      <Link to="/register" className="p-1 group">
-        <UserCircle
-          className="
+      {!isAuth && (
+        <Link to="/register" className="p-1 group">
+          <UserCircle
+            className="
             h-4 w-4 
             text-gray-200 
             group-hover:text-blue-300 
             transition-colors
           "
-        />
-      </Link>
+          />
+        </Link>
       )}
     </div>
   );
-}
+};
 
-export default UserMenu
+export default UserMenu;

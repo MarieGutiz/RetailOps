@@ -1,7 +1,6 @@
-
-import { fetchNormalPdf } from "@/services/api/newsvendor.api";
-import { useApiErrorToast } from "@/services/api/useApiErrorToast";
-import { useEffect, useMemo, useState } from "react";
+import { fetchNormalPdf } from '@/services/api/newsvendor.api';
+import { useApiErrorToast } from '@/services/api/useApiErrorToast';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   AreaChart,
@@ -12,8 +11,7 @@ import {
   ReferenceLine,
   ResponsiveContainer,
   Area,
-} from "recharts";
-
+} from 'recharts';
 
 interface Props {
   mean: number;
@@ -29,16 +27,14 @@ interface ChartPoint {
   shadedDensity?: number;
 }
 
-
-
-const DemandPdfChart = ({ 
-    mean,
-    stdDeviation,
-    optimalQ,
-    simId,
-    criticalRatio }: Props) => {
-
-      /**
+const DemandPdfChart = ({
+  mean,
+  stdDeviation,
+  optimalQ,
+  simId,
+  criticalRatio,
+}: Props) => {
+  /**
     * Under examination
     * ±1σ → 68%
 
@@ -48,15 +44,14 @@ const DemandPdfChart = ({
 
       ±4σ → basically everything except 
     */
-   
-      
+
   const [data, setData] = useState<ChartPoint[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!mean || !stdDeviation || stdDeviation <= 0) {
-      setError("Invalid distribution parameters.");
+      setError('Invalid distribution parameters.');
       return;
     }
 
@@ -66,7 +61,6 @@ const DemandPdfChart = ({
     const min = Math.floor(mean - 4 * stdDeviation);
     const max = Math.ceil(mean + 4 * stdDeviation);
     const step = 1; // integer demand
-
 
     const loadPdf = async () => {
       try {
@@ -85,24 +79,22 @@ const DemandPdfChart = ({
         );
 
         const formatted: ChartPoint[] = Object.entries(result)
-        .map(([d, density]) => ({
-          demand: Math.round(Number(d)), // enforce integer
-          density: Number(density),
-        }))
-        .sort((a, b) => a.demand - b.demand);
-
+          .map(([d, density]) => ({
+            demand: Math.round(Number(d)), // enforce integer
+            density: Number(density),
+          }))
+          .sort((a, b) => a.demand - b.demand);
 
         setData(formatted);
       } catch (err) {
         console.error(err);
 
-        const message =
-          "Unable to load demand distribution. Please try again.";
+        const message = 'Unable to load demand distribution. Please try again.';
 
         setError(message);
 
-      // Toast notification
-      useApiErrorToast(error, "Simulator Error");
+        // Toast notification
+        useApiErrorToast(error, 'Simulator Error');
       } finally {
         setLoading(false);
       }
@@ -113,52 +105,48 @@ const DemandPdfChart = ({
 
   // Shading up to optimalQ
   const shadedData = useMemo(() => {
-  const qInt = Math.floor(optimalQ);
+    const qInt = Math.floor(optimalQ);
 
-  return data.map((point) => ({
-    ...point,
-    shadedDensity:
-      point.demand <= qInt
-        ? point.density
-        : null,
-      }));
-    }, [data, optimalQ]);
-
+    return data.map((point) => ({
+      ...point,
+      shadedDensity: point.demand <= qInt ? point.density : null,
+    }));
+  }, [data, optimalQ]);
 
   return (
-  <div className="w-full space-y-4">
-
-    {/* Title */}
-    <div>
-      <h3 className="font-semibold text-base sm:text-lg">
-        Demand Distribution (Normal PDF)
-      </h3>
-      <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-        Normal distribution of demand. Area shaded represents probability of demand ≤ Q*.
-      </p>
-    </div>
-
-    {/* Loading */}
-    {loading && (
-      <div className="h-[240px] flex items-center justify-center text-sm text-muted-foreground">
-        Computing normal distribution...
+    <div className="w-full space-y-4">
+      {/* Title */}
+      <div>
+        <h3 className="font-semibold text-base sm:text-lg">
+          Demand Distribution (Normal PDF)
+        </h3>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+          Normal distribution of demand. Area shaded represents probability of
+          demand ≤ Q*.
+        </p>
       </div>
-    )}
 
-    {/* Error */}
-    {error && (
-      <div className="h-[240px] flex items-center justify-center">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-          {error}
+      {/* Loading */}
+      {loading && (
+        <div className="h-[240px] flex items-center justify-center text-sm text-muted-foreground">
+          Computing normal distribution...
         </div>
-      </div>
-    )}
+      )}
 
-    {/* Chart */}
-    {!loading && !error && shadedData.length > 0 && (
-      <div className="w-full max-w-2xl mx-auto">
-      <div className="h-[220px] sm:h-[260px] md:h-[300px] lg:h-[320px]">
-          <ResponsiveContainer width="100%" height="100%">
+      {/* Error */}
+      {error && (
+        <div className="h-[240px] flex items-center justify-center">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+            {error}
+          </div>
+        </div>
+      )}
+
+      {/* Chart */}
+      {!loading && !error && shadedData.length > 0 && (
+        <div className="w-full max-w-2xl mx-auto">
+          <div className="h-[220px] sm:h-[260px] md:h-[300px] lg:h-[320px]">
+            <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={shadedData}
                 margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
@@ -168,22 +156,18 @@ const DemandPdfChart = ({
                 <XAxis
                   dataKey="demand"
                   type="number"
-                  domain={["dataMin", "dataMax"]}
+                  domain={['dataMin', 'dataMax']}
                   tickFormatter={(v) => Math.round(v).toString()}
                   tick={{ fontSize: 10 }}
                 />
 
-                <YAxis
-                  type="number"
-                  tick={{ fontSize: 10 }}
-                  width={40}
-                />
+                <YAxis type="number" tick={{ fontSize: 10 }} width={40} />
 
                 <Tooltip
                   formatter={(value: number, name: string) => {
                     const labelMap: Record<string, string> = {
-                      density: "Probability Density",
-                      shadedDensity: "Cumulative Area (≤ Q*)",
+                      density: 'Probability Density',
+                      shadedDensity: 'Cumulative Area (≤ Q*)',
                     };
                     return [value.toFixed(5), labelMap[name] || name];
                   }}
@@ -213,31 +197,23 @@ const DemandPdfChart = ({
                 />
 
                 {/* Reference lines */}
-                <ReferenceLine
-                  x={Math.round(mean)}
-                  stroke="orange"
-                />
+                <ReferenceLine x={Math.round(mean)} stroke="orange" />
 
-                <ReferenceLine
-                  x={Math.floor(optimalQ)}
-                  stroke="red"
-                />
+                <ReferenceLine x={Math.floor(optimalQ)} stroke="red" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          </div>
-        )}
+        </div>
+      )}
 
-    {/* Empty */}
-    {!loading && !error && shadedData.length === 0 && (
-      <div className="h-[240px] flex items-center justify-center text-sm text-muted-foreground">
-        No distribution data available.
-      </div>
-    )}
-  </div>
-);
+      {/* Empty */}
+      {!loading && !error && shadedData.length === 0 && (
+        <div className="h-[240px] flex items-center justify-center text-sm text-muted-foreground">
+          No distribution data available.
+        </div>
+      )}
+    </div>
+  );
+};
 
-
-}
-
-export default DemandPdfChart
+export default DemandPdfChart;

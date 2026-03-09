@@ -7,7 +7,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   ReferenceLine,
-} from "recharts";
+} from 'recharts';
 
 interface Props {
   optimalQuantity: number;

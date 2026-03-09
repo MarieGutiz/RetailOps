@@ -1,18 +1,19 @@
 import type { EoqCurveResponse } from '@/types/eoq-backend';
 import { useCurrency } from '@/views/simulator/newsvendorViews/forms/hooks/useCurrency';
-import React from 'react'
-import { 
-    CartesianGrid,
-    Legend,
-    Line,
-    LineChart,
-    ReferenceArea,
-    ReferenceDot,
-    ReferenceLine,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis } from 'recharts';
+import React from 'react';
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ReferenceArea,
+  ReferenceDot,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 interface Props {
   curve: EoqCurveResponse;
@@ -20,18 +21,17 @@ interface Props {
 
 const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
   const { format } = useCurrency();
-  
+
   if (!curve || !curve.curvePoints?.length) return null;
 
-  const optimalQ = (curve.optimalQuantity ?? 0);
+  const optimalQ = curve.optimalQuantity ?? 0;
   const bandWidth = optimalQ * 0.01; // 3% band
 
-    const optimalPoint = curve.curvePoints.reduce((prev, curr) =>
-    Math.abs(curr.quantity - optimalQ) <
-    Math.abs(prev.quantity - optimalQ)
+  const optimalPoint = curve.curvePoints.reduce((prev, curr) =>
+    Math.abs(curr.quantity - optimalQ) < Math.abs(prev.quantity - optimalQ)
       ? curr
       : prev
-   );
+  );
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -41,35 +41,30 @@ const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
         <XAxis
           type="number"
           dataKey="quantity"
-          domain={["dataMin", "dataMax"]}
+          domain={['dataMin', 'dataMax']}
           tick={{ fontSize: 12 }}
-          tickFormatter={(value: number) =>
-            Math.round(value).toString()
-          }
+          tickFormatter={(value: number) => Math.round(value).toString()}
           label={{
-            value: "Order Quantity (Q)",
-            position: "insideBottom",
+            value: 'Order Quantity (Q)',
+            position: 'insideBottom',
             offset: 1,
           }}
         />
-
 
         <YAxis
           tick={{ fontSize: 12 }}
           tickFormatter={(value) => format(value)}
           label={{
-            value: "Annual Cost",
+            value: 'Annual Cost',
             angle: -90,
-            position: "insideLeft",
+            position: 'insideLeft',
             offset: 1,
           }}
         />
 
         <Tooltip
           formatter={(value: number) => format(value)}
-          labelFormatter={(label) =>
-            `Quantity: ${Math.round(Number(label))}`
-          }
+          labelFormatter={(label) => `Quantity: ${Math.round(Number(label))}`}
         />
 
         <Legend />
@@ -80,7 +75,6 @@ const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
           fill="#dc2626"
           fillOpacity={0.06}
         />
-
 
         <Line
           type="monotone"
@@ -115,7 +109,6 @@ const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
           }}
         />
 
-
         {/*  Q* Vertical Reference Line */}
         <ReferenceLine
           x={optimalQ}
@@ -124,8 +117,8 @@ const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
           strokeDasharray="6 4"
           label={{
             value: `Q* = ${Math.round(optimalQ)}`,
-            position: "top",
-            fill: "#dc2626",
+            position: 'top',
+            fill: '#dc2626',
             fontSize: 12,
           }}
         />
@@ -138,14 +131,9 @@ const EoqCostCurveChart: React.FC<Props> = ({ curve }) => {
           stroke="#ffffff"
           strokeWidth={2}
         />
-
-
       </LineChart>
     </ResponsiveContainer>
   );
 };
 
-
-
-
-export default EoqCostCurveChart
+export default EoqCostCurveChart;

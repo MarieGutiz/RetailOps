@@ -1,15 +1,15 @@
-import type { EoqResponse } from "@/types/eoq-backend";
-import EoqCostAnalysis from "./EoqCostAnalysis";
-import EoqPolicyDetails from "./EoqPolicyDetails";
-import EoqSummaryCards from "./EoqSummaryCards";
-import { useCurrency } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency";
+import type { EoqResponse } from '@/types/eoq-backend';
+import EoqCostAnalysis from './EoqCostAnalysis';
+import EoqPolicyDetails from './EoqPolicyDetails';
+import EoqSummaryCards from './EoqSummaryCards';
+import { useCurrency } from '@/views/simulator/newsvendorViews/forms/hooks/useCurrency';
 
 export interface EoqResultsPanelProps {
-  result: EoqResponse
+  result: EoqResponse;
 }
 
 const EoqResultsPanel: React.FC<EoqResultsPanelProps> = ({ result }) => {
-    const { format } = useCurrency();
+  const { format } = useCurrency();
 
   if (!result) {
     return (
@@ -28,5 +28,4 @@ const EoqResultsPanel: React.FC<EoqResultsPanelProps> = ({ result }) => {
   );
 };
 
-
-export default EoqResultsPanel
+export default EoqResultsPanel;

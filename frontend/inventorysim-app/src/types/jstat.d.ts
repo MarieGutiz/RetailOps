@@ -1,4 +1,4 @@
-declare module "jstat" {
+declare module 'jstat' {
   const jStat: {
     normal: {
       pdf: (x: number, mean?: number, std?: number) => number;

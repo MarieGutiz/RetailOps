@@ -1,16 +1,16 @@
+import FooterHome from './FooterHome';
+import HeroSection from './HeroSection';
 
-import FooterHome from "./FooterHome"
-import HeroSection from "./HeroSection"
+
+//Serves like index for the app
 
 const HomePage = () => {
-    return (
-       <>
-       <HeroSection />
-       <FooterHome />
-       </> 
-    )  }
+  return (
+    <>
+      <HeroSection />
+      <FooterHome />
+    </>
+  );
+};
 
-
-export default HomePage
-
-
+export default HomePage;

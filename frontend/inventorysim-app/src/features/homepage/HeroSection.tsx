@@ -1,15 +1,16 @@
-import { Button} from "@/components/ui/Button"
-import { motion } from "framer-motion"
-import HoverCard from "../animation/HoverCard"
-import GitHubCTA from "./GitHubCTA"
-import { useNavigate } from "react-router-dom"
+import { Button } from '@/components/ui/Button';
+import { motion } from 'framer-motion';
+import HoverCard from '../animation/HoverCard';
+import GitHubCTA from './GitHubCTA';
+import { useNavigate } from 'react-router-dom';
+
+//Hero section for the homepage
 
 const HeroSection = () => {
   const navigate = useNavigate();
   return (
-     <div className="min-h-screen bg-gradient-to-br from-background via-muted to-background flex items-center justify-center px-6 py-20 sm:py-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted to-background flex items-center justify-center px-6 py-20 sm:py-6">
       <div className="w-full max-w-6xl flex flex-col md:flex-row gap-10">
-        
         {/* Left: Hero + Buttons + GitHub CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -23,24 +24,28 @@ const HeroSection = () => {
           </h1>
 
           <p className="text-muted-foreground text-lg max-w-xl mx-auto md:mx-0">
-            A small but powerful simulation tool to explore EOQ, Newsvendor,
-            ABC analysis, and smart replenishment strategies for real-world
-            supply chains.
+            A small but powerful simulation tool to explore EOQ, Newsvendor, ABC
+            analysis, and smart replenishment strategies for real-world supply
+            chains.
           </p>
 
           {/* Buttons */}
           <div className="flex justify-center md:justify-center gap-4 flex-wrap">
-            <Button 
-             size="lg"
-             className="toolbar-element jbtn-flat-btn toolbar-element-md active"
-             onClick={() => navigate("/dashboard")}
-             >Start Simulation</Button>
-            <Button 
-             size="lg"
-             variant="outline"
-             className="toolbar-element jbtn-flat-btn toolbar-element-md active"
-             onClick={() => navigate("/get-help?query=start")}
-             >Learn More</Button>
+            <Button
+              size="lg"
+              className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+              onClick={() => navigate('/dashboard')}
+            >
+              Start Simulation
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+              onClick={() => navigate('/get-help?query=start')}
+            >
+              Learn More
+            </Button>
           </div>
 
           {/* GitHub CTA */}
@@ -73,10 +78,9 @@ const HeroSection = () => {
             description="Designed to explain the why, not just the numbers."
           />
         </motion.div>
-
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HeroSection
+export default HeroSection;

@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useProductStore } from "@/store/inventory/useProductStore";
-import { toast } from "sonner";
-import type { Product } from "@/types/products";
-import { useShopStore } from "@/store/shop/useShopStore";
+import { useState } from 'react';
+import { useProductStore } from '@/store/inventory/useProductStore';
+import { toast } from 'sonner';
+import type { Product } from '@/types/products';
+import { useShopStore } from '@/store/shop/useShopStore';
 
 export const useProducts = () => {
   const shop = useShopStore((s) => s.shop); // currently selected shop
@@ -10,17 +10,17 @@ export const useProducts = () => {
   const addProduct = useProductStore((s) => s.addProduct);
   const [newProduct, setNewProduct] = useState<Product>({
     id: Date.now().toString(), // temporary id
-    sku: "",
-    name: "",
-    category: "",
-    description: "",
+    sku: '',
+    name: '',
+    category: '',
+    description: '',
     unitCost: 0,
     unitPrice: 0,
   });
 
   const handleAdd = () => {
     if (!shop) {
-      console.warn("No shop selected, cannot add product");
+      console.warn('No shop selected, cannot add product');
       return;
     }
 
@@ -33,15 +33,15 @@ export const useProducts = () => {
 
     setNewProduct({
       id: Date.now().toString(),
-      sku: "",
-      name: "",
-      category: "",
-      description: "",
+      sku: '',
+      name: '',
+      category: '',
+      description: '',
       unitCost: 0,
       unitPrice: 0,
     });
 
-    toast.success("Product added!");
+    toast.success('Product added!');
   };
 
   return {

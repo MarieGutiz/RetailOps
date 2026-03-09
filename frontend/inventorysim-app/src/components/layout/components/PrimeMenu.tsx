@@ -1,19 +1,15 @@
+import { usePrimeLayout } from './PrimeLayoutProvider';
+import { usePrimeLayoutStore } from '../hooks/usePrimeLayout';
+import Menu from './menu/Menu';
+import { DraggableSidebar } from './draggable/DraggableSidebar';
+import type { PrimeLayoutController } from '../controllers/PrimeLayoutController';
 
-import { usePrimeLayout } from './PrimeLayoutProvider'
-import { usePrimeLayoutStore } from '../hooks/usePrimeLayout'
-import Menu from './menu/Menu'
-import { DraggableSidebar } from './draggable/DraggableSidebar'
-import type { PrimeLayoutController } from '../controllers/PrimeLayoutController'
+// Responsibe for rendering the menu in the dashboard, according to the layout state setting.
 
-
-const PrimeMenu = ({
-  controller,
-}: {
-  controller?: PrimeLayoutController;
-}) => {
+const PrimeMenu = ({ controller }: { controller?: PrimeLayoutController }) => {
   const layout = usePrimeLayout(); // always defined
-  const pinned = usePrimeLayoutStore(l => l.pinned);
-  const side = usePrimeLayoutStore(l => l.side);
+  const pinned = usePrimeLayoutStore((l) => l.pinned);
+  const side = usePrimeLayoutStore((l) => l.side);
   const variant = layout.getVariant();
 
   // Use whichever source is available (context takes priority)
@@ -27,7 +23,7 @@ const PrimeMenu = ({
   // Unpinned: floating and draggable : problematic without variant
   return (
     <DraggableSidebar controller={activeController}>
-      <Menu variant={variant} side={side} /> 
+      <Menu variant={variant} side={side} />
     </DraggableSidebar>
   );
 };

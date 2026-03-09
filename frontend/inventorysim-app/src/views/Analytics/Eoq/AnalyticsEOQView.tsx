@@ -1,34 +1,40 @@
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { isEoqLog, type SimulationLogEntry } from "@/views/Overview/hooks/useSimulationBitacora";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import EOQOverviewCard from "./EOQOverviewCard";
-import { useEOQAnalytics } from "./hooks/useEOQAnalytics";
-import { useAnalyticsEngine } from "../useAnalyticsEngine";
-import AnalyticsResultCard from "../AnalyticsResultCard";
-import Info from "@/views/helpers/Info";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
-
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  isEoqLog,
+  type SimulationLogEntry,
+} from '@/views/Overview/hooks/useSimulationBitacora';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import EOQOverviewCard from './EOQOverviewCard';
+import { useEOQAnalytics } from './hooks/useEOQAnalytics';
+import { useAnalyticsEngine } from '../useAnalyticsEngine';
+import AnalyticsResultCard from '../AnalyticsResultCard';
+import Info from '@/views/helpers/Info';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export const EOQ_POLICY_COMPARISON_INFO = {
-  title: "EOQ Policy Comparison Logic",
-  theory: "Analytical EOQ vs Historical EOQ",
+  title: 'EOQ Policy Comparison Logic',
+  theory: 'Analytical EOQ vs Historical EOQ',
   description:
-    "The Analytical EOQ is computed using the classic Economic Order Quantity formula: EOQ = sqrt(2 * D * S / H), where D is annual demand, S is ordering cost, and H is holding cost per unit. Historical EOQ comes from past simulation data. Comparing both allows you to see differences in order quantity, total cost, and component costs. The percentage difference (old - new) / old × 100 shows whether the analytical policy reduces or increases costs compared to historical policies."
+    'The Analytical EOQ is computed using the classic Economic Order Quantity formula: EOQ = sqrt(2 * D * S / H), where D is annual demand, S is ordering cost, and H is holding cost per unit. Historical EOQ comes from past simulation data. Comparing both allows you to see differences in order quantity, total cost, and component costs. The percentage difference (old - new) / old × 100 shows whether the analytical policy reduces or increases costs compared to historical policies.',
 };
 
 interface Props {
   logs: SimulationLogEntry[];
 }
 
-type EoqLog = Extract<SimulationLogEntry, { type: "eoq" }>;
+type EoqLog = Extract<SimulationLogEntry, { type: 'eoq' }>;
 
 const AnalyticsEOQView = ({ logs }: Props) => {
-  const [activeTab, setActiveTab] = useState("whatif");
+  const [activeTab, setActiveTab] = useState('whatif');
 
   const [demand, setDemand] = useState(1000);
   const [orderingCost, setOrderingCost] = useState(50);
@@ -37,10 +43,7 @@ const AnalyticsEOQView = ({ logs }: Props) => {
   // ─────────────────────────────
   // Filter EOQ logs properly using type guard
   // ─────────────────────────────
-  const eoqLogs = useMemo(
-    () => logs.filter(isEoqLog),
-    [logs]
-  );
+  const eoqLogs = useMemo(() => logs.filter(isEoqLog), [logs]);
 
   // ─────────────────────────────
   // Analytical model
@@ -54,18 +57,13 @@ const AnalyticsEOQView = ({ logs }: Props) => {
   // ─────────────────────────────
   // Generic ranking engine
   // ─────────────────────────────
-  const {
-    results,
-    selectedLog,
-    setSelectedLog,
-    runAnalysis,
-  } = useAnalyticsEngine<EoqLog>({
-    logs: eoqLogs,
-    computeDifference: (log) =>
-      Math.abs(log.data.eoq - analytics.eoq),
-  });
+  const { results, selectedLog, setSelectedLog, runAnalysis } =
+    useAnalyticsEngine<EoqLog>({
+      logs: eoqLogs,
+      computeDifference: (log) => Math.abs(log.data.eoq - analytics.eoq),
+    });
 
-    return (
+  return (
     <Tabs
       value={activeTab}
       onValueChange={setActiveTab}
@@ -77,22 +75,25 @@ const AnalyticsEOQView = ({ logs }: Props) => {
        gap-1 sm:gap-2
        border border-gray-200"
     >
-      <TabsList 
-       className="
+      <TabsList
+        className="
         bg-blue-200
          backdrop-blur-sm
          shadow-md rounded-lg p-1
          flex flex-wrap sm:flex-nowrap
          gap-2 sm:gap-2
-         border border-gray-200">
-
+         border border-gray-200"
+      >
         <TabsTrigger
           value="whatif"
           className={`
             px-2 sm:px-4 py-1 sm:py-2
             rounded-md
-            transition-colors ${activeTab === "whatif" 
-            ? "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
+            transition-colors ${
+              activeTab === 'whatif'
+                ? 'jbtn-success shadow-inner'
+                : 'bg-blue-100 hover:bg-blue-200'
+            }`}
         >
           What if?..
         </TabsTrigger>
@@ -102,8 +103,11 @@ const AnalyticsEOQView = ({ logs }: Props) => {
           className={`
             px-2 sm:px-4 py-1 sm:py-2
             rounded-md
-            transition-colors ${activeTab === "results"
-             ? "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
+            transition-colors ${
+              activeTab === 'results'
+                ? 'jbtn-success shadow-inner'
+                : 'bg-blue-100 hover:bg-blue-200'
+            }`}
         >
           Results
         </TabsTrigger>
@@ -113,11 +117,14 @@ const AnalyticsEOQView = ({ logs }: Props) => {
           className={`
             px-2 sm:px-4 py-1 sm:py-2
             rounded-md
-            transition-colors ${activeTab === "cost" ?
-             "jbtn-success shadow-inner" : "bg-blue-100 hover:bg-blue-200"}`}
+            transition-colors ${
+              activeTab === 'cost'
+                ? 'jbtn-success shadow-inner'
+                : 'bg-blue-100 hover:bg-blue-200'
+            }`}
         >
           Cost Breakdown
-          {selectedLog && activeTab !== "cost" && (
+          {selectedLog && activeTab !== 'cost' && (
             <span
               className="
                 absolute -top-1 -right-1
@@ -135,15 +142,27 @@ const AnalyticsEOQView = ({ logs }: Props) => {
         <div className="space-y-4">
           <div>
             <Label>Annual Demand (D)</Label>
-            <Input type="number" value={demand} onChange={(e) => setDemand(Number(e.target.value))} />
+            <Input
+              type="number"
+              value={demand}
+              onChange={(e) => setDemand(Number(e.target.value))}
+            />
           </div>
           <div>
             <Label>Ordering Cost (S)</Label>
-            <Input type="number" value={orderingCost} onChange={(e) => setOrderingCost(Number(e.target.value))} />
+            <Input
+              type="number"
+              value={orderingCost}
+              onChange={(e) => setOrderingCost(Number(e.target.value))}
+            />
           </div>
           <div>
             <Label>Holding Cost (H)</Label>
-            <Input type="number" value={holdingCost} onChange={(e) => setHoldingCost(Number(e.target.value))} />
+            <Input
+              type="number"
+              value={holdingCost}
+              onChange={(e) => setHoldingCost(Number(e.target.value))}
+            />
           </div>
         </div>
 
@@ -159,11 +178,11 @@ const AnalyticsEOQView = ({ logs }: Props) => {
         <Button
           onClick={() => {
             if (!eoqLogs.length) {
-              toast.error("No EOQ simulations found.");
+              toast.error('No EOQ simulations found.');
               return;
             }
             runAnalysis();
-            setActiveTab("results");
+            setActiveTab('results');
           }}
           className="toolbar-element jbtn-flat-btn toolbar-element-md active"
         >
@@ -172,16 +191,18 @@ const AnalyticsEOQView = ({ logs }: Props) => {
       </TabsContent>
 
       {/* RESULTS */}
-        <TabsContent value="results" className="mt-6 space-y-4">
+      <TabsContent value="results" className="mt-6 space-y-4">
         {results.slice(0, 5).map((r, idx) => (
           <AnalyticsResultCard
             key={idx}
             log={r.logEntry}
             onSelect={() => {
               setSelectedLog(r.logEntry);
-              setActiveTab("cost");
+              setActiveTab('cost');
             }}
-            header={<div>{new Date(r.logEntry.createdAt).toLocaleString()}</div>}
+            header={
+              <div>{new Date(r.logEntry.createdAt).toLocaleString()}</div>
+            }
             metrics={
               <div className="flex flex-wrap gap-2">
                 <TooltipProvider>
@@ -192,7 +213,8 @@ const AnalyticsEOQView = ({ logs }: Props) => {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-xs text-sm">
-                      EOQ (Economic Order Quantity) is the optimal quantity to order to minimize total costs.
+                      EOQ (Economic Order Quantity) is the optimal quantity to
+                      order to minimize total costs.
                     </TooltipContent>
                   </Tooltip>
 
@@ -203,7 +225,8 @@ const AnalyticsEOQView = ({ logs }: Props) => {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-xs text-sm">
-                      Delta (Δ) represents the difference between this simulation's EOQ and the target/reference value.
+                      Delta (Δ) represents the difference between this
+                      simulation's EOQ and the target/reference value.
                     </TooltipContent>
                   </Tooltip>
 
@@ -214,7 +237,8 @@ const AnalyticsEOQView = ({ logs }: Props) => {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-xs text-sm">
-                      Total cost combines ordering and holding costs for this EOQ simulation.
+                      Total cost combines ordering and holding costs for this
+                      EOQ simulation.
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -224,9 +248,8 @@ const AnalyticsEOQView = ({ logs }: Props) => {
         ))}
       </TabsContent>
 
-
       {/* COST BREAKDOWN */}
-       <TabsContent value="cost" className="mt-6 space-y-4">
+      <TabsContent value="cost" className="mt-6 space-y-4">
         {selectedLog && (
           <>
             <div className="flex justify-end">
@@ -268,10 +291,8 @@ const AnalyticsEOQView = ({ logs }: Props) => {
           </>
         )}
       </TabsContent>
-
     </Tabs>
   );
+};
 
-}
-
-export default AnalyticsEOQView
+export default AnalyticsEOQView;

@@ -1,14 +1,14 @@
-import type { ABCExecutionMode } from "@/hooks/simulator/engines/types/resolveABCMode";
-import type { ABC_SCENARIOS } from "@/lib/abc/buildABCTableData";
-import type { SimulationType } from "./abc-backend";
-import type { ABCSummary, ABCTableRow } from "./abc";
-import type { Product } from "./products";
+import type { ABCExecutionMode } from '@/hooks/simulator/engines/types/resolveABCMode';
+import type { ABC_SCENARIOS } from '@/lib/abc/buildABCTableData';
+import type { SimulationType } from './abc-backend';
+import type { ABCSummary, ABCTableRow } from './abc';
+import type { Product } from './products';
 
-export type ShopType = "FLORIST" | "CAFETERIA";
+export type ShopType = 'FLORIST' | 'CAFETERIA';
 
 export type ShopId = string & { readonly brand: unique symbol };
 
-export type ABCComputationSource = "FRONTEND" | "BACKEND";
+export type ABCComputationSource = 'FRONTEND' | 'BACKEND';
 
 export type InventoryState = {
   quantities: Record<string, number>; // productId -> quantity
@@ -16,7 +16,7 @@ export type InventoryState = {
 
 export type AnalyticsState = {
   demandFrequency?: Record<string, number>; // productId -> frequency
-  salesValue?: Record<string, number>;      // productId -> value
+  salesValue?: Record<string, number>; // productId -> value
 };
 
 export interface ShopABCState {
@@ -33,7 +33,7 @@ export interface ShopABCState {
 export type RunABCOptions = {
   executionMode: ABCExecutionMode;
   simulationType?: SimulationType;
-  shopId: ShopId,
+  shopId: ShopId;
   scenario?: keyof typeof ABC_SCENARIOS;
 };
 
@@ -48,13 +48,13 @@ export function shopId(value: string): ShopId {
 //   | "READY"      // products exist, simulation allowed
 //   | "FAILED"     // shop setup failed
 //   | "DELETED";    // shop has been deleted
-    
-  //Differentiate btween shops
 
-  // --- Lifecycles ---
-type CommonLifecycle = "CREATED" | "IMPORTING" | "READY" | "FAILED";
+//Differentiate btween shops
 
-export type UserShopLifecycle = CommonLifecycle | "DELETED";
+// --- Lifecycles ---
+type CommonLifecycle = 'CREATED' | 'IMPORTING' | 'READY' | 'FAILED';
+
+export type UserShopLifecycle = CommonLifecycle | 'DELETED';
 export type AutogenShopLifecycle = CommonLifecycle;
 
 // Union type for convenience
@@ -62,8 +62,7 @@ export type ShopLifecycle = UserShopLifecycle | AutogenShopLifecycle;
 
 // --- Shop slice ---
 export type UserShopSlice = {
-  
-  kind: "USER";
+  kind: 'USER';
   lifecycle: UserShopLifecycle;
   products: Product[];
   inventory?: InventoryState;
@@ -78,7 +77,7 @@ export type UserShopSlice = {
 };
 
 export type AutogenShopSlice = {
-  kind: "AUTOGEN";
+  kind: 'AUTOGEN';
   lifecycle: AutogenShopLifecycle;
   products: Product[];
   inventory?: InventoryState;
@@ -87,11 +86,9 @@ export type AutogenShopSlice = {
   hydrated: boolean;
   label?: string;
 
-  createdAt: number,    // add timestamps
-  lastUpdated: number,
-  lastSavedAt: number,
+  createdAt: number; // add timestamps
+  lastUpdated: number;
+  lastSavedAt: number;
 };
 
 export type ShopSlice = UserShopSlice | AutogenShopSlice;
-
-

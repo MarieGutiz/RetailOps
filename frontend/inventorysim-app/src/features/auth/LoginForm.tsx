@@ -1,31 +1,39 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/Input"
-import { Button } from "@/components/ui/Button"
-import { Link, useNavigate } from "react-router-dom"
-import SocialBtns from "./ui/SocialBtns"
-import Divider from "./ui/Divider"
-import { useAuth } from "@/hooks/auth/useAuth"
-import FormError from "./ui/FormError"
-import Top from "./ui/Top"
-import { useProductStore } from "@/store/inventory/useProductStore"
-import { saveToStorage } from "@/utils/storage"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Link, useNavigate } from 'react-router-dom';
+import SocialBtns from './ui/SocialBtns';
+import Divider from './ui/Divider';
+import { useAuth } from '@/hooks/auth/useAuth';
+import FormError from './ui/FormError';
+import Top from './ui/Top';
+import { useProductStore } from '@/store/inventory/useProductStore';
+import { saveToStorage } from '@/utils/storage';
+
+//Lgin form
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const {loginFormValidation, handleLogin, loading, error} = useAuth();
+  const { loginFormValidation, handleLogin, loading, error } = useAuth();
 
   const onSubmit = loginFormValidation.handleSubmit(async (data) => {
-    console.log("Valid form data:", data);
+    console.log('Valid form data:', data);
     const response = await handleLogin(data);
-   
-    if (response) {
-      console.log("Login successful:", response);
-      //Redirect to user's dashboard <--
-       saveToStorage.setUser(response);
-       useProductStore.getState().setAuthenticated(true);
-        navigate("/dashboard");
 
+    if (response) {
+      console.log('Login successful:', response);
+      //Redirect to user's dashboard <--
+      saveToStorage.setUser(response);
+      useProductStore.getState().setAuthenticated(true);
+      navigate('/dashboard');
     }
   });
 
@@ -39,23 +47,32 @@ const LoginForm = () => {
         <Card className="p-6">
           <CardHeader>
             <CardTitle className="text-xl">Welcome to RetailOps</CardTitle>
-            <CardDescription>Enter your credentials to continue</CardDescription>
+            <CardDescription>
+              Enter your credentials to continue
+            </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4">
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="block text-left">Email address</Label>
+              <Label htmlFor="email" className="block text-left">
+                Email address
+              </Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
                 required
                 autoComplete="email"
-                {...loginFormValidation.register("email")}
+                {...loginFormValidation.register('email')}
               />
               {loginFormValidation.formState.errors.email && (
-                <FormError message={loginFormValidation.formState.errors.email.message?.toString() ?? "Invalid email address"} />
+                <FormError
+                  message={
+                    loginFormValidation.formState.errors.email.message?.toString() ??
+                    'Invalid email address'
+                  }
+                />
               )}
             </div>
 
@@ -63,7 +80,7 @@ const LoginForm = () => {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                 <Link
+                <Link
                   to="/forgot-password"
                   className="text-sm font-medium text-indigo-500 hover:underline"
                 >
@@ -76,21 +93,29 @@ const LoginForm = () => {
                 placeholder="••••••••"
                 autoComplete="new-password"
                 required
-                {...loginFormValidation.register("password")}
+                {...loginFormValidation.register('password')}
               />
-               {loginFormValidation.formState.errors.password && (
-                <FormError message={loginFormValidation.formState.errors.password.message?.toString() ?? "Invalid password"} />
+              {loginFormValidation.formState.errors.password && (
+                <FormError
+                  message={
+                    loginFormValidation.formState.errors.password.message?.toString() ??
+                    'Invalid password'
+                  }
+                />
               )}
             </div>
             {error && <FormError message={error} />}
             {/* Sign in */}
-            <Button type="submit" 
-            className="w-full" style={{backgroundColor: '#4F46E5', color: 'white'}}>
-               {loading ? "Logging in..." : "Sign in"}
+            <Button
+              type="submit"
+              className="w-full"
+              style={{ backgroundColor: '#4F46E5', color: 'white' }}
+            >
+              {loading ? 'Logging in...' : 'Sign in'}
             </Button>
 
             {/* Divider */}
-           <Divider text="Or continue with" />
+            <Divider text="Or continue with" />
 
             {/* Social buttons */}
             <SocialBtns />
@@ -98,7 +123,7 @@ const LoginForm = () => {
 
           <CardFooter>
             <p className="mx-auto text-sm text-gray-500">
-              Not with us?{" "}
+              Not with us?{' '}
               <Link
                 to="/register"
                 className="font-semibold text-indigo-500 hover:underline"
@@ -108,9 +133,9 @@ const LoginForm = () => {
             </p>
           </CardFooter>
         </Card>
-    </form>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;

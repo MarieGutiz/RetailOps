@@ -1,16 +1,18 @@
-"use client"
-import type React from "react"
-import { PrimeLayoutDragController } from "./PrimeLayoutDragController";
+'use client';
+import type React from 'react';
+import { PrimeLayoutDragController } from './PrimeLayoutDragController';
+
+// Main controller class for the prime layout, manages the state/bhavior of the sidebar
+// and provides and interfacte to interact with the drag controller.
 
 export class PrimeLayoutController {
   open = true;
-  side: "left" | "right" = "left";
+  side: 'left' | 'right' = 'left';
   sidebarWidth = 16;
   collapsedWidth = 6;
-  variant: "sidebar" | "floating" | "inset" = "sidebar";
+  variant: 'sidebar' | 'floating' | 'inset' = 'sidebar';
   isMobile = false;
   openMobile = false; // whether the mobile sidebar is open
-
 
   pinned = true;
   draggable = true;
@@ -18,7 +20,7 @@ export class PrimeLayoutController {
   // width = this.sidebarWidth;
   position = { x: 0, y: 0 }; // initial absolute position
 
-   dragController: PrimeLayoutDragController;
+  dragController: PrimeLayoutDragController;
 
   private listeners = new Set<() => void>();
 
@@ -27,7 +29,7 @@ export class PrimeLayoutController {
 
     // initialize without width awareness
     this.dragController = new PrimeLayoutDragController({
-      side: this.side
+      side: this.side,
     });
 
     // now sync the current width state properly
@@ -35,22 +37,19 @@ export class PrimeLayoutController {
   }
 
   // Subscribe system
- subscribe(listener: () => void): () => void {
-  this.listeners.add(listener);
-  return () => {
-    this.listeners.delete(listener); // just call it, ignore the boolean
-  };
-}
-
+  subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener); // just call it, ignore the boolean
+    };
+  }
 
   private notify() {
     this.listeners.forEach((fn) => fn());
   }
 
-
-
   //Set collapse/expand state
-  
+
   private get currentWidthRem() {
     return this.open ? this.sidebarWidth : this.collapsedWidth;
   }
@@ -80,16 +79,16 @@ export class PrimeLayoutController {
   }
 
   setIsMobile(isMobile: boolean) {
-  this.isMobile = isMobile;
-  this.notify();
-}
+    this.isMobile = isMobile;
+    this.notify();
+  }
 
   // -----------------------------
   // MOBILE METHODS
   // -----------------------------
   setOpenMobile(open: boolean) {
     this.openMobile = open;
-    console.log("Mobile sidebar open state set to in controller:", open);
+    console.log('Mobile sidebar open state set to in controller:', open);
     this.notify();
   }
 
@@ -97,7 +96,7 @@ export class PrimeLayoutController {
     this.setOpenMobile(!this.openMobile);
   }
 
-// Pin or unpin the sidebar
+  // Pin or unpin the sidebar
   togglePin() {
     this.pinned = !this.pinned;
     this.draggable = !this.pinned;
@@ -114,8 +113,8 @@ export class PrimeLayoutController {
   getSidebarStyle(): React.CSSProperties {
     const width = this.open ? this.sidebarWidth : this.collapsedWidth;
     return {
-      "--sidebar-width": `${width}rem`,
-      transition: "width 0.25s ease-in-out",
+      '--sidebar-width': `${width}rem`,
+      transition: 'width 0.25s ease-in-out',
     } as React.CSSProperties;
   }
 
@@ -125,7 +124,7 @@ export class PrimeLayoutController {
 
   // Toggle sidebar side
   toggleSide() {
-    this.side = this.side === "left" ? "right" : "left";
+    this.side = this.side === 'left' ? 'right' : 'left';
     this.dragController.toggleSide();
     this.notify();
   }
@@ -143,8 +142,8 @@ export class PrimeLayoutController {
   //upin the sidebar
 
   onUnpin() {
-  // Make sure dragController knows about the current side + width
- // Make sure controller knows about side + current width
+    // Make sure dragController knows about the current side + width
+    // Make sure controller knows about side + current width
     this.syncDragController();
     this.dragController.setInitialPosition?.();
   }
@@ -158,7 +157,7 @@ export class PrimeLayoutController {
 
     // Restore defaults
     this.open = true;
-    this.side = "left";
+    this.side = 'left';
     this.pinned = true;
     this.draggable = true;
 
@@ -166,6 +165,5 @@ export class PrimeLayoutController {
     this.dragController.reset?.();
 
     this.notify();
-}
-  
+  }
 }

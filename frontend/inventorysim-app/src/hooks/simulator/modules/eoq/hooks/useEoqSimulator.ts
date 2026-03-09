@@ -1,10 +1,18 @@
-import { useSimulationBase } from "@/hooks/simulator/useSimulationBase";
-import { simulateEoq, fetchEoqCurve } from "@/services/api/eoq.api";
-import { useApiErrorToast } from "@/services/api/useApiErrorToast";
-import { useSimulationStore } from "@/store/simulations/useSimulationStore";
-import type { EoqResponse, EoqCurveResponse, EoqRequest } from "@/types/eoq-backend";
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { useSimulationBase } from '@/hooks/simulator/useSimulationBase';
+import { simulateEoq, fetchEoqCurve } from '@/services/api/eoq.api';
+import { useApiErrorToast } from '@/services/api/useApiErrorToast';
+import { useSimulationStore } from '@/store/simulations/useSimulationStore';
+import type {
+  EoqResponse,
+  EoqCurveResponse,
+  EoqRequest,
+} from '@/types/eoq-backend';
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+
+//This hook manages the state and logic for the EOQ sim, including running simulations,
+//fetching the cost curve data, and persisting the last simulation result in a 
+// global store(in the simulation store) for later retrieval.
 
 interface UseEoqSimulatorResult {
   simId: string;
@@ -31,15 +39,8 @@ export function useEoqSimulator(
   shopName: string,
   productName?: string
 ): UseEoqSimulatorResult {
-
-  const {
-    simId,
-    isRunning,
-    error,
-    setIsRunning,
-    setError,
-    sanitizeRequest,
-  } = useSimulationBase<EoqRequest>(shopId, "EOQ Simulator Error");
+  const { simId, isRunning, error, setIsRunning, setError, sanitizeRequest } =
+    useSimulationBase<EoqRequest>(shopId, 'EOQ Simulator Error');
 
   const [response, setResponse] = useState<EoqResponse | null>(null);
   const [curve, setCurve] = useState<EoqCurveResponse | null>(null);
@@ -62,7 +63,7 @@ export function useEoqSimulator(
 
   const run = async (request: EoqRequest) => {
     if (!request.productName) {
-      toast.error("Missing productName in request.");
+      toast.error('Missing productName in request.');
       return;
     }
 
@@ -73,12 +74,8 @@ export function useEoqSimulator(
       const sanitizedRequest = sanitizeRequest(request);
 
       // ───────── Core EOQ Simulation ─────────
-      const res = await simulateEoq(
-        sanitizedRequest,
-        simId,
-        shopName
-      );
-      console.log("response eoq "+ res);
+      const res = await simulateEoq(sanitizedRequest, simId, shopName);
+      console.log('response eoq ' + res);
       setLastRequest(request);
       setResponse(res);
 
@@ -90,16 +87,11 @@ export function useEoqSimulator(
       });
 
       // ───────── Cost Curve ─────────
-      const curveRes = await fetchEoqCurve(
-        sanitizedRequest,
-        simId,
-        shopName
-      );
+      const curveRes = await fetchEoqCurve(sanitizedRequest, simId, shopName);
 
       setCurve(curveRes);
-
     } catch (err) {
-      useApiErrorToast(error, "EOQ Simulator Error");
+      useApiErrorToast(error, 'EOQ Simulator Error');
       console.error(err);
       setError(err);
     } finally {

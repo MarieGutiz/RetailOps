@@ -1,6 +1,9 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/Button";
-import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/Button';
+import { AlertCircle } from 'lucide-react';
+
+//Component to show when no shop is selected in the dashboard pitacora.
+// It will guide the user to create a shop in order to proceed.
 
 type Props = {
   onCreateShop: () => void;
@@ -19,17 +22,14 @@ const NoShopSelectedAlert = ({ onCreateShop }: Props) => {
         <AlertDescription className="mt-1">
           To view the dashboard pitácora, you need to create a shop first.
           <div className="flex justify-center mt-2">
-        <Button
-            onClick={onCreateShop}
-            className="jbtn-success"
-            >
-            Create a Shop
+            <Button onClick={onCreateShop} className="jbtn-success">
+              Create a Shop
             </Button>
-        </div>
+          </div>
         </AlertDescription>
       </Alert>
     </div>
   );
-}
+};
 
-export default NoShopSelectedAlert
+export default NoShopSelectedAlert;

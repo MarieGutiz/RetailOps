@@ -1,9 +1,8 @@
-import { analyzeABC } from "@/services/api/abc.api";
-import type { UserPolicy } from "@/store/user/useUserStore";
-import type { AbcRequestDto, SimulationType } from "@/types/abc-backend";
-import type { Product } from "@/types/products";
-import type { SimulatorABCOutput } from "@/types/simulator";
-import { mapAbcResponseToTable } from "./mapper/abcBackendMapper";
+import type { UserPolicy } from '@/store/user/useUserStore';
+import type { AbcRequestDto, SimulationType } from '@/types/abc-backend';
+import type { Product } from '@/types/products';
+
+// Mapping function to conver bkend response to frontend table format
 
 export function toAbcRequest(
   products: Product[],
@@ -12,8 +11,12 @@ export function toAbcRequest(
 ): AbcRequestDto {
   return {
     mode,
-    username: user.username ?? "Guest",
-    items: products.map(p => ({
+    account:
+      user.userType === 'Registered' && user.id
+        ? { id: Number(user.id) }
+        : undefined,
+        
+    items: products.map((p) => ({
       product: {
         id: p.id ?? null,
         name: p.name,
@@ -29,22 +32,4 @@ export function toAbcRequest(
   };
 }
 
-//Will be called for the advanced
-
-export async function runBackendABC(
-  products: Product[],
-  user: UserPolicy,
-  mode: SimulationType
-): Promise<SimulatorABCOutput> {
-
-  const dto = toAbcRequest(products, user, mode);
-  const response = await analyzeABC(dto); // AbcResponseDto
-
-  const table = mapAbcResponseToTable(response);
-
-  return {
-    result: response, // keep raw backend response
-    table,            // frontend-ready
-  };
-}
 

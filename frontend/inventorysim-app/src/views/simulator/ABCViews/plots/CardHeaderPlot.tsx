@@ -1,17 +1,22 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-
-export type ViewMode = "all" | "top10" | "top20" | "top50" | "pareto"
+export type ViewMode = 'all' | 'top10' | 'top20' | 'top50' | 'pareto';
 
 const CardHeaderPlot = ({
   viewMode,
   setViewMode,
 }: {
-  viewMode: ViewMode
-  setViewMode: (value: ViewMode) => void
+  viewMode: ViewMode;
+  setViewMode: (value: ViewMode) => void;
 }) => {
   return (
-    <Select value={viewMode} onValueChange={setViewMode} >
+    <Select value={viewMode} onValueChange={setViewMode}>
       <SelectTrigger className="w-[180px] h-8 text-xs">
         <SelectValue placeholder="View range" />
       </SelectTrigger>
@@ -23,7 +28,7 @@ const CardHeaderPlot = ({
         <SelectItem value="pareto">Up to 80%</SelectItem>
       </SelectContent>
     </Select>
-  )
-}
+  );
+};
 
-export default CardHeaderPlot
+export default CardHeaderPlot;

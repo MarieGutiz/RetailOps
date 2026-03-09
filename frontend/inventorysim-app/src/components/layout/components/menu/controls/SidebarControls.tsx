@@ -1,15 +1,27 @@
 // SidebarControls.tsx
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Move, ChevronLeft, ChevronRight, PanelLeft, PanelRight } from "lucide-react";
-import {  ToggleGroup,} from "@/components/ui/toggle-group";
-import HeaderToggleButton from "../../headers/HeaderToggleButton";
-import { useIsMobile } from "@/hooks/layout/use-mobile";
+import { TooltipProvider } from '@/components/ui/tooltip';
+import {
+  Move,
+  ChevronLeft,
+  ChevronRight,
+  PanelLeft,
+  PanelRight,
+} from 'lucide-react';
+import { ToggleGroup } from '@/components/ui/toggle-group';
+import HeaderToggleButton from '../../headers/HeaderToggleButton';
+import { useIsMobile } from '@/hooks/layout/use-mobile';
+
+/**
+ * Sidebar control panel.
+ * Provides UI toggles for pinning (drag lock), collapsing/expanding,
+ * and switching the sidebar side, with a simplified control set on mobile.
+ */
 
 
 interface SidebarControlsProps {
   pinned: boolean;
   collapsed: boolean;
-  side: "left" | "right";
+  side: 'left' | 'right';
   onTogglePin: () => void;
   onToggleCollapse: () => void;
   onToggleSide: () => void;
@@ -24,18 +36,18 @@ export const SidebarControls = ({
   onToggleSide,
 }: SidebarControlsProps) => {
   // console.log("Rendering SidebarControls - pinned:", pinned, "collapsed:", collapsed, "side:", side);
-   const isMobile = useIsMobile();
-   
+  const isMobile = useIsMobile();
+
   return (
     <TooltipProvider>
-       <div
+      <div
         className={`flex items-start justify-center ${
-          collapsed ? "flex-row gap-1" : "flex-col gap-1"
+          collapsed ? 'flex-row gap-1' : 'flex-col gap-1'
         } w-full h-full overflow-visible`}
       >
         <ToggleGroup
           type="single"
-          className={`flex ${collapsed ? "flex-row gap-1" : "flex-col gap-1"}`}
+          className={`flex ${collapsed ? 'flex-row gap-1' : 'flex-col gap-1'}`}
         >
           {/* ----- MOBILE ONLY: SHOW ONLY SIDE TOGGLE ----- */}
           {isMobile ? (
@@ -45,10 +57,10 @@ export const SidebarControls = ({
                 active={true}
                 onClick={onToggleSide}
                 tooltip={`Move Sidebar to ${
-                  side === "left" ? "Right" : "Left"
+                  side === 'left' ? 'Right' : 'Left'
                 } side`}
               >
-                {side === "left" ? (
+                {side === 'left' ? (
                   <ChevronRight className="h-3.5 w-3.5" />
                 ) : (
                   <ChevronLeft className="h-3.5 w-3.5" />
@@ -74,7 +86,7 @@ export const SidebarControls = ({
                 value="collapsed"
                 active={collapsed}
                 onClick={onToggleCollapse}
-                tooltip={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+                tooltip={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
               >
                 {collapsed ? (
                   <PanelRight className="h-3.5 w-3.5" />
@@ -89,10 +101,10 @@ export const SidebarControls = ({
                 active={true}
                 onClick={onToggleSide}
                 tooltip={`Move Sidebar to ${
-                  side === "left" ? "Right" : "Left"
+                  side === 'left' ? 'Right' : 'Left'
                 } side`}
               >
-                {side === "left" ? (
+                {side === 'left' ? (
                   <ChevronRight className="h-3.5 w-3.5" />
                 ) : (
                   <ChevronLeft className="h-3.5 w-3.5" />
@@ -105,4 +117,3 @@ export const SidebarControls = ({
     </TooltipProvider>
   );
 };
-

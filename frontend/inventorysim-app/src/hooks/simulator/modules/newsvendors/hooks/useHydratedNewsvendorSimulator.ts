@@ -1,18 +1,24 @@
-
-import { useSimulationStore } from "@/store/simulations/useSimulationStore";
-import { useState, useEffect } from "react";
-import { useNewsvendorSimulator } from "./useNewsvendorSimulator";
+import { useSimulationStore } from '@/store/simulations/useSimulationStore';
+import { useState, useEffect } from 'react';
+import { useNewsvendorSimulator } from './useNewsvendorSimulator';
 
 /**
  * Hook that returns a simulator hydrated with previous simulation results if they exist.
  * Also exposes the last simulated product name.
  */
 
-export function useHydratedNewsvendorSimulator(shopId: string, shopName: string) {
+export function useHydratedNewsvendorSimulator(
+  shopId: string,
+  shopName: string
+) {
   const simulator = useNewsvendorSimulator(shopId, shopName);
-  const newsvendorSimulations = useSimulationStore((s) => s.newsvendorSimulations);
+  const newsvendorSimulations = useSimulationStore(
+    (s) => s.newsvendorSimulations
+  );
 
-  const [lastSimulatedProduct, setLastSimulatedProduct] = useState<string | null>(null);
+  const [lastSimulatedProduct, setLastSimulatedProduct] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     const shopSims = newsvendorSimulations[shopId];
@@ -23,10 +29,10 @@ export function useHydratedNewsvendorSimulator(shopId: string, shopName: string)
     if (entries.length === 0) return;
 
     // Sort by createdAt descending
-    const [latestProduct, latestSim] = entries
-      .sort(
-        ([, a], [, b]) =>
-           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+    const [latestProduct, latestSim] = entries.sort(
+      ([, a], [, b]) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0];
 
     setLastSimulatedProduct(latestProduct);
 

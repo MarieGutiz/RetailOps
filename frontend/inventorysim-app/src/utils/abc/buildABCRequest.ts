@@ -1,6 +1,6 @@
-import type { UserPolicy } from "@/store/user/useUserStore";
-import type { AbcRequestDto, AbcItemDto } from "@/types/abc-backend";
-import type { AbcFormValues } from "@/views/simulator/ABCViews/AbcForms/props/Abc.schema";
+import type { UserPolicy } from '@/store/user/useUserStore';
+import type { AbcRequestDto, AbcItemDto } from '@/types/abc-backend';
+import type { AbcFormValues } from '@/views/simulator/ABCViews/AbcForms/props/Abc.schema';
 
 export function buildAbcRequest(
   values: AbcFormValues,
@@ -23,27 +23,24 @@ export function buildAbcRequest(
         unitPrice: item.product.unitPrice ?? 0,
         unitCost: item.product.unitCost ?? 0,
       },
-      
+
       salesValue: item.salesValue,
       demandFrequency: item.demandFrequency,
     }));
 
   if (items.length === 0) {
-    throw new Error("No valid items to submit.");
+    throw new Error('No valid items to submit.');
   }
 
   return {
     items,
     mode: values.mode,
-    saveToHistory: user.userType === "Registered"
-      ? values.saveToHistory
-      : false,
+    saveToHistory:
+      user.userType === 'Registered' ? values.saveToHistory : false,
 
     account:
-      user.userType === "Registered" && user.id
+      user.userType === 'Registered' && user.id
         ? { id: Number(user.id) }
-        : undefined
-
-  
+        : undefined,
   };
 }

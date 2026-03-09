@@ -1,13 +1,9 @@
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
-const steps = [
-  "Create shop",
-  "Import products",
-  "Manage inventory",
-];
+const steps = ['Create shop', 'Import products', 'Manage inventory'];
 
-const ShopCreationStepper = ({step}: {step: number}) => {
+const ShopCreationStepper = ({ step }: { step: number }) => {
   return (
     <div className="flex items-center gap-4 mb-6">
       {steps.map((label, index) => {
@@ -16,7 +12,7 @@ const ShopCreationStepper = ({step}: {step: number}) => {
         return (
           <div key={label} className="flex items-center gap-3">
             <Badge
-              variant={current ? "default" : "secondary"}
+              variant={current ? 'default' : 'secondary'}
               className="rounded-full px-3 py-1"
             >
               {index + 1}
@@ -24,7 +20,7 @@ const ShopCreationStepper = ({step}: {step: number}) => {
 
             <span
               className={`text-sm ${
-                current ? "font-semibold" : "text-muted-foreground"
+                current ? 'font-semibold' : 'text-muted-foreground'
               }`}
             >
               {label}
@@ -35,7 +31,7 @@ const ShopCreationStepper = ({step}: {step: number}) => {
         );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default ShopCreationStepper
+export default ShopCreationStepper;

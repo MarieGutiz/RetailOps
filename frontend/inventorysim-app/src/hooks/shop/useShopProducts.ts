@@ -1,21 +1,28 @@
 // hooks/useShopProducts.ts
-import { useApiErrorToast } from "@/services/api/useApiErrorToast";
-import { useShopStore } from "@/store/shop/useShopStore";
-import { type ShopId } from "@/types/shop";
-import { useEffect, useState } from "react";
-import { useShallow } from "zustand/react/shallow";
+import { useApiErrorToast } from '@/services/api/useApiErrorToast';
+import { useShopStore } from '@/store/shop/useShopStore';
+import { type ShopId } from '@/types/shop';
+import { useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+
+//Hook to manage shop prdcts, inventory and analytics data, includng loading and error states.
+//It also hydrates data by calling the bckend if needed based on the shop lifecycle and provided options.
 
 interface UseShopProductsOptions {
   enabled?: boolean;
-  simulationType?: "classic" | "multi";
-  forceBackend?: boolean; 
+  simulationType?: 'classic' | 'multi';
+  forceBackend?: boolean;
 }
 
 export function useShopProducts(
- id: ShopId | null,
-options?: UseShopProductsOptions
+  id: ShopId | null,
+  options?: UseShopProductsOptions
 ) {
-  const { enabled = true, simulationType = "classic", forceBackend = false } = options ?? {};
+  const {
+    enabled = true,
+    simulationType = 'classic',
+    forceBackend = false,
+  } = options ?? {};
 
   const [localError, setLocalError] = useState<unknown>(null);
 
@@ -32,7 +39,7 @@ options?: UseShopProductsOptions
   const analytics = shopSlice?.analytics;
   const abc = shopSlice?.abc ?? { loading: false };
   const hydrated = shopSlice?.hydrated ?? false;
-  const lifecycle = shopSlice?.lifecycle ?? "CREATED";
+  const lifecycle = shopSlice?.lifecycle ?? 'CREATED';
 
   useEffect(() => {
     if (!id || !enabled || !shopSlice) return;
@@ -41,7 +48,7 @@ options?: UseShopProductsOptions
     (async () => {
       try {
         await runABC({
-          executionMode: "BACKEND",
+          executionMode: 'BACKEND',
           simulationType,
           shopId: id,
         });
@@ -52,10 +59,8 @@ options?: UseShopProductsOptions
     })();
   }, [id, enabled, hydrated, forceBackend, simulationType, runABC]);
 
-
   // ------------------- Show toast on error -------------------
-    useApiErrorToast(localError ?? abc.error, id ? `Shop: ${id}` : undefined);
-
+  useApiErrorToast(localError ?? abc.error, id ? `Shop: ${id}` : undefined);
 
   return {
     products,
@@ -68,7 +73,7 @@ options?: UseShopProductsOptions
     loading: enabled && abc.loading,
     error: localError ?? abc.error,
     hydrated,
-    lifecycle
+    lifecycle,
   };
 }
 

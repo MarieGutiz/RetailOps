@@ -1,25 +1,22 @@
-import api from "@/services/api/api";
-import type { Product } from "@/types/products";
-import { saveToStorage } from "@/utils/storage";
-import toast from "react-hot-toast";
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware"
+import type { Product } from '@/types/products';
+import { saveToStorage } from '@/utils/storage';
+import toast from 'react-hot-toast';
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import { isTokenValid } from "@/utils/auth";
+import { isTokenValid } from '@/utils/auth';
 
-
- type UserShopMeta = {
+type UserShopMeta = {
   id: string;
   name: string;
   createdAt: number;
   lastUpdated: number;
   lastSavedAt: number;
-  kind: "USER"
+  kind: 'USER';
 };
 
-
 interface ProductState {
-  shopMeta: UserShopMeta | null;//can be null until a shop is created
+  shopMeta: UserShopMeta | null; //can be null until a shop is created
 
   products: Product[];
   loading: boolean;
@@ -30,15 +27,19 @@ interface ProductState {
   clearProducts: () => void;
   syncToBackend: () => Promise<void>;
 
-
   // Auth awareness (kept intentionally)
   isAuthenticated: boolean;
   setAuthenticated: (value: boolean) => void;
   initAuth: () => void;
 
   // Shop metadata
-  initForShop: (shop: { id: string; name: string }) => void
-  initSimulationForShop: (shop: { id: string; name: string; products?: Product[] , kind?:string}) => void
+  initForShop: (shop: { id: string; name: string }) => void;
+  initSimulationForShop: (shop: {
+    id: string;
+    name: string;
+    products?: Product[];
+    kind?: string;
+  }) => void;
 
   renameShop: (name: string) => void;
   markSaved: () => void;
@@ -46,10 +47,9 @@ interface ProductState {
   // Loading
   setLoading: (value: boolean) => void;
   //By Shop
-  
+
   productsByShopId: (shopId: string) => Product[];
   clearProductsByShop: (shopId: string) => void;
-
 }
 /**
  * Zustand store for managing product state and authentication status
@@ -67,14 +67,14 @@ export const useProductStore = create<ProductState>()(
       },
 
       initAuth: () => {
-        const token = saveToStorage.getItem("token");
+        const token = saveToStorage.getItem('token');
         set({ isAuthenticated: isTokenValid(token) });
       },
 
       addProduct: (product: Product) => {
         const { products, isAuthenticated, shopMeta } = get();
         if (!shopMeta) {
-          toast.error("Please create a shop before adding products.");
+          toast.error('Please create a shop before adding products.');
           return;
         }
 
@@ -83,7 +83,7 @@ export const useProductStore = create<ProductState>()(
           // alert("Guest users can only add up to 10 products.");
 
           toast.error(`Guest users can only add up to 10 products.\n
-             You can get register to have full experience`)
+             You can get register to have full experience`);
           return;
         }
 
@@ -98,7 +98,6 @@ export const useProductStore = create<ProductState>()(
             ...shopMeta,
             lastUpdated: Date.now(),
           },
-
         });
       },
 
@@ -112,7 +111,6 @@ export const useProductStore = create<ProductState>()(
             ...shopMeta,
             lastUpdated: Date.now(),
           },
-
         }));
       },
 
@@ -133,7 +131,7 @@ export const useProductStore = create<ProductState>()(
         //   console.warn("ProductStore cannot be initialized for AUTOGEN shops");
         //   return;
         // } //Not anymore
-        const now = Date.now()
+        const now = Date.now();
 
         set({
           shopMeta: {
@@ -142,13 +140,13 @@ export const useProductStore = create<ProductState>()(
             createdAt: now,
             lastUpdated: now,
             lastSavedAt: now,
-            kind: "USER"
+            kind: 'USER',
           },
           products: [],
-        })
+        });
       },
 
-       initSimulationForShop: (shop) => {
+      initSimulationForShop: (shop) => {
         const now = Date.now();
         set({
           shopMeta: {
@@ -157,7 +155,7 @@ export const useProductStore = create<ProductState>()(
             createdAt: now,
             lastUpdated: now,
             lastSavedAt: now,
-            kind: "USER",
+            kind: 'USER',
           },
           products: shop.products ?? [],
         });
@@ -187,32 +185,30 @@ export const useProductStore = create<ProductState>()(
         });
       },
 
-
       clearProductsByShop: (shopId: string) => {
         const { shopMeta } = get();
         if (!shopMeta || shopMeta.id !== shopId) return;
 
         set({ products: [], shopMeta: null });
       },
-      
-        productsByShopId: (shopId: string) => {
+
+      productsByShopId: (shopId: string) => {
         const { shopMeta, products } = get();
         if (!shopMeta || shopMeta.id !== shopId) return [];
         return products;
       },
-      
 
       syncToBackend: async () => {
         const { products, isAuthenticated, shopMeta } = get();
         if (!isAuthenticated || products.length === 0 || !shopMeta) return;
 
         try {
-         // await api.post("/products/bulk", products);//test end point
+          // await api.post("/products/bulk", products);//test end point
           get().markSaved();
 
-          console.log("Products synced to backend");
+          console.log('Products synced to backend');
         } catch (err) {
-          console.error("Failed to sync:", err);
+          console.error('Failed to sync:', err);
         }
       },
       setAuthenticated: (value: boolean) => {
@@ -220,7 +216,7 @@ export const useProductStore = create<ProductState>()(
       },
     }),
     {
-      name: "product-storage", // key for localStorage
+      name: 'product-storage', // key for localStorage
       storage: createJSONStorage(() => ({
         getItem: saveToStorage.getItem,
         setItem: saveToStorage.setItem,
@@ -230,6 +226,6 @@ export const useProductStore = create<ProductState>()(
   )
 );
 
-if (import.meta.env.MODE === "development") {
-  mountStoreDevtool("ProductStore", useProductStore);
+if (import.meta.env.MODE === 'development') {
+  mountStoreDevtool('ProductStore', useProductStore);
 }

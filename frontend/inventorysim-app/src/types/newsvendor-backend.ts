@@ -1,5 +1,4 @@
-
-export type NewsvendorMode = "CLASSIC" | "ADVANCED";
+export type NewsvendorMode = 'CLASSIC' | 'ADVANCED';
 
 export interface NewsvendorRequest {
   // productId: string;
@@ -23,8 +22,6 @@ export interface NewsvendorRequest {
   account?: {
     id: number;
   };
-
-
 }
 
 export interface NewsvendorResponse {
@@ -37,7 +34,6 @@ export interface NewsvendorResponse {
   serviceLevel: number;
 }
 
-
 export interface NormalPdfRequest {
   mean: number;
   stdDev: number;
@@ -48,15 +44,13 @@ export interface NormalPdfRequest {
   step: number;
 }
 
-
 export interface NewsvendorMarkersRequest {
-  simId: string,
+  simId: string;
   meanDemand: number;
   orderQuantity: number;
 
   criticalRatio: number;
 }
-
 
 export interface NewsvendorMarkers {
   meanDemand: number;
@@ -64,9 +58,8 @@ export interface NewsvendorMarkers {
   criticalRatio: number;
 }
 
-
 export interface ProfitDistributionResult {
-  histogram: Record<number, number>;  // profit bucket -> frequency
+  histogram: Record<number, number>; // profit bucket -> frequency
   expectedProfit: number;
   variance: number;
   probabilityOfLoss: number;

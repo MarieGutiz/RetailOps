@@ -1,36 +1,35 @@
-import { CardFooter } from "@/components/ui/card";
-import { useABCColors, impactLabel } from "@/hooks/simulator/modules/abc/hooks/useABCInput";
-import  { cn } from "@/lib/utils";
-import type { ParetoPoint } from "@/types/abc";
-import { TrendingUp } from "lucide-react";
+import { CardFooter } from '@/components/ui/card';
+import {
+  useABCColors,
+  impactLabel,
+} from '@/hooks/simulator/modules/abc/hooks/useABCInput';
+import { cn } from '@/lib/utils';
+import type { ParetoPoint } from '@/types/abc';
+import { TrendingUp } from 'lucide-react';
 
 const ParetoPlotFooter = ({
   hoveredItem,
   cutoffCount,
   hoveredCategory,
-  cutoffPct
+  cutoffPct,
 }: {
-  hoveredItem: ParetoPoint | null
-  cutoffCount: number
-  hoveredCategory: "A" | "B" | "C" | null
-  cutoffPct: number
+  hoveredItem: ParetoPoint | null;
+  cutoffCount: number;
+  hoveredCategory: 'A' | 'B' | 'C' | null;
+  cutoffPct: number;
 }) => {
-  const { colors } = useABCColors()
+  const { colors } = useABCColors();
 
   const isDimmed =
-    hoveredCategory &&
-    hoveredItem &&
-    hoveredCategory !== hoveredItem.category
+    hoveredCategory && hoveredItem && hoveredCategory !== hoveredItem.category;
 
-    const isBeforeCutoff =
-   hoveredItem && hoveredItem.cumulativePct <= cutoffPct
-
+  const isBeforeCutoff = hoveredItem && hoveredItem.cumulativePct <= cutoffPct;
 
   return (
     <CardFooter
       className={cn(
-        "flex-col items-start gap-2 text-sm transition-opacity",
-        isDimmed && "opacity-40"
+        'flex-col items-start gap-2 text-sm transition-opacity',
+        isDimmed && 'opacity-40'
       )}
     >
       {hoveredItem ? (
@@ -40,7 +39,7 @@ const ParetoPlotFooter = ({
             <span className="font-semibold">{hoveredItem.name}</span>
             <span
               className={cn(
-                "rounded px-2 py-0.5 text-xs font-semibold",
+                'rounded px-2 py-0.5 text-xs font-semibold',
                 colors[hoveredItem.category].bg
               )}
             >
@@ -50,28 +49,24 @@ const ParetoPlotFooter = ({
 
           {/* Metrics */}
           <div className="text-muted-foreground leading-tight">
-            Class{" "}
-            <span className="font-medium">
-              {hoveredItem.category}
-            </span>{" "}
-            contributes{" "}
+            Class <span className="font-medium">{hoveredItem.category}</span>{' '}
+            contributes{' '}
             <span className="font-medium">
               {hoveredItem.categoryContributionPct?.toFixed(1)}%
-            </span>{" "}
+            </span>{' '}
             of total value
             <span className="mx-1">•</span>
-            lies{" "}
+            lies{' '}
             <span
               className={cn(
-                "font-medium",
-                isBeforeCutoff ? "text-emerald-600" : "text-muted-foreground"
+                'font-medium',
+                isBeforeCutoff ? 'text-emerald-600' : 'text-muted-foreground'
               )}
             >
-              {isBeforeCutoff ? "within" : "beyond"}
-            </span>{" "}
+              {isBeforeCutoff ? 'within' : 'beyond'}
+            </span>{' '}
             the {cutoffPct}% cutoff
           </div>
-
         </>
       ) : (
         <>
@@ -90,8 +85,7 @@ const ParetoPlotFooter = ({
         Ordered by product contribution to total inventory value
       </div>
     </CardFooter>
+  );
+};
 
-  )
-}
-
-export default ParetoPlotFooter
+export default ParetoPlotFooter;

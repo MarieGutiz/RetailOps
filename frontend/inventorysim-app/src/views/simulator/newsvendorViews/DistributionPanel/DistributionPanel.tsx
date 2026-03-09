@@ -1,25 +1,22 @@
-import type { NewsvendorRequest, NewsvendorResponse } from "@/types/newsvendor-backend";
-import DemandPdfChart from "./DemandPdfChart";
-import ProfitCurveChart from "./ProfitCurveChart";
-import ProfitDistributionChart from "./ProfitDistributionChart";
-import { Separator } from "@/components/ui/separator";
-import ChartCard from "@/views/helpers/ChartCard";
-import NewsvendorOverview from "./NewsvendorOverview";
+import type {
+  NewsvendorRequest,
+  NewsvendorResponse,
+} from '@/types/newsvendor-backend';
+import DemandPdfChart from './DemandPdfChart';
+import ProfitCurveChart from './ProfitCurveChart';
+import ProfitDistributionChart from './ProfitDistributionChart';
+import { Separator } from '@/components/ui/separator';
+import ChartCard from '@/views/helpers/ChartCard';
+import NewsvendorOverview from './NewsvendorOverview';
 
 interface Props {
   response: NewsvendorResponse;
   request: NewsvendorRequest;
   simId: string;
   shopName: string;
-
 }
 
-const DistributionPanel = ({
-    response,
-    request,
-    simId,
-    shopName
-}: Props) => {
+const DistributionPanel = ({ response, request, simId, shopName }: Props) => {
   const optimalQ = response.optimalOrderQuantity;
 
   return (
@@ -39,7 +36,12 @@ const DistributionPanel = ({
         title="Profit Curve"
         description="Shows how profit varies with order quantity. The red line indicates the optimal order quantity."
       >
-        <ProfitCurveChart request={request} simId={simId} shopName={shopName} optimalQ={optimalQ} />
+        <ProfitCurveChart
+          request={request}
+          simId={simId}
+          shopName={shopName}
+          optimalQ={optimalQ}
+        />
       </ChartCard>
 
       <ChartCard
@@ -61,16 +63,15 @@ const DistributionPanel = ({
         title="Profit Distribution"
         description="Displays the expected profit distribution for the optimal order quantity. Useful to understand variability and risk."
       >
-        <ProfitDistributionChart 
-         request={request} 
-         optimalQ={optimalQ} 
-         simId={simId} 
-         shopName={shopName} />
+        <ProfitDistributionChart
+          request={request}
+          optimalQ={optimalQ}
+          simId={simId}
+          shopName={shopName}
+        />
       </ChartCard>
     </div>
   );
+};
 
-
-}
-
-export default DistributionPanel
+export default DistributionPanel;

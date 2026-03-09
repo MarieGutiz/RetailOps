@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 interface AnalyticsEngineConfig<TLog> {
   logs: TLog[];
@@ -23,12 +23,9 @@ export function useAnalyticsEngine<TLog>({
   logs,
   computeDifference,
 }: AnalyticsEngineConfig<TLog>) {
-  const [results, setResults] = useState<
-    AnalyticsResult<TLog>[]
-  >([]);
+  const [results, setResults] = useState<AnalyticsResult<TLog>[]>([]);
 
-  const [selectedLog, setSelectedLog] =
-    useState<TLog | null>(null);
+  const [selectedLog, setSelectedLog] = useState<TLog | null>(null);
 
   const runAnalysis = () => {
     if (!logs.length) return;
@@ -38,9 +35,7 @@ export function useAnalyticsEngine<TLog>({
       difference: computeDifference(log),
     }));
 
-    computed.sort(
-      (a, b) => a.difference - b.difference
-    );
+    computed.sort((a, b) => a.difference - b.difference);
 
     setResults(computed);
   };

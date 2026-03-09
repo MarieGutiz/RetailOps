@@ -1,17 +1,23 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { formatInt } from "../forms/hooks/useCurrency";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { formatInt } from '../forms/hooks/useCurrency';
 
 interface ResultsSummaryProps {
   result: {
-    optimalOrderQuantity: number
-    expectedProfit: number
-    serviceLevel: number
+    optimalOrderQuantity: number;
+    expectedProfit: number;
+    serviceLevel: number;
   };
   format: (value: number) => string;
 }
 
-const ResultsSummary = ({result, format} : ResultsSummaryProps) => {
-      return (
+const ResultsSummary = ({ result, format }: ResultsSummaryProps) => {
+  return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Recommended Order Quantity</CardTitle>
@@ -45,8 +51,6 @@ const ResultsSummary = ({result, format} : ResultsSummaryProps) => {
       </CardContent>
     </Card>
   );
+};
 
-
-}
-
-export default ResultsSummary
+export default ResultsSummary;

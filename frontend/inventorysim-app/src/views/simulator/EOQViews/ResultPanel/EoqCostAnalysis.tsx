@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { EoqResponse } from "@/types/eoq-backend";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { EoqResponse } from '@/types/eoq-backend';
 
 interface Props {
   result: EoqResponse;
@@ -35,7 +35,6 @@ const EoqCostAnalysis: React.FC<Props> = ({ result, format }) => {
       </CardContent>
     </Card>
   );
+};
 
-}
-
-export default EoqCostAnalysis
+export default EoqCostAnalysis;

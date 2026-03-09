@@ -1,4 +1,4 @@
-import { saveToStorage } from "./storage";
+import { saveToStorage } from './storage';
 
 export function getOrCreateSimId(shopId: string): string {
   const key = `simId:${shopId}`;
@@ -11,7 +11,6 @@ export function getOrCreateSimId(shopId: string): string {
 
   return simId;
 }
-
 
 export function resetSimId(shopId: string) {
   saveToStorage.removeItem(`simId:${shopId}`);

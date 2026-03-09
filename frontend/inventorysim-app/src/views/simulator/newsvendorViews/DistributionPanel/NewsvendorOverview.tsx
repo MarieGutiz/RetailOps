@@ -1,7 +1,12 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
-type ProbabilityKind = "criticalRatio" | "serviceLevel";
+type ProbabilityKind = 'criticalRatio' | 'serviceLevel';
 
 interface OverviewProps {
   optimalQ: number;
@@ -18,9 +23,9 @@ const NewsvendorOverview = ({
   probabilityValue,
   probabilityKind,
   stdDeviation,
-  label
+  label,
 }: OverviewProps) => {
-  const isCR = probabilityKind === "criticalRatio";
+  const isCR = probabilityKind === 'criticalRatio';
 
   return (
     <div className="space-y-3">
@@ -32,16 +37,13 @@ const NewsvendorOverview = ({
 
       <TooltipProvider>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
           {/* Optimal Q */}
           <Tooltip>
             <TooltipTrigger asChild>
               <Card className="cursor-default hover:shadow-md transition">
                 <CardContent className="text-center p-4">
                   <h4 className="text-gray-500 text-sm">Order Quantity (Q)</h4>
-                  <p className="text-xl font-bold">
-                    {Math.round(optimalQ)}
-                  </p>
+                  <p className="text-xl font-bold">{Math.round(optimalQ)}</p>
                 </CardContent>
               </Card>
             </TooltipTrigger>
@@ -62,9 +64,7 @@ const NewsvendorOverview = ({
                 </CardContent>
               </Card>
             </TooltipTrigger>
-            <TooltipContent>
-              Expected profit under this policy
-            </TooltipContent>
+            <TooltipContent>Expected profit under this policy</TooltipContent>
           </Tooltip>
 
           {/* Probability Block */}
@@ -73,7 +73,7 @@ const NewsvendorOverview = ({
               <Card className="cursor-default hover:shadow-md transition">
                 <CardContent className="text-center p-4">
                   <h4 className="text-gray-500 text-sm">
-                    {isCR ? "Critical Ratio" : "Target Service Level"}
+                    {isCR ? 'Critical Ratio' : 'Target Service Level'}
                   </h4>
                   <p className="text-xl font-bold">
                     {probabilityValue.toFixed(4)}
@@ -83,8 +83,8 @@ const NewsvendorOverview = ({
             </TooltipTrigger>
             <TooltipContent>
               {isCR
-                ? "Economic fractile: Cu / (Cu + Co). Determines optimal service probability."
-                : "User-defined service probability α used in inverse CDF."}
+                ? 'Economic fractile: Cu / (Cu + Co). Determines optimal service probability.'
+                : 'User-defined service probability α used in inverse CDF.'}
             </TooltipContent>
           </Tooltip>
 
@@ -94,23 +94,16 @@ const NewsvendorOverview = ({
               <Card className="cursor-default hover:shadow-md transition">
                 <CardContent className="text-center p-4">
                   <h4 className="text-gray-500 text-sm">Demand Std Dev</h4>
-                  <p className="text-xl font-bold">
-                    {stdDeviation}
-                  </p>
+                  <p className="text-xl font-bold">{stdDeviation}</p>
                 </CardContent>
               </Card>
             </TooltipTrigger>
-            <TooltipContent>
-              Demand variability parameter σ
-            </TooltipContent>
+            <TooltipContent>Demand variability parameter σ</TooltipContent>
           </Tooltip>
-
         </div>
       </TooltipProvider>
     </div>
-
   );
+};
 
-}
-
-export default NewsvendorOverview
+export default NewsvendorOverview;

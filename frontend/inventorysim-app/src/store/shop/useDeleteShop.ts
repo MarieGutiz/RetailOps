@@ -1,12 +1,12 @@
-import { shopId } from "@/types/shop";
-import { useInventoryStore } from "../inventory/useInventoryStore";
-import { useProductStore } from "../inventory/useProductStore";
-import { useShopStore } from "./useShopStore";
-import { toast } from "sonner";
+import { shopId } from '@/types/shop';
+import { useInventoryStore } from '../inventory/useInventoryStore';
+import { useProductStore } from '../inventory/useProductStore';
+import { useShopStore } from './useShopStore';
+import { toast } from 'sonner';
 
 export const useDeleteShop = () => {
   const { deleteUserShop, shops } = useShopStore();
-  
+
   const handleDeleteUserShop = (id: string, label: string) => {
     const shId = shopId(id);
 
@@ -22,4 +22,3 @@ export const useDeleteShop = () => {
 
   return { handleDeleteUserShop, shops };
 };
-

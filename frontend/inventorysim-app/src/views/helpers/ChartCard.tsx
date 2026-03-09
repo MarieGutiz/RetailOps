@@ -1,6 +1,12 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Info } from "lucide-react";
-import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Info } from 'lucide-react';
+import React from 'react';
 
 interface ChartCardProps {
   title: string;
@@ -25,16 +31,13 @@ const ChartCard: React.FC<ChartCardProps> = ({
           className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
           title={description}
         >
-          <Info size={18} className="jbtn-success"/>
+          <Info size={18} className="jbtn-success" />
         </span>
       </CardHeader>
 
-      <CardContent>
-        {children}
-      </CardContent>
+      <CardContent>{children}</CardContent>
     </Card>
   );
-
 };
 
-export default ChartCard
+export default ChartCard;

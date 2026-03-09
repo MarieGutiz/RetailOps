@@ -1,20 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import ABCSummaryCard from "./ABCSummaryCard"
-import type { ABCDelta, ABCSummary } from "@/types/abc";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import ABCSummaryCard from './ABCSummaryCard';
+import type { ABCDelta, ABCSummary } from '@/types/abc';
 
 const ABCSummaryView = ({
   summary,
   deltas,
   hoveredCategory,
-  onHover
+  onHover,
 }: {
-  summary: ABCSummary | null
-  deltas?: ABCDelta | null
-  hoveredCategory: "A" | "B" | "C" | null;
-  onHover: (category: "A" | "B" | "C" | null) => void;
+  summary: ABCSummary | null;
+  deltas?: ABCDelta | null;
+  hoveredCategory: 'A' | 'B' | 'C' | null;
+  onHover: (category: 'A' | 'B' | 'C' | null) => void;
 }) => {
-
-  if (!summary) return null
+  if (!summary) return null;
 
   return (
     <Card className="shadow-sm overflow-hidden">
@@ -51,7 +50,7 @@ const ABCSummaryView = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ABCSummaryView
+export default ABCSummaryView;

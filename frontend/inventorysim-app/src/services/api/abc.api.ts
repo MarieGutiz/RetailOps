@@ -1,11 +1,11 @@
-import type { AbcRequestDto, AbcResponseDto } from "@/types/abc-backend";
-import api from "./api";
+import type { AbcRequestDto, AbcResponseDto } from '@/types/abc-backend';
+import api from './api';
 
 /**
  * Base path for simulator module
  * Matches backend: /api/simulator/abc
  */
-const SIMULATOR_BASE = "/simulator";
+const SIMULATOR_BASE = '/simulator';
 const ABC_BASE = `${SIMULATOR_BASE}/abc`;
 
 /**
@@ -21,17 +21,13 @@ export const simulateAbc = async (
   shopName: string
 ): Promise<AbcResponseDto> => {
   try {
-    const response = await api.post(
-      ABC_BASE,
-      data,
-      {
-        params: { simId, shopName },
-      }
-    );
+    const response = await api.post(ABC_BASE, data, {
+      params: { simId, shopName },
+    });
 
     return response.data;
   } catch (error) {
-    console.error("Error running ABC analysis:", error);
+    console.error('Error running ABC analysis:', error);
     throw error;
   }
 };

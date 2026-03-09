@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
 interface EOQParams {
-  demand: number;        // D
-  orderingCost: number;  // S
-  holdingCost: number;   // H
+  demand: number; // D
+  orderingCost: number; // S
+  holdingCost: number; // H
 }
 
 export interface EOQAnalyticsResult {
@@ -20,7 +20,6 @@ export const useEOQAnalytics = ({
   orderingCost,
   holdingCost,
 }: EOQParams): EOQAnalyticsResult => {
-
   return useMemo(() => {
     if (demand <= 0 || orderingCost <= 0 || holdingCost <= 0) {
       return {

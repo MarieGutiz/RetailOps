@@ -1,6 +1,7 @@
-import { useNotificationStore } from "@/store/notifications/useNotificationStore";
-import { BellIcon } from "lucide-react";
+import { useNotificationStore } from '@/store/notifications/useNotificationStore';
+import { BellIcon } from 'lucide-react';
 
+//Handles the notifaction bell icon for the sidebar menu user area
 const UserNotificationsBell = () => {
   const unread = useNotificationStore(
     (state) => state.notifications.filter((n) => !n.read).length
@@ -9,9 +10,7 @@ const UserNotificationsBell = () => {
   return (
     <div className="relative mr-2">
       <BellIcon
-        className={`h-4 w-4 transition ${
-          unread > 0 ? "text-yellow-500" : ""
-        }`}
+        className={`h-4 w-4 transition ${unread > 0 ? 'text-yellow-500' : ''}`}
       />
 
       {unread > 0 && (
@@ -26,4 +25,4 @@ const UserNotificationsBell = () => {
   );
 };
 
-export default UserNotificationsBell
+export default UserNotificationsBell;

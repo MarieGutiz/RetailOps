@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { Search, X } from "lucide-react";
-import UserMenu from "../menu/user/UserMenu";
-import Brand from "./Brand";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { Search, X } from 'lucide-react';
+import UserMenu from '../menu/user/UserMenu';
+import Brand from './Brand';
+import { useNavigate } from 'react-router-dom';
 
-export default function TopHeader({logo}: {logo?:boolean}) {
+//Top bar header component, has logo and search input
+
+export default function TopHeader({ logo }: { logo?: boolean }) {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -17,84 +19,79 @@ export default function TopHeader({logo}: {logo?:boolean}) {
 
   //show logo if needed
   return (
-   <div
-   className={`fixed top-0 left-0 right-0 z-50 ${logo ? "h-11" : "h-10"} px-3 sm:px-5
+    <div
+      className={`fixed top-0 left-0 right-0 z-50 ${logo ? 'h-11' : 'h-10'} px-3 sm:px-5
               flex items-center justify-between
               bg-[#001e2b] border-b shadow-sm`}
->
-    {/* ------------ LEFT SECTION ------------ */}
-    <div className="flex items-center gap-1 sm:gap-2 flex-none">
-
-      {/* MOBILE SEARCH ICON */}
-      {!searchOpen && (
-        <button
-        className="sm:hidden p-1.5 flex items-center justify-center 
+    >
+      {/* ------------ LEFT SECTION ------------ */}
+      <div className="flex items-center gap-1 sm:gap-2 flex-none">
+        {/* MOBILE SEARCH ICON */}
+        {!searchOpen && (
+          <button
+            className="sm:hidden p-1.5 flex items-center justify-center 
               jbtn-warning-sm rounded-md text-white"
-        onClick={() => setSearchOpen(true)}
-      >
-        <Search className="h-4 w-4" />
-      </button>
-      )}
+            onClick={() => setSearchOpen(true)}
+          >
+            <Search className="h-4 w-4" />
+          </button>
+        )}
 
-      {/* MOBILE EXPANDED SEARCH */}
-      {searchOpen && (
-        <div className="relative sm:hidden">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+        {/* MOBILE EXPANDED SEARCH */}
+        {searchOpen && (
+          <div className="relative sm:hidden">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
 
-          <input
-            type="text"
-            id="mobile-search"
-            name="mobile-search"
-            placeholder="Search..."
-            className="pl-7 pr-8 py-[5px] rounded-md
+            <input
+              type="text"
+              id="mobile-search"
+              name="mobile-search"
+              placeholder="Search..."
+              className="pl-7 pr-8 py-[5px] rounded-md
                       bg-white/90 border border-gray-300
                       text-gray-800 placeholder:text-gray-500
                       focus:ring-2 focus:ring-blue-400
                       w-[180px] text-sm transition-all"
-            autoFocus
-            onKeyDown={(e) => {
-                if (e.key === "Enter")
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter')
                   handleSearch((e.target as HTMLInputElement).value);
               }}
+            />
 
-          />
-
-          <button
-            className="absolute right-0 top-1/2 -translate-y-1/2 p-1
+            <button
+              className="absolute right-0 top-1/2 -translate-y-1/2 p-1
                       jbtn-warning-sm rounded-md"
-            onClick={() => setSearchOpen(false)}
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      )}
-      {/* ADD LOGO IF TRUE */}
+              onClick={() => setSearchOpen(false)}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+        {/* ADD LOGO IF TRUE */}
         {logo && (
-              <div
-        className="
+          <div
+            className="
           relative 
           sm:static 
           w-full sm:w-auto 
           flex justify-center sm:justify-start
         "
-      >
-        <a
-          href="/"
-          className="flex items-center gap-2"
-        >
-          <Brand
-            asChild
-            variant="header"
-            imgSrc="src/assets/retailsOps.png" // header logo img
-            imgAlt="@RetailOps Sim"
-            /* keep className empty so your parent keeps layout control */
-          />
-        </a>
-      </div>
-            )}      
+          >
+            <a href="/" className="flex items-center gap-2">
+              <Brand
+                asChild
+                variant="header"
+                imgSrc="src/assets/retailsOps.png" // header logo img
+                imgAlt="@RetailOps Sim"
+                /* keep className empty so your parent keeps layout control */
+              />
+            </a>
+          </div>
+        )}
 
-      {/* DESKTOP SEARCH */}
-          <div className="flex-1 align-middle">
+        {/* DESKTOP SEARCH */}
+        <div className="flex-1 align-middle">
           {/* Centered desktop search */}
           {logo && (
             <div className="hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px]">
@@ -107,12 +104,10 @@ export default function TopHeader({logo}: {logo?:boolean}) {
                           text-gray-800 placeholder:text-gray-500
                           focus:ring-2 focus:ring-blue-400
                           w-full text-sm transition-all"
-
                 onKeyDown={(e) => {
-                if (e.key === "Enter")
-                  handleSearch((e.target as HTMLInputElement).value);
-              }}
-
+                  if (e.key === 'Enter')
+                    handleSearch((e.target as HTMLInputElement).value);
+                }}
               />
             </div>
           )}
@@ -129,22 +124,20 @@ export default function TopHeader({logo}: {logo?:boolean}) {
                           text-gray-800 placeholder:text-gray-500
                           focus:ring-2 focus:ring-blue-400
                           w-full text-sm transition-all"
-              onKeyDown={(e) => {
-                if (e.key === "Enter")
-                  handleSearch((e.target as HTMLInputElement).value);
-              }}
-         
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter')
+                    handleSearch((e.target as HTMLInputElement).value);
+                }}
               />
             </div>
           )}
         </div>
 
-      {/* LEFT SECTION ENDS */}
-    </div>
+        {/* LEFT SECTION ENDS */}
+      </div>
 
       {/* ------------ RIGHT SECTION ------------ */}
       <UserMenu />
-  </div>
-
+    </div>
   );
 }

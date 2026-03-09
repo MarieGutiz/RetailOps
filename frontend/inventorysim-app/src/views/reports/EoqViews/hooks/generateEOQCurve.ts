@@ -1,4 +1,9 @@
-import type { EoqCurvePoint, EoqCurveResponse, EoqRequest, EoqResponse } from "@/types/eoq-backend";
+import type {
+  EoqCurvePoint,
+  EoqCurveResponse,
+  EoqRequest,
+  EoqResponse,
+} from '@/types/eoq-backend';
 
 export const generateEOQCurve = (
   request: EoqRequest,

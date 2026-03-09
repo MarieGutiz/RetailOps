@@ -1,5 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 
+/**
+ * Layout wrapper for the Reports module.
+ * Provides a header with title and description, and renders nested report routes via Outlet.
+ */
 
 const ReportsModuleLayout = () => {
   return (
@@ -16,7 +20,6 @@ const ReportsModuleLayout = () => {
       </div>
     </div>
   );
+};
 
-}
-
-export default ReportsModuleLayout
+export default ReportsModuleLayout;

@@ -1,24 +1,32 @@
-import { isNewsvendorLog, type SimulationLogEntry } from "@/views/Overview/hooks/useSimulationBitacora";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
-import jStat from "jstat";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import DistributionPanel from "@/views/simulator/newsvendorViews/DistributionPanel/DistributionPanel";
-import NewsvendorOverview from "@/views/simulator/newsvendorViews/DistributionPanel/NewsvendorOverview";
-import Info from "@/views/helpers/Info";
-import AnalyticsResultCard from "../AnalyticsResultCard";
-import { useAnalyticsEngine } from "../useAnalyticsEngine";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import NormalServiceLevelChart from "./NormalServiceLevelChart";
+import {
+  isNewsvendorLog,
+  type SimulationLogEntry,
+} from '@/views/Overview/hooks/useSimulationBitacora';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import jStat from 'jstat';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import DistributionPanel from '@/views/simulator/newsvendorViews/DistributionPanel/DistributionPanel';
+import NewsvendorOverview from '@/views/simulator/newsvendorViews/DistributionPanel/NewsvendorOverview';
+import Info from '@/views/helpers/Info';
+import AnalyticsResultCard from '../AnalyticsResultCard';
+import { useAnalyticsEngine } from '../useAnalyticsEngine';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import NormalServiceLevelChart from './NormalServiceLevelChart';
 
 const POLICY_COMPARISON_INFO = {
-  title: "Policy Comparison Logic",
-  theory: "Economic Fractile vs Service-Level Targeting",
+  title: 'Policy Comparison Logic',
+  theory: 'Economic Fractile vs Service-Level Targeting',
   description:
-    "The Cost-Optimal Policy uses the critical ratio CR = Cu / (Cu + Co) to determine the optimal service probability and corresponding order quantity via inverse distribution. The Service-Level Policy uses a user-defined service probability α and computes Q = F⁻¹(α). Both rely on the same demand distribution but represent different decision philosophies."
+    'The Cost-Optimal Policy uses the critical ratio CR = Cu / (Cu + Co) to determine the optimal service probability and corresponding order quantity via inverse distribution. The Service-Level Policy uses a user-defined service probability α and computes Q = F⁻¹(α). Both rely on the same demand distribution but represent different decision philosophies.',
 };
 
 interface Props {
@@ -26,8 +34,8 @@ interface Props {
 }
 
 const AnalyticsNewsvendorView = ({ logs }: Props) => {
-  const [activeTab, setActiveTab] = useState("whatif");
-  const [inputValue, setInputValue] = useState("0.95");
+  const [activeTab, setActiveTab] = useState('whatif');
+  const [inputValue, setInputValue] = useState('0.95');
   const [targetSL, setTargetSL] = useState(0.95);
 
   // Validate service level between 0.1 and 1
@@ -44,7 +52,7 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
   // Filter only newsvendor logs
   const newsvendorLogs = useMemo(() => logs.filter(isNewsvendorLog), [logs]);
 
-// Use the analytics engine hook
+  // Use the analytics engine hook
   const { results, selectedLog, setSelectedLog, runAnalysis } =
     useAnalyticsEngine({
       logs: newsvendorLogs,
@@ -53,11 +61,11 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
 
   const handleFindClosest = () => {
     if (!newsvendorLogs.length) {
-      toast.error("No historical Newsvendor simulations found.");
+      toast.error('No historical Newsvendor simulations found.');
       return;
     }
     runAnalysis();
-    setActiveTab("results");
+    setActiveTab('results');
   };
 
   // Analytical Q (normal demand assumption)
@@ -82,20 +90,22 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
       "
     >
       <TabsList
-      className="
+        className="
         bg-blue-200 backdrop-blur-sm shadow-md
         rounded-lg p-1
         flex flex-wrap sm:flex-nowrap gap-2 sm:gap-2
         border border-gray-200
       "
-    >
+      >
         <TabsTrigger
           value="whatif"
           className={`
             px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
-            ${activeTab === "whatif"
-              ? "jbtn-success shadow-inner"
-              : "bg-blue-100 hover:bg-blue-200"}
+            ${
+              activeTab === 'whatif'
+                ? 'jbtn-success shadow-inner'
+                : 'bg-blue-100 hover:bg-blue-200'
+            }
           `}
         >
           What if?..
@@ -106,9 +116,11 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
           disabled={!results.length}
           className={`
             px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
-            ${activeTab === "results"
-              ? "jbtn-success shadow-inner"
-              : "bg-blue-100 hover:bg-blue-200"}
+            ${
+              activeTab === 'results'
+                ? 'jbtn-success shadow-inner'
+                : 'bg-blue-100 hover:bg-blue-200'
+            }
           `}
         >
           Results
@@ -119,13 +131,15 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
           disabled={!selectedLog}
           className={`
             relative px-2 sm:px-4 py-1 sm:py-2 rounded-md transition-colors
-            ${activeTab === "distribution"
-              ? "jbtn-success shadow-inner"
-              : "bg-blue-100 hover:bg-blue-200"}
+            ${
+              activeTab === 'distribution'
+                ? 'jbtn-success shadow-inner'
+                : 'bg-blue-100 hover:bg-blue-200'
+            }
           `}
         >
           Distribution
-          {selectedLog && activeTab !== "distribution" && (
+          {selectedLog && activeTab !== 'distribution' && (
             <span
               className="
                 absolute -top-1 -right-1
@@ -141,20 +155,23 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
       {/* PARAMETERS */}
       <TabsContent value="whatif" className="mt-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
           {/* LEFT: Controls */}
           <div className="lg:col-span-1">
             <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 space-y-6">
-
               <div>
-                <h3 className="text-base font-semibold">Service Level Target</h3>
+                <h3 className="text-base font-semibold">
+                  Service Level Target
+                </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Adjust the desired probability of meeting demand without stockouts.
+                  Adjust the desired probability of meeting demand without
+                  stockouts.
                 </p>
               </div>
 
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Target Service Level (α)</Label>
+                <Label className="text-sm font-medium">
+                  Target Service Level (α)
+                </Label>
 
                 <div className="flex items-center gap-3">
                   <Input
@@ -186,7 +203,7 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
 
                 <div className="text-xs text-red-500">
                   {Number(inputValue) < 0.1 || Number(inputValue) > 0.999
-                    ? "Value must be between 0.10 and 0.999 in steps of 0.01"
+                    ? 'Value must be between 0.10 and 0.999 in steps of 0.01'
                     : null}
                 </div>
 
@@ -209,7 +226,9 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
           <div className="lg:col-span-2">
             <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
               <div className="mb-3">
-                <h3 className="text-sm font-semibold">Normal Distribution Visualization</h3>
+                <h3 className="text-sm font-semibold">
+                  Normal Distribution Visualization
+                </h3>
                 <p className="text-xs text-muted-foreground">
                   Shaded region represents demand ≤ Q (service level).
                 </p>
@@ -225,7 +244,6 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
               </div>
             </div>
           </div>
-
         </div>
       </TabsContent>
 
@@ -237,12 +255,10 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
             log={r.logEntry}
             onSelect={() => {
               setSelectedLog(r.logEntry);
-              setActiveTab("distribution");
+              setActiveTab('distribution');
             }}
             header={
-              <div>
-                {new Date(r.logEntry.createdAt).toLocaleString()}
-              </div>
+              <div>{new Date(r.logEntry.createdAt).toLocaleString()}</div>
             }
             metrics={
               <div className="flex flex-wrap gap-2">
@@ -254,7 +270,8 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-xs text-sm">
-                      Service Level (SL) is the probability of meeting demand without stockouts.
+                      Service Level (SL) is the probability of meeting demand
+                      without stockouts.
                     </TooltipContent>
                   </Tooltip>
 
@@ -265,7 +282,8 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-xs text-sm">
-                      Delta (Δ) is the absolute difference between the historical service level and your target SL.
+                      Delta (Δ) is the absolute difference between the
+                      historical service level and your target SL.
                     </TooltipContent>
                   </Tooltip>
 
@@ -276,7 +294,8 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-xs text-sm">
-                      Q* is the optimal order quantity computed by the simulation or analytical model.
+                      Q* is the optimal order quantity computed by the
+                      simulation or analytical model.
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -290,7 +309,6 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
       <TabsContent value="distribution" className="mt-6">
         {selectedLog && isNewsvendorLog(selectedLog) && (
           <div className="space-y-4">
-
             {/* Info Button aligned right */}
             <div className="flex justify-end">
               <Info content={POLICY_COMPARISON_INFO} />
@@ -331,7 +349,6 @@ const AnalyticsNewsvendorView = ({ logs }: Props) => {
       </TabsContent>
     </Tabs>
   );
+};
 
-}
-
-export default AnalyticsNewsvendorView
+export default AnalyticsNewsvendorView;

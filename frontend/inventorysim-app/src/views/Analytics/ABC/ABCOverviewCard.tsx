@@ -1,8 +1,13 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 
-type Category = "A" | "B" | "C";
+type Category = 'A' | 'B' | 'C';
 
 interface ABCOverviewCardProps {
   category: Category;
@@ -17,19 +22,20 @@ const categoryConfig: Record<
   { color: string; bg: string; description: string }
 > = {
   A: {
-    color: "bg-emerald-500",
-    bg: "bg-emerald-50",
-    description: "High-value items. Small in number, dominant in revenue impact.",
+    color: 'bg-emerald-500',
+    bg: 'bg-emerald-50',
+    description:
+      'High-value items. Small in number, dominant in revenue impact.',
   },
   B: {
-    color: "bg-amber-500",
-    bg: "bg-amber-50",
-    description: "Moderate-value items. Balanced contribution to total value.",
+    color: 'bg-amber-500',
+    bg: 'bg-amber-50',
+    description: 'Moderate-value items. Balanced contribution to total value.',
   },
   C: {
-    color: "bg-rose-500",
-    bg: "bg-rose-50",
-    description: "Low-value items. High volume, low individual contribution.",
+    color: 'bg-rose-500',
+    bg: 'bg-rose-50',
+    description: 'Low-value items. High volume, low individual contribution.',
   },
 };
 
@@ -50,7 +56,9 @@ const ABCOverviewCard = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className={`cursor-default hover:shadow-md transition ${config.bg}`}>
+          <Card
+            className={`cursor-default hover:shadow-md transition ${config.bg}`}
+          >
             <CardContent className="p-4 space-y-3">
               {/* Header */}
               <div className="flex justify-between items-center">
@@ -108,7 +116,6 @@ const ABCOverviewCard = ({
       </Tooltip>
     </TooltipProvider>
   );
+};
 
-}
-
-export default ABCOverviewCard
+export default ABCOverviewCard;

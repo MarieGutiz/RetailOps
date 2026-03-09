@@ -1,6 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { EoqResponse } from "@/types/eoq-backend";
-import { formatDecimal, formatInt } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { EoqResponse } from '@/types/eoq-backend';
+import {
+  formatDecimal,
+  formatInt,
+} from '@/views/simulator/newsvendorViews/forms/hooks/useCurrency';
 
 interface Props {
   result: EoqResponse;
@@ -37,9 +40,7 @@ const EoqPolicyDetails: React.FC<Props> = ({ result, format }) => {
         </div>
 
         <div>
-          <p className="text-sm text-muted-foreground">
-            Holding Cost per Unit
-          </p>
+          <p className="text-sm text-muted-foreground">Holding Cost per Unit</p>
           <p className="text-lg font-semibold">
             {format(result.holdingCost ?? 0)}
           </p>
@@ -47,8 +48,6 @@ const EoqPolicyDetails: React.FC<Props> = ({ result, format }) => {
       </CardContent>
     </Card>
   );
+};
 
-
-}
-
-export default EoqPolicyDetails
+export default EoqPolicyDetails;
