@@ -1,10 +1,17 @@
-import {create} from "zustand";
-import type { NewsvendorRequest, NewsvendorResponse } from "@/types/newsvendor-backend";
-import type { EoqRequest, EoqResponse } from "@/types/eoq-backend";
-import { persist, createJSONStorage } from "zustand/middleware";
-import { mountStoreDevtool } from "simple-zustand-devtools";
-import { saveToStorage } from "@/utils/storage";
-import type { AbcRequestDto, AbcResponseDto } from "@/types/abc-backend";
+import { create } from 'zustand';
+import type {
+  NewsvendorRequest,
+  NewsvendorResponse,
+} from '@/types/newsvendor-backend';
+import type { EoqRequest, EoqResponse } from '@/types/eoq-backend';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { mountStoreDevtool } from 'simple-zustand-devtools';
+import { saveToStorage } from '@/utils/storage';
+import type { AbcRequestDto, AbcResponseDto } from '@/types/abc-backend';
+
+//This store manages all simulation results for newsvendor, EOQ, and ABC.
+// It is designed to persist data across sessions and is structured to allow 
+// easy retrieval of simulations by shop and product.
 
 // ─── Simulation Entry Types ───
 
@@ -30,14 +37,15 @@ export interface AbcSimulationEntry {
 // ─── Store Interface ───
 interface SimulationStore {
   // shopId → productName → simulation
-  newsvendorSimulations: Record<string, Record<string, NewsvendorSimulationEntry>>;
+  newsvendorSimulations: Record<
+    string,
+    Record<string, NewsvendorSimulationEntry>
+  >;
   eoqSimulations: Record<string, Record<string, EoqSimulationEntry>>;
-  
+
   // ABC simulations: shopId → simId → simulation
   abcSimulations: Record<string, Record<string, AbcSimulationEntry>>;
   lastAbcSimId: Record<string, string>; // shopId → last simulation ID
-
-
 
   addNewsvendorSimulation: (
     shopId: string,
@@ -52,9 +60,11 @@ interface SimulationStore {
   ) => void;
 
   // new ABC methods
-  addAbcSimulation: (shopId: string,
-     simId: string,
-     entry: AbcSimulationEntry) => void;
+  addAbcSimulation: (
+    shopId: string,
+    simId: string,
+    entry: AbcSimulationEntry
+  ) => void;
 
   setLastAbcSimId: (shopId: string, simId: string) => void;
 
@@ -70,7 +80,6 @@ export const useSimulationStore = create<SimulationStore>()(
       eoqSimulations: {},
       abcSimulations: {},
       lastAbcSimId: {},
-
 
       // ─── Newsvendor ───
       addNewsvendorSimulation: (shopId, product, entry) =>
@@ -96,7 +105,7 @@ export const useSimulationStore = create<SimulationStore>()(
           },
         })),
 
-     // ─── ABC ───
+      // ─── ABC ───
       addAbcSimulation: (shopId, simId, entry) =>
         set((state) => ({
           abcSimulations: {
@@ -116,23 +125,31 @@ export const useSimulationStore = create<SimulationStore>()(
           },
         })),
 
-
       // ─── Clear ───
       clearSimulationsForShop: (shopId) =>
         set((state) => ({
-          newsvendorSimulations: { ...state.newsvendorSimulations, [shopId]: {} },
+          newsvendorSimulations: {
+            ...state.newsvendorSimulations,
+            [shopId]: {},
+          },
           eoqSimulations: { ...state.eoqSimulations, [shopId]: {} },
           abcSimulations: { ...state.abcSimulations, [shopId]: {} },
         })),
 
       clearSimulationsForProduct: (shopId, product) =>
         set((state) => {
-          const { [product]: _, ...remainingNewsvendor } = state.newsvendorSimulations[shopId] ?? {};
-          const { [product]: __, ...remainingEOQ } = state.eoqSimulations[shopId] ?? {};
-          const { [product]: ___, ...remainingABC } = state.abcSimulations[shopId] ?? {};
+          const { [product]: _, ...remainingNewsvendor } =
+            state.newsvendorSimulations[shopId] ?? {};
+          const { [product]: __, ...remainingEOQ } =
+            state.eoqSimulations[shopId] ?? {};
+          const { [product]: ___, ...remainingABC } =
+            state.abcSimulations[shopId] ?? {};
 
           return {
-            newsvendorSimulations: { ...state.newsvendorSimulations, [shopId]: remainingNewsvendor },
+            newsvendorSimulations: {
+              ...state.newsvendorSimulations,
+              [shopId]: remainingNewsvendor,
+            },
             eoqSimulations: { ...state.eoqSimulations, [shopId]: remainingEOQ },
             abcSimulations: { ...state.abcSimulations, [shopId]: remainingABC },
           };
@@ -147,7 +164,7 @@ export const useSimulationStore = create<SimulationStore>()(
     }),
 
     {
-      name: "sim-storage", // localStorage key
+      name: 'sim-storage', // localStorage key
       storage: createJSONStorage(() => ({
         getItem: saveToStorage.getItem,
         setItem: saveToStorage.setItem,
@@ -157,9 +174,7 @@ export const useSimulationStore = create<SimulationStore>()(
   )
 );
 
-
 //  Devtools (only in development)
-if (import.meta.env.MODE === "development") {
-  mountStoreDevtool("sim store", useSimulationStore);
+if (import.meta.env.MODE === 'development') {
+  mountStoreDevtool('sim store', useSimulationStore);
 }
-

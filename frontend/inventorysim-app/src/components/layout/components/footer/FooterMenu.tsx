@@ -1,7 +1,9 @@
-import { usePrimeLayoutStore } from "../../hooks/usePrimeLayout"
+import { usePrimeLayoutStore } from '../../hooks/usePrimeLayout';
+
+// Footer menu with version and copy right info RetailOpsSim είδω vr1.0 Simulator
 
 const FooterMenu = () => {
-   const collapsed = !usePrimeLayoutStore((l) => l.open)
+  const collapsed = !usePrimeLayoutStore((l) => l.open);
 
   return (
     <>
@@ -15,11 +17,11 @@ const FooterMenu = () => {
       ) : (
         <div className="border-t mt-2 pt-2 px-2 text-[10px] text-muted-foreground text-center">
           <p>v1.0</p>
-           <p>© {new Date().getFullYear()}</p>
+          <p>© {new Date().getFullYear()}</p>
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default FooterMenu
+export default FooterMenu;

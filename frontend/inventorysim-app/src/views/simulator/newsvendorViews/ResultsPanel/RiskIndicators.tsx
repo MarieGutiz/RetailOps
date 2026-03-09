@@ -1,16 +1,13 @@
-import type { NewsvendorResponse } from "@/types/newsvendor-backend"
-import RiskRow from "./RiskRow";
+import type { NewsvendorResponse } from '@/types/newsvendor-backend';
+import RiskRow from './RiskRow';
 
-
-const RiskIndicators = ({result}: {result:NewsvendorResponse}) => {
+const RiskIndicators = ({ result }: { result: NewsvendorResponse }) => {
   const stockoutRisk = 1 - result.serviceLevel;
   const overstockRisk = result.serviceLevel;
 
   return (
     <div className="rounded-lg border p-4 space-y-3">
-      <h3 className="text-sm font-medium">
-        Risk overview
-      </h3>
+      <h3 className="text-sm font-medium">Risk overview</h3>
 
       <RiskRow
         label="Chance of running out of stock"
@@ -23,8 +20,6 @@ const RiskIndicators = ({result}: {result:NewsvendorResponse}) => {
       />
     </div>
   );
+};
 
-
-}
-
-export default RiskIndicators
+export default RiskIndicators;

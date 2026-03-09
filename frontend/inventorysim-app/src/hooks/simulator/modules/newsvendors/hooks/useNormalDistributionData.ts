@@ -1,5 +1,8 @@
-import { useMemo } from "react";
-import jStat from "jstat";
+import { useMemo } from 'react';
+import jStat from 'jstat';
+
+// Hook to calculate normal distrb data points, critical value (Z) and reorder point (Q),
+//based on meand, std dev and serv. level.
 
 export function useNormalDistributionData(
   mean: number,

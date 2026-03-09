@@ -1,12 +1,11 @@
-import AnimatedLogo from "@/features/animation/AnimatedLogo"
-
+import AnimatedLogo from '@/features/animation/AnimatedLogo';
 
 const SplashScreen = () => {
   return (
-   <>
-    <AnimatedLogo />
-   </>
-  )
-}
+    <>
+      <AnimatedLogo />
+    </>
+  );
+};
 
-export default SplashScreen
+export default SplashScreen;

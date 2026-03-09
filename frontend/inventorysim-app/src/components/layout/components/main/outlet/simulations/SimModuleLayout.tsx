@@ -1,7 +1,11 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
+
+/**
+ * Layout wrapper for the Simulator module.
+ * Provides a header with title and description, and renders nested report routes via Outlet.
+ */
 
 const SimModuleLayout = () => {
-
   return (
     <div className="flex flex-col h-full">
       {/* Simulation-level header / context */}
@@ -18,6 +22,6 @@ const SimModuleLayout = () => {
       </div>
     </div>
   );
-}
+};
 
-export default SimModuleLayout
+export default SimModuleLayout;

@@ -1,13 +1,19 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import ShopCreationStepper from "./ShopCreationStepper";
-import { useEffect, useMemo, useState } from "react";
-import type { ShopMeta } from "@/store/shop/useShopStore";
-import StepCreateShop from "./steps/StepCreateShop";
-import StepImportProducts, { type ShopOption } from "./steps/StepImportProducts";
-import StepSuccess from "./steps/StepSuccess";
-import { useAutogenAvailability, useEnsureAutogenShops, type AutogenLibraryId } from "../hooks/useBackendAwareness";
-import { shopId, type ShopId } from "@/types/shop";
-import { Loader2 } from "lucide-react";
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import ShopCreationStepper from './ShopCreationStepper';
+import { useEffect, useMemo, useState } from 'react';
+import type { ShopMeta } from '@/store/shop/useShopStore';
+import StepCreateShop from './steps/StepCreateShop';
+import StepImportProducts, {
+  type ShopOption,
+} from './steps/StepImportProducts';
+import StepSuccess from './steps/StepSuccess';
+import {
+  useAutogenAvailability,
+  useEnsureAutogenShops,
+  type AutogenLibraryId,
+} from '../hooks/useBackendAwareness';
+import { shopId, type ShopId } from '@/types/shop';
+import { Loader2 } from 'lucide-react';
 
 type Props = {
   open: boolean;
@@ -15,34 +21,32 @@ type Props = {
   onShopCreated: (shop: ShopMeta) => void;
 };
 
-
-const ShopCreationWizardDialog = ({ 
+const ShopCreationWizardDialog = ({
   open,
   onOpenChange,
-  onShopCreated
- }: Props) => {
+  onShopCreated,
+}: Props) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [shop, setShop] = useState<ShopMeta | null>(null);
 
-    // NEW: selected AUTOGEN shop
-  const [selectedAutogenId, setSelectedAutogenId] = useState<ShopId | null>(null);
+  // NEW: selected AUTOGEN shop
+  const [selectedAutogenId, setSelectedAutogenId] = useState<ShopId | null>(
+    null
+  );
 
   const autogenIds: AutogenLibraryId[] = useMemo(
-    () => ["FLORIST", "CAFETERIA"],
+    () => ['FLORIST', 'CAFETERIA'],
     []
   );
 
   useEnsureAutogenShops(autogenIds);
 
-  const availability = useAutogenAvailability(
-    autogenIds,
-    open && step === 2
-  );
+  const availability = useAutogenAvailability(autogenIds, open && step === 2);
 
   const backendUnavailable = availability.unavailable;
   const anyLoading = availability.checking;
 
-   // Reset wizard when dialog closes
+  // Reset wizard when dialog closes
   useEffect(() => {
     if (!open) {
       setStep(1);
@@ -61,8 +65,6 @@ const ShopCreationWizardDialog = ({
     setStep(3);
   };
 
-
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -73,13 +75,10 @@ const ShopCreationWizardDialog = ({
             pt-8
             pb-6
           "
-        >
+      >
         <ShopCreationStepper step={step} />
-         {/* Step 1: Create shop */}
-        {step === 1 && (
-          <StepCreateShop onCreated={handleShopCreated} />
-        )}
-
+        {/* Step 1: Create shop */}
+        {step === 1 && <StepCreateShop onCreated={handleShopCreated} />}
 
         {/* Step 2 */}
         {step === 2 && shop && (
@@ -104,13 +103,10 @@ const ShopCreationWizardDialog = ({
           </div>
         )}
 
-
-        {step === 3 && (
-          <StepSuccess onFinish={() => onOpenChange(false)} />
-        )}
+        {step === 3 && <StepSuccess onFinish={() => onOpenChange(false)} />}
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default ShopCreationWizardDialog
+export default ShopCreationWizardDialog;

@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 interface EOQOverviewCardProps {
   label: string;
@@ -38,16 +38,18 @@ const EOQOverviewCard = ({
     return (
       <span
         className={`ml-2 px-2 py-0.5 text-xs rounded-full font-semibold ${
-          isPositive ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+          isPositive
+            ? 'bg-emerald-100 text-emerald-800'
+            : 'bg-rose-100 text-rose-800'
         }`}
       >
-        {isPositive ? "↓" : "↑"} {Math.abs(diffPercent).toFixed(1)}%
+        {isPositive ? '↓' : '↑'} {Math.abs(diffPercent).toFixed(1)}%
       </span>
     );
   };
 
   return (
-    <Card className={`shadow-sm relative ${isBaseline ? "bg-gray-50" : ""}`}>
+    <Card className={`shadow-sm relative ${isBaseline ? 'bg-gray-50' : ''}`}>
       {/* Top-right badge for baseline */}
       {isBaseline && (
         <div className="absolute top-2 right-2 px-2 py-0.5 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">
@@ -67,7 +69,8 @@ const EOQOverviewCard = ({
             {diffBadge(comparison?.eoq, eoq)}
           </p>
           <p>
-            <span className="font-medium">Total Annual Cost:</span> {totalCost.toFixed(2)}
+            <span className="font-medium">Total Annual Cost:</span>{' '}
+            {totalCost.toFixed(2)}
             {diffBadge(comparison?.totalCost, totalCost)}
           </p>
         </div>
@@ -78,7 +81,10 @@ const EOQOverviewCard = ({
         <div className="space-y-1">
           <p>
             Ordering Cost: {orderingCostComponent.toFixed(2)}
-            {diffBadge(comparison?.orderingCostComponent, orderingCostComponent)}
+            {diffBadge(
+              comparison?.orderingCostComponent,
+              orderingCostComponent
+            )}
           </p>
           <p>
             Holding Cost: {holdingCostComponent.toFixed(2)}
@@ -102,7 +108,6 @@ const EOQOverviewCard = ({
       </CardContent>
     </Card>
   );
+};
 
-}
-
-export default EOQOverviewCard
+export default EOQOverviewCard;

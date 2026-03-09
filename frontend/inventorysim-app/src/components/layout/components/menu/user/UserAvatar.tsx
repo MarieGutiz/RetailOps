@@ -1,22 +1,25 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-const UserAvatar = ({avatar, username,gray}: {avatar: string, username: string, gray?: boolean}) => {
-  const initials = username ? username.slice(0, 2).toUpperCase() : "??";
+// Reusable component for the avatar img
+const UserAvatar = ({
+  avatar,
+  username,
+  gray,
+}: {
+  avatar: string;
+  username: string;
+  gray?: boolean;
+}) => {
+  const initials = username ? username.slice(0, 2).toUpperCase() : '??';
 
-     return (
+  return (
     <Avatar
-      className={`h-8 w-8 rounded-lg ${
-        gray ? "ring-1 ring-white/20" : ""
-      }`}
+      className={`h-8 w-8 rounded-lg ${gray ? 'ring-1 ring-white/20' : ''}`}
     >
       <AvatarImage src={avatar} alt={username} />
       <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
     </Avatar>
-    );
-}
+  );
+};
 
-export default UserAvatar
+export default UserAvatar;

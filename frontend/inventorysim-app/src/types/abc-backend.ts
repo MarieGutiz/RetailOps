@@ -1,15 +1,14 @@
-// src/types/abc-backend.ts
-import type { InventoryItemBase } from "@/types/inventory";
-import type { Product } from "./products";
+import type { InventoryItemBase } from '@/types/inventory';
+import type { Product } from './products';
 
 export interface AbcItemDto extends InventoryItemBase {}
 
-export type ABCCategory = "A" | "B" | "C";
+export type ABCCategory = 'A' | 'B' | 'C';
 
 export interface AbcItemResultDto {
   product: Product;
 
-  salesValue: number;  
+  salesValue: number;
 
   rank: number;
   cumulativePct: number;
@@ -30,20 +29,18 @@ export interface AbcSummaryDto {
   c: AbcCategorySummary;
 }
 
-
 export interface AbcResponseDto {
   items: AbcItemResultDto[];
   summary: AbcSummaryDto;
 }
 
-
-export type SimulationType = "classic" | "multi" ;
+export type SimulationType = 'classic' | 'multi';
 
 export interface AbcRequestDto {
-  items?: AbcItemDto[];   
+  items?: AbcItemDto[];
   // username?: string;      // optional for public
   mode: SimulationType;
-  saveToHistory?:boolean;
+  saveToHistory?: boolean;
   account?: {
     id: number;
   }; // only for registered users
@@ -55,7 +52,6 @@ export interface AbcSelectableItem {
   quantity: number;
   sku?: string;
   category?: string;
-  salesValue: number;      // required
+  salesValue: number; // required
   demandFrequency: number; // required
 }
-

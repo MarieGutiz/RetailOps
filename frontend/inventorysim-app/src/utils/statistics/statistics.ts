@@ -1,4 +1,3 @@
-import * as jStat from "jstat";
+import * as jStat from 'jstat';
 
-export const quantileNormal = (p: number) =>
-  jStat.normal.inv(p, 0, 1);
+export const quantileNormal = (p: number) => jStat.normal.inv(p, 0, 1);

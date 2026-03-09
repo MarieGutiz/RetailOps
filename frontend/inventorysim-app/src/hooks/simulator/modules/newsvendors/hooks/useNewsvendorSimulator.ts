@@ -1,9 +1,23 @@
-import { useSimulationBase } from "@/hooks/simulator/useSimulationBase";
-import { simulateNewsvendor, fetchNewsvendorMarkers, fetchNormalPdf } from "@/services/api/newsvendor.api";
-import { useSimulationStore } from "@/store/simulations/useSimulationStore";
-import type { NewsvendorResponse, NewsvendorMarkers, NewsvendorRequest, NormalPdfRequest } from "@/types/newsvendor-backend";
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { useSimulationBase } from '@/hooks/simulator/useSimulationBase';
+import {
+  simulateNewsvendor,
+  fetchNewsvendorMarkers,
+  fetchNormalPdf,
+} from '@/services/api/newsvendor.api';
+import { useSimulationStore } from '@/store/simulations/useSimulationStore';
+import type {
+  NewsvendorResponse,
+  NewsvendorMarkers,
+  NewsvendorRequest,
+  NormalPdfRequest,
+} from '@/types/newsvendor-backend';
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+
+
+//This hook manages the state and logic for the newsvendor sim, including runnin simulations,
+//fetching markers and pdf (prob density fx) data. 
+//It also persists the last simulation result in a global store(in the simulation store) for later retrieval.
 
 interface UseNewsvendorSimulatorResult {
   simId: string;
@@ -31,23 +45,15 @@ export function useNewsvendorSimulator(
   shopName: string,
   productName?: string
 ): UseNewsvendorSimulatorResult {
-
-  const {
-    simId,
-    isRunning,
-    error,
-    setIsRunning,
-    setError,
-    sanitizeRequest,
-  } = useSimulationBase<NewsvendorRequest>(
-    shopId,
-    "Newsvendor Simulator Error"
-  );
+  const { simId, isRunning, error, setIsRunning, setError, sanitizeRequest } =
+    useSimulationBase<NewsvendorRequest>(shopId, 'Newsvendor Simulator Error');
 
   const [response, setResponse] = useState<NewsvendorResponse | null>(null);
   const [markers, setMarkers] = useState<NewsvendorMarkers | null>(null);
   const [pdf, setPdf] = useState<Record<number, number> | null>(null);
-  const [lastRequest, setLastRequest] = useState<NewsvendorRequest | null>(null);
+  const [lastRequest, setLastRequest] = useState<NewsvendorRequest | null>(
+    null
+  );
 
   const addNewsvendorSimulation = useSimulationStore(
     (s) => s.addNewsvendorSimulation
@@ -70,7 +76,7 @@ export function useNewsvendorSimulator(
 
   const run = async (request: NewsvendorRequest) => {
     if (!request.productName) {
-      toast.error("Missing productName in request.");
+      toast.error('Missing productName in request.');
       return;
     }
 
@@ -81,11 +87,7 @@ export function useNewsvendorSimulator(
       const sanitizedRequest = sanitizeRequest(request);
 
       // ───────── Core Simulation ─────────
-      const res = await simulateNewsvendor(
-        sanitizedRequest,
-        simId,
-        shopName
-      );
+      const res = await simulateNewsvendor(sanitizedRequest, simId, shopName);
 
       setLastRequest(request);
       setResponse(res);
@@ -119,7 +121,6 @@ export function useNewsvendorSimulator(
 
       const pdfRes = await fetchNormalPdf(pdfRequest, simId);
       setPdf(pdfRes);
-
     } catch (err) {
       console.error(err);
       setError(err);

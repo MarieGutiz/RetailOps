@@ -1,5 +1,12 @@
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ReferenceLine } from "recharts";
-import { useNormalDistributionData } from "@/hooks/simulator/modules/newsvendors/hooks/useNormalDistributionData";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ReferenceLine,
+} from 'recharts';
+import { useNormalDistributionData } from '@/hooks/simulator/modules/newsvendors/hooks/useNormalDistributionData';
 interface Props {
   mean: number;
   std: number;
@@ -9,16 +16,8 @@ interface Props {
 const WIDTH = 650;
 const HEIGHT = 320;
 
-const DemandRiskReportChart = ({
-  mean,
-  std,
-  serviceLevel,
-}: Props) => {
-  const { data, Q, z } = useNormalDistributionData(
-    mean,
-    std,
-    serviceLevel
-  );
+const DemandRiskReportChart = ({ mean, std, serviceLevel }: Props) => {
+  const { data, Q, z } = useNormalDistributionData(mean, std, serviceLevel);
 
   if (!data.length) {
     return null;
@@ -28,8 +27,8 @@ const DemandRiskReportChart = ({
     <div
       style={{
         width: WIDTH,
-        background: "white",
-        padding: "16px",
+        background: 'white',
+        padding: '16px',
       }}
     >
       <AreaChart
@@ -40,11 +39,7 @@ const DemandRiskReportChart = ({
       >
         <CartesianGrid strokeDasharray="3 3" />
 
-        <XAxis
-          dataKey="x"
-          type="number"
-          domain={["dataMin", "dataMax"]}
-        />
+        <XAxis dataKey="x" type="number" domain={['dataMin', 'dataMax']} />
 
         <YAxis />
 
@@ -79,27 +74,20 @@ const DemandRiskReportChart = ({
         />
 
         {/* Optimal Q */}
-        <ReferenceLine
-          x={Q}
-          stroke="black"
-          strokeDasharray="4 4"
-        />
+        <ReferenceLine x={Q} stroke="black" strokeDasharray="4 4" />
 
         {/* Mean */}
-        <ReferenceLine
-          x={mean}
-          stroke="orange"
-        />
+        <ReferenceLine x={mean} stroke="orange" />
       </AreaChart>
 
       <div style={{ fontSize: 14, marginTop: 12 }}>
-        <strong>Service Level:</strong> {(serviceLevel * 100).toFixed(2)}%  
+        <strong>Service Level:</strong> {(serviceLevel * 100).toFixed(2)}%
         &nbsp;|&nbsp;
-        <strong>Z:</strong> {z.toFixed(3)}  
+        <strong>Z:</strong> {z.toFixed(3)}
         &nbsp;|&nbsp;
         <strong>Optimal Q:</strong> {Q.toFixed(2)}
       </div>
     </div>
   );
-}
+};
 export default DemandRiskReportChart;

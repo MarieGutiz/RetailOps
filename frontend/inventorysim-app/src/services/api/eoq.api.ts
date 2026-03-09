@@ -1,11 +1,15 @@
-import type { EoqCurveResponse, EoqRequest, EoqResponse } from "@/types/eoq-backend";
-import api from "./api";
+import type {
+  EoqCurveResponse,
+  EoqRequest,
+  EoqResponse,
+} from '@/types/eoq-backend';
+import api from './api';
 
 /**
  * Base path for simulator module
  * Matches backend: /api/simulator/eoq
  */
-const SIMULATOR_BASE = "/simulator";
+const SIMULATOR_BASE = '/simulator';
 const EOQ_BASE = `${SIMULATOR_BASE}/eoq`;
 
 /**
@@ -21,21 +25,16 @@ export const simulateEoq = async (
   shopName: string
 ): Promise<EoqResponse> => {
   try {
-    const response = await api.post(
-      EOQ_BASE,
-      data,
-      {
-        params: { simId, shopName },
-      }
-    );
-    
+    const response = await api.post(EOQ_BASE, data, {
+      params: { simId, shopName },
+    });
+
     return response.data;
   } catch (error) {
-    console.error("Error simulating EOQ:", error);
+    console.error('Error simulating EOQ:', error);
     throw error;
   }
 };
-
 
 /**
  * Fetch EOQ cost curve
@@ -47,16 +46,12 @@ export const fetchEoqCurve = async (
   shopName: string
 ): Promise<EoqCurveResponse> => {
   try {
-    const response = await api.post(
-      `${EOQ_BASE}/curve`,
-      data,
-      {
-        params: { simId, shopName },
-      }
-    );
+    const response = await api.post(`${EOQ_BASE}/curve`, data, {
+      params: { simId, shopName },
+    });
     return response.data;
   } catch (error) {
-    console.error("Error fetching EOQ curve:", error);
+    console.error('Error fetching EOQ curve:', error);
     throw error;
   }
 };

@@ -1,7 +1,12 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
-type Category = "A" | "B" | "C";
+type Category = 'A' | 'B' | 'C';
 
 interface Props {
   category: Category;
@@ -11,11 +16,10 @@ interface Props {
   historicalValue: number;
 }
 
-
 const categoryStyles: Record<Category, string> = {
-  A: "bg-emerald-50",
-  B: "bg-amber-50",
-  C: "bg-rose-50",
+  A: 'bg-emerald-50',
+  B: 'bg-amber-50',
+  C: 'bg-rose-50',
 };
 
 const ABCBreakdownCard = ({
@@ -37,9 +41,13 @@ const ABCBreakdownCard = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className={`${categoryStyles[category]} cursor-default hover:shadow-md transition`}>
+          <Card
+            className={`${categoryStyles[category]} cursor-default hover:shadow-md transition`}
+          >
             <CardContent className="p-4 space-y-2 text-center">
-              <h4 className="text-sm font-semibold text-gray-600">Category {category}</h4>
+              <h4 className="text-sm font-semibold text-gray-600">
+                Category {category}
+              </h4>
 
               {/* Counts */}
               <div className="flex justify-around text-xs text-gray-500 font-medium">
@@ -56,37 +64,43 @@ const ABCBreakdownCard = ({
               {/* Delta */}
               <div
                 className={`text-sm font-semibold ${
-                  countUp ? "text-emerald-600" : countDown ? "text-rose-600" : "text-gray-500"
+                  countUp
+                    ? 'text-emerald-600'
+                    : countDown
+                      ? 'text-rose-600'
+                      : 'text-gray-500'
                 }`}
               >
                 {countDiff === 0
-                  ? "No change in count"
-                  : `${countUp ? "▲" : "▼"} ${Math.abs(countDiff)} item${Math.abs(countDiff) > 1 ? "s" : ""}`}
+                  ? 'No change in count'
+                  : `${countUp ? '▲' : '▼'} ${Math.abs(countDiff)} item${Math.abs(countDiff) > 1 ? 's' : ''}`}
               </div>
 
               <div
                 className={`text-sm font-semibold ${
-                  valueUp ? "text-emerald-600" : valueDown ? "text-rose-600" : "text-gray-500"
+                  valueUp
+                    ? 'text-emerald-600'
+                    : valueDown
+                      ? 'text-rose-600'
+                      : 'text-gray-500'
                 }`}
               >
                 {valueDiff === 0
-                  ? "No change in value"
-                  : `${valueUp ? "▲" : "▼"} ${Math.abs(valueDiff).toFixed(2)} value`}
+                  ? 'No change in value'
+                  : `${valueUp ? '▲' : '▼'} ${Math.abs(valueDiff).toFixed(2)} value`}
               </div>
             </CardContent>
           </Card>
         </TooltipTrigger>
 
         <TooltipContent>
-          Comparison for Category {category}: shows how What-If thresholds change
-          item counts and total value compared to the selected historical simulation.
+          Comparison for Category {category}: shows how What-If thresholds
+          change item counts and total value compared to the selected historical
+          simulation.
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
+};
 
-
-
-}
-
-export default ABCBreakdownCard
+export default ABCBreakdownCard;

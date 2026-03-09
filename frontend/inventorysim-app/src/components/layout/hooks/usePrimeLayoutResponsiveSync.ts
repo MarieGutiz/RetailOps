@@ -1,6 +1,8 @@
-import { useIsMobile } from "@/hooks/layout/use-mobile";
-import { useEffect } from "react";
-import { usePrimeLayout } from "../components/PrimeLayoutProvider";
+import { useIsMobile } from '@/hooks/layout/use-mobile';
+import { useEffect } from 'react';
+import { usePrimeLayout } from '../components/PrimeLayoutProvider';
+
+//Layout breakpoint sync hook.
 
 export function usePrimeLayoutResponsiveSync() {
   const layout = usePrimeLayout();

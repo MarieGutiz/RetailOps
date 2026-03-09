@@ -9,7 +9,7 @@
 /* .table-grid {
   border-collapse: collapse;
   width: 100%;
-} */ 
+} */
 
 /* Center headers */
 .table-grid th {
@@ -20,7 +20,7 @@
 }
 
 /* Right-align numbers for cost/price columns */
-.table-grid td[data-type="number"] {
+.table-grid td[data-type='number'] {
   text-align: right;
 }
 

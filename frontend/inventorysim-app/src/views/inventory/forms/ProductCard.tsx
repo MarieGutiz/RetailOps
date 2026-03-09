@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 interface ProductCardProps {
   name: string;
@@ -8,12 +14,20 @@ interface ProductCardProps {
   category?: string;
 }
 
-const ProductCard = ({name, stock, description, sku, category}: ProductCardProps) => {
+const ProductCard = ({
+  name,
+  stock,
+  description,
+  sku,
+  category,
+}: ProductCardProps) => {
   return (
     <Card className="bg-muted-foreground/5">
       <CardHeader>
         <CardTitle>{name}</CardTitle>
-        {category && <CardDescription className="text-xs">{category}</CardDescription>}
+        {category && (
+          <CardDescription className="text-xs">{category}</CardDescription>
+        )}
       </CardHeader>
       <CardContent className="text-sm space-y-1">
         {stock !== undefined && <div>Stock: {stock}</div>}
@@ -21,7 +35,7 @@ const ProductCard = ({name, stock, description, sku, category}: ProductCardProps
         {description && <div>{description}</div>}
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;

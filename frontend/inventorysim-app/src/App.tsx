@@ -1,4 +1,4 @@
-import './App.css'
+import './App.css';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 
@@ -8,4 +8,4 @@ export const App = () => (
   </BrowserRouter>
 );
 
-export default App
+export default App;

@@ -1,7 +1,11 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-export type UserType = "Guest" | "Registered";
+//This store manages user information and authentication state.
+// It distinguishes between 'Guest' users and 'Registered' users, and stores relevant
+//  profile information for registered users. The state is persisted in local storage
+
+export type UserType = 'Guest' | 'Registered';
 
 export interface UserPolicy {
   userType: UserType;
@@ -24,8 +28,8 @@ export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       user: {
-        userType: "Guest",
-        username: "Guest",
+        userType: 'Guest',
+        username: 'Guest',
         profileImg: null,
         id: null,
         email: null,
@@ -36,14 +40,14 @@ export const useUserStore = create<UserState>()(
 
       setUser: (data) =>
         set((state) => ({
-          user: { ...state.user, ...data, userType: "Registered" },
+          user: { ...state.user, ...data, userType: 'Registered' },
         })),
 
       clearUser: () =>
         set({
           user: {
-            userType: "Guest",
-            username: "Guest",
+            userType: 'Guest',
+            username: 'Guest',
             id: null,
             profileImg: null,
             email: null,
@@ -53,6 +57,6 @@ export const useUserStore = create<UserState>()(
           },
         }),
     }),
-    { name: "user-policy" }
+    { name: 'user-policy' }
   )
 );

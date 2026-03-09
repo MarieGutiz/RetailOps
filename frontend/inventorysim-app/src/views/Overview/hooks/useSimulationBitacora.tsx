@@ -1,13 +1,16 @@
-import { useSimulationStore } from "@/store/simulations/useSimulationStore";
-import type { AbcRequestDto, AbcResponseDto } from "@/types/abc-backend";
-import type { EoqRequest, EoqResponse } from "@/types/eoq-backend";
-import type { NewsvendorRequest, NewsvendorResponse } from "@/types/newsvendor-backend";
-import { useMemo } from "react";
+import { useSimulationStore } from '@/store/simulations/useSimulationStore';
+import type { AbcRequestDto, AbcResponseDto } from '@/types/abc-backend';
+import type { EoqRequest, EoqResponse } from '@/types/eoq-backend';
+import type {
+  NewsvendorRequest,
+  NewsvendorResponse,
+} from '@/types/newsvendor-backend';
+import { useMemo } from 'react';
 
 // ─── SimulationLogEntry Types ───
 export type SimulationLogEntry =
   | {
-      type: "newsvendor";
+      type: 'newsvendor';
       shopId: string;
       product: string;
       sku: string;
@@ -16,7 +19,7 @@ export type SimulationLogEntry =
       request: NewsvendorRequest;
     }
   | {
-      type: "eoq";
+      type: 'eoq';
       shopId: string;
       product: string;
       sku: string;
@@ -25,26 +28,27 @@ export type SimulationLogEntry =
       request: EoqRequest;
     }
   | {
-      type: "abc";
+      type: 'abc';
       shopId: string;
       simId: string;
       createdAt: string;
       data: AbcResponseDto;
-      request: AbcRequestDto
+      request: AbcRequestDto;
     };
 
 // ─── Type Guards ───
 export const isNewsvendorLog = (
   log: SimulationLogEntry
-): log is Extract<SimulationLogEntry, { type: "newsvendor" }> => log.type === "newsvendor";
+): log is Extract<SimulationLogEntry, { type: 'newsvendor' }> =>
+  log.type === 'newsvendor';
 
 export const isEoqLog = (
   log: SimulationLogEntry
-): log is Extract<SimulationLogEntry, { type: "eoq" }> => log.type === "eoq";
+): log is Extract<SimulationLogEntry, { type: 'eoq' }> => log.type === 'eoq';
 
 export const isAbcLog = (
   log: SimulationLogEntry
-): log is Extract<SimulationLogEntry, { type: "abc" }> => log.type === "abc";
+): log is Extract<SimulationLogEntry, { type: 'abc' }> => log.type === 'abc';
 
 // ─── Full Bitácora Hook ───
 /**
@@ -57,7 +61,8 @@ export const isAbcLog = (
  */
 
 export const useSimulationBitacora = (shopId?: string) => {
-  const { newsvendorSimulations, eoqSimulations, abcSimulations } = useSimulationStore();
+  const { newsvendorSimulations, eoqSimulations, abcSimulations } =
+    useSimulationStore();
 
   return useMemo<SimulationLogEntry[]>(() => {
     if (!shopId) return [];
@@ -69,7 +74,7 @@ export const useSimulationBitacora = (shopId?: string) => {
     Object.entries(nv).forEach(([sku, entry]) => {
       if (!entry.request || !entry.response) return; // safety
       logs.push({
-        type: "newsvendor",
+        type: 'newsvendor',
         shopId,
         sku,
         product: entry.request.productName,
@@ -83,13 +88,13 @@ export const useSimulationBitacora = (shopId?: string) => {
     const eoq = eoqSimulations[shopId] ?? {};
     Object.entries(eoq).forEach(([sku, entry]) => {
       logs.push({
-        type: "eoq",
+        type: 'eoq',
         shopId,
         sku,
         product: entry.request.productName,
         createdAt: entry.createdAt,
         data: entry.response,
-        request: entry.request
+        request: entry.request,
       });
     });
 
@@ -97,7 +102,7 @@ export const useSimulationBitacora = (shopId?: string) => {
     const abc = abcSimulations[shopId] ?? {};
     Object.entries(abc).forEach(([simId, entry]) => {
       logs.push({
-        type: "abc",
+        type: 'abc',
         shopId,
         simId,
         createdAt: entry.createdAt,
@@ -107,7 +112,10 @@ export const useSimulationBitacora = (shopId?: string) => {
     });
 
     // Sort newest first
-    return logs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return logs.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   }, [shopId, newsvendorSimulations, eoqSimulations, abcSimulations]);
 };
 

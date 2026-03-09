@@ -1,7 +1,7 @@
-import { useNotificationStore } from "@/store/notifications/useNotificationStore";
-import { Button } from "@/components/ui/Button";
-import { Trash2Icon, BellIcon, ShieldIcon, XIcon } from "lucide-react";
-import { useState } from "react";
+import { useNotificationStore } from '@/store/notifications/useNotificationStore';
+import { Button } from '@/components/ui/Button';
+import { Trash2Icon, BellIcon, ShieldIcon, XIcon } from 'lucide-react';
+import { useState } from 'react';
 import {
   Item,
   ItemActions,
@@ -9,7 +9,10 @@ import {
   ItemDescription,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item"
+} from '@/components/ui/item';
+
+// Display user notification messages with options to select and delete them.
+// Some notifications can be protected and cannot be deleted in guest mode.
 
 const UserNotification = () => {
   const { notifications, removeMany } = useNotificationStore();
@@ -41,7 +44,6 @@ const UserNotification = () => {
 
   return (
     <div className="mx-auto max-w-[650px] px-4 py-20 flex flex-col gap-6">
-
       {/* HEADER */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold sm:text-2xl">Notifications</h2>
@@ -75,20 +77,19 @@ const UserNotification = () => {
             className="flex items-center gap-4 rounded-lg border p-3 sm:p-4"
           >
             {/* CUSTOM CHECKBOX */}
-            <ItemMedia >
+            <ItemMedia>
               <Button
                 // className=" w-6 rounded-md"
                 className={`
                   jcheckbox
-                  ${selected[n.id] ? "selected" : ""}
-                  ${n.protected ? "disabled" : ""}
+                  ${selected[n.id] ? 'selected' : ''}
+                  ${n.protected ? 'disabled' : ''}
                 `}
                 variant="destructive"
                 onClick={() => toggleSelect(n.id)}
                 disabled={n.protected}
               >
-                 {selected[n.id] && <XIcon className="mr-0 h-4 w-4" />}
-               
+                {selected[n.id] && <XIcon className="mr-0 h-4 w-4" />}
               </Button>
             </ItemMedia>
 
@@ -96,16 +97,16 @@ const UserNotification = () => {
             <ItemContent className="flex flex-col gap-1 items-start">
               <ItemTitle className="flex items-start gap-2 text-sm sm:text-base">
                 <span className="shrink-0 mt-0.5 mr-0.5">
-                  {n.type === "success" && (
+                  {n.type === 'success' && (
                     <BellIcon className="h-4 w-4 block text-green-600" />
                   )}
-                  {n.type === "warning" && (
+                  {n.type === 'warning' && (
                     <BellIcon className="h-4 w-4 block text-yellow-600" />
                   )}
-                  {n.type === "error" && (
+                  {n.type === 'error' && (
                     <BellIcon className="h-4 w-4 block text-red-600" />
                   )}
-                  {n.type === "info" && (
+                  {n.type === 'info' && (
                     <BellIcon className="h-4 w-4 block text-blue-600" />
                   )}
                 </span>
@@ -113,7 +114,6 @@ const UserNotification = () => {
                 {/* message column */}
                 <span className="leading-tight">{n.msg}</span>
               </ItemTitle>
-
 
               {/* PROTECTED LABEL */}
               {n.protected && (
@@ -130,6 +130,6 @@ const UserNotification = () => {
       </div>
     </div>
   );
-}
+};
 
-export default UserNotification
+export default UserNotification;

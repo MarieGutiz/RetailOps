@@ -1,4 +1,10 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from 'react-router-dom';
+
+
+/**
+ * Layout wrapper for the Analytics module.
+ * Provides a header with title and description, and renders nested report routes via Outlet.
+ */
 
 const AnalyticsModuleLayout = () => {
   return (
@@ -7,7 +13,8 @@ const AnalyticsModuleLayout = () => {
       <div className="p-4 border-b">
         <h2 className="text-lg font-semibold">Analytics Module</h2>
         <p className="text-sm text-muted-foreground">
-          View performance metrics, simulations insights, and inverse practice strategies.
+          View performance metrics, simulations insights, and inverse practice
+          strategies.
         </p>
       </div>
 
@@ -16,8 +23,7 @@ const AnalyticsModuleLayout = () => {
         <Outlet />
       </div>
     </div>
+  );
+};
 
-  )
-}
-
-export default AnalyticsModuleLayout
+export default AnalyticsModuleLayout;

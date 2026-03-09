@@ -1,6 +1,14 @@
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import React from 'react';
 
+
+//Reusable breadcrum component
 
 const PrimeBreadcrumb = ({
   trail,
@@ -14,7 +22,7 @@ const PrimeBreadcrumb = ({
           <React.Fragment key={index}>
             <BreadcrumbItem>
               <BreadcrumbLink
-                href={item.path || "#"}
+                href={item.path || '#'}
                 className="text-primary/80 hover:underline"
               >
                 {item.label}
@@ -27,8 +35,8 @@ const PrimeBreadcrumb = ({
           </React.Fragment>
         ))}
       </BreadcrumbList>
-</Breadcrumb>
+    </Breadcrumb>
   );
 };
 
-export default PrimeBreadcrumb
+export default PrimeBreadcrumb;

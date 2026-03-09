@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { batchNewsvendorSimulation } from "@/services/api/newsvendor.api";
-import { useApiErrorToast } from "@/services/api/useApiErrorToast";
-import type { NewsvendorRequest } from "@/types/newsvendor-backend";
-import Info from "@/views/helpers/Info";
-import { useState, useEffect, useMemo } from "react";
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { batchNewsvendorSimulation } from '@/services/api/newsvendor.api';
+import { useApiErrorToast } from '@/services/api/useApiErrorToast';
+import type { NewsvendorRequest } from '@/types/newsvendor-backend';
+import Info from '@/views/helpers/Info';
+import { useState, useEffect, useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -14,8 +14,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   ReferenceDot,
-} from "recharts";
-
+} from 'recharts';
 
 interface Props {
   request: NewsvendorRequest;
@@ -30,7 +29,7 @@ interface ChartPoint {
 }
 
 const PROFIT_CURVE_INFO = {
-  title: "Expected Profit Curve",
+  title: 'Expected Profit Curve',
   description: `
 This curve shows expected profit as a function of order quantity.
 
@@ -43,7 +42,6 @@ Right of Q* → excess inventory dominates.
   `,
 };
 
-
 const ProfitCurveChart = ({ request, simId, shopName, optimalQ }: Props) => {
   const [data, setData] = useState<ChartPoint[]>([]);
   const [loading, setLoading] = useState(false);
@@ -54,7 +52,7 @@ const ProfitCurveChart = ({ request, simId, shopName, optimalQ }: Props) => {
 
   useEffect(() => {
     if (!request || optimalQ == null) {
-      setError("Missing simulation parameters.");
+      setError('Missing simulation parameters.');
       return;
     }
 
@@ -86,13 +84,12 @@ const ProfitCurveChart = ({ request, simId, shopName, optimalQ }: Props) => {
         console.error(err);
 
         const message =
-          "Unable to compute expected profit curve. Please try again.";
+          'Unable to compute expected profit curve. Please try again.';
 
         setError(message);
 
         // Toast notification
-        useApiErrorToast(error, "Simulator Error");
-        
+        useApiErrorToast(error, 'Simulator Error');
       } finally {
         setLoading(false);
       }
@@ -101,17 +98,14 @@ const ProfitCurveChart = ({ request, simId, shopName, optimalQ }: Props) => {
     loadCurve();
   }, [request, simId, shopName, optimalQ]);
 
-    const optimalPoint = useMemo(() => {
+  const optimalPoint = useMemo(() => {
     return data.find((p) => p.q === Math.round(optimalQ));
   }, [data, optimalQ]);
 
-
-    return (
+  return (
     <Card className="h-[420px] flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <h3 className="font-semibold">
-          Expected Profit vs Order Quantity
-        </h3>
+        <h3 className="font-semibold">Expected Profit vs Order Quantity</h3>
         <Info content={PROFIT_CURVE_INFO} />
       </CardHeader>
 
@@ -139,28 +133,26 @@ const ProfitCurveChart = ({ request, simId, shopName, optimalQ }: Props) => {
                 dataKey="q"
                 type="number"
                 label={{
-                  value: "Order Quantity (Q)",
-                  position: "insideBottom",
+                  value: 'Order Quantity (Q)',
+                  position: 'insideBottom',
                   offset: -5,
                 }}
               />
 
               <YAxis
                 label={{
-                  value: "Expected Profit",
+                  value: 'Expected Profit',
                   angle: -90,
-                  position: "insideLeft",
+                  position: 'insideLeft',
                 }}
               />
 
               <Tooltip
                 formatter={(value: number) => [
                   value.toLocaleString(),
-                  "Expected Profit",
+                  'Expected Profit',
                 ]}
-                labelFormatter={(label) =>
-                  `Order Quantity: ${label}`
-                }
+                labelFormatter={(label) => `Order Quantity: ${label}`}
               />
 
               <Line
@@ -199,9 +191,7 @@ const ProfitCurveChart = ({ request, simId, shopName, optimalQ }: Props) => {
         )}
       </CardContent>
     </Card>
-    )
+  );
+};
 
-
-}
-
-export default ProfitCurveChart
+export default ProfitCurveChart;

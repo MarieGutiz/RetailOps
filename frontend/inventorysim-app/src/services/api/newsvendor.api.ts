@@ -1,13 +1,19 @@
-import type { NewsvendorMarkers, NewsvendorMarkersRequest, NewsvendorRequest, NewsvendorResponse, NormalPdfRequest, ProfitDistributionResult } from "@/types/newsvendor-backend";
-import api from "./api";
-
+import type {
+  NewsvendorMarkers,
+  NewsvendorMarkersRequest,
+  NewsvendorRequest,
+  NewsvendorResponse,
+  NormalPdfRequest,
+  ProfitDistributionResult,
+} from '@/types/newsvendor-backend';
+import api from './api';
 
 /**
  * Base path for simulator module
  * Matches backend: /api/simulator/newsvendor
  */
-const SIMULATOR_BASE = "/simulator";
-const NEWSVENDOR_BASE = `${SIMULATOR_BASE}/newsvendor`
+const SIMULATOR_BASE = '/simulator';
+const NEWSVENDOR_BASE = `${SIMULATOR_BASE}/newsvendor`;
 /**
  * Run a single Newsvendor simulation
  * → returns optimal Q, expected profit, service level, CR
@@ -19,16 +25,12 @@ export const simulateNewsvendor = async (
   shopName: string
 ): Promise<NewsvendorResponse> => {
   try {
-    const response = await api.post(
-      NEWSVENDOR_BASE,
-      data,
-      {
-        params: { simId, shopName },
-      }
-    );
+    const response = await api.post(NEWSVENDOR_BASE, data, {
+      params: { simId, shopName },
+    });
     return response.data;
   } catch (error) {
-    console.error("Error simulating Newsvendor:", error);
+    console.error('Error simulating Newsvendor:', error);
     throw error;
   }
 };
@@ -45,16 +47,12 @@ export const batchNewsvendorSimulation = async (
   maxQ: number
 ): Promise<Record<number, number>> => {
   try {
-    const response = await api.post(
-      `${NEWSVENDOR_BASE}/batch`,
-      data,
-      {
-        params: { simId, shopName, minQ, maxQ },
-      }
-    );
+    const response = await api.post(`${NEWSVENDOR_BASE}/batch`, data, {
+      params: { simId, shopName, minQ, maxQ },
+    });
     return response.data;
   } catch (error) {
-    console.error("Error running batch Newsvendor simulation:", error);
+    console.error('Error running batch Newsvendor simulation:', error);
     throw error;
   }
 };
@@ -68,16 +66,12 @@ export const fetchNormalPdf = async (
   simId: string
 ): Promise<Record<number, number>> => {
   try {
-    const response = await api.post(
-       `${NEWSVENDOR_BASE}/pdf`,
-      data,
-      {
-        params: { simId },
-      }
-    );
+    const response = await api.post(`${NEWSVENDOR_BASE}/pdf`, data, {
+      params: { simId },
+    });
     return response.data;
   } catch (error) {
-    console.error("Error fetching normal PDF:", error);
+    console.error('Error fetching normal PDF:', error);
     throw error;
   }
 };
@@ -94,7 +88,7 @@ export const fetchProfitDistribution = async (
 ): Promise<ProfitDistributionResult> => {
   try {
     const response = await api.post(
-        `${NEWSVENDOR_BASE}/profit-distribution`,
+      `${NEWSVENDOR_BASE}/profit-distribution`,
       data,
       {
         params: { orderQuantity, simId, shopName },
@@ -102,7 +96,7 @@ export const fetchProfitDistribution = async (
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching profit distribution:", error);
+    console.error('Error fetching profit distribution:', error);
     throw error;
   }
 };
@@ -115,13 +109,10 @@ export const fetchNewsvendorMarkers = async (
   data: NewsvendorMarkersRequest
 ): Promise<NewsvendorMarkers> => {
   try {
-    const response = await api.post(
-        `${NEWSVENDOR_BASE}/markers`,
-      data
-    );
+    const response = await api.post(`${NEWSVENDOR_BASE}/markers`, data);
     return response.data;
   } catch (error) {
-    console.error("Error fetching Newsvendor markers:", error);
+    console.error('Error fetching Newsvendor markers:', error);
     throw error;
   }
 };

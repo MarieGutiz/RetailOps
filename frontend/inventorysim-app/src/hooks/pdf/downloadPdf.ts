@@ -1,6 +1,8 @@
+//  Utility fx to download a PDF file from a blob response
+
 export const downloadPdf = (blob: Blob, filename: string) => {
   const url = window.URL.createObjectURL(blob);
-  const link = document.createElement("a");
+  const link = document.createElement('a');
   link.href = url;
   link.download = filename;
   document.body.appendChild(link);
@@ -8,7 +10,3 @@ export const downloadPdf = (blob: Blob, filename: string) => {
   link.remove();
   window.URL.revokeObjectURL(url);
 };
-
-//use
-// const blob = await generateEoqPdf(payload);
-// downloadPdf(blob, "eoq-report.pdf");

@@ -1,6 +1,6 @@
-import  { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { useCurrency } from "../simulator/newsvendorViews/forms/hooks/useCurrency";
-import { useFormats } from "../simulator/newsvendorViews/forms/hooks/useFormats";
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { useCurrency } from '../simulator/newsvendorViews/forms/hooks/useCurrency';
+import { useFormats } from '../simulator/newsvendorViews/forms/hooks/useFormats';
 
 interface ParameterItemType {
   label: string;
@@ -16,17 +16,15 @@ interface Props {
 
 const GenericParameterCard = ({
   data,
-  title = "Model Parameters",
-  description = "Inputs used for the optimization model",
+  title = 'Model Parameters',
+  description = 'Inputs used for the optimization model',
 }: Props) => {
   const { format } = useCurrency();
   const { capitalizeFirst } = useFormats();
   return (
     <Card className="border shadow-sm">
-      <CardHeader className="pb-2">        
-        <p className="text-xs text-muted-foreground">
-          {description}
-        </p>
+      <CardHeader className="pb-2">
+        <p className="text-xs text-muted-foreground">{description}</p>
       </CardHeader>
 
       <CardContent>
@@ -36,7 +34,7 @@ const GenericParameterCard = ({
               key={index}
               label={item.label}
               value={
-                item.isCurrency && typeof item.value === "number"
+                item.isCurrency && typeof item.value === 'number'
                   ? format(item.value)
                   : capitalizeFirst(item.value as string)
               }
@@ -55,16 +53,10 @@ const ParameterItem = ({
   value,
 }: {
   label: string;
-  value: number | string;   
-
-}) => 
-  (
+  value: number | string;
+}) => (
   <div className="flex flex-col">
-    <span className="text-muted-foreground text-xs">
-      {label}
-    </span>
-    <span className="font-medium text-base">
-      {value}
-    </span>
+    <span className="text-muted-foreground text-xs">{label}</span>
+    <span className="font-medium text-base">{value}</span>
   </div>
 );

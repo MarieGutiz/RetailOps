@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import type { ReactNode } from "react";
+import { Card, CardContent } from '@/components/ui/card';
+import type { ReactNode } from 'react';
 
 interface Props<T> {
   log: T;
@@ -8,11 +8,7 @@ interface Props<T> {
   onSelect: () => void;
 }
 
-function AnalyticsResultCard<T>({
-  header,
-  metrics,
-  onSelect,
-}: Props<T>) {
+function AnalyticsResultCard<T>({ header, metrics, onSelect }: Props<T>) {
   return (
     <Card
       onClick={onSelect}
@@ -23,9 +19,7 @@ function AnalyticsResultCard<T>({
       "
     >
       <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-sm text-muted-foreground">
-          {header}
-        </div>
+        <div className="text-sm text-muted-foreground">{header}</div>
 
         <div className="flex flex-wrap gap-4 text-sm font-medium">
           {metrics}
@@ -33,7 +27,6 @@ function AnalyticsResultCard<T>({
       </CardContent>
     </Card>
   );
-
 }
 
-export default AnalyticsResultCard
+export default AnalyticsResultCard;

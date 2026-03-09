@@ -1,11 +1,20 @@
-import { useEffect, useState } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/label";
-import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import type { NewsvendorFormValues } from "./props/newsvendor.schema";
-import Info from "@/views/helpers/Info";
-
+import { useEffect, useState } from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/label';
+import type {
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+} from 'react-hook-form';
+import type { NewsvendorFormValues } from './props/newsvendor.schema';
+import Info from '@/views/helpers/Info';
 
 interface AdvancedNewsvendorSectionProps {
   register: UseFormRegister<NewsvendorFormValues>;
@@ -17,17 +26,16 @@ interface AdvancedNewsvendorSectionProps {
 }
 
 const SALVAGE_INFO = {
-  title: "Salvage Value",
+  title: 'Salvage Value',
   description:
-    "If leftover products can be sold or reused, enable this. Otherwise, units are wasted.",
+    'If leftover products can be sold or reused, enable this. Otherwise, units are wasted.',
 };
 
 const PENALTY_INFO = {
-  title: "Penalty Cost",
+  title: 'Penalty Cost',
   description:
-    "If unsatisfied demand incurs a penalty (e.g., lost sale or backorder), set the cost here.",
+    'If unsatisfied demand incurs a penalty (e.g., lost sale or backorder), set the cost here.',
 };
-
 
 const AdvancedNewsvendorSection = ({
   register,
@@ -38,18 +46,17 @@ const AdvancedNewsvendorSection = ({
   selectedProduct,
 }: AdvancedNewsvendorSectionProps) => {
   const [enabled, setEnabled] = useState(false);
-  const salvageValue = watch("salvageValue");
-  const penalty = watch("penalty");
+  const salvageValue = watch('salvageValue');
+  const penalty = watch('penalty');
 
   // Sync mode with checkbox or with advanced values
   useEffect(() => {
-    const hasAdvancedValues =
-      (salvageValue ?? 0) > 0 || (penalty ?? 0) > 0;
+    const hasAdvancedValues = (salvageValue ?? 0) > 0 || (penalty ?? 0) > 0;
 
     if (enabled || hasAdvancedValues) {
-      setValue("mode", "ADVANCED");
+      setValue('mode', 'ADVANCED');
     } else {
-      setValue("mode", "CLASSIC");
+      setValue('mode', 'CLASSIC');
     }
   }, [enabled, salvageValue, penalty, setValue]);
 
@@ -72,8 +79,8 @@ const AdvancedNewsvendorSection = ({
       <Accordion
         type="single"
         collapsible
-        value={enabled ? "advanced" : ""}
-        onValueChange={(val) => setEnabled(val === "advanced")}
+        value={enabled ? 'advanced' : ''}
+        onValueChange={(val) => setEnabled(val === 'advanced')}
         className="mt-2"
         disabled={!selectedProduct || disabled}
       >
@@ -84,13 +91,13 @@ const AdvancedNewsvendorSection = ({
             <div className="space-y-2">
               <div className="flex items-center gap-1">
                 <Label htmlFor="salvageValue">Salvage Value</Label>
-                 <Info content={SALVAGE_INFO} />
+                <Info content={SALVAGE_INFO} />
               </div>
               <Input
                 id="salvageValue"
                 step="any"
                 type="number"
-                {...register("salvageValue", { valueAsNumber: true })}
+                {...register('salvageValue', { valueAsNumber: true })}
                 disabled={!selectedProduct || disabled || !enabled}
               />
               {errors.salvageValue && (
@@ -104,13 +111,13 @@ const AdvancedNewsvendorSection = ({
             <div className="space-y-2">
               <div className="flex items-center gap-1">
                 <Label htmlFor="penalty">Penalty Cost</Label>
-                 <Info content={PENALTY_INFO} />
+                <Info content={PENALTY_INFO} />
               </div>
               <Input
                 id="penalty"
                 step="any"
                 type="number"
-                {...register("penalty", { valueAsNumber: true })}
+                {...register('penalty', { valueAsNumber: true })}
                 disabled={!selectedProduct || disabled || !enabled}
               />
               {errors.penalty && (
@@ -124,8 +131,6 @@ const AdvancedNewsvendorSection = ({
       </Accordion>
     </div>
   );
+};
 
-
-}
-
-export default AdvancedNewsvendorSection
+export default AdvancedNewsvendorSection;

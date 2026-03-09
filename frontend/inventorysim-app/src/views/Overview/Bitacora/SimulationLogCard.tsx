@@ -1,38 +1,37 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { SimulationLogEntry } from "../hooks/useSimulationBitacora";
-import MetricCard from "@/views/simulator/newsvendorViews/ResultsPanel/MetricCard";
-import { useCurrency } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { SimulationLogEntry } from '../hooks/useSimulationBitacora';
+import MetricCard from '@/views/simulator/newsvendorViews/ResultsPanel/MetricCard';
+import { useCurrency } from '@/views/simulator/newsvendorViews/forms/hooks/useCurrency';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   entry: SimulationLogEntry;
 }
 
-
 const SimulationLogCard = ({ entry }: Props) => {
   const { format } = useCurrency();
 
   const getRiskColor = () => {
-    if (entry.type === "abc") {
+    if (entry.type === 'abc') {
       const aPct = entry.data.summary.a.valuePct;
-      if (aPct > 85) return "destructive";
-      if (aPct > 75) return "secondary";
-      return "default";
+      if (aPct > 85) return 'destructive';
+      if (aPct > 75) return 'secondary';
+      return 'default';
     }
 
-    if (entry.type === "newsvendor") {
+    if (entry.type === 'newsvendor') {
       const stockout = 1 - entry.data.serviceLevel;
-      if (stockout > 0.15) return "destructive";
-      if (stockout > 0.08) return "secondary";
-      return "secondary";
+      if (stockout > 0.15) return 'destructive';
+      if (stockout > 0.08) return 'secondary';
+      return 'secondary';
     }
 
-    return "default";
+    return 'default';
   };
 
   const renderMetrics = () => {
     switch (entry.type) {
-      case "abc":
+      case 'abc':
         return (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             <MetricCard
@@ -55,7 +54,7 @@ const SimulationLogCard = ({ entry }: Props) => {
           </div>
         );
 
-      case "eoq":
+      case 'eoq':
         return (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             <MetricCard
@@ -70,7 +69,7 @@ const SimulationLogCard = ({ entry }: Props) => {
           </div>
         );
 
-      case "newsvendor":
+      case 'newsvendor':
         return (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             <MetricCard
@@ -92,14 +91,14 @@ const SimulationLogCard = ({ entry }: Props) => {
 
   const cap = () => {
     switch (entry.type) {
-      case "abc":
-        return "ABC";
-      case "eoq":
-        return "EOQ";
-      case "newsvendor":
-        return "Newsvendor";
+      case 'abc':
+        return 'ABC';
+      case 'eoq':
+        return 'EOQ';
+      case 'newsvendor':
+        return 'Newsvendor';
       default:
-        return "";
+        return '';
     }
   };
 
@@ -109,29 +108,24 @@ const SimulationLogCard = ({ entry }: Props) => {
       <span className="absolute left-0 top-6 h-3 w-3 rounded-full bg-amber-500" />
 
       <Card className="mb-4 sm:mb-6 shadow-sm hover:shadow-md transition">
-      <CardHeader className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col">
-          <CardTitle className="capitalize text-sm sm:text-base">
-            {cap()} Simulation
-          </CardTitle>
+        <CardHeader className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col">
+            <CardTitle className="capitalize text-sm sm:text-base">
+              {cap()} Simulation
+            </CardTitle>
 
-          {(entry.type === "eoq" || entry.type === "newsvendor") && (
-            <div className="text-xs text-muted-foreground flex flex-col">
-              <span>
-                {entry.product}
-              </span>
-              <span className="font-mono text-[11px] text-muted-foreground/80">
-                SKU: {entry.sku}
-              </span>
-            </div>
-          )}
+            {(entry.type === 'eoq' || entry.type === 'newsvendor') && (
+              <div className="text-xs text-muted-foreground flex flex-col">
+                <span>{entry.product}</span>
+                <span className="font-mono text-[11px] text-muted-foreground/80">
+                  SKU: {entry.sku}
+                </span>
+              </div>
+            )}
+          </div>
 
-        </div>
-
-        <Badge variant={getRiskColor()}>
-          {entry.type.toUpperCase()}
-        </Badge>
-      </CardHeader>
+          <Badge variant={getRiskColor()}>{entry.type.toUpperCase()}</Badge>
+        </CardHeader>
 
         <CardContent className="space-y-3 sm:space-y-4">
           <div className="text-xs text-muted-foreground">
@@ -142,10 +136,7 @@ const SimulationLogCard = ({ entry }: Props) => {
         </CardContent>
       </Card>
     </div>
-  
-    );
+  );
+};
 
-
-}
-
-export default SimulationLogCard
+export default SimulationLogCard;

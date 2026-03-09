@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from '@/components/ui/skeleton';
 
 const ProductTableHeaderSkeleton = () => {
   return (
@@ -12,7 +12,7 @@ const ProductTableHeaderSkeleton = () => {
         <Skeleton className="h-9 w-[100px] rounded-md" />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductTableHeaderSkeleton
+export default ProductTableHeaderSkeleton;

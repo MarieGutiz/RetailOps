@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import * as React from "react"
+import * as React from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar';
 import {
   LayoutDashboardIcon,
   ClipboardListIcon,
@@ -21,17 +21,19 @@ import {
   MenuIcon,
   SearchIcon,
   UserCircleIcon,
-} from "lucide-react"
-import clsx from "clsx"
+} from 'lucide-react';
+import clsx from 'clsx';
+
+//How the dasboard page is structured.
 
 // --- Navigation items ---
 const navItems = [
-  { title: "Dashboard", id: "dashboard", icon: LayoutDashboardIcon },
-  { title: "Inventory", id: "inventory", icon: ClipboardListIcon },
-  { title: "Analytics", id: "analytics", icon: BarChartIcon },
-  { title: "Reports", id: "reports", icon: FileTextIcon },
-  { title: "Team", id: "team", icon: UsersIcon },
-]
+  { title: 'Dashboard', id: 'dashboard', icon: LayoutDashboardIcon },
+  { title: 'Inventory', id: 'inventory', icon: ClipboardListIcon },
+  { title: 'Analytics', id: 'analytics', icon: BarChartIcon },
+  { title: 'Reports', id: 'reports', icon: FileTextIcon },
+  { title: 'Team', id: 'team', icon: UsersIcon },
+];
 
 // --- Sidebar Component ---
 const AppSidebar = ({
@@ -40,10 +42,10 @@ const AppSidebar = ({
   activePage,
   setActivePage,
 }: {
-  isCollapsed: boolean
-  setIsCollapsed: (v: boolean) => void
-  activePage: string
-  setActivePage: (v: string) => void
+  isCollapsed: boolean;
+  setIsCollapsed: (v: boolean) => void;
+  activePage: string;
+  setActivePage: (v: string) => void;
 }) => {
   return (
     <Sidebar collapsible="offcanvas" className="border-r">
@@ -64,23 +66,23 @@ const AppSidebar = ({
       <SidebarContent>
         <SidebarMenu>
           {navItems.map((item) => {
-            const active = activePage === item.id
+            const active = activePage === item.id;
             return (
               <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton
                   onClick={() => setActivePage(item.id)}
                   className={clsx(
-                    "flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-200 w-full text-left",
+                    'flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-200 w-full text-left',
                     active
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                      : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                      : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                   )}
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {!isCollapsed && <span>{item.title}</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            )
+            );
           })}
         </SidebarMenu>
       </SidebarContent>
@@ -91,8 +93,8 @@ const AppSidebar = ({
         </SidebarFooter>
       )}
     </Sidebar>
-  )
-}
+  );
+};
 
 // --- Top Header (Right Area) ---
 const TopHeader = () => {
@@ -118,8 +120,8 @@ const TopHeader = () => {
         <UserCircleIcon className="h-6 w-6 text-gray-700" />
       </div>
     </div>
-  )
-}
+  );
+};
 
 // --- Main Content Container ---
 const MainContent = ({ children }: { children: React.ReactNode }) => {
@@ -127,17 +129,17 @@ const MainContent = ({ children }: { children: React.ReactNode }) => {
     <div className="p-6 overflow-y-auto h-[calc(100vh-3.5rem)] bg-gray-50">
       {children}
     </div>
-  )
-}
+  );
+};
 export const RetailOpsDashboard = () => {
-  const [isCollapsed, setIsCollapsed] = React.useState(false)
-  const [activePage, setActivePage] = React.useState("dashboard")
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [activePage, setActivePage] = React.useState('dashboard');
 
   return (
     <SidebarProvider
       style={
         {
-          "--sidebar-width": isCollapsed ? "5rem" : "16rem",
+          '--sidebar-width': isCollapsed ? '5rem' : '16rem',
         } as React.CSSProperties
       }
     >
@@ -147,10 +149,13 @@ export const RetailOpsDashboard = () => {
         activePage={activePage}
         setActivePage={setActivePage}
       />
-      <SidebarInset className="transition-all duration-300 flex flex-col h-screen" style={{width:"100%"}}>
+      <SidebarInset
+        className="transition-all duration-300 flex flex-col h-screen"
+        style={{ width: '100%' }}
+      >
         <TopHeader />
         <MainContent>
-          {activePage === "dashboard" && (
+          {activePage === 'dashboard' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 border rounded-md bg-white shadow-sm">
                 EOQ Chart
@@ -167,13 +172,13 @@ export const RetailOpsDashboard = () => {
             </div>
           )}
 
-          {activePage === "inventory" && (
+          {activePage === 'inventory' && (
             <div className="p-4 border rounded-md bg-white shadow-sm">
               Inventory Management Page
             </div>
           )}
 
-          {activePage === "analytics" && (
+          {activePage === 'analytics' && (
             <div className="p-4 border rounded-md bg-white shadow-sm">
               Analytics & Charts Page
             </div>
@@ -181,5 +186,5 @@ export const RetailOpsDashboard = () => {
         </MainContent>
       </SidebarInset>
     </SidebarProvider>
-  )
-}
+  );
+};

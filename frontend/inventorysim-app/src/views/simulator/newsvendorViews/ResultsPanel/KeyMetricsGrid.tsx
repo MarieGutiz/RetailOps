@@ -1,11 +1,10 @@
-import type { NewsvendorResponse } from "@/types/newsvendor-backend"
-import MetricCard from "./MetricCard";
+import type { NewsvendorResponse } from '@/types/newsvendor-backend';
+import MetricCard from './MetricCard';
 
 interface Props {
   result: NewsvendorResponse;
   format: (value: number) => string;
 }
-
 
 const KeyMetricsGrid = ({ result, format }: Props) => {
   return (
@@ -28,6 +27,6 @@ const KeyMetricsGrid = ({ result, format }: Props) => {
       />
     </div>
   );
-}
+};
 
-export default KeyMetricsGrid
+export default KeyMetricsGrid;

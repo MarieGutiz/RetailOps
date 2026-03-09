@@ -1,14 +1,17 @@
-import type { FC } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/Button";
-import { useNavigate } from "react-router-dom";
+import type { FC } from 'react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/Button';
+import { useNavigate } from 'react-router-dom';
 
 interface NoSimulationLogsProps {
-  simulationType: "Newsvendor" | "EOQ" | "ABC";
+  simulationType: 'Newsvendor' | 'EOQ' | 'ABC';
   navigateTo?: string; // optional navigation path
 }
 
-const NoSimulationLogs: FC<NoSimulationLogsProps> = ({ simulationType, navigateTo }) => {
+const NoSimulationLogs: FC<NoSimulationLogsProps> = ({
+  simulationType,
+  navigateTo,
+}) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -21,20 +24,17 @@ const NoSimulationLogs: FC<NoSimulationLogsProps> = ({ simulationType, navigateT
         {simulationType} Analytics
       </h3>
       <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-md">
-        No historical {simulationType.toLowerCase()} simulations found. You can go ahead and create some simulations to explore results and get familiar with the system.
+        No historical {simulationType.toLowerCase()} simulations found. You can
+        go ahead and create some simulations to explore results and get familiar
+        with the system.
       </p>
       {navigateTo && (
-        <Button
-          onClick={handleClick}
-          className="jbtn-success w-full sm:w-auto"
-        >
+        <Button onClick={handleClick} className="jbtn-success w-full sm:w-auto">
           Go to {simulationType} Simulation
         </Button>
       )}
     </Card>
-
   );
 };
-
 
 export default NoSimulationLogs;

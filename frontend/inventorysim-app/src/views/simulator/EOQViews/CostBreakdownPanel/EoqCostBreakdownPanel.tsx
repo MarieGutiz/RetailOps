@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { EoqCurveResponse } from "@/types/eoq-backend";
-import EoqCostCurveChart from "./EoqCostCurveChart";
-import { useApiErrorToast } from "@/services/api/useApiErrorToast";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { EoqCurveResponse } from '@/types/eoq-backend';
+import EoqCostCurveChart from './EoqCostCurveChart';
+import { useApiErrorToast } from '@/services/api/useApiErrorToast';
 
 interface Props {
   curve: EoqCurveResponse | null;
@@ -15,7 +15,7 @@ const EoqCostBreakdownPanel: React.FC<Props> = ({
   error,
 }) => {
   // Toast if API error exists
-  useApiErrorToast(error, "EOQ Curve Error");
+  useApiErrorToast(error, 'EOQ Curve Error');
 
   return (
     <Card className="rounded-2xl shadow-sm">
@@ -46,17 +46,14 @@ const EoqCostBreakdownPanel: React.FC<Props> = ({
         )}
 
         {/* Empty state */}
-        {!isLoading &&
-          !error &&
-          (!curve || curve.curvePoints.length === 0) && (
-            <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
-              No cost curve data available.
-            </div>
-          )}
+        {!isLoading && !error && (!curve || curve.curvePoints.length === 0) && (
+          <div className="flex-1 flex items-center justify-center text-sm text-gray-500">
+            No cost curve data available.
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 };
 
-
-export default EoqCostBreakdownPanel
+export default EoqCostBreakdownPanel;

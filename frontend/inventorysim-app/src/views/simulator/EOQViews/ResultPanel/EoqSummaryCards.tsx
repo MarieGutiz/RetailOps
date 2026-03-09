@@ -1,15 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { EoqResponse } from "@/types/eoq-backend";
-import { formatInt } from "@/views/simulator/newsvendorViews/forms/hooks/useCurrency";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { EoqResponse } from '@/types/eoq-backend';
+import { formatInt } from '@/views/simulator/newsvendorViews/forms/hooks/useCurrency';
 
 interface Props {
   result: EoqResponse;
   format: (value: number) => string;
 }
 
-
 const EoqSummaryCards: React.FC<Props> = ({ result, format }) => {
-
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {/* EOQ */}
@@ -49,7 +47,6 @@ const EoqSummaryCards: React.FC<Props> = ({ result, format }) => {
       </Card>
     </div>
   );
-}
+};
 
-
-export default EoqSummaryCards
+export default EoqSummaryCards;

@@ -1,19 +1,19 @@
-import { useSimulatorStore } from "@/store/user/useSimulatorStore";
-import SettingsCombobox from "../components/main/outlet/dashboard/SettingsComboboxProps";
-import { Bitcoin, DollarSign, Euro, PoundSterling } from "lucide-react";
+import { useSimulatorStore } from '@/store/user/useSimulatorStore';
+import SettingsCombobox from '../components/main/outlet/dashboard/SettingsComboboxProps';
+import { Bitcoin, DollarSign, Euro, PoundSterling } from 'lucide-react';
 
 /* ===========================
    Currency
 =========================== */
 
 export const currencyOptions = [
-  { value: "$", label: "Dollar", icon: DollarSign },
-  { value: "€", label: "Euro", icon: Euro },
-  { value: "£", label: "Pound", icon: PoundSterling },
-  { value: "₿", label: "Bitcoin", icon: Bitcoin },
+  { value: '$', label: 'Dollar', icon: DollarSign },
+  { value: '€', label: 'Euro', icon: Euro },
+  { value: '£', label: 'Pound', icon: PoundSterling },
+  { value: '₿', label: 'Bitcoin', icon: Bitcoin },
 ] as const;
 
-type Currency = typeof currencyOptions[number]["value"];
+type Currency = (typeof currencyOptions)[number]['value'];
 export const CurrencySetting = () => {
   const { currency, setCurrency } = useSimulatorStore();
 
@@ -33,12 +33,12 @@ export const CurrencySetting = () => {
 =========================== */
 
 export const unitOptions = [
-  { value: "pcs", label: "Pieces (pcs)" },
-  { value: "kg", label: "Kilograms (kg)" },
-  { value: "liters", label: "Liters (L)" },
+  { value: 'pcs', label: 'Pieces (pcs)' },
+  { value: 'kg', label: 'Kilograms (kg)' },
+  { value: 'liters', label: 'Liters (L)' },
 ] as const;
 
-type Unit = typeof unitOptions[number]["value"];
+type Unit = (typeof unitOptions)[number]['value'];
 
 export const UnitSetting = () => {
   const { unit, setUnit } = useSimulatorStore();
@@ -59,12 +59,12 @@ export const UnitSetting = () => {
 =========================== */
 
 const horizonOptions = [
-  { value: "7", label: "7 days" },
-  { value: "30", label: "30 days" },
-  { value: "90", label: "90 days" },
+  { value: '7', label: '7 days' },
+  { value: '30', label: '30 days' },
+  { value: '90', label: '90 days' },
 ] as const;
 
-type Horizon = typeof horizonOptions[number]["value"];
+type Horizon = (typeof horizonOptions)[number]['value'];
 
 export const HorizonSetting = () => {
   const { horizon, setHorizon } = useSimulatorStore();
@@ -85,11 +85,11 @@ export const HorizonSetting = () => {
 =========================== */
 
 const policyOptions = [
-  { value: "EOQ", label: "EOQ" },
-  { value: "Newsvendor", label: "Newsvendor" },
+  { value: 'EOQ', label: 'EOQ' },
+  { value: 'Newsvendor', label: 'Newsvendor' },
 ] as const;
 
-type Policy = typeof policyOptions[number]["value"];
+type Policy = (typeof policyOptions)[number]['value'];
 
 export const PolicySetting = () => {
   const { stockPolicy, setStockPolicy } = useSimulatorStore();

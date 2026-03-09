@@ -1,4 +1,4 @@
-import type { Product } from "./products";
+import type { Product } from './products';
 
 export interface ABCResult {
   categoryA: Product[];
@@ -9,7 +9,7 @@ export interface ABCResult {
     totalValue: number;
   };
 }
-export interface ABCData{
+export interface ABCData {
   product: Product;
   quantity: number;
 }
@@ -19,35 +19,33 @@ export interface ABCTableRow {
   quantity: number;
   totalValue: number;
   cumulative: number;
-  category: "A" | "B" | "C";
+  category: 'A' | 'B' | 'C';
 }
 
 export interface ABCCategorySummary {
-  count: number
-  valuePct: number
+  count: number;
+  valuePct: number;
 }
-
 
 export interface ABCSummary {
-  totalValue: number
-  A: ABCCategorySummary
-  B: ABCCategorySummary
-  C: ABCCategorySummary
+  totalValue: number;
+  A: ABCCategorySummary;
+  B: ABCCategorySummary;
+  C: ABCCategorySummary;
 }
 
-
 export interface ParetoPoint {
-  name: string
-  metric: number
-  cumulativePct: number
-  category: "A" | "B" | "C"
-  categoryContributionPct?: number
+  name: string;
+  metric: number;
+  cumulativePct: number;
+  category: 'A' | 'B' | 'C';
+  categoryContributionPct?: number;
 }
 
 //Delta
 
 export type ABCDelta = {
-  A: number
-  B: number
-  C: number
-} | null
+  A: number;
+  B: number;
+  C: number;
+} | null;

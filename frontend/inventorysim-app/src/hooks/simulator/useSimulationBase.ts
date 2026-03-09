@@ -1,7 +1,9 @@
-import { useApiErrorToast } from "@/services/api/useApiErrorToast";
-import { useProductStore } from "@/store/inventory/useProductStore";
-import { getOrCreateSimId } from "@/utils/simulation";
-import { useMemo, useState } from "react";
+import { useApiErrorToast } from '@/services/api/useApiErrorToast';
+import { useProductStore } from '@/store/inventory/useProductStore';
+import { getOrCreateSimId } from '@/utils/simulation';
+import { useMemo, useState } from 'react';
+
+// Base hook for managing simulation state, including sim ID, running status and error handling.
 
 interface UseSimulationBaseResult<TRequest> {
   simId: string;
@@ -11,7 +13,9 @@ interface UseSimulationBaseResult<TRequest> {
   setIsRunning: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<unknown>>;
 
-  sanitizeRequest: (request: TRequest & { saveToHistory?: boolean }) => TRequest;
+  sanitizeRequest: (
+    request: TRequest & { saveToHistory?: boolean }
+  ) => TRequest;
 }
 
 export function useSimulationBase<TRequest>(

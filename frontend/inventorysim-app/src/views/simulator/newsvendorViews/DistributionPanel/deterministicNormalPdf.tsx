@@ -1,5 +1,13 @@
-import { useMemo } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from "recharts";
+import { useMemo } from 'react';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ReferenceLine,
+} from 'recharts';
 
 interface Props {
   mean: number;
@@ -41,11 +49,15 @@ export const DemandPdfChartDemo = ({ mean, stdDeviation, optimalQ }: Props) => {
   }, [mean, stdDeviation]);
 
   // Filter points for shading under Q*
-  const shadedData = useMemo(() => data.map(p => ({
-    demand: p.demand,
-    shaded: p.demand <= optimalQ ? p.density : 0, // zero after Q*
-    density: p.density,
-  })), [data, optimalQ]);
+  const shadedData = useMemo(
+    () =>
+      data.map((p) => ({
+        demand: p.demand,
+        shaded: p.demand <= optimalQ ? p.density : 0, // zero after Q*
+        density: p.density,
+      })),
+    [data, optimalQ]
+  );
 
   return (
     <div className="h-[350px] w-full">
@@ -55,30 +67,35 @@ export const DemandPdfChartDemo = ({ mean, stdDeviation, optimalQ }: Props) => {
         width={700}
         height={300}
         margin={{ top: 20, right: 30, bottom: 20, left: 0 }}
-        >
+      >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="demand" type="number"/>
+        <XAxis dataKey="demand" type="number" />
         <YAxis />
         <Tooltip />
 
         {/* Shaded area up to optimalQ */}
         <Area
-            type="monotone"
-            dataKey="shaded"
-            fill="#3b82f6"
-            fillOpacity={0.25}
-            stroke="none"
+          type="monotone"
+          dataKey="shaded"
+          fill="#3b82f6"
+          fillOpacity={0.25}
+          stroke="none"
         />
 
         {/* Full bell curve */}
         {/* <Area type="monotone" dataKey="density" stroke="#10b981" fill="none" dot={false} /> */}
-            {/* <Area type="monotone" dataKey="shaded" fill="#3b82f6" fillOpacity={0.25} stroke="none" /> */}
-            <Area type="monotone" dataKey="density" stroke="#10b981" fill="none" dot={true} />
+        {/* <Area type="monotone" dataKey="shaded" fill="#3b82f6" fillOpacity={0.25} stroke="none" /> */}
+        <Area
+          type="monotone"
+          dataKey="density"
+          stroke="#10b981"
+          fill="none"
+          dot={true}
+        />
 
-            <ReferenceLine x={mean} stroke="orange" label="Mean" isFront={true} />
-            <ReferenceLine x={optimalQ} stroke="red" label="Q*" isFront={true} />
-        </AreaChart>
-
+        <ReferenceLine x={mean} stroke="orange" label="Mean" isFront={true} />
+        <ReferenceLine x={optimalQ} stroke="red" label="Q*" isFront={true} />
+      </AreaChart>
     </div>
   );
 };

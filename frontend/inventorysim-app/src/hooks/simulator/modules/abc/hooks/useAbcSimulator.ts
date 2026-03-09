@@ -1,10 +1,14 @@
-import { useSimulationBase } from "@/hooks/simulator/useSimulationBase";
-import { simulateAbc } from "@/services/api/abc.api";
-import { useSimulationStore } from "@/store/simulations/useSimulationStore";
-import type { AbcResponseDto, AbcRequestDto } from "@/types/abc-backend";
-import { v4 as uuidv4 } from "uuid"; // for unique sim IDs
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { useSimulationBase } from '@/hooks/simulator/useSimulationBase';
+import { simulateAbc } from '@/services/api/abc.api';
+import { useSimulationStore } from '@/store/simulations/useSimulationStore';
+import type { AbcResponseDto, AbcRequestDto } from '@/types/abc-backend';
+import { v4 as uuidv4 } from 'uuid'; // for unique sim IDs
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+
+
+//This hook manages the state and logic for the ABC sim, including running simulations,
+// global store(in the simulation store) for later retrieval.
 
 interface UseAbcSimulatorResult {
   simId: string | null;
@@ -25,8 +29,14 @@ interface UseAbcSimulatorResult {
 }
 
 export function useAbcSimulator(shopId: string): UseAbcSimulatorResult {
-  const { simId: baseSimId, isRunning, error, setIsRunning, setError, sanitizeRequest } =
-    useSimulationBase<AbcRequestDto>(shopId, "ABC Simulator Error");
+  const {
+    simId: baseSimId,
+    isRunning,
+    error,
+    setIsRunning,
+    setError,
+    sanitizeRequest,
+  } = useSimulationBase<AbcRequestDto>(shopId, 'ABC Simulator Error');
 
   const [response, setResponse] = useState<AbcResponseDto | null>(null);
   const [lastRequest, setLastRequest] = useState<AbcRequestDto | null>(null);
@@ -35,7 +45,9 @@ export function useAbcSimulator(shopId: string): UseAbcSimulatorResult {
   const addAbcSimulation = useSimulationStore((s) => s.addAbcSimulation);
   const setLastAbcSimId = useSimulationStore((s) => s.setLastAbcSimId);
   const abcSimulations = useSimulationStore((s) => s.abcSimulations);
-  const lastAbcSimId = useSimulationStore((s) => s.lastAbcSimId[shopId] ?? null);
+  const lastAbcSimId = useSimulationStore(
+    (s) => s.lastAbcSimId[shopId] ?? null
+  );
 
   // ───────── Hydrate last persisted simulation ─────────
   useEffect(() => {
@@ -52,7 +64,7 @@ export function useAbcSimulator(shopId: string): UseAbcSimulatorResult {
   // ───────── Run new simulation ─────────
   const run = async (request: AbcRequestDto) => {
     if (!request.items || request.items.length === 0) {
-      toast.error("No items provided in the ABC request.");
+      toast.error('No items provided in the ABC request.');
       return;
     }
 
@@ -95,5 +107,4 @@ export function useAbcSimulator(shopId: string): UseAbcSimulatorResult {
     run,
     abcSimulations,
   };
-
 }

@@ -1,11 +1,11 @@
-import { useApiErrorToast } from "@/services/api/useApiErrorToast";
-import { useShopStore } from "@/store/shop/useShopStore";
-import { shopId, type AutogenShopLifecycle, type ShopId } from "@/types/shop";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useApiErrorToast } from '@/services/api/useApiErrorToast';
+import { useShopStore } from '@/store/shop/useShopStore';
+import { shopId, type AutogenShopLifecycle, type ShopId } from '@/types/shop';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 // Hook to watch multiple shops and detect backend errors.
 
-export type AutogenLibraryId = "FLORIST" | "CAFETERIA";
+export type AutogenLibraryId = 'FLORIST' | 'CAFETERIA';
 
 /**
  * Ensures AUTOGEN shops exist in the store.
@@ -17,16 +17,16 @@ export function useEnsureAutogenShops(libraries: AutogenLibraryId[]) {
     libraries.forEach((lib) => {
       const id = shopId(lib) as ShopId;
       const slice = useShopStore.getState().shops[id];
-      const now = Date.now()
+      const now = Date.now();
       if (!slice) {
         setShop({
           id,
           name: lib,
-          kind: "AUTOGEN",
-          lifecycle: "CREATED",
+          kind: 'AUTOGEN',
+          lifecycle: 'CREATED',
           createdAt: now,
-          lastUpdated:now,
-          lastSavedAt:now
+          lastUpdated: now,
+          lastSavedAt: now,
         });
       }
     });
@@ -39,7 +39,7 @@ export function useEnsureAutogenShops(libraries: AutogenLibraryId[]) {
 
 export type AutogenAvailabilityEntry = {
   lib: AutogenLibraryId;
-  lifecycle: "CREATED" | "IMPORTING" | "READY" | "FAILED";
+  lifecycle: 'CREATED' | 'IMPORTING' | 'READY' | 'FAILED';
   unavailable: boolean;
   available: boolean;
   loading: boolean;
@@ -55,7 +55,6 @@ export function useAutogenAvailability(
   libraries: AutogenLibraryId[],
   enabled: boolean
 ): AutogenAvailabilityResult {
-
   const shopStore = useShopStore();
   const [armed, setArmed] = useState(false);
   const fetchedRef = useRef<Set<ShopId>>(new Set());
@@ -69,27 +68,26 @@ export function useAutogenAvailability(
   }, [enabled, libraries]);
 
   // Prepare slices
-const slices = useMemo(() => {
-  return libraries
-    .map((lib) => {
-      const id = shopId(lib) as ShopId;
-      const slice = shopStore.shops[id];
+  const slices = useMemo(() => {
+    return libraries
+      .map((lib) => {
+        const id = shopId(lib) as ShopId;
+        const slice = shopStore.shops[id];
 
-      if (!slice || slice.kind !== "AUTOGEN") return null;
+        if (!slice || slice.kind !== 'AUTOGEN') return null;
 
-      // Narrow lifecycle here
-      const lifecycle = slice.lifecycle as AutogenShopLifecycle;
+        // Narrow lifecycle here
+        const lifecycle = slice.lifecycle as AutogenShopLifecycle;
 
-      return { lib, id, slice, lifecycle };
-    })
-    .filter(Boolean) as {
+        return { lib, id, slice, lifecycle };
+      })
+      .filter(Boolean) as {
       lib: AutogenLibraryId;
       id: ShopId;
-      slice: typeof shopStore.shops[ShopId];
+      slice: (typeof shopStore.shops)[ShopId];
       lifecycle: AutogenShopLifecycle;
     }[];
-}, [libraries, shopStore.shops]);
-
+  }, [libraries, shopStore.shops]);
 
   // Trigger backend ABC fetch
   useEffect(() => {
@@ -98,7 +96,7 @@ const slices = useMemo(() => {
     slices.forEach(({ id, slice, lifecycle }) => {
       const hydrated = slice?.hydrated ?? false;
       const shouldFetch =
-        (!hydrated || lifecycle === "CREATED" || lifecycle === "IMPORTING") &&
+        (!hydrated || lifecycle === 'CREATED' || lifecycle === 'IMPORTING') &&
         !fetchedRef.current.has(id);
 
       if (!shouldFetch) return;
@@ -106,7 +104,11 @@ const slices = useMemo(() => {
       fetchedRef.current.add(id);
 
       shopStore
-        .runABC({ executionMode: "BACKEND", simulationType: "classic", shopId: id })
+        .runABC({
+          executionMode: 'BACKEND',
+          simulationType: 'classic',
+          shopId: id,
+        })
         .catch((err) => {
           errorRef.current = slice?.abc?.error ?? err;
         });
@@ -114,7 +116,7 @@ const slices = useMemo(() => {
   }, [armed, slices, shopStore]);
 
   // Show toast
-  useApiErrorToast(errorRef.current, "Autogen Shop");
+  useApiErrorToast(errorRef.current, 'Autogen Shop');
 
   // Build availability
   const perLibrary = slices.map(({ lib, slice, lifecycle }) => {
@@ -123,8 +125,8 @@ const slices = useMemo(() => {
     return {
       lib,
       lifecycle,
-      unavailable: armed && (lifecycle === "FAILED" || !!abcError),
-      available: armed && lifecycle === "READY",
+      unavailable: armed && (lifecycle === 'FAILED' || !!abcError),
+      available: armed && lifecycle === 'READY',
       loading: abcLoading,
     };
   });
@@ -135,6 +137,3 @@ const slices = useMemo(() => {
     perLibrary,
   };
 }
-
-
-

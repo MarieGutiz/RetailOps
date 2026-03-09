@@ -1,15 +1,18 @@
 //Create axios instance
-import axios, { AxiosError } from "axios";  
+import axios, { AxiosError } from 'axios';
 
-// Errors
+
+//This file defines a centralized API client using axios,
+//  which is configured to communicate with the Spring Boot backend.
+
+// Error Types for consistent error handling across the app
 export type ApiErrorCode =
-  | "NETWORK_ERROR"
-  | "NOT_FOUND"
-  | "SERVER_ERROR"
-  | "UNKNOWN";
+  | 'NETWORK_ERROR'
+  | 'NOT_FOUND'
+  | 'SERVER_ERROR'
+  | 'UNKNOWN';
 
-
-  export class ApiError extends Error {
+export class ApiError extends Error {
   code: ApiErrorCode;
   status?: number;
 
@@ -20,14 +23,13 @@ export type ApiErrorCode =
   }
 }
 
-
 // Base URL of your Spring Boot backend
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = 'http://localhost:8080/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -36,12 +38,19 @@ api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     const apiError = !error.response
-      ? new ApiError("Cannot connect to backend, please try again later.", "NETWORK_ERROR")
+      ? new ApiError(
+          'Cannot connect to backend, please try again later.',
+          'NETWORK_ERROR'
+        )
       : error.response.status === 404
-      ? new ApiError("Endpoint not found", "NOT_FOUND", error.response.status)
-      : error.response.status >= 500
-      ? new ApiError("Server error", "SERVER_ERROR", error.response.status)
-      : new ApiError("Unexpected API error", "UNKNOWN", error.response.status);
+        ? new ApiError('Endpoint not found', 'NOT_FOUND', error.response.status)
+        : error.response.status >= 500
+          ? new ApiError('Server error', 'SERVER_ERROR', error.response.status)
+          : new ApiError(
+              'Unexpected API error',
+              'UNKNOWN',
+              error.response.status
+            );
 
     // No toast here, just throw normalized error
     return Promise.reject(apiError);

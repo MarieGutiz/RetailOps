@@ -1,9 +1,7 @@
-import type {
-  AbcResponseDto,
-} from "@/types/abc-backend";
-import type { Product } from "@/types/products";
-import type { InventoryState, AnalyticsState } from "@/types/shop";
-import { v4 as uuidv4 } from "uuid";
+import type { AbcResponseDto } from '@/types/abc-backend';
+import type { Product } from '@/types/products';
+import type { InventoryState, AnalyticsState } from '@/types/shop';
+import { v4 as uuidv4 } from 'uuid';
 
 export function extractBackendABC(response: AbcResponseDto): {
   products: Product[];
@@ -27,14 +25,14 @@ export function extractBackendABC(response: AbcResponseDto): {
       productMap.set(key, {
         ...product,
         id: product.id ?? uuidv4(), // generate fake id if missing
-        source: product.source ?? "BACKEND",
+        source: product.source ?? 'BACKEND',
       });
     }
 
     // 2. inventory + analytics
     quantities[key] = quantities[key] ?? 0; // backend ABC has no stock
     demandFrequency[key] = item.demandFrequency;
-    salesValue[key] = item.salesValue;  
+    salesValue[key] = item.salesValue;
   }
 
   return {

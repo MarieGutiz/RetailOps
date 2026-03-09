@@ -1,4 +1,4 @@
-export type ReportSeverity = "neutral" | "positive" | "warning" | "critical";
+export type ReportSeverity = 'neutral' | 'positive' | 'warning' | 'critical';
 
 export interface ReportKPI {
   label: string;
@@ -11,27 +11,27 @@ export interface ReportKPI {
 export type BaseReportSection =
   | {
       title: string;
-      type: "parameters";        // for GenericParameterCard
+      type: 'parameters'; // for GenericParameterCard
       payload: { label: string; value: any; isCurrency?: boolean }[];
     }
   | {
       title: string;
-      type: "table";             // for tables
+      type: 'table'; // for tables
       payload: Record<string, any>[]; // array of objects (rows)
     }
   | {
       title: string;
-      type: "text";
+      type: 'text';
       payload: string;
     }
   | {
       title: string;
-      type: "chart";
+      type: 'chart';
       payload: ChartPayload;
     };
 
 export interface BaseReport {
-  model: "newsvendor" | "eoq" | "abc";
+  model: 'newsvendor' | 'eoq' | 'abc';
   shopId: string;
   generatedAt: string;
 
@@ -47,13 +47,13 @@ export interface BaseReport {
 
 type ChartPayload =
   | {
-      type: "demandRisk";
+      type: 'demandRisk';
       mean: number;
       std: number;
       serviceLevel: number;
     }
   | {
-      type: "eoqCurve";
+      type: 'eoqCurve';
       optimalQuantity: number;
       points: {
         quantity: number;

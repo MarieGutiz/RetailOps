@@ -1,36 +1,43 @@
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import  { ABC_SCENARIOS_META } from "../simulator/ABCViews/info/ABC_SCENARIOS"
-import  { Button } from "@/components/ui/Button"
-import { useEffect, useState } from "react"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
+import { ABC_SCENARIOS_META } from '../simulator/ABCViews/info/ABC_SCENARIOS';
+import { Button } from '@/components/ui/Button';
+import { useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 interface InfoContent {
-  title: string
-  theory?: string
-  description: string
-  thresholds?: string
+  title: string;
+  theory?: string;
+  description: string;
+  thresholds?: string;
 }
 
 type InfoProps =
   | { scenarioKey: keyof typeof ABC_SCENARIOS_META; content?: never }
-  | { content: InfoContent; scenarioKey?: never }
+  | { content: InfoContent; scenarioKey?: never };
 
-  
-const Info = ({scenarioKey, content}: InfoProps) => {
-  const scenario = scenarioKey
-    ? ABC_SCENARIOS_META[scenarioKey]
-    : content
+const Info = ({ scenarioKey, content }: InfoProps) => {
+  const scenario = scenarioKey ? ABC_SCENARIOS_META[scenarioKey] : content;
 
-  if (!scenario) return null
+  if (!scenario) return null;
 
-   // Track mobile vs desktop
+  // Track mobile vs desktop
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
     checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   if (isMobile) {
@@ -50,28 +57,24 @@ const Info = ({scenarioKey, content}: InfoProps) => {
           </Button>
         </DialogTrigger>
         <DialogContent className="j-dialog max-w-md">
-        <DialogHeader>
-          <DialogTitle className="j-dialog-title text-center">
-            {scenario.title}
-          </DialogTitle>
+          <DialogHeader>
+            <DialogTitle className="j-dialog-title text-center">
+              {scenario.title}
+            </DialogTitle>
 
-          {/* Optional: theory goes in the header */}
-          {scenario.theory && (
-            <p className="text-center text-xs text-muted-foreground">
-              {scenario.theory}
-            </p>
-          )}
+            {/* Optional: theory goes in the header */}
+            {scenario.theory && (
+              <p className="text-center text-xs text-muted-foreground">
+                {scenario.theory}
+              </p>
+            )}
 
-          <DialogDescription className="j-dialog-description text-center space-y-1 text-xs whitespace-pre-line">
-            
+            <DialogDescription className="j-dialog-description text-center space-y-1 text-xs whitespace-pre-line">
               {scenario.description}
               {scenario.thresholds && <> {scenario.thresholds}</>}
-           
-
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
       </Dialog>
     );
   }
@@ -105,6 +108,6 @@ const Info = ({scenarioKey, content}: InfoProps) => {
       </HoverCardContent>
     </HoverCard>
   );
-}
+};
 
-export default Info
+export default Info;

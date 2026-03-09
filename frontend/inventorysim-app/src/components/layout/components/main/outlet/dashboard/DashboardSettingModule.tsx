@@ -1,15 +1,18 @@
-import { useUserStore } from "@/store/user/useUserStore";
-import DashboardSettings from "./DashboardSettings"
+import { useUserStore } from '@/store/user/useUserStore';
+import DashboardSettings from './DashboardSettings';
 
+//Dashboard user welcoming 
 const DashboardSettingModule = () => {
- const { user } = useUserStore();
+  const { user } = useUserStore();
 
   return (
     <>
-      <h2 className="text-lg font-semibold p-2">Welcome to your dashboard, {user.name || user.username}!</h2>
-      <DashboardSettings /> 
+      <h2 className="text-lg font-semibold p-2">
+        Welcome to your dashboard, {user.name || user.username}!
+      </h2>
+      <DashboardSettings />
     </>
-  )
-}
+  );
+};
 
-export default DashboardSettingModule
+export default DashboardSettingModule;

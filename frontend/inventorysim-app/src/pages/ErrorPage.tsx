@@ -1,6 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
-  interface ErrorPageProps {
+//Error page component to display user-friendly error messages for common 
+// HTTP status codes (401, 403, 404, 500).
+
+interface ErrorPageProps {
   code?: number;
   message?: string;
 }
@@ -10,26 +13,26 @@ const ErrorPage = ({ code = 500, message }: ErrorPageProps) => {
 
   const messages: Record<number, { title: string; desc: string }> = {
     401: {
-      title: "You need to log in",
-      desc: "Please sign in to access this page. If you already have an account, log in below.",
+      title: 'You need to log in',
+      desc: 'Please sign in to access this page. If you already have an account, log in below.',
     },
     403: {
-      title: "Access denied",
-      desc: "You don’t have permission to view this page. Contact support if you think this is a mistake.",
+      title: 'Access denied',
+      desc: 'You don’t have permission to view this page. Contact support if you think this is a mistake.',
     },
     404: {
-      title: "Page not found",
-      desc: "The page you’re looking for doesn’t exist or was moved. Please check the URL or return home.",
+      title: 'Page not found',
+      desc: 'The page you’re looking for doesn’t exist or was moved. Please check the URL or return home.',
     },
     500: {
-      title: "Something went wrong",
-      desc: "Our system encountered an issue. Please refresh the page or try again later.",
+      title: 'Something went wrong',
+      desc: 'Our system encountered an issue. Please refresh the page or try again later.',
     },
   };
 
   const { title, desc } = messages[code] || {
-    title: "Unexpected error",
-    desc: message || "An unexpected error occurred. Please try again.",
+    title: 'Unexpected error',
+    desc: message || 'An unexpected error occurred. Please try again.',
   };
 
   return (
@@ -40,7 +43,7 @@ const ErrorPage = ({ code = 500, message }: ErrorPageProps) => {
 
       <div className="flex gap-4">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate('/')}
           className="bg-blue-500 hover:bg-blue-600 text-black font-medium px-4 py-2 rounded-md"
         >
           Go Home
