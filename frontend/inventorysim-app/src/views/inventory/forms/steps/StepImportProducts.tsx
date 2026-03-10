@@ -55,13 +55,20 @@ const StepImportProducts = ({
 
   const { importProducts } = useImportShopProducts();
 
-  // Use hook to get products for selected AUTOGEN shop
-  const autogenData = useShopProducts(selectedAutogenId, {
+  /** Hydrate selected shop if needed */
+  const { products: hydratedProducts } = useShopProducts(selectedAutogenId, {
     enabled: !!selectedAutogenId,
   });
-  const selectedProducts = autogenData.products;
+
+  /** Reactive store access */
+  const shops = useShopStore((s) => s.shops);
+
+  /** Products from store (single source of truth) */
+  const selectedProducts =
+    selectedAutogenId ? shops[selectedAutogenId]?.products ?? [] : [];
 
   const hasTemplates = selectedProducts.length > 0;
+
   const isImportDisabled =
     backendUnavailable || loading || !selectedAutogenId || !hasTemplates;
 
@@ -84,7 +91,7 @@ const StepImportProducts = ({
         )}
       </DialogHeader>
 
-      {/* 1 Backend unavailable */}
+      {/* Backend unavailable */}
       {backendUnavailable && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
@@ -95,17 +102,17 @@ const StepImportProducts = ({
         </Alert>
       )}
 
-      {/* 2 Backend OK but no templates */}
-      {!backendUnavailable && !hasTemplates && (
+      {/* No templates AFTER selection */}
+      {!backendUnavailable && selectedAutogenId && !hasTemplates && (
         <Alert>
           <AlertTitle>No templates available</AlertTitle>
           <AlertDescription>
-            The service responded successfully but returned no products.
+            The selected library returned no products.
           </AlertDescription>
         </Alert>
       )}
 
-      {/* 3 Normal happy path */}
+      {/* Library selection */}
       {!backendUnavailable && (
         <RadioGroup
           value={selectedAutogenId ?? ''}
@@ -114,18 +121,19 @@ const StepImportProducts = ({
         >
           {autogenIds.map((lib) => {
             const id = shopId(lib);
+
             const info = availability.perLibrary.find((p) => p.lib === lib);
             const disabled = info?.unavailable || loading;
 
-            // Use getState() for reads that don't need reactivity
-            const productCount =
-              useShopStore.getState().shops[id]?.products.length ?? 0;
+            const productCount = shops[id]?.products?.length ?? 0;
 
             return (
               <div
                 key={id}
                 className={`flex justify-between items-center border p-3 rounded ${
-                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md'
+                  disabled
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:shadow-md'
                 }`}
               >
                 <div className="flex gap-2 items-center">
@@ -137,6 +145,7 @@ const StepImportProducts = ({
                   />
                   <Label htmlFor={id}>{lib}</Label>
                 </div>
+
                 <span className="text-sm text-muted-foreground">
                   {productCount} products
                 </span>
@@ -151,7 +160,6 @@ const StepImportProducts = ({
           variant="ghost"
           onClick={onSkip}
           className="jbtn-btn jbtn-success"
-          //  disabled={isDisabled}
         >
           Skip
         </Button>
@@ -169,6 +177,7 @@ const StepImportProducts = ({
       </div>
     </>
   );
+
 };
 
 export default StepImportProducts;

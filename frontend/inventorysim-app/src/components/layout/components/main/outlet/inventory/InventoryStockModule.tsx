@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/Button';
 import Info from '@/views/helpers/Info';
 import { ABCAnalysisFrontend } from '@/services/domain/segmentation/ABCAnalysisFrontend';
 import { useShopInventoryProducts } from '@/hooks/shop/useShopInventoryProducts';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Inventory Stock module.
@@ -32,10 +33,6 @@ const InventoryStockModule = () => {
     useState<keyof typeof ABC_SCENARIOS>('Baseline');
 
   const abcInput = useABCInput();
-
-  // const products = useProductStore(s => s.products)
-  // const inventory = useInventoryStore(s => s.inventory)
-  // const loading = useInventoryStore(s => s.loading)
 
   const { products, inventory, loading } = useShopInventoryProducts();
 
@@ -141,6 +138,8 @@ const InventoryStockModule = () => {
   const removeFromInventory = useInventoryStore((s) => s.removeFromInventory);
   const { hoveredCategory, onHover } = useABCHover();
 
+   const navigate = useNavigate();
+
   return (
     <ModuleContainer
       title="Inventory Stock"
@@ -155,11 +154,11 @@ const InventoryStockModule = () => {
       actions={
         <>
           <Info scenarioKey={selectedCase} />
-          <Button className="toolbar-element jbtn-flat-btn toolbar-element-md active">
+          <Button 
+           className="toolbar-element jbtn-flat-btn toolbar-element-md active"
+           onClick={() => navigate('/dashboard/simulator/newsvendor')}
+           >
             Simulate
-          </Button>
-          <Button className="toolbar-element jbtn-flat-btn toolbar-element-md">
-            Reset
           </Button>
         </>
       }

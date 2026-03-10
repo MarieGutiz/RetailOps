@@ -6,26 +6,26 @@
 
 Retailers constantly navigate two competing risks:
 
-* Overstocking – incurring storage costs and potential waste
+- Overstocking – incurring storage costs and potential waste
 
-* Understocking – losing sales and disappointing customers
+- Understocking – losing sales and disappointing customers
 
 With **RetailOps**, users can:
 
-* Input demand, cost, and inventory parameters for individual products or entire shops, including expected demand, variability, holding costs, and penalties for stockouts.
-* Simulate different inventory scenarios under uncertainty using classic models:
-
+- Input demand, cost, and inventory parameters for individual products or entire shops, including expected demand, variability, holding costs, and penalties for stockouts.
+- Simulate different inventory scenarios under uncertainty using classic models:
   1. **Newsvendor** – analyze daily ordering decisions when demand is unpredictable, accounting for salvage values and lost sales penalties.
   2. **EOQ** (Economic Order Quantity) – calculate optimal order quantities, order cycles, and total costs for products with stable demand.
   3. **ABC** Analysis – categorize products based on sales value, demand, or both, helping prioritize which items need more attention or tighter inventory control.
 
-* Receive actionable recommendations for optimal order quantities, reorder points, and inventory allocation to minimize costs and maximize service levels.
+- Receive actionable recommendations for optimal order quantities, reorder points, and inventory allocation to minimize costs and maximize service levels.
 
-* Prioritize products and resources effectively using insights from ABC classification, Critical Ratio, and Monte Carlo simulations, so you can focus on high-impact items and improve overall inventory performance.
-* Perform “__what-if__” analytics to compare scenarios, adjust service levels, or test alternative thresholds, giving you confidence in strategic decisions.
-*  Export PDF reports summarizing your simulation for insights.
+- Prioritize products and resources effectively using insights from ABC classification, Critical Ratio, and Monte Carlo simulations, so you can focus on high-impact items and improve overall inventory performance.
+- Perform “**what-if**” analytics to compare scenarios, adjust service levels, or test alternative thresholds, giving you confidence in strategic decisions.
+- Export PDF reports summarizing your simulation for insights.
 
 ---
+
 ## System Architecture
 
 ![Project Architecture](img/RetailOps_Architecture.png)
@@ -34,16 +34,16 @@ With **RetailOps**, users can:
 
 ## Key Features
 
-* Newsvendor Simulation: Daily ordering decisions under random demand for perishable
+- Newsvendor Simulation: Daily ordering decisions under random demand for perishable
   goods
-* Calculation of optimal inventory order quantities
-* ABC Analysis: Prioritize products based on consumption value.
-* Analytics and Reporting
-* Interactive user interface for parameter input
-* Authentication using OAuth2 providers
-* Responsive frontend design
-* Separation of frontend and backend services
-* REST-based communication between components
+- Calculation of optimal inventory order quantities
+- ABC Analysis: Prioritize products based on consumption value.
+- Analytics and Reporting
+- Interactive user interface for parameter input
+- Authentication using OAuth2 providers
+- Responsive frontend design
+- Separation of frontend and backend services
+- REST-based communication between components
 
 ---
 
@@ -51,23 +51,23 @@ With **RetailOps**, users can:
 
 ### Frontend
 
-* React
-* TypeScript
-* TailwindCSS
-* Shadcn ui
-* Zustand (state management)
+- React
+- TypeScript
+- TailwindCSS
+- Shadcn ui
+- Zustand (state management)
 
 ### Backend
 
-* Spring Boot
-* REST API
-* OAuth2 Authentication (Google / GitHub)
+- Spring Boot
+- REST API
+- OAuth2 Authentication (Google / GitHub)
 
 ### Development Tools
 
-* GitHub for version control
-* Draw.io for architecture diagrams
-* C4 Model for system architecture
+- GitHub for version control
+- Draw.io for architecture diagrams
+- C4 Model for system architecture
 
 ---
 
@@ -86,10 +86,10 @@ The application follows a **client-server architecture** based on the C4 contain
 
 System components:
 
-* **User Browser** – interacts with the web interface
-* **React Frontend** – handles the user interface and input validation
-* **Spring Boot Backend** – processes requests and performs calculations
-* **Authentication Providers** – Google and GitHub OAuth2 services
+- **User Browser** – interacts with the web interface
+- **React Frontend** – handles the user interface and input validation
+- **Spring Boot Backend** – processes requests and performs calculations
+- **Authentication Providers** – Google and GitHub OAuth2 services
 
 The frontend communicates with the backend using REST APIs, while the backend manages authentication and business logic.
 
@@ -156,38 +156,50 @@ http://localhost:5173
 
 ---
 
-****Example Usage****
+\***\*Example Usage\*\***
 
 1. Open the app in your browser and create a shop by providing a shop name.
 2. Set preferences in the Settings tab, including currency format ($, €, etc.).
 3. Check Overview to see past simulations.
 4. Add Products in the Inventory tab:
    Add manually or import sample products (Florist or Cafeteria).
-   Provide name, SKU, cost, price, description, and category. 
-5. Add Inventory: Use Add to Inventory in the product library. 
+   Provide name, SKU, cost, price, description, and category.
+5. Add Inventory: Use Add to Inventory in the product library.
 6. Review Stock:
-   * Check inventory levels and ABC classification (based on sales value = quantity × price).
-   * See Critical Ratio, optimal order quantity (Q*), and profit/loss from Monte Carlo simulations.
+   - Check inventory levels and ABC classification (based on sales value = quantity × price).
+   - See Critical Ratio, optimal order quantity (Q\*), and profit/loss from Monte Carlo simulations.
 7. Run Simulations:
-   * Newsvendor – Simulate uncertain demand. Enter expected demand, variability (standard deviation), salvage value, and penalties.
-   *  EOQ – Enter demand, fixed cost, and holding cost. Simulator provides Q*, cycle, and number of orders.
-   * ABC Analysis – Classic (based on sales value) or Advanced (incorporates demand) to categorize products.
+   - Newsvendor – Simulate uncertain demand. Enter expected demand, variability (standard deviation), salvage value, and penalties.
+   - EOQ – Enter demand, fixed cost, and holding cost. Simulator provides Q\*, cycle, and number of orders.
+   - ABC Analysis – Classic (based on sales value) or Advanced (incorporates demand) to categorize products.
 
 8. Analytics (What-If Scenarios):
-   * Compare Newsvendor service levels against past simulations.
-   * Compare EOQ parameters against previous results.
-   * Adjust ABC thresholds (e.g., A: 80%, B: 95%, C: >95%) and compare outcomes.
-9. Generate Reports: Export PDF reports summarizing your specific simulation for insights or stakeholders. 
+   - Compare Newsvendor service levels against past simulations.
+   - Compare EOQ parameters against previous results.
+   - Adjust ABC thresholds (e.g., A: 80%, B: 95%, C: >95%) and compare outcomes.
+9. Generate Reports: Export PDF reports summarizing your specific simulation for insights or stakeholders.
+
 ---
 
 ## Future Improvements
 
-* Interactive demand distribution visualization
-* Extended analytics for inventory strategies
-* Deployment to cloud infrastructure
-* AI-driven decision support
+- Interactive demand distribution visualization
+- Extended analytics for inventory strategies
+- Deployment to cloud infrastructure
+- AI-driven decision support
+
 ---
 
 ## Author
 
 Developer -Mariela Gutierrez [@mariegutiz](https://github.com/mariegutiz)
+
+---
+
+## Demo
+
+A short 2-minute brief walkthrough of **RetailOps** in action.
+
+[▶️ Watch the Demo Video](https://drive.google.com/file/d/1h1TAwjX4GnAb4FQVZLulssai6mlB77Ud/view)
+
+This video demonstrates how to create a shop, add products, manage inventory, and run simulations such as Newsvendor.
