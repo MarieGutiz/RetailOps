@@ -21,6 +21,11 @@ import org.springframework.stereotype.Service;
 
 import static com.retailops.inventorysimulator.util.pdf.SvgUtils.svgToBase64Png;
 
+
+/**
+ * Service for generating EOQ cost curve charts, either as SVG or Base64-encoded PNG,
+ * illustrating ordering cost, holding cost, total cost, and optimal order quantity (Q*).
+ */
 @Service
 public class EoqChartService {
 
@@ -103,26 +108,26 @@ public class EoqChartService {
         double legendY = padding;
 
         String legend = """
-    <rect x="%f" y="%f" width="170" height="75"
-          fill="white" stroke="#ccc" stroke-width="1"/>
-
-    <line x1="%f" y1="%f" x2="%f" y2="%f"
-          stroke="#2563eb" stroke-width="2"/>
-    <text x="%f" y="%f" font-size="11" fill="#333">Ordering Cost</text>
-
-    <line x1="%f" y1="%f" x2="%f" y2="%f"
-          stroke="#16a34a" stroke-width="2"/>
-    <text x="%f" y="%f" font-size="11" fill="#333">Holding Cost</text>
-
-    <line x1="%f" y1="%f" x2="%f" y2="%f"
-          stroke="#dc2626" stroke-width="3"/>
-    <text x="%f" y="%f" font-size="11" fill="#333">Total Cost</text>
-
-    <line x1="%f" y1="%f" x2="%f" y2="%f"
-          stroke="#f59e0b" stroke-width="2"
-          stroke-dasharray="5,5"/>
-    <text x="%f" y="%f" font-size="11" fill="#333">Q* (Optimal Quantity)</text>
-""".formatted(
+                <rect x="%f" y="%f" width="170" height="75"
+                      fill="white" stroke="#ccc" stroke-width="1"/>
+            
+                <line x1="%f" y1="%f" x2="%f" y2="%f"
+                      stroke="#2563eb" stroke-width="2"/>
+                <text x="%f" y="%f" font-size="11" fill="#333">Ordering Cost</text>
+            
+                <line x1="%f" y1="%f" x2="%f" y2="%f"
+                      stroke="#16a34a" stroke-width="2"/>
+                <text x="%f" y="%f" font-size="11" fill="#333">Holding Cost</text>
+            
+                <line x1="%f" y1="%f" x2="%f" y2="%f"
+                      stroke="#dc2626" stroke-width="3"/>
+                <text x="%f" y="%f" font-size="11" fill="#333">Total Cost</text>
+            
+                <line x1="%f" y1="%f" x2="%f" y2="%f"
+                      stroke="#f59e0b" stroke-width="2"
+                      stroke-dasharray="5,5"/>
+                <text x="%f" y="%f" font-size="11" fill="#333">Q* (Optimal Quantity)</text>
+            """.formatted(
                 legendX, legendY,
 
                 legendX + 10, legendY + 15,
@@ -144,23 +149,23 @@ public class EoqChartService {
 
 
         return """
-<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg">
-    <rect width="100%%" height="100%%" fill="white"/>
-    
-    <path d="%s" fill="none" stroke="#2563eb" stroke-width="2"/>
-    <path d="%s" fill="none" stroke="#16a34a" stroke-width="2"/>
-    <path d="%s" fill="none" stroke="#dc2626" stroke-width="3"/>
-
-    <line x1="%f" y1="%d" x2="%f" y2="%d"
-          stroke="#f59e0b"
-          stroke-width="2"
-          stroke-dasharray="5,5"/>
-
-    <text x="%f" y="%d" font-size="12" fill="#333">Q*</text>
-
-    %s
-</svg>
-""".formatted(
+        <svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%%" height="100%%" fill="white"/>
+            
+            <path d="%s" fill="none" stroke="#2563eb" stroke-width="2"/>
+            <path d="%s" fill="none" stroke="#16a34a" stroke-width="2"/>
+            <path d="%s" fill="none" stroke="#dc2626" stroke-width="3"/>
+        
+            <line x1="%f" y1="%d" x2="%f" y2="%d"
+                  stroke="#f59e0b"
+                  stroke-width="2"
+                  stroke-dasharray="5,5"/>
+        
+            <text x="%f" y="%d" font-size="12" fill="#333">Q*</text>
+        
+            %s
+        </svg>
+        """.formatted(
                 width,
                 height,
                 orderingPath,

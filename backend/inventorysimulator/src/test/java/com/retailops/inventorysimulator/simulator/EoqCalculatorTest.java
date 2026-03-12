@@ -17,6 +17,25 @@ import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.cal
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Unit tests for verifying the Economic Order Quantity (EOQ) calculation.
+ *
+ * <p>This test class validates the EOQ formula:</p>
+ * <pre>
+ *     EOQ = sqrt((2 * D * S) / H)
+ * </pre>
+ * where:
+ * <ul>
+ *   <li>D = demand</li>
+ *   <li>S = ordering/setup cost</li>
+ *   <li>H = holding cost per unit</li>
+ * </ul>
+ *
+ * <p>The tests cover small, medium, and extremely large demand values,
+ * ensuring both correctness and numerical stability of the calculation.
+ * For very large values, the test also checks positivity and scale
+ * without relying on exact numeric comparison.</p>
+ */
 public class EoqCalculatorTest {
 
     @Test

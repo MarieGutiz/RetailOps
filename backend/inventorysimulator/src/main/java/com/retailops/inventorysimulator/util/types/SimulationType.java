@@ -21,6 +21,22 @@ package com.retailops.inventorysimulator.util.types;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
+/**
+ * Enumerates the supported inventory simulation types within the system.
+ *
+ * <p>Each simulation type represents a different analytical model used to
+ * evaluate inventory strategies and performance:</p>
+ * <ul>
+ *   <li>EOQ – Economic Order Quantity optimization</li>
+ *   <li>PROFIT – Profit-based inventory evaluation</li>
+ *   <li>NEWSVENDOR – Single-period stochastic demand optimization</li>
+ *   <li>ABC_CLASSIC – Traditional ABC inventory classification</li>
+ *   <li>ABC_MULTI – Multi-criteria ABC classification</li>
+ * </ul>
+ *
+ * <p>The enum also provides utility methods for converting string or JSON
+ * values into the corresponding {@code SimulationType}.</p>
+ */
 @Getter
 public enum SimulationType {
 

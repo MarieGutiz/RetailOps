@@ -8,6 +8,12 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
+/**
+ * Request object for running an ABC simulation.
+ *
+ * <p>Contains the list of items to analyze, the associated account (optional),
+ * simulation mode, and a flag indicating whether to save results to history.</p>
+ */
 public record AbcRequestDto(
         @NotEmpty(message = "At least one product is required")
         @Valid

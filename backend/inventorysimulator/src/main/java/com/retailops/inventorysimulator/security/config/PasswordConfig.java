@@ -22,6 +22,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Provides a BCrypt password encoder bean for hashing user passwords.
+ */
 @Configuration
 public class PasswordConfig {
     @Bean

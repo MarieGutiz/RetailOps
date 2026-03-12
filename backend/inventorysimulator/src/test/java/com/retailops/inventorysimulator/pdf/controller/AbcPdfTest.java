@@ -35,6 +35,22 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * Integration tests for generating ABC analysis PDF reports.
+ *
+ * <p>This test verifies that the reporting pipeline correctly builds
+ * ABC analysis reports and renders them into PDF format for both
+ * supported modes:</p>
+ * <ul>
+ *   <li>Classic ABC classification</li>
+ *   <li>Multi-criteria ABC classification</li>
+ * </ul>
+ *
+ * <p>The test constructs sample products and ABC items, builds a report
+ * using {@link AbcReportBuilder}, and generates the final PDF through
+ * {@link ReportPDFService}. The resulting files are written to the
+ * {@code target/} directory for manual inspection.</p>
+ */
 @SpringBootTest
 class AbcPdfTest {
 
@@ -123,8 +139,5 @@ class AbcPdfTest {
 
         System.out.println("PDF generated at target/" + fileName + " for mode: " + mode.getName());
     }
-
-
-
 
 }

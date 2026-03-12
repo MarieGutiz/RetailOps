@@ -35,7 +35,6 @@ import org.springframework.stereotype.Component;
  * This class provides ready-to-use generator instances for different
  * shop types (Florist, Cafeteria) and simulation methods (ABC, EOQ, etc.).
  */
-
 @Component
 @RequiredArgsConstructor
 public class MonteCarloFactory {

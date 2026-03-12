@@ -17,6 +17,10 @@
 
 package com.retailops.inventorysimulator.pdf.dto;
 
+/**
+ * Payload for ABC PDF report generation, including the request details
+ * and the shop name.
+ */
 public record AbcPdfPayload(
         AbcRequestPdf request,
         String shopName

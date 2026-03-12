@@ -22,7 +22,12 @@ import com.retailops.inventorysimulator.simulator.dto.MonteCarloItemDto;
 
 import java.util.List;
 
-
+/**
+ * Utility class for converting Monte Carlo simulation items to ABC analysis DTOs.
+ *
+ * <p>Provides methods to transform single {@link MonteCarloItemDto} or a list of
+ * them into {@link AbcItemDto} instances suitable for ABC simulation.</p>
+ */
 public class MonteCarloABCMapper {
 
     public static AbcItemDto toAbcItem(MonteCarloItemDto mcItem) {

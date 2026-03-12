@@ -24,6 +24,13 @@ import com.retailops.inventorysimulator.simulator.autogenshop.abc.analyzer.AbcRa
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Base class for ABC analyzers providing common utility methods.
+ *
+ * <p>Includes methods to calculate total sales and to rank items using
+ * {@link AbcAnalyzer#rankItems(List, BigDecimal)}, which can be used by
+ * concrete ABC analysis strategies.</p>
+ */
 public abstract class AbstractAbcAnalyzer {
 
     protected BigDecimal totalSales(List<AbcItemDto> items) {

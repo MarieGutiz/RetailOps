@@ -17,6 +17,9 @@
 
 package com.retailops.inventorysimulator.util.types.autogen;
 
+/**
+ * Includes autogen and generic
+ */
 public enum ShopType {
     FLORIST,
     CAFETERIA,

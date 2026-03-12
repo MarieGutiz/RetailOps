@@ -17,5 +17,9 @@
 
 package com.retailops.inventorysimulator.security.dto;
 
+/**
+ *
+ * Required parameters to login simple auth
+ */
 public record LoginRequest(String identifier, String password) {
 }

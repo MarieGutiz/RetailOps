@@ -30,7 +30,24 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+/**
+ * Unit tests for the Newsvendor Monte Carlo generator.
+ *
+ * <p>This test class verifies deterministic and reproducible behavior
+ * of the {@link NewsvendorMonteCarloGenerator} when instantiated
+ * via the {@link MonteCarloFactory}.</p>
+ *
+ * <p>Specifically, it ensures that:</p>
+ * <ul>
+ *   <li>Simulations produce consistent average profit results for a given
+ *       simulation ID and seed.</li>
+ *   <li>Floating-point tolerances are handled correctly to allow minor
+ *       numerical differences.</li>
+ * </ul>
+ *
+ * <p>The tests validate correctness and reproducibility of Monte Carlo
+ * simulations for Newsvendor inventory scenarios across repeated runs.</p>
+ */
 public class NewsvendorMonteCarloGeneratorTest {
 
     private MonteCarloFactory factory;

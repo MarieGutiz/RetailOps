@@ -21,6 +21,17 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 
+/**
+ * Utility factory for generating deterministic seeds used in simulations.
+ *
+ * <p>The seed is derived from stable identifiers such as simulation ID,
+ * shop name, and shop type to ensure reproducible random data generation
+ * across simulation runs.</p>
+ *
+ * <p>This approach guarantees that the same input parameters will always
+ * produce the same seed, enabling consistent catalog generation and
+ * repeatable simulation results.</p>
+ */
 @RequiredArgsConstructor
 public class SeedFactory {
 

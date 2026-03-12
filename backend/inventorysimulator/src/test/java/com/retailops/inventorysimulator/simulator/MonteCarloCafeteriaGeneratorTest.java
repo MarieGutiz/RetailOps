@@ -32,6 +32,24 @@ import java.util.List;
 import static com.retailops.inventorysimulator.util.calculator.EoqCalculator.calculateEOQ;
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+/**
+ * Integration tests for the Cafeteria EOQ Monte Carlo generator.
+ *
+ * <p>This test class verifies the deterministic and stochastic behavior
+ * of the {@link CafeteriaEOQMonteCarloGenerator} used for inventory simulation.
+ * It ensures that:</p>
+ * <ul>
+ *   <li>Generators with the same simulation ID produce identical samples.</li>
+ *   <li>Generated samples contain stable, valid inventory data
+ *       including demand, setup cost, and holding cost.</li>
+ *   <li>EOQ values calculated from the generated samples are positive and reasonable.</li>
+ *   <li>Generators with different simulation IDs produce distinct samples.</li>
+ * </ul>
+ *
+ * <p>The tests help guarantee reproducibility and correctness of
+ * Monte Carlo simulations for cafeteria inventory modeling.</p>
+ */
 @SpringBootTest
 class CafeteriaEOQMonteCarloGeneratorTest {
 

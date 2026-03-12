@@ -8,6 +8,11 @@ import lombok.ToString;
 import java.io.Serial;
 import java.io.Serializable;
 
+
+/**
+ * Base entity class providing a primary key ID and serialization support
+ * for all inheriting JPA entities.
+ */
 @Getter
 @Setter
 @ToString

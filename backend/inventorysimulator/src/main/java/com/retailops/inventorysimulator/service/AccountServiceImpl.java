@@ -32,7 +32,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
+@Service //Implementation service for Accounts
 @RequiredArgsConstructor
 public class AccountServiceImpl extends BaseServiceImpl<Account> implements AccountService{
     private  final AccountRepository accountRepository;

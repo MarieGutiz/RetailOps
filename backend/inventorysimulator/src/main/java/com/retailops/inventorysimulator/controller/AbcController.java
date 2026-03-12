@@ -24,6 +24,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+/**
+ * REST controller for ABC simulations, providing an endpoint to execute
+ * ABC analysis and return items classified into categories A, B, and C.
+ */
 @RestController
 @RequestMapping("/api/simulator/abc")
 @RequiredArgsConstructor
@@ -52,6 +57,4 @@ public class AbcController {
         AbcResponseDto response = abcService.runAbc(dto, simId, shopName);
         return ResponseEntity.ok(response);
     }
-
-
 }

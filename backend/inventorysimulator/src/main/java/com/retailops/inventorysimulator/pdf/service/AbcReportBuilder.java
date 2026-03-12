@@ -29,10 +29,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Report builder for ABC analysis, extending the abstract report builder to
+ * generate structured ABC reports including headers, KPIs, input parameters,
+ * summary tables, interpretation text, and model-specific metrics.
+ */
 @Service
 @AllArgsConstructor
 public class AbcReportBuilder extends AbstractReportBuilder<AbcReport, AbcPdfPayload> {
@@ -108,18 +111,6 @@ private final AbcAnalysisService abcAnalysisService; // service that runs the AB
         inputSection.setType(BaseReport.ReportSection.SectionType.PARAMETERS);
         inputSection.setPayload(parameters);
 
-        // --- 2. ABC Items Table ---
-//        List<Map<String, Object>> itemTable = response.items().stream()
-//                .map(i -> Map.<String, Object>of(
-//                        "Product", i.getProduct().getName(),
-//                        "SKU", i.getProduct().getSku(),
-//                        "Sales Value", i.getSalesValue(),
-//                        "Demand Frequency", i.getDemandFrequency(),
-//                        "ABC Category", i.getAbcCategoryType(),
-//                        "Rank", i.getRank(),
-//                        "Cumulative %", i.getCumulativePct()
-//                ))
-//                .toList();
         List<AbcItemRow> itemTable = response.items().stream()
                 .map(i -> new AbcItemRow(
                         i.getProduct().getName(),
@@ -152,7 +143,6 @@ private final AbcAnalysisService abcAnalysisService; // service that runs the AB
 
     @Override
     protected void applyModelSpecificFields(AbcReport report, AbcPdfPayload context) {
-        // Optional: store summary counts in the ABC-specific fields
         AbcResponseDto response = abcAnalysisService.analyze(context.request().getItems(), context.request().getMode());
         AbcSummaryDto summary = response.summary();
 

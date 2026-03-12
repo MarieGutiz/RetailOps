@@ -30,10 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * REST controller for cafeteria simulations, providing endpoints to run
+ * ABC and EOQ analyses for cafeteria products and return the simulation results.
+ */
 @RestController
 @RequestMapping("/api/simulations/cafeteria")
 @RequiredArgsConstructor
-
 public class CafeteriaSimulationController {
     public final CafeteriaSimulationAbcService cafeteriaSimulationService;
     public final CafeteriaSimulationEoqService  cafeteriaSimulationEoqService;

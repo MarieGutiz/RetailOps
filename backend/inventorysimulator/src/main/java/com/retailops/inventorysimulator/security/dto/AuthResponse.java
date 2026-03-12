@@ -17,6 +17,11 @@
 
 package com.retailops.inventorysimulator.security.dto;
 
+/**
+* Represents the authentication response returned after login - OAuth2 authentication.
+* Contains JWT token, user info, and role details.
+* Provides factory methods for success and failure cases.
+ * */
 public record AuthResponse(
         String token,
         Long id,

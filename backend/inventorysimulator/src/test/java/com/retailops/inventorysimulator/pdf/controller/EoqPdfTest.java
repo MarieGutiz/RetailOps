@@ -37,6 +37,19 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Integration tests for generating EOQ simulation PDF reports.
+ *
+ * <p>This test verifies that the reporting pipeline correctly builds
+ * EOQ analysis reports and renders them into PDF format.</p>
+ *
+ * <p>The test constructs a sample EOQ request, mock calculation results,
+ * and curve data, then builds a report using {@link EoqReportBuilder}.
+ * The final PDF is generated through {@link ReportPDFService}.</p>
+ *
+ * <p>The resulting file is written to the {@code target/} directory
+ * for manual inspection.</p>
+ */
 @SpringBootTest
 class EoqPdfTest {
 

@@ -17,6 +17,12 @@
 
 package com.retailops.inventorysimulator.util.types.autogen;
 
+/**
+ * Enumeration of product categories used in a florist shop.
+ *
+ * <p>Helps classify inventory items for simulations, inventory analysis,
+ * and product organization.</p>
+ */
 public enum FloristCategoryType {
     FRESH_FLOWERS,
     DECORATIVE_CONTAINERS,

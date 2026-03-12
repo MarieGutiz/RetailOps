@@ -17,6 +17,9 @@
 
 package com.retailops.inventorysimulator.util.types;
 
+/**
+ * Mode for the newsvendor simulation
+ */
 public enum NewsvendorMode {
     CLASSIC,
     ADVANCED

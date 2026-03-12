@@ -24,6 +24,12 @@ import com.retailops.inventorysimulator.util.types.SimulationType;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Strategy interface for ABC analysis algorithms.
+ *
+ * <p>Defines the contract for analyzing items and assigning ABC categories.
+ * Provides thresholds for classic ABC categorization (CLASS_A = 80%, CLASS_B = 95%).</p>
+ */
 public interface AbcAnalyzerStrategy {
     static final BigDecimal CLASS_A = BigDecimal.valueOf(80);
     static final BigDecimal CLASS_B = BigDecimal.valueOf(95);

@@ -23,6 +23,11 @@ import com.retailops.inventorysimulator.util.types.AuthProviderType;
 
 import java.util.Optional;
 
+/**
+ * Service interface for managing {@link Account} entities.
+ * Provides methods for account retrieval, registration, updates,
+ * and lookup by username, email, or external authentication provider.
+ */
 public interface AccountService extends BaseService<Account, Long> {
     Optional<Account> findByUsername(String username);
     Account register(RegisterRequest request);

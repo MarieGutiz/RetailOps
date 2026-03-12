@@ -22,6 +22,12 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
+/**
+ * Request object for generating a normal probability density function (PDF).
+ *
+ * <p>Includes the mean, standard deviation, minimum and maximum range, and
+ * step size for sampling the distribution.</p>
+ */
 public record NormalPdfRequest(
         @NotNull
         @DecimalMin(value = "0.0", inclusive = false)

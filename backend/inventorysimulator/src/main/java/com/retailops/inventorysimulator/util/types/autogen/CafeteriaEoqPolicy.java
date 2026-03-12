@@ -22,6 +22,21 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
+/**
+ * Enumeration defining EOQ (Economic Order Quantity) policies for cafeteria products.
+ *
+ * <p>Each enum constant specifies:
+ * <ul>
+ *     <li>The associated product ({@link CafeteriaProductSpec})</li>
+ *     <li>Mean and standard deviation of demand</li>
+ *     <li>Unit cost range</li>
+ *     <li>Setup/order cost range</li>
+ *     <li>Holding rate</li>
+ * </ul>
+ *
+ * <p>Provides a helper method {@link #forProduct(CafeteriaProductSpec)} to retrieve
+ * the policy for a given product spec.</p>
+ */
 @Getter
 @RequiredArgsConstructor
 public enum CafeteriaEoqPolicy {

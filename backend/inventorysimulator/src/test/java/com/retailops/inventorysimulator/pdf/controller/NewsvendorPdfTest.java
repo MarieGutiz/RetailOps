@@ -33,6 +33,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
+/**
+ * Integration tests for generating Newsvendor simulation PDF reports.
+ *
+ * <p>This test verifies that the reporting pipeline correctly builds
+ * Newsvendor analysis reports and renders them into PDF format.</p>
+ *
+ * <p>The test constructs a sample Newsvendor request with demand
+ * parameters, stubs a corresponding response, and creates a payload.
+ * It then builds a report using {@link NewsvendorReportBuilder} and
+ * generates the final PDF through {@link ReportPDFService}.</p>
+ *
+ * <p>The resulting file is written to the {@code target/} directory
+ * for manual inspection.</p>
+ */
 @SpringBootTest
 class NewsvendorPdfTest {
 

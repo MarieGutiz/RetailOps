@@ -22,10 +22,15 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 
+/**
+ * Utility class for handling SVG image conversions.
+ *
+ * <p>Currently provides a method to convert an SVG string into a PNG image
+ * and return it as a Base64-encoded string. The output PNG dimensions can be
+ * customized via width and height parameters.</p>
+ */
 public class SvgUtils {
 
     public static String svgToBase64Png(String svg, float width, float height) throws Exception {

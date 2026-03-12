@@ -29,6 +29,10 @@ import lombok.extern.jackson.Jacksonized;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * DTO for generating an EOQ PDF report, containing the annual demand,
+ * setup cost, and holding cost for the product simulation.
+ */
 @SuperBuilder
 @Jacksonized
 @Getter

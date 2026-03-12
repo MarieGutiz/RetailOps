@@ -32,6 +32,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Report builder for EOQ analysis, extending the abstract report builder to generate
+ * structured EOQ reports with headers, KPIs, input parameters, cost curve chart,
+ * interpretation text, and model-specific metrics.
+ */
 @Service
 @AllArgsConstructor
 public class EoqReportBuilder extends AbstractReportBuilder<EoqReport, EoqPdfPayload> {

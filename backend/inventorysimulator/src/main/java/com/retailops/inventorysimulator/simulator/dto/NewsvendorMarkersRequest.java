@@ -25,6 +25,12 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Request object for calculating Newsvendor markers.
+ *
+ * <p>Includes the simulation ID, mean demand, initial order quantity, and
+ * critical ratio, all required for determining optimal stock levels.</p>
+ */
 public record NewsvendorMarkersRequest(
         @NotBlank
         String simId,

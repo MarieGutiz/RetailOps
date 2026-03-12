@@ -27,6 +27,10 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
+/**
+ * Base class for all simulation requests, containing common fields such as
+ * simulation model, shop information, and creation timestamp.
+ */
 @SuperBuilder
 @Data
 @NoArgsConstructor

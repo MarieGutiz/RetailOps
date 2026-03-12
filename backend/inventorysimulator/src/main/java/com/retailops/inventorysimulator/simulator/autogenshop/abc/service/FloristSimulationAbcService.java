@@ -26,6 +26,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Concrete ABC simulation service for florist shops.
+ *
+ * <p>Provides a florist-specific Monte Carlo generator and demo account
+ * for running ABC simulations via {@link AbstractShopSimulationAbcService}.</p>
+ */
+
 @Service
 public class FloristSimulationAbcService
         extends AbstractShopSimulationAbcService<FloristAbcMonteCarloGenerator>  {

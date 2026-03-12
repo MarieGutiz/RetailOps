@@ -22,6 +22,10 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
+/**
+ * Report DTO for ABC analysis, summarizing total inventory value and
+ * counts of items in categories A, B, and C.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AbcReport extends BaseReport {
@@ -31,7 +35,4 @@ public class AbcReport extends BaseReport {
     private int aItemsCount;
     private int bItemsCount;
     private int cItemsCount;
-
-
-    // Optional: you can add ABC-specific summaries or charts
 }

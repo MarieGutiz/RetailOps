@@ -19,6 +19,12 @@ package com.retailops.inventorysimulator.simulator.dto;
 
 import java.math.BigDecimal;
 
+/**
+ * Represents a single point on an EOQ (Economic Order Quantity) cost curve.
+ *
+ * <p>Includes the order quantity, associated ordering cost, holding cost,
+ * and total cost for that quantity.</p>
+ */
 public record EoqCurvePointDto(
         BigDecimal quantity,
         BigDecimal orderingCost,

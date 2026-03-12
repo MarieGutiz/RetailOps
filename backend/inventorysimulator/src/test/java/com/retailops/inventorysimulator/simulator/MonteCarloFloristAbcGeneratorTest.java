@@ -31,6 +31,22 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Integration tests for the Florist ABC Monte Carlo generator.
+ *
+ * <p>This test class verifies the deterministic and stochastic behavior
+ * of the {@link FloristAbcMonteCarloGenerator} used for florist inventory
+ * simulations. It ensures that:</p>
+ * <ul>
+ *   <li>Generators with the same simulation ID produce identical inventory samples.</li>
+ *   <li>Generators with different simulation IDs produce distinct inventory samples.</li>
+ *   <li>The generated inventory size matches the underlying product catalog size.</li>
+ *   <li>All demand frequency values in the generated inventory are non-negative.</li>
+ * </ul>
+ *
+ * <p>The tests help guarantee reproducibility, correctness, and validity
+ * of Monte Carlo simulations for florist ABC inventory modeling.</p>
+ */
 @SpringBootTest
 class FloristAbcMonteCarloGeneratorTest {
 

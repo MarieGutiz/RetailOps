@@ -24,6 +24,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+
+/**
+ * Base class for product-related simulation requests, including common
+ * fields such as product name and SKU.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder

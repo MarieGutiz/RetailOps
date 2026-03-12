@@ -22,6 +22,12 @@ import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 
 import java.math.BigDecimal;
 
+/**
+ * Represents an item ranked in ABC analysis.
+ *
+ * <p>Contains the original item data, its rank, cumulative contribution
+ * percentage, and its ABC category (A, B, or C).</p>
+ */
 public record AbcRankedItem(
         AbcItemDto item,
         int rank,

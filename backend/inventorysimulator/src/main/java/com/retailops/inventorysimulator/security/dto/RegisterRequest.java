@@ -17,5 +17,8 @@
 
 package com.retailops.inventorysimulator.security.dto;
 
+/**
+ * Represents the request payload for user registration.
+ */
 public record RegisterRequest(String username, String password, String name, String email,String role, String position) {
 }

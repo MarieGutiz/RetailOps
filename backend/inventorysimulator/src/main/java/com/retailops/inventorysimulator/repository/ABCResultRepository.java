@@ -15,6 +15,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Handles ABCResult DB operations
+ */
 @Repository
 public interface ABCResultRepository extends JpaRepository<ABCResult, Long> {
     List<ABCResult> findByAbcClass(ABCCategoryType abcClass);

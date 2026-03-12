@@ -26,6 +26,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for EOQ simulations, providing endpoints to calculate
+ * optimal order quantity and generate EOQ cost curves.
+ */
 @RestController
 @RequestMapping("/api/simulator/eoq")
 @RequiredArgsConstructor

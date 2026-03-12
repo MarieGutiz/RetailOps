@@ -22,6 +22,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO representing an EOQ cost curve chart, including demand, ordering
+ * and holding costs, optimal order quantity, and the chart image in Base64.
+ */
 @Data
 @AllArgsConstructor
 public class EoqCostCurveChart {

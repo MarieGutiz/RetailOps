@@ -37,6 +37,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+/**
+ * REST controller for user authentication, providing endpoints for
+ * registration and login, handling JWT generation, and returning
+ * structured responses.
+ */
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor

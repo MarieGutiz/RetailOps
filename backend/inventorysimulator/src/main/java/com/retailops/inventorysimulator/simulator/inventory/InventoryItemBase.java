@@ -29,6 +29,13 @@ import lombok.experimental.SuperBuilder;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Base class representing an inventory item with core attributes.
+ *
+ * <p>Includes product details, demand frequency, and sales value, with
+ * validation constraints to ensure required fields and valid numeric values.</p>
+ */
+
 @SuperBuilder
 @Data
 @NoArgsConstructor

@@ -22,6 +22,11 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
+
+/**
+ * Report DTO for EOQ analysis, summarizing optimal order quantity, total annual cost,
+ * ordering and holding costs, number of orders per year, and cycle time.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class EoqReport extends BaseReport {

@@ -24,6 +24,12 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+
+/**
+ * Entity representing the result of an ABC analysis for a product,
+ * including its category (A/B/C), contribution percentage, rank,
+ * and optional links to an account and simulation run.
+ */
 @Getter
 @Setter
 @Builder

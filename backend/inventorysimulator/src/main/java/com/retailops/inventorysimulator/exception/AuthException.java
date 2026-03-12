@@ -19,6 +19,12 @@ package com.retailops.inventorysimulator.exception;
 
 import lombok.Getter;
 
+/**
+ * Custom runtime exception thrown when authentication fails for a specific user.
+ *
+ * Stores the email of the user for whom the authentication error occurred,
+ * along with a descriptive error message.
+ */
 
 @Getter
 public class AuthException extends RuntimeException {

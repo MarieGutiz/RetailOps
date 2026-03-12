@@ -11,6 +11,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Classic implementation of ABC analysis using total sales for ranking.
+ *
+ * <p>Implements {@link AbcAnalyzerStrategy} and {@link AbstractAbcAnalyzer} to
+ * sort items by sales value, compute cumulative percentages, and assign ABC
+ * categories (A, B, C) in the traditional manner.</p>
+ */
 @Component
 public class AbcAnalyzerClassic extends AbstractAbcAnalyzer implements AbcAnalyzerStrategy {
 
@@ -23,11 +31,6 @@ public class AbcAnalyzerClassic extends AbstractAbcAnalyzer implements AbcAnalyz
 
         // Compute total sales for ranking & cumulative percentage
         BigDecimal totalSales = totalSales(items);
-
-//        // Log for verification
-//        System.out.println("Classic Analyzer: ranking by sales only");
-//        items.forEach(i -> System.out.println(i.getProduct().getName() + " -> " + i.getSalesValue()));
-
 
         // Rank items and assign ABC class
         return rank(items, totalSales);

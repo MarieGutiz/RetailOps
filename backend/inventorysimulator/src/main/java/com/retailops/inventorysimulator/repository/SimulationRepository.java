@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Handles Simulation DB operations
+ */
 @Repository
 public interface SimulationRepository extends JpaRepository<SimulationRun, Long> {
 

@@ -30,6 +30,12 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 
+
+/**
+ * Base class for all report types, containing common metadata, header, KPIs,
+ * sections, and reusable fields like watermark and GitHub link. Also provides
+ * nested classes for structured report components (ReportHeader, Kpi, ReportParameter, ReportSection).
+ */
 @Data
 public abstract  class BaseReport {
 

@@ -7,6 +7,13 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
+/**
+ * Request object for running a Newsvendor simulation.
+ *
+ * <p>Includes product details, statistical demand parameters (mean and standard deviation),
+ * pricing and cost information, salvage and penalty values, simulation mode, number of runs,
+ * and optional account information for the user.</p>
+ */
 public record NewsvendorRequest(
 
         @NotNull

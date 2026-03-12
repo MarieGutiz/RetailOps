@@ -10,6 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Abstract base implementation of {@link BaseService} providing
+ * generic CRUD operations for entities extending {@link BaseModel}.
+ *
+ * <p>Uses a {@link JpaRepository} for data access and supports
+ * transactional behavior with REQUIRED propagation and READ_COMMITTED isolation.</p>
+ *
+ * @param <T> the type of entity
+ */
+
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
 public abstract class BaseServiceImpl<T extends BaseModel> extends BaseComponent implements BaseService<T, Long> {
     protected abstract JpaRepository<T, Long> getRepository();

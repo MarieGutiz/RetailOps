@@ -7,6 +7,12 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Response object for a profit simulation.
+ *
+ * <p>Includes the product name, stock quantity, demand, and the resulting
+ * profit calculated from the simulation.</p>
+ */
 @Data
 @AllArgsConstructor
 public class ProfitResponse {

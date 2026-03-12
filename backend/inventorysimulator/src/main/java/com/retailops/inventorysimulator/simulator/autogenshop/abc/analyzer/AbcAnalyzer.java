@@ -30,6 +30,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class for performing ABC analysis on items based on sales values.
+ *
+ * <p>Provides methods to rank items into ABC categories, calculate cumulative
+ * contribution percentages, and convert ranked items into result objects or DTOs
+ * for reporting and further analysis.</p>
+ */
 public class AbcAnalyzer {
     public static List<AbcRankedItem> rankItems(
             List<AbcItemDto> items,

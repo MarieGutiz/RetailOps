@@ -19,6 +19,12 @@ package com.retailops.inventorysimulator.simulator.dto;
 
 import java.util.Map;
 
+/**
+ * Represents the results of a profit distribution simulation.
+ *
+ * <p>Includes a histogram of profit occurrences, expected profit, variance,
+ * probability of loss, and the minimum and maximum profit values observed.</p>
+ */
 public record ProfitDistributionResult(
         Map<Integer, Integer> histogram,
         double expectedProfit,

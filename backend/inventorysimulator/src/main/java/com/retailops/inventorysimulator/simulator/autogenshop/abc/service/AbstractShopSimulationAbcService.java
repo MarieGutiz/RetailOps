@@ -30,6 +30,15 @@ import com.retailops.inventorysimulator.util.types.SimulationType;
 
 import java.util.List;
 
+/**
+ * Abstract base service for running ABC simulations for shops.
+ *
+ * <p>Uses a Monte Carlo generator to produce inventory, maps items to ABC input,
+ * and delegates simulation execution to {@link AbcService}.</p>
+ *
+ * @param <TGenerator> the type of Monte Carlo generator used for simulation
+ */
+
 public abstract class AbstractShopSimulationAbcService<TGenerator extends AbstractShopMonteCarloGenerator<?>> {
 
     protected MonteCarloFactory factory;  // injected here!

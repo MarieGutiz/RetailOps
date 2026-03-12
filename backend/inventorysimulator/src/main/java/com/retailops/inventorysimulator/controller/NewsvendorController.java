@@ -26,6 +26,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+
+/**
+ * REST controller for Newsvendor simulations, providing endpoints to:
+ * - Run single or batch simulations
+ * - Generate profit distributions and normal PDF histograms
+ * - Retrieve key markers (mean demand, order quantity, critical ratio)
+ */
 @RestController
 @RequestMapping("/api/simulator/newsvendor")
 @RequiredArgsConstructor
@@ -104,6 +111,20 @@ public class NewsvendorController {
                 shopName
         );
     }
+
+    /**
+     *
+     * This endpoint does not perform a full simulation, but instead returns
+     * fundamental metrics such as:
+     * - Mean demand
+     * - Order quantity (Q)
+     * - Critical ratio
+     *
+     * These markers can be used for quick analysis or as inputs for further simulations.
+     *
+     * @param request contains mean demand, order quantity, and critical ratio
+     * @return NewsvendorMarkers object with the calculated markers
+     */
 
     @PostMapping("/markers")
     public NewsvendorMarkers markers(

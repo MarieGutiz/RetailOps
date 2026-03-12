@@ -17,6 +17,10 @@
 
 package com.retailops.inventorysimulator.exception;
 
+/**
+ * Custom runtime exception thrown when a product with the specified name
+ * cannot be found in the system.
+ */
 public class ProductNameNotFoundException extends  RuntimeException{
     public ProductNameNotFoundException(String name){
         super("Product with name " + name + " not found");

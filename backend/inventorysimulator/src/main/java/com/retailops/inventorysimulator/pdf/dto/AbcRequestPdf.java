@@ -31,6 +31,10 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
+/**
+ * DTO for generating an ABC PDF report, containing the simulation mode
+ * and a list of items to include in the report.
+ */
 @SuperBuilder
 @Jacksonized
 @Getter

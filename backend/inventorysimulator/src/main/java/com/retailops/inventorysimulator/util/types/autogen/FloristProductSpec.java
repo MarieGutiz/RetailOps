@@ -23,6 +23,26 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
+/**
+ * Defines the core specification for each florist product used in the inventory
+ * and demand simulation model.
+ *
+ * <p>Each enum constant represents a product with its business characteristics,
+ * including category classification, demand distribution parameters, purchase
+ * cost range, and retail markup.</p>
+ *
+ * <p>The specification supports demand modeling (Normal or Uniform), pricing
+ * simulation, and inventory policy calculations by providing:</p>
+ * <ul>
+ *   <li>Product identity and category</li>
+ *   <li>Demand parameters (mean/std for Normal or min/max for Uniform)</li>
+ *   <li>Supplier cost range</li>
+ *   <li>Retail markup factor</li>
+ * </ul>
+ *
+ * <p>This enum acts as the central product configuration for the florist
+ * inventory simulation domain.</p>
+ */
 @Getter
 @AllArgsConstructor
 public enum FloristProductSpec {

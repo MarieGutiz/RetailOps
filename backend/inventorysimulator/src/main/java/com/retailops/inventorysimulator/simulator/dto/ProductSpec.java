@@ -17,6 +17,12 @@
 
 package com.retailops.inventorysimulator.simulator.dto;
 
+/**
+ * Represents the specification of a product.
+ *
+ * <p>Includes product name, category, minimum and maximum unit costs,
+ * and the markup applied to determine selling price.</p>
+ */
 public record ProductSpec(
         String name,
         String category,

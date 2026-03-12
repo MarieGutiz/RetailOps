@@ -25,6 +25,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
+/**
+ * Service for calculating profit based on stock, demand, price, and cost.
+ *
+ * <p>Provides methods to compute revenue, cost, and profit for a given
+ * {@link ProfitRequest}, returning the results in a {@link ProfitResponse}.</p>
+ */
 @Service
 public class ProfitService {
 
