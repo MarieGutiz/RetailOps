@@ -9,6 +9,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a simulation run, storing input parameters, results,
+ * and metadata for different simulation types (Profit, Newsvendor, EOQ, ABC),
+ * with an optional link to the user account that performed the run.
+ */
 @Getter
 @Setter
 @Builder

@@ -23,6 +23,12 @@ import com.retailops.inventorysimulator.simulator.service.EoqService;
 import com.retailops.inventorysimulator.util.types.autogen.ShopType;
 import org.springframework.stereotype.Service;
 
+/**
+ * Concrete EOQ simulation service for cafeteria shops.
+ *
+ * <p>Provides a cafeteria-specific Monte Carlo generator for running EOQ
+ * simulations via {@link AbstractShopSimulationEOQService}.</p>
+ */
 
 @Service
 public class CafeteriaSimulationEoqService extends AbstractShopSimulationEOQService<CafeteriaEOQMonteCarloGenerator> {

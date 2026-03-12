@@ -17,6 +17,12 @@
 
 package com.retailops.inventorysimulator.util.types.autogen;
 
+/**
+ * Enumeration of product categories in a cafeteria context.
+ *
+ * <p>Used to classify items into functional groups for inventory, ABC analysis,
+ * or EOQ simulations.</p>
+ */
 public enum CafeteriaCategoryType {
     BEVERAGES,          // coffee beans, tea
     DAIRY,              // milk

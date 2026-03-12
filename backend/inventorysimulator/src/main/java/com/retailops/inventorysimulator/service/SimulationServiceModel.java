@@ -8,6 +8,13 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+/**
+ * Service interface for managing {@link SimulationRun} entities, extending
+ * basic CRUD operations from {@link BaseService}.
+ *
+ * <p>Provides methods for retrieving simulation history by username or type,
+ * supports pagination and filtering, and allows saving and fetching individual runs.</p>
+ */
 
 public interface SimulationServiceModel extends BaseService<SimulationRun, Long> {
     SimulationRun findSimulationRunById(long id);

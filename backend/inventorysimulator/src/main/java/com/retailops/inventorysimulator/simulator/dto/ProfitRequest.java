@@ -5,7 +5,13 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-
+/**
+ * Request object for profit simulation.
+ *
+ * <p>Includes product name, price, cost, stock quantity, and demand,
+ * along with an optional username. Provides helper methods to supply
+ * default values for nullable fields.</p>
+ */
 public record ProfitRequest(
                             @NotNull
                             @NotBlank(message = "Product name is required")

@@ -20,6 +20,12 @@ package com.retailops.inventorysimulator.simulator.generator.dto;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Represents a single Monte Carlo sample for EOQ (Economic Order Quantity) simulations.
+ *
+ * <p>Includes the product label, demand (D), setup cost (S), and holding cost (H)
+ * for the sampled scenario.</p>
+ */
 public record EoqMonteCarloSample(
         String productLabel,
         BigInteger demand,        // D

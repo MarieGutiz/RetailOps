@@ -24,6 +24,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Random;
 
+/**
+ * Base class for Monte Carlo generators that use a deterministic seed.
+ *
+ * <p>Provides consistent randomization based on simulation ID, shop name,
+ * and shop type to ensure reproducible results across simulations.</p>
+ */
+
 @Getter
 @RequiredArgsConstructor
 public abstract class BaseSeedMonteCarloGenerator {

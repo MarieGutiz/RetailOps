@@ -22,6 +22,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+
+/**
+ * Abstract base class for building reports, providing a template method
+ * (`build`) to construct a report with common fields, headers, KPIs,
+ * and sections. Subclasses provide model-specific implementations.
+ */
 public abstract class AbstractReportBuilder<
         R extends BaseReport,
         C> {

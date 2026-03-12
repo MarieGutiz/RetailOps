@@ -20,6 +20,12 @@ package com.retailops.inventorysimulator.simulator.dto;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Represents key parameters for the Newsvendor model.
+ *
+ * <p>Includes the mean demand, recommended order quantity, and the critical ratio
+ * used for determining optimal stock levels under uncertain demand.</p>
+ */
 public record NewsvendorMarkers(
         BigDecimal meanDemand,
         BigInteger orderQuantity,

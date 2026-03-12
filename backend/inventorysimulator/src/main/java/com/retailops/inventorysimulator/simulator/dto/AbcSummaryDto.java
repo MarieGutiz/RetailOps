@@ -21,6 +21,12 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/**
+ * Summary of an ABC analysis.
+ *
+ * <p>Contains the total value of all items and a breakdown by ABC categories,
+ * including count of items and percentage contribution for each category.</p>
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -33,7 +39,6 @@ public class AbcSummaryDto {
     private CategorySummary A;
     private CategorySummary B;
     private CategorySummary C;
-
 
     @Getter
     @Setter

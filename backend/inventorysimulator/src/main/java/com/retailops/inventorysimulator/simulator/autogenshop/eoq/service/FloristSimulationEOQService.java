@@ -23,6 +23,13 @@ import com.retailops.inventorysimulator.simulator.service.EoqService;
 import com.retailops.inventorysimulator.util.types.autogen.ShopType;
 import org.springframework.stereotype.Service;
 
+/**
+ * Concrete EOQ simulation service for florist shops.
+ *
+ * <p>Provides a florist-specific Monte Carlo generator for running EOQ
+ * simulations via {@link AbstractShopSimulationEOQService}.</p>
+ */
+
 @Service
 public class FloristSimulationEOQService extends AbstractShopSimulationEOQService<FloristEOQMonteCarloGenerator> {
 

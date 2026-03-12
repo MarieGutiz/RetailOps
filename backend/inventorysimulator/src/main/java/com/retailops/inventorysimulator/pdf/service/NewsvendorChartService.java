@@ -22,6 +22,12 @@ import org.springframework.stereotype.Service;
 
 import static com.retailops.inventorysimulator.util.pdf.SvgUtils.svgToBase64Png;
 
+/**
+ * Service responsible for generating Newsvendor risk distribution charts
+ * for reports and PDFs. Provides methods to create SVG visualizations
+ * of the demand distribution and service level shading, and convert them
+ * to Base64-encoded PNGs suitable for embedding in reports.
+ */
 @Service
 public class NewsvendorChartService {
 
@@ -91,28 +97,28 @@ public class NewsvendorChartService {
         double legendY = padding;
 
         String legend = """
-    <rect x="%f" y="%f" width="180" height="65"
-          fill="white" stroke="#ccc" stroke-width="1"/>
-
-    <rect x="%f" y="%f" width="20" height="10"
-          fill="#2C7BE5" fill-opacity="0.2"/>
-    <text x="%f" y="%f" font-size="11" fill="#333">
-        Service Level Area
-    </text>
-
-    <line x1="%f" y1="%f" x2="%f" y2="%f"
-          stroke="#2C7BE5" stroke-width="2"/>
-    <text x="%f" y="%f" font-size="11" fill="#333">
-        Demand Distribution
-    </text>
-
-    <line x1="%f" y1="%f" x2="%f" y2="%f"
-          stroke="#E63757" stroke-width="2"
-          stroke-dasharray="5,5"/>
-    <text x="%f" y="%f" font-size="11" fill="#333">
-        Optimal Order Quantity (Q*)
-    </text>
-""".formatted(
+            <rect x="%f" y="%f" width="180" height="65"
+                  fill="white" stroke="#ccc" stroke-width="1"/>
+        
+            <rect x="%f" y="%f" width="20" height="10"
+                  fill="#2C7BE5" fill-opacity="0.2"/>
+            <text x="%f" y="%f" font-size="11" fill="#333">
+                Service Level Area
+            </text>
+        
+            <line x1="%f" y1="%f" x2="%f" y2="%f"
+                  stroke="#2C7BE5" stroke-width="2"/>
+            <text x="%f" y="%f" font-size="11" fill="#333">
+                Demand Distribution
+            </text>
+        
+            <line x1="%f" y1="%f" x2="%f" y2="%f"
+                  stroke="#E63757" stroke-width="2"
+                  stroke-dasharray="5,5"/>
+            <text x="%f" y="%f" font-size="11" fill="#333">
+                Optimal Order Quantity (Q*)
+            </text>
+        """.formatted(
                 legendX, legendY,
 
                 legendX + 10, legendY + 12,
@@ -128,19 +134,19 @@ public class NewsvendorChartService {
         );
 
         return """
-<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg">
-    <rect width="100%%" height="100%%" fill="white"/>
-    <path d="%s" fill="#2C7BE5" fill-opacity="0.2"/>
-    <path d="%s" fill="none" stroke="#2C7BE5" stroke-width="2"/>
-    <line x1="%f" y1="%d" x2="%f" y2="%d"
-          stroke="#E63757"
-          stroke-width="2"
-          stroke-dasharray="5,5"/>
-    <text x="%f" y="%d" font-size="12" fill="#333">Q*</text>
-
-    %s
-</svg>
-""".formatted(
+        <svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%%" height="100%%" fill="white"/>
+            <path d="%s" fill="#2C7BE5" fill-opacity="0.2"/>
+            <path d="%s" fill="none" stroke="#2C7BE5" stroke-width="2"/>
+            <line x1="%f" y1="%d" x2="%f" y2="%d"
+                  stroke="#E63757"
+                  stroke-width="2"
+                  stroke-dasharray="5,5"/>
+            <text x="%f" y="%d" font-size="12" fill="#333">Q*</text>
+        
+            %s
+        </svg>
+        """.formatted(
                 width,
                 height,
                 shadedPath,

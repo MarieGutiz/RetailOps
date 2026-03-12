@@ -28,11 +28,22 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
-
+/**
+ * Builds a NewsvendorReport from NewsvendorPdfPayload.
+ *
+ * Responsible for:
+ * - Setting report header with product, SKU, and shop info.
+ * - Computing KPIs like Q*, expected profit, service level, and stockout probability.
+ * - Creating report sections:
+ *   1. Input parameters
+ *   2. Risk distribution chart (Base64 PNG or SVG fallback)
+ *   3. Interpretation text
+ *
+ * Delegates chart generation to NewsvendorChartService.
+ */
 @Service
 @AllArgsConstructor
 public class NewsvendorReportBuilder

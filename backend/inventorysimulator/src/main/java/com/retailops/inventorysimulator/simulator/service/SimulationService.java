@@ -12,6 +12,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
+/**
+ * Service for managing and retrieving simulation runs.
+ *
+ * <p>Provides methods to access historical simulation data for a given user,
+ * delegating persistence operations to {@link SimulationServiceModel}.</p>
+ */
 @Service
 @RequiredArgsConstructor
 public class SimulationService {

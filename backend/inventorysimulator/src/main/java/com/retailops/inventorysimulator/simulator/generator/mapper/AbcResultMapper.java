@@ -23,6 +23,13 @@ import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 
 import java.math.BigDecimal;
 
+/**
+ * Utility class for mapping ABC analysis input items to result DTOs.
+ *
+ * <p>Provides methods to convert {@link AbcItemDto} instances into
+ * {@link AbcItemResultDto} with calculated rank, cumulative percentage,
+ * and ABC category.</p>
+ */
 public class AbcResultMapper {
 
     public static AbcItemResultDto toItemResult(

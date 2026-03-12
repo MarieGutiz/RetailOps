@@ -29,6 +29,13 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Multi-factor ABC analyzer that ranks items using a weighted combination of sales and demand.
+ *
+ * <p>Implements {@link AbcAnalyzerStrategy} and {@link AbstractAbcAnalyzer} to
+ * calculate a weighted score for each item (70% sales value, 30% demand frequency),
+ * sort items by this score, and assign ABC categories (A, B, C).</p>
+ */
 @Component
 public class AbcAnalyzerMulti extends AbstractAbcAnalyzer implements AbcAnalyzerStrategy {
 

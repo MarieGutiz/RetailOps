@@ -23,6 +23,11 @@ import lombok.EqualsAndHashCode;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+
+/**
+ * Report DTO for Newsvendor analysis, including optimal order quantity,
+ * expected profit, service level, and stockout probability.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class NewsvendorReport extends BaseReport{

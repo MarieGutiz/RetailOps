@@ -25,6 +25,13 @@ import com.retailops.inventorysimulator.util.types.autogen.ShopType;
 import org.springframework.stereotype.Service;
 
 
+/**
+ * Concrete ABC simulation service for cafeteria shops.
+ *
+ * <p>Provides a cafeteria-specific Monte Carlo generator and demo account
+ * for running ABC simulations via {@link AbstractShopSimulationAbcService}.</p>
+ */
+
 @Service
 public class CafeteriaSimulationAbcService extends
         AbstractShopSimulationAbcService<CafeteriaAbcMonteCarloGenerator> {
@@ -53,7 +60,5 @@ public class CafeteriaSimulationAbcService extends
                 .email("demo@cafeteria.local")
                 .build();
     }
-
-
 
 }

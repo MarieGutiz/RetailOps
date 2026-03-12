@@ -20,7 +20,6 @@ package com.retailops.inventorysimulator.security.config;
 import com.retailops.inventorysimulator.model.Account;
 import com.retailops.inventorysimulator.security.dto.AuthResponse;
 import com.retailops.inventorysimulator.security.jwt.JwtService;
-import com.retailops.inventorysimulator.service.AccountService;
 import com.retailops.inventorysimulator.service.CustomedUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +27,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+/**
+ * Builds AuthResponse with JWT and user info
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthResponseService {
@@ -49,6 +51,5 @@ public class AuthResponseService {
                 account.getPosition(),
                 account.getAvatar());
 
-        //accountService.findByEmail()
     }
 }

@@ -22,6 +22,18 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
+/**
+ * Defines the EOQ (Economic Order Quantity) policy parameters for each florist product type.
+ * <p>
+ * Each enum constant maps a {@link FloristProductSpec} to inventory control parameters used
+ * in EOQ calculations, including:
+ * <ul>
+ *   <li>Minimum and maximum ordering (setup) cost range</li>
+ *   <li>Annual holding cost rate</li>
+ * </ul>
+ * These parameters allow the system to determine optimal replenishment quantities
+ * and inventory costs for different categories of florist supplies.
+ */
 @Getter
 @AllArgsConstructor
 public enum FloristEoqPolicy {

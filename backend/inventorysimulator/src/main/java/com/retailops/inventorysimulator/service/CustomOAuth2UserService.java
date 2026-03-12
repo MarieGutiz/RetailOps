@@ -36,6 +36,15 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Custom {@link OAuth2UserService} implementation for handling OAuth2 logins,
+ * specifically for GitHub authentication.
+ *
+ * <p>Loads user details from the OAuth2 provider, maps them to a local {@link Account},
+ * handles account creation or update, and builds a Spring Security {@link OAuth2User}
+ * with the appropriate roles.</p>
+ */
+
 @Service
 @RequiredArgsConstructor
 @Transactional

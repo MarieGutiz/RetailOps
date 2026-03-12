@@ -17,6 +17,12 @@
 
 package com.retailops.inventorysimulator.transfer;
 
+/**
+ * Data Transfer Object representing an account.
+ *
+ * <p>Contains basic account information such as ID, username, full name, and email,
+ * typically used for presentation or API responses.</p>
+ */
 public record AccountDTO(
         Long id,
         String username,

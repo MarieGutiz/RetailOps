@@ -23,6 +23,13 @@ import com.retailops.inventorysimulator.util.types.autogen.ShopType;
 
 import java.math.BigDecimal;
 
+/**
+ * Monte Carlo generator for Newsvendor simulations.
+ *
+ * <p>Extends {@link BaseSeedMonteCarloGenerator} to provide reproducible randomization
+ * and simulates profits over multiple runs given order quantity, demand distribution,
+ * pricing, cost, and salvage value.</p>
+ */
 public class NewsvendorMonteCarloGenerator extends BaseSeedMonteCarloGenerator {
 
     public NewsvendorMonteCarloGenerator(

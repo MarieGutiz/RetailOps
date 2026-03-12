@@ -7,6 +7,11 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+
+/**
+ * Entity representing a user account, including personal details,
+ * authentication credentials, role, and linked authentication provider.
+ */
 @Getter
 @Setter
 @Builder

@@ -19,6 +19,10 @@ package com.retailops.inventorysimulator.pdf.dto;
 
 import com.retailops.inventorysimulator.simulator.dto.NewsvendorResponse;
 
+/**
+ * Payload for Newsvendor PDF report generation, including the request parameters
+ * and the simulation response results.
+ */
 public record NewsvendorPdfPayload(
         NewsvendorRequestPdf request,
         NewsvendorResponse response

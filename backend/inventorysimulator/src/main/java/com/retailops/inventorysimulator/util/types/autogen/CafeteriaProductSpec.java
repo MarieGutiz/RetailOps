@@ -23,7 +23,20 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
-
+/**
+ * Defines cafeteria products with attributes for simulation and inventory modeling.
+ *
+ * <p>Each product specifies:
+ * <ul>
+ *     <li>Name and category ({@link CafeteriaCategoryType})</li>
+ *     <li>Demand model ({@link DemandModel})</li>
+ *     <li>Demand parameters: mean & std deviation or min & max</li>
+ *     <li>Cost range (min & max) and markup factor</li>
+ * </ul>
+ *
+ * <p>Products are grouped by ABC classification (A: core revenue, B: supporting, C: low value)
+ * and can be retrieved by name using {@link #fromName(String)}.</p>
+ */
 @RequiredArgsConstructor
 @Getter
 public enum CafeteriaProductSpec {

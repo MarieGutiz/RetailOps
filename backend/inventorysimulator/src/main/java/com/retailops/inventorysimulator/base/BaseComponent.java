@@ -5,6 +5,10 @@ import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Base component class providing logging for lifecycle events (initialization and destruction)
+ * and a shared logger for all subclasses.
+ */
 public abstract class BaseComponent {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());

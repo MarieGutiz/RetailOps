@@ -17,14 +17,18 @@
 
 package com.retailops.inventorysimulator.simulator.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.retailops.inventorysimulator.simulator.inventory.InventoryItemBase;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 
-
+/**
+ * Data transfer object for ABC analysis, extending {@link InventoryItemBase}.
+ *
+ * <p>Represents an inventory item prepared for ABC ranking and simulation,
+ * including all product, demand, and sales value information.</p>
+ */
 @SuperBuilder
 @Jacksonized
 @Getter

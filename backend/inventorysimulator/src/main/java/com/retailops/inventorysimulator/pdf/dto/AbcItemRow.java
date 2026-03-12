@@ -22,6 +22,10 @@ import com.retailops.inventorysimulator.util.types.ABCCategoryType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Represents a single row pdct in an ABC analysis, including product info,
+ * category (A/B/C), rank, sales value, demand frequency, and cumulative percentage.
+ */
 public record AbcItemRow(
         String product,
         String sku,

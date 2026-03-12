@@ -30,7 +30,10 @@ import org.thymeleaf.context.Context;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-
+/**
+ * Generates a PDF from a BaseReport using a Thymeleaf template.
+ * Returns the PDF as a byte array.
+ */
 @Service
 @AllArgsConstructor
 public class ReportPDFService {

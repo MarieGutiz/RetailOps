@@ -9,6 +9,12 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Data transfer object representing the result of ABC analysis for a single item.
+ *
+ * <p>Includes product details, commercial metrics (sales value, demand frequency),
+ * and ABC-specific results such as rank, cumulative percentage, and category type.</p>
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor

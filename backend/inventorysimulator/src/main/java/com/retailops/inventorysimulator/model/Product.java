@@ -6,6 +6,10 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/**
+ * Entity representing a product with details such as name, SKU, category,
+ * description, cost, and price, including validation for pricing logic.
+ */
 
 @Getter
 @Setter

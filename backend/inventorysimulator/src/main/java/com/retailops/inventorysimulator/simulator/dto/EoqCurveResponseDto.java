@@ -20,6 +20,12 @@ package com.retailops.inventorysimulator.simulator.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Response object for an EOQ simulation.
+ *
+ * <p>Includes the calculated optimal order quantity and the list of
+ * {@link EoqCurvePointDto} representing points along the EOQ cost curve.</p>
+ */
 public record EoqCurveResponseDto(
         BigDecimal optimalQuantity,
         List<EoqCurvePointDto> curvePoints

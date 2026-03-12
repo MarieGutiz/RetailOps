@@ -25,6 +25,13 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+/**
+ * Component for calculating the Economic Order Quantity (EOQ).
+ *
+ * <p>Implements the classical EOQ formula: <code>EOQ = sqrt((2 * D * S) / H)</code>,
+ * where D is demand, S is ordering/setup cost, and H is holding cost.
+ * Uses high-precision {@link BigDecimal} arithmetic and a Newton-Raphson method for square roots.</p>
+ */
 @Component
 public class EoqCalculator {
 

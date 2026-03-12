@@ -17,6 +17,9 @@
 
 package com.retailops.inventorysimulator.util.types;
 
+/**
+ * Auth registration types for RetailOps
+ */
 public enum AuthProviderType {
     LOCAL, GOOGLE, GITHUB
 }

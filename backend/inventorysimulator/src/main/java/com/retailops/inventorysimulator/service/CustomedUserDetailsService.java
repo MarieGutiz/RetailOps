@@ -34,6 +34,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Custom implementation of {@link UserDetailsService} for authentication
+ * and user management.
+ *
+ * <p>Supports standard username/password login, OAuth2 login, and user
+ * lookup by username, email, or external authentication provider.
+ * Provides methods to build {@link UserDetails} and generate authentication responses.</p>
+ */
 
 @Service
 @RequiredArgsConstructor

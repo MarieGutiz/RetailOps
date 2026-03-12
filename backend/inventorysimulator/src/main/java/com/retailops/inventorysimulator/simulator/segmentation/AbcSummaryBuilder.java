@@ -26,6 +26,13 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Utility class for building ABC analysis summaries and related helper methods.
+ *
+ * <p>Provides methods to construct {@link AbcSummaryDto} from ranked ABC items,
+ * compute category counts and percentages, generate SKU codes, and create random
+ * cost values within a specified range.</p>
+ */
 public class AbcSummaryBuilder {
 
     public static AbcSummaryDto build(List<AbcItemResultDto> items) {

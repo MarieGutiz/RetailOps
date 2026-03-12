@@ -10,6 +10,11 @@ package com.retailops.inventorysimulator.util.distribution;
 
 import java.util.Random;
 
+/**
+ * Utility class for generating and analyzing normal (Gaussian) distributions.
+ *
+ * Includes a high-performance approximation of the error function (Abramowitz & Stegun, 1964).</p>
+ */
 public class Normal {
 
     private static final Random random = new Random();

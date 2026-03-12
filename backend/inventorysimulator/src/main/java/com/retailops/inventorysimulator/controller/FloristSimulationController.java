@@ -31,6 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * REST controller for florist simulations, providing endpoints to run
+ * ABC and EOQ analyses for florist products and return the simulation results.
+ */
 @RestController
 @RequestMapping("/api/simulations/florist")
 @RequiredArgsConstructor

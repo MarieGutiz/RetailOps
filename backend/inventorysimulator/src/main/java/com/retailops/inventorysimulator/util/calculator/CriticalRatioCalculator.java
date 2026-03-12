@@ -23,6 +23,17 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Component for calculating the critical ratio (CR) in Newsvendor-type inventory models.
+ *
+ * <p>Provides methods for both basic and advanced CR calculations:
+ * <ul>
+ *     <li>Basic CR assumes no salvage value and no penalty for unmet demand.</li>
+ *     <li>Advanced CR incorporates salvage value and penalty for unmet demand.</li>
+ * </ul>
+ * The critical ratio represents the probability of stocking enough to meet expected demand
+ * and is calculated as CR = CS / (CS + CE), where CS is the underage cost and CE is the overage cost.</p>
+ */
 @Component
 public class CriticalRatioCalculator {
 

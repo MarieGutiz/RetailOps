@@ -22,6 +22,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO representing a demand risk chart, including statistical parameters
+ * (mean, standard deviation, service level, critical value) and the chart image in Base64.
+ */
 @Data
 @AllArgsConstructor
 public class DemandRiskChart {

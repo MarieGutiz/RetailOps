@@ -35,6 +35,15 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.UUID;
 
+/**
+ * Custom {@link OAuth2UserService} implementation for handling OIDC (OpenID Connect)
+ * logins, specifically for Google authentication.
+ *
+ * <p>Loads user details from the OIDC provider, maps them to a local {@link Account},
+ * handles account creation or update, synchronizes avatar changes, and builds a
+ * Spring Security {@link OidcUser} with appropriate roles.</p>
+ */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j

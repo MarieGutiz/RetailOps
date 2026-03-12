@@ -17,6 +17,9 @@
 
 package com.retailops.inventorysimulator.util.types.autogen;
 
+/**
+ * How to model the demand?
+ */
 public enum DemandModel {
     NORMAL,
     UNIFORM

@@ -30,6 +30,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Service for handling JSON Web Tokens (JWTs) including creation, validation,
+ * and extraction of claims such as username and role.
+ *
+ * <p>Supports generating tokens with optional role claims, validating tokens
+ * against a {@link org.springframework.security.core.userdetails.UserDetails}
+ * instance, and checking expiration.</p>
+ */
+
 @Component
 public class JwtService {
     private final String secretKey;

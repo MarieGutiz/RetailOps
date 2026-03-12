@@ -20,6 +20,10 @@ package com.retailops.inventorysimulator.pdf.dto;
 import com.retailops.inventorysimulator.simulator.dto.EoqCurveResponseDto;
 import com.retailops.inventorysimulator.simulator.dto.EoqResponseDto;
 
+/**
+ * Payload for EOQ PDF report generation, containing the request details,
+ * simulation response, cost curve data, and shop name.
+ */
 public record EoqPdfPayload(
         EoqRequestPdf request,
         EoqResponseDto response,

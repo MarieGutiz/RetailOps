@@ -29,6 +29,11 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO for generating a Newsvendor PDF report, containing simulation parameters
+ * such as mean demand, standard deviation, selling price, purchase cost,
+ * salvage value, and penalty.
+ */
 @SuperBuilder
 @Jacksonized
 @Getter
@@ -59,6 +64,5 @@ public class NewsvendorRequestPdf extends ProductSimulationRequest{
     @NotNull(message = "Penalty is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Penalty cannot be negative")
     private BigDecimal penalty;
-
 
 }

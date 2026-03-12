@@ -20,10 +20,12 @@ package com.retailops.inventorysimulator.simulator.dto;
 import com.retailops.inventorysimulator.simulator.inventory.InventoryItemBase;
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-
+/**
+ * Data transfer object for ABC analysis, extending {@link InventoryItemBase}.
+ *
+ * <p>Represents an inventory item prepared for ABC ranking and simulation,
+ * including all product, demand, and sales value information.</p>
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor

@@ -31,6 +31,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service for performing ABC analysis using either classic or multi-category
+ * strategies, producing a detailed response including ranked items and summary metrics.
+ */
 @Service
 @AllArgsConstructor
 public class AbcAnalysisService {

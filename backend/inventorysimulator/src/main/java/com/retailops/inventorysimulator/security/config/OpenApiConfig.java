@@ -26,6 +26,9 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configures OpenAPI/Swagger documentation and JWT security scheme
+ */
 @Configuration
 @OpenAPIDefinition(
         info = @Info(

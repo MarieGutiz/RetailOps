@@ -19,6 +19,20 @@ package com.retailops.inventorysimulator.util.types;
 
 import lombok.Getter;
 
+/**
+ * Represents the ABC inventory classification categories.
+ *
+ * <p>ABC analysis groups products based on their relative value and impact
+ * on total inventory cost:</p>
+ * <ul>
+ *   <li>A – High-value, high-priority items requiring strict control</li>
+ *   <li>B – Moderate-value items with balanced monitoring</li>
+ *   <li>C – Low-value items typically managed with simpler controls</li>
+ * </ul>
+ *
+ * Each category includes a human-readable label used for reporting
+ * and presentation purposes.
+ */
 @Getter
 public enum ABCCategoryType {
     A("Class A"),

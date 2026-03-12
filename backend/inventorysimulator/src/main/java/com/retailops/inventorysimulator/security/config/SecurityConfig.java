@@ -17,8 +17,7 @@
 
 package com.retailops.inventorysimulator.security.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.retailops.inventorysimulator.security.dto.AuthResponse;
+
 import com.retailops.inventorysimulator.security.jwt.JwtAuthFilter;
 import com.retailops.inventorysimulator.service.CustomOAuth2UserService;
 import com.retailops.inventorysimulator.service.CustomOidcUserService;
@@ -41,6 +40,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Configures web security, including JWT auth, OAuth2 login, CORS, and endpoint access rules.
+ */
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
