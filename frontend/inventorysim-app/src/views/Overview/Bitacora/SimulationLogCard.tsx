@@ -33,7 +33,8 @@ const SimulationLogCard = ({ entry }: Props) => {
     switch (entry.type) {
       case 'abc':
         return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
             <MetricCard
               label="A %"
               value={`${entry.data.summary.a.valuePct.toFixed(1)}%`}
@@ -56,7 +57,7 @@ const SimulationLogCard = ({ entry }: Props) => {
 
       case 'eoq':
         return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <MetricCard
               label="Optimal Q"
               value={`${Math.round(entry.data.eoq)} units`}
@@ -71,7 +72,7 @@ const SimulationLogCard = ({ entry }: Props) => {
 
       case 'newsvendor':
         return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <MetricCard
               label="Service Level"
               value={`${(entry.data.serviceLevel * 100).toFixed(1)}%`}

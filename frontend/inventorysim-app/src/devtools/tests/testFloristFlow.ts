@@ -1,8 +1,8 @@
 import type { ABCTableRow } from '@/types/abc';
 import type { AbcResponseDto, SimulationType } from '@/types/abc-backend';
 import type { ShopType } from '@/types/shop';
-import { mapAbcResponseToTable } from '../../engines/mapper/abcBackendMapper';
-import { runShopABC } from './frontendABC';
+import { mapAbcResponseToTable } from '../../hooks/simulator/engines/mapper/abcBackendMapper';
+import { runShopABC } from '../../hooks/simulator/modules/abc/frontendABC';
 
 const floristMockResponse: AbcResponseDto = {
   items: [

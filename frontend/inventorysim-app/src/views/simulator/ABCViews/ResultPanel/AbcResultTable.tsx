@@ -103,6 +103,8 @@ const AbcResultTable = ({
       .slice(0, maxTopItems);
   }, [items, maxTopItems]);
 
+  const getArrow = (key: SortKey) =>
+  sortKey === key ? (asc ? ' ↑' : ' ↓') : '';
   return (
     <div className="flex flex-col gap-4 min-w-0">
       {/* Top A badges */}
@@ -124,44 +126,61 @@ const AbcResultTable = ({
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <Table className="w-full table-fixed text-sm">
-          <TableHeader>
-            <TableRow>
-              {[
-                { key: 'rank', label: 'Rank', align: 'left' },
-                { key: 'product', label: 'Product', align: 'left' },
-                { key: 'salesValue', label: 'Sales Value', align: 'right' },
-                {
-                  key: 'cumulativePct',
-                  label: 'Cumulative %',
-                  align: 'center',
-                },
-                { key: 'demandFrequency', label: 'Demand', align: 'right' },
-                { key: 'category', label: 'Category', align: 'center' },
-              ].map((col) => {
-                const isSortCol = col.key === sortKey;
-                const arrow = isSortCol ? (asc ? '↑' : '↓') : '';
-                return (
-                  <TableHead
-                    key={col.key}
-                    className={`cursor-pointer px-2 py-1 font-bold ${
-                      col.align === 'right'
-                        ? 'text-right'
-                        : col.align === 'center'
-                          ? 'text-center'
-                          : 'text-left'
-                    }`}
-                    onClick={() =>
-                      col.key !== 'product' &&
-                      toggleSort(col.key as typeof sortKey)
-                    }
-                  >
-                    {col.label} {arrow}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          </TableHeader>
+      <Table className="w-full text-sm">
+        <TableHeader>
+          <TableRow>
+            {/* Rank */}
+            <TableHead
+              onClick={() => toggleSort('rank')}
+              className="min-w-[60px] px-2 py-2 text-left font-semibold whitespace-nowrap cursor-pointer"
+            >
+              #{getArrow('rank')}
+            </TableHead>
+
+            {/* Product */}
+            <TableHead className="min-w-[100px] px-2 py-2 text-left font-semibold">
+              Product
+            </TableHead>
+
+            {/* Sales */}
+            <TableHead
+              onClick={() => toggleSort('salesValue')}
+              className="min-w-[110px] px-2 py-2 text-right font-semibold whitespace-nowrap cursor-pointer"
+            >
+              <span className="sm:hidden">Sales</span>
+              <span className="hidden sm:inline">Sales Value</span>
+              {getArrow('salesValue')}
+            </TableHead>
+
+            {/* Cumulative */}
+            <TableHead
+              onClick={() => toggleSort('cumulativePct')}
+              className="min-w-[120px] px-2 py-2 text-center font-semibold whitespace-nowrap cursor-pointer"
+            >
+              <span className="sm:hidden">Cum %</span>
+              <span className="hidden sm:inline">Cumulative %</span>
+              {getArrow('cumulativePct')}
+            </TableHead>
+
+            {/* Demand */}
+            <TableHead
+              onClick={() => toggleSort('demandFrequency')}
+              className="min-w-[90px] px-2 py-2 text-right font-semibold whitespace-nowrap cursor-pointer"
+            >
+              Demand{getArrow('demandFrequency')}
+            </TableHead>
+
+            {/* Category */}
+            <TableHead
+              onClick={() => toggleSort('category')}
+              className="min-w-[80px] px-2 py-2 text-center font-semibold whitespace-nowrap cursor-pointer"
+            >
+              <span className="sm:hidden">Cat</span>
+              <span className="hidden sm:inline">Category</span>
+              {getArrow('category')}
+            </TableHead>
+          </TableRow>
+        </TableHeader>
 
           <TableBody>
             {loading
