@@ -8,14 +8,16 @@ interface metricProps {
 }
 const MetricCard = ({ label, value, info }: metricProps) => {
   return (
-    <Card>
-      <CardContent className="p-4 space-y-1">
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+    <Card className="h-full">
+      <CardContent className="p-3 sm:p-4 space-y-1">
+        <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
           <span>{label}</span>
           {info && <Info content={{ title: label, description: info }} />}
         </div>
 
-        <div className="text-2xl font-semibold">{value}</div>
+        <div className="text-lg sm:text-xl lg:text-2xl font-semibold break-words">
+          {value}
+        </div>
       </CardContent>
     </Card>
   );

@@ -185,6 +185,7 @@ http://localhost:5173
 
 - Interactive demand distribution visualization
 - Extended analytics for inventory strategies
+- Newsvendor model with replacement
 - Deployment to cloud infrastructure
 - AI-driven decision support
 
@@ -203,3 +204,10 @@ A short 2-minute brief walkthrough of **RetailOps** in action.
 [▶️ Watch the Demo Video](https://drive.google.com/file/d/1h1TAwjX4GnAb4FQVZLulssai6mlB77Ud/view)
 
 This video demonstrates how to create a shop, add products, manage inventory, and run simulations such as Newsvendor.
+
+**RetailOps** is fully responsive and works seamlessly on tablets and smaller screens:  
+[📱 Responsive Demo](https://drive.google.com/file/d/1dCktRolVcufbMlfVzTFgQMeN6GmWAAAt/view?usp=sharing)
+
+<p align="center">
+  <img src="img/retailsOps.png" alt="RetailOps Logo" width="77" height="77" />
+</p>
