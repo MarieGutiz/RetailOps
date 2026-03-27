@@ -125,33 +125,65 @@ cd retailops
 
 ---
 
-### 2. Start the Backend
+### 2. Configure the Database
 
-```
+This application requires a **MySQL database**.
+
+Before running the backend, configure your database credentials in:
+
+````
+backend/src/main/resources/application.yml
+
+
+Example configuration:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/retailops_db?createDatabaseIfNotExist=true
+    username: your_username
+    password: your_password
+
+- The database will be created automatically if it does not exist
+- The application uses Hibernate (`ddl-auto=update`) to manage the schema
+
+---
+
+### 3. Start the Backend
+
+````
+
 cd backend
 ./mvnw spring-boot:run
+
 ```
 
 The backend server will start on:
 
 ```
+
 http://localhost:8080
+
 ```
 
 ---
 
-### 3. Start the Frontend
+### 4. Start the Frontend
 
 ```
+
 cd frontend
 npm install
 npm run dev
+
 ```
 
 The frontend application will start on:
 
 ```
+
 http://localhost:5173
+
 ```
 
 ---
@@ -193,7 +225,7 @@ http://localhost:5173
 
 ## Author
 
-Developer -Mariela Gutierrez [@mariegutiz](https://github.com/mariegutiz)
+Developer - Mariela Gutierrez [@mariegutiz](https://github.com/mariegutiz)
 
 ---
 
@@ -205,9 +237,10 @@ A short 2-minute brief walkthrough of **RetailOps** in action.
 
 This video demonstrates how to create a shop, add products, manage inventory, and run simulations such as Newsvendor.
 
-**RetailOps** is fully responsive and works seamlessly on tablets and smaller screens:  
+**RetailOps** is fully responsive and works seamlessly on tablets and smaller screens:
 [📱 Responsive Demo](https://drive.google.com/file/d/1dCktRolVcufbMlfVzTFgQMeN6GmWAAAt/view?usp=sharing)
 
 <p align="center">
   <img src="img/retailsOps.png" alt="RetailOps Logo" width="77" height="77" />
 </p>
+```
