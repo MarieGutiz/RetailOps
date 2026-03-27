@@ -162,7 +162,7 @@ spring:
 ### 3. Start the Backend
 
 ```bash
-cd backend
+cd backend/inventorysimulator
 ./mvnw spring-boot:run
 
 ```
@@ -181,7 +181,7 @@ http://localhost:8080
 
 ```
 
-cd frontend
+cd frontend/inventorysim-app
 npm install
 npm run dev
 
