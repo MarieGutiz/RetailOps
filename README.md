@@ -34,16 +34,14 @@ With **RetailOps**, users can:
 
 ## Key Features
 
-- Newsvendor Simulation: Daily ordering decisions under random demand for perishable
-  goods
-- Calculation of optimal inventory order quantities
-- ABC Analysis: Prioritize products based on consumption value.
-- Analytics and Reporting
-- Interactive user interface for parameter input
-- Authentication using OAuth2 providers
-- Responsive frontend design
-- Separation of frontend and backend services
-- REST-based communication between components
+- 📊 **Newsvendor Simulation** – Optimize daily ordering under uncertain demand  
+- 📦 **EOQ Model** – Calculate optimal order quantities and cycles  
+- 🧮 **ABC Analysis** – Prioritize products based on consumption value  
+- 📈 **Analytics & Reporting** – Compare scenarios and evaluate performance  
+- 🔍 **What-if Analysis** – Test alternative strategies and parameters  
+- 📄 **PDF Export** – Generate simulation reports  
+- 🔐 **OAuth2 Authentication** – Google & GitHub login  
+- 📱 **Responsive Design** – Works across desktop, tablet, and mobile  
 
 ---
 
@@ -131,7 +129,7 @@ This application requires a **MySQL database**.
 
 Before running the backend, configure your database credentials in:
 
-````
+
 backend/src/main/resources/application.yml
 
 
@@ -143,16 +141,12 @@ spring:
     url: jdbc:mysql://localhost:3306/retailops_db?createDatabaseIfNotExist=true
     username: your_username
     password: your_password
-
-- The database will be created automatically if it does not exist
-- The application uses Hibernate (`ddl-auto=update`) to manage the schema
-
+```
 ---
 
 ### 3. Start the Backend
 
-````
-
+```bash
 cd backend
 ./mvnw spring-boot:run
 
@@ -188,7 +182,7 @@ http://localhost:5173
 
 ---
 
-\***\*Example Usage\*\***
+## Example Usage
 
 1. Open the app in your browser and create a shop by providing a shop name.
 2. Set preferences in the Settings tab, including currency format ($, €, etc.).
