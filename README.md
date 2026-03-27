@@ -232,6 +232,7 @@ A short 2-minute brief walkthrough of **RetailOps** in action.
 This video demonstrates how to create a shop, add products, manage inventory, and run simulations such as Newsvendor.
 
 **RetailOps** is fully responsive and works seamlessly on tablets and smaller screens:
+
 [📱 Responsive Demo](https://drive.google.com/file/d/1dCktRolVcufbMlfVzTFgQMeN6GmWAAAt/view?usp=sharing)
 
 <p align="center">
