@@ -130,7 +130,22 @@ This application requires a **MySQL database**.
 Before running the backend, configure your database credentials in:
 
 
-backend/src/main/resources/application.yml
+backend/inventorysimulator/src/main/resources/application.yml
+
+
+> ⚠️ The `resources` folder may not be included in the repository (e.g. due to `.gitignore`).
+>
+> If it does not exist, create the following structure manually:
+>
+> ```
+> backend/inventorysimulator/src/main/resources/
+> ```
+>
+> Then create a file named:
+>
+> ```
+> application.yml
+> ```
 
 
 Example configuration:
