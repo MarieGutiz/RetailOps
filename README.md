@@ -34,14 +34,14 @@ With **RetailOps**, users can:
 
 ## Key Features
 
-- 📊 **Newsvendor Simulation** – Optimize daily ordering under uncertain demand  
-- 📦 **EOQ Model** – Calculate optimal order quantities and cycles  
-- 🧮 **ABC Analysis** – Prioritize products based on consumption value  
-- 📈 **Analytics & Reporting** – Compare scenarios and evaluate performance  
-- 🔍 **What-if Analysis** – Test alternative strategies and parameters  
-- 📄 **PDF Export** – Generate simulation reports  
-- 🔐 **OAuth2 Authentication** – Google & GitHub login  
-- 📱 **Responsive Design** – Works across desktop, tablet, and mobile  
+- 📊 **Newsvendor Simulation** – Optimize daily ordering under uncertain demand
+- 📦 **EOQ Model** – Calculate optimal order quantities and cycles
+- 🧮 **ABC Analysis** – Prioritize products based on consumption value
+- 📈 **Analytics & Reporting** – Compare scenarios and evaluate performance
+- 🔍 **What-if Analysis** – Test alternative strategies and parameters
+- 📄 **PDF Export** – Generate simulation reports
+- 🔐 **OAuth2 Authentication** – Google & GitHub login
+- 📱 **Responsive Design** – Works across desktop, tablet, and mobile
 
 ---
 
@@ -57,9 +57,14 @@ With **RetailOps**, users can:
 
 ### Backend
 
-- Spring Boot
+- Java 21
+- Spring Boot 3.4.5
 - REST API
 - OAuth2 Authentication (Google / GitHub)
+
+### Database
+
+- MySQL 8.0.39 (RDBMS)
 
 ### Development Tools
 
@@ -129,9 +134,7 @@ This application requires a **MySQL database**.
 
 Before running the backend, configure your database credentials in:
 
-
 backend/inventorysimulator/src/main/resources/application.yml
-
 
 > ⚠️ The `resources` folder may not be included in the repository (e.g. due to `.gitignore`).
 >
@@ -147,7 +150,6 @@ backend/inventorysimulator/src/main/resources/application.yml
 > application.yml
 > ```
 
-
 Example configuration:
 
 ```yaml
@@ -157,6 +159,7 @@ spring:
     username: your_username
     password: your_password
 ```
+
 ---
 
 ### 3. Start the Backend
