@@ -57,7 +57,7 @@ With **RetailOps**, users can:
 
 ### Backend
 
-- Java 21
+- Java 21(JDK)
 - Spring Boot 3.4.5
 - REST API
 - OAuth2 Authentication (Google / GitHub)
@@ -65,6 +65,14 @@ With **RetailOps**, users can:
 ### Database
 
 - MySQL 8.0.39 (RDBMS)
+
+### Build Tools
+
+- Maven (via Maven Wrapper `mvnw`)
+- Node.js (runtime environment)
+- npm (Node package manager)
+- Vite (React build tool)
+
 
 ### Development Tools
 
@@ -118,6 +126,17 @@ RetailOps
 ---
 
 ## Installation
+
+#### Prerequisites
+Java 21 (JDK)
+
+Node.js (LTS recommended)
+
+npm (Node package manager)
+
+Maven (or use Maven Wrapper)
+
+MySQL 8+
 
 ### 1. Clone the repository
 
